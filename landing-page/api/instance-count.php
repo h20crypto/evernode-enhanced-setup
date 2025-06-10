@@ -4,118 +4,63 @@ header('Access-Control-Allow-Origin: *');
 
 function getEvernodeInstanceData() {
     try {
-        // Method 1: Get data from Evernode CLI commands
-        $evernodeInfo = [];
-        
-        // Get total instance count
-        $totalInstancesCmd = "evernode config totalins 2>/dev/null";
-        $totalOutput = shell_exec($totalInstancesCmd);
-        
-        // Get active instance count  
-        $activeInstancesCmd = "evernode config activeins 2>/dev/null";
-        $activeOutput = shell_exec($activeInstancesCmd);
-        
-        // Get registration info
-        $regInfoCmd = "evernode info 2>/dev/null";
-        $regOutput = shell_exec($regInfoCmd);
+        // Get total instance capacity from Evernode
+        $resourcesCmd = "evernode config resources 2>/dev/null";
+        $resourcesOutput = shell_exec($resourcesCmd);
         
         // Get lease amount
-        $leaseAmtCmd = "evernode config leaseamt 2>/dev/null";
-        $leaseOutput = shell_exec($leaseAmtCmd);
+        $leaseCmd = "evernode config leaseamt 2>/dev/null";
+        $leaseOutput = shell_exec($leaseCmd);
         
-        // Parse total instances
+        // Parse total slots from resources output
         $totalSlots = 3; // Default fallback
-        if ($totalOutput && preg_match('/(\d+)/', trim($totalOutput), $matches)) {
+        if ($resourcesOutput && preg_match('/Instance count:\s*(\d+)/', $resourcesOutput, $matches)) {
             $totalSlots = (int)$matches[1];
         }
         
-        // Parse active instances
+        // Count ACTUAL running containers (not users)
         $usedSlots = 0;
-        if ($activeOutput && preg_match('/(\d+)/', trim($activeOutput), $matches)) {
-            $usedSlots = (int)$matches[1];
+        $sashiUserCount = 0;
+        $containerDetails = [];
+        
+        // Get all sashi users
+        $sashiUsersCmd = "getent passwd | grep sashi | cut -d: -f1 2>/dev/null";
+        $sashiUsersOutput = shell_exec($sashiUsersCmd);
+        
+        if ($sashiUsersOutput) {
+            $users = array_filter(explode("\n", trim($sashiUsersOutput)));
+            $sashiUserCount = count($users);
+            
+            foreach ($users as $user) {
+                if (!empty($user)) {
+                    // Count running containers for this user
+                    $containerCountCmd = "sudo -u $user docker ps -q 2>/dev/null | wc -l";
+                    $containerCount = (int)trim(shell_exec($containerCountCmd));
+                    
+                    if ($containerCount > 0) {
+                        $usedSlots += $containerCount;
+                        
+                        // Get container details
+                        $containerInfoCmd = "sudo -u $user docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}' 2>/dev/null";
+                        $containerInfo = shell_exec($containerInfoCmd);
+                        
+                        $containerDetails[] = [
+                            'user' => $user,
+                            'container_count' => $containerCount,
+                            'containers' => trim($containerInfo)
+                        ];
+                    }
+                }
+            }
         }
         
-        // Parse registration info for additional details
-        $hostAddress = "";
-        $domain = "";
-        $version = "";
-        $reputation = "";
-        
-        if ($regOutput) {
-            // Extract host address
-            if (preg_match('/Address[:\s]+([rR][a-zA-Z0-9]+)/', $regOutput, $matches)) {
-                $hostAddress = $matches[1];
-            }
-            
-            // Extract domain
-            if (preg_match('/Domain[:\s]+([^\s\n]+)/', $regOutput, $matches)) {
-                $domain = $matches[1];
-            }
-            
-            // Extract version
-            if (preg_match('/Version[:\s]+([^\s\n]+)/', $regOutput, $matches)) {
-                $version = $matches[1];
-            }
-            
-            // Extract reputation
-            if (preg_match('/Reputation[:\s]+(\d+)/', $regOutput, $matches)) {
-                $reputation = $matches[1];
-            }
-        }
-        
-        // Parse lease amount
-        $leaseAmount = "";
-        if ($leaseOutput && preg_match('/([\d.]+)\s*EVR/', trim($leaseOutput), $matches)) {
+        // Get lease amount for host info
+        $leaseAmount = "0.00001 EVR/hour"; // Default
+        if ($leaseOutput && preg_match('/([\d.]+)\s*EVRs?/', $leaseOutput, $matches)) {
             $leaseAmount = $matches[1] . " EVR/hour";
         }
         
-        // Method 2: Fallback - Check host account files
-        if ($totalSlots == 3 && $usedSlots == 0) {
-            // Try to read from host configuration files
-            $hostConfigDirs = glob('/home/*/evernode-host');
-            foreach ($hostConfigDirs as $configDir) {
-                $regTokenFile = $configDir . '/.host-reg-token';
-                if (file_exists($regTokenFile)) {
-                    $regToken = trim(file_get_contents($regTokenFile));
-                    if (!empty($regToken)) {
-                        // Try to get instance count from config
-                        $configFile = $configDir . '/cfg/evernode.cfg';
-                        if (file_exists($configFile)) {
-                            $config = file_get_contents($configFile);
-                            if (preg_match('/"totalInstanceCount"[:\s]*(\d+)/', $config, $matches)) {
-                                $totalSlots = (int)$matches[1];
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-            
-            // Count active Sashimono users as active instances
-            $sashiUsersCmd = "getent passwd | grep sashi | wc -l 2>/dev/null";
-            $sashiUsersOutput = shell_exec($sashiUsersCmd);
-            if ($sashiUsersOutput) {
-                $usedSlots = (int)trim($sashiUsersOutput);
-            }
-        }
-        
-        // Method 3: Count actual Docker containers
-        if ($usedSlots == 0) {
-            $sashiUserList = shell_exec("getent passwd | grep sashi | cut -d: -f1 2>/dev/null");
-            if ($sashiUserList) {
-                $users = array_filter(explode("\n", trim($sashiUserList)));
-                foreach ($users as $user) {
-                    if (!empty($user)) {
-                        $containerCount = shell_exec("sudo -u $user docker ps -q 2>/dev/null | wc -l");
-                        if ($containerCount && (int)trim($containerCount) > 0) {
-                            $usedSlots++;
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Calculate derived values
+        // Calculate metrics
         $availableSlots = max(0, $totalSlots - $usedSlots);
         $usagePercentage = $totalSlots > 0 ? round(($usedSlots / $totalSlots) * 100) : 0;
         
@@ -134,14 +79,6 @@ function getEvernodeInstanceData() {
             $statusMessage = '⚡ Limited slots available';
         }
         
-        // Determine data source reliability
-        $dataSource = 'estimated';
-        if ($totalOutput || $activeOutput) {
-            $dataSource = 'evernode_cli';
-        } elseif ($usedSlots > 0) {
-            $dataSource = 'sashimono_count';
-        }
-        
         return [
             'total' => $totalSlots,
             'used' => $usedSlots,
@@ -150,46 +87,44 @@ function getEvernodeInstanceData() {
             'status' => $status,
             'status_message' => $statusMessage,
             'last_updated' => date('Y-m-d H:i:s'),
-            'data_source' => $dataSource,
-            'host_info' => [
-                'address' => $hostAddress,
-                'domain' => $domain,
-                'version' => $version,
-                'reputation' => $reputation,
-                'lease_amount' => $leaseAmount
-            ],
-            'success' => true
-        ];
-        
-    } catch (Exception $e) {
-        // Ultimate fallback with realistic estimates
-        $estimates = [
-            ['total' => 3, 'used' => 2, 'available' => 1],
-            ['total' => 5, 'used' => 3, 'available' => 2],
-            ['total' => 10, 'used' => 7, 'available' => 3],
-            ['total' => 20, 'used' => 12, 'available' => 8],
-        ];
-        
-        $estimate = $estimates[array_rand($estimates)];
-        
-        return [
-            'total' => $estimate['total'],
-            'used' => $estimate['used'],
-            'available' => $estimate['available'],
-            'usage_percentage' => round(($estimate['used'] / $estimate['total']) * 100),
-            'status' => $estimate['available'] > 2 ? 'available' : 'limited',
-            'status_message' => $estimate['available'] > 2 ? '✅ Ready for deployments' : '⚡ Limited availability',
-            'last_updated' => date('Y-m-d H:i:s'),
-            'data_source' => 'fallback_estimate',
+            'data_source' => 'actual_containers',
             'host_info' => [
                 'address' => '',
                 'domain' => '',
                 'version' => '',
                 'reputation' => '',
-                'lease_amount' => ''
+                'lease_amount' => $leaseAmount
+            ],
+            'debug_info' => [
+                'sashi_users_total' => $sashiUserCount,
+                'containers_running' => $usedSlots,
+                'container_details' => $containerDetails,
+                'resources_output' => trim($resourcesOutput ?: ''),
+                'lease_output' => trim($leaseOutput ?: '')
+            ],
+            'success' => true
+        ];
+        
+    } catch (Exception $e) {
+        // Fallback with reasonable estimates
+        return [
+            'total' => 3,
+            'used' => 1,
+            'available' => 2,
+            'usage_percentage' => 33,
+            'status' => 'available',
+            'status_message' => '✅ Ready for deployments (estimated)',
+            'last_updated' => date('Y-m-d H:i:s'),
+            'data_source' => 'fallback',
+            'host_info' => [
+                'address' => '',
+                'domain' => '',
+                'version' => '',
+                'reputation' => '',
+                'lease_amount' => '0.00001 EVR/hour'
             ],
             'success' => false,
-            'error' => 'Using estimated values: ' . $e->getMessage()
+            'error' => $e->getMessage()
         ];
     }
 }
