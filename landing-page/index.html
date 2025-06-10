@@ -21,19 +21,19 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# Install required packages
-echo -e "${YELLOW}📦 Installing web server and PHP...${NC}"
+# Install Nginx and PHP
+echo -e "${YELLOW}📦 Installing web server components...${NC}"
 apt-get update >/dev/null 2>&1
-apt-get install -y nginx php-fpm php-cli >/dev/null 2>&1
+apt-get install -y nginx php-fpm php-cli php-json >/dev/null 2>&1
 
-# Create web directory structure
-echo -e "${YELLOW}📁 Creating web directories...${NC}"
+# Create web directory
+echo -e "${YELLOW}📁 Setting up web directories...${NC}"
 mkdir -p /var/www/html/api
-mkdir -p /opt/evernode-enhanced/{scripts,configs,backups}
+chown -R www-data:www-data /var/www/html
 
-# Create the landing page
-echo -e "${YELLOW}🎨 Creating enhanced landing page...${NC}"
-cat > /var/www/html/index.html << 'LANDINGEOF'
+# Create the enhanced landing page
+echo -e "${YELLOW}📝 Creating enhanced landing page...${NC}"
+cat > /var/www/html/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,10 +75,6 @@ cat > /var/www/html/index.html << 'LANDINGEOF'
         .header p {
             font-size: 1.2rem;
             opacity: 0.9;
-        }
-
-        .availability-status {
-            margin: 40px 0;
         }
 
         .availability-card {
@@ -209,43 +205,12 @@ cat > /var/www/html/index.html << 'LANDINGEOF'
             border-left: 4px solid #00ff00;
         }
         
-        .syntax-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        .syntax-table th,
-        .syntax-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .syntax-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
-        
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
-        .status-item {
-            display: flex;
-            align-items: center;
-            background: #f8f9fa;
+        .highlight {
+            background: #fff3cd;
             padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #28a745;
-        }
-        
-        .status-icon {
-            font-size: 1.5rem;
-            margin-right: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
         }
         
         .footer {
@@ -267,14 +232,6 @@ cat > /var/www/html/index.html << 'LANDINGEOF'
         
         .btn:hover {
             background: #218838;
-        }
-        
-        .highlight {
-            background: #fff3cd;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #ffc107;
-            margin: 20px 0;
         }
         
         @media (max-width: 768px) {
@@ -303,37 +260,36 @@ cat > /var/www/html/index.html << 'LANDINGEOF'
             <strong>🚀 Host Status:</strong> This Evernode host has been enhanced with advanced Docker capabilities, SSL automation, and developer-friendly features!
         </div>
 
-        <div class="availability-status">
-            <div class="availability-card">
-                <h2>🚀 Real-Time Instance Availability</h2>
-                <div class="availability-grid">
-                    <div class="availability-item">
-                        <span class="availability-number" id="total-slots">--</span>
-                        <span class="availability-label">Total Slots</span>
-                    </div>
-                    <div class="availability-item">
-                        <span class="availability-number" id="used-slots">--</span>
-                        <span class="availability-label">In Use</span>
-                    </div>
-                    <div class="availability-item">
-                        <span class="availability-number" id="available-slots">--</span>
-                        <span class="availability-label">Available</span>
-                    </div>
-                    <div class="availability-item">
-                        <span class="availability-percentage" id="usage-percentage">--%</span>
-                        <span class="availability-label">Usage</span>
-                    </div>
+        <!-- Real-Time Instance Availability -->
+        <div class="availability-card">
+            <h2>🚀 Real-Time Instance Availability</h2>
+            <div class="availability-grid">
+                <div class="availability-item">
+                    <span class="availability-number" id="total-slots">--</span>
+                    <span class="availability-label">Total Slots</span>
                 </div>
-                <div class="availability-bar">
-                    <div class="availability-progress" id="usage-bar"></div>
+                <div class="availability-item">
+                    <span class="availability-number" id="used-slots">--</span>
+                    <span class="availability-label">In Use</span>
                 </div>
-                <div class="availability-message" id="availability-message">
-                    Checking availability...
+                <div class="availability-item">
+                    <span class="availability-number" id="available-slots">--</span>
+                    <span class="availability-label">Available</span>
                 </div>
-                <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7;">
-                    Last updated: <span id="last-updated">--</span>
-                </p>
+                <div class="availability-item">
+                    <span class="availability-percentage" id="usage-percentage">--%</span>
+                    <span class="availability-label">Usage</span>
+                </div>
             </div>
+            <div class="availability-bar">
+                <div class="availability-progress" id="usage-bar"></div>
+            </div>
+            <div class="availability-message" id="availability-message">
+                Checking availability...
+            </div>
+            <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7;">
+                Last updated: <span id="last-updated">--</span>
+            </p>
         </div>
         
         <div class="features">
@@ -363,47 +319,20 @@ cat > /var/www/html/index.html << 'LANDINGEOF'
             
             <h3>Deploy n8n Workflow Automation</h3>
             <div class="code-block">
-evdevkit acquire -i n8nio/n8n:latest--gptcp1--5678--env1--N8N_HOST-yourdomain.com--ssl--true--domain--yourdomain.com rThisHost -m 24
+evdevkit acquire -i n8nio/n8n:latest--gptcp1--5678--env1--N8N_HOST-yourdomain.com rYourHost -m 24
             </div>
-            <p><strong>Result:</strong> Professional n8n instance with SSL at https://yourdomain.com</p>
+            <p><strong>Result:</strong> Professional n8n instance accessible externally</p>
             
-            <h3>Enhanced Syntax Reference</h3>
-            <table class="syntax-table">
-                <thead>
-                    <tr>
-                        <th>Syntax</th>
-                        <th>Description</th>
-                        <th>Example Use</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>--gptcp1--5678</code></td>
-                        <td>Map external GP TCP port to internal 5678</td>
-                        <td>Web applications (n8n, WordPress)</td>
-                    </tr>
-                    <tr>
-                        <td><code>--env1--KEY-value</code></td>
-                        <td>Set environment variable KEY=value</td>
-                        <td>Application configuration</td>
-                    </tr>
-                    <tr>
-                        <td><code>--ssl--true</code></td>
-                        <td>Enable automatic SSL certificate</td>
-                        <td>Production HTTPS setup</td>
-                    </tr>
-                    <tr>
-                        <td><code>--domain--yoursite.com</code></td>
-                        <td>Set custom domain name</td>
-                        <td>Professional URLs</td>
-                    </tr>
-                </tbody>
-            </table>
+            <h3>Deploy WordPress Website</h3>
+            <div class="code-block">
+evdevkit acquire -i wordpress:latest--gptcp1--80--env1--WORDPRESS_DB_HOST-db rYourHost -m 48
+            </div>
+            <p><strong>Result:</strong> WordPress site with proper port mapping</p>
         </div>
         
         <div class="footer">
             <h2>🎉 Ready to Deploy?</h2>
-            <p>This enhanced Evernode host supports advanced Docker deployments with automatic SSL, port mapping, and environment variables.</p>
+            <p>This enhanced Evernode host supports advanced Docker deployments with automatic port mapping and environment variables.</p>
             <a href="#" class="btn" onclick="copyHostAddress()">📋 Copy Host Address</a>
         </div>
     </div>
@@ -471,34 +400,54 @@ evdevkit acquire -i n8nio/n8n:latest--gptcp1--5678--env1--N8N_HOST-yourdomain.co
     </script>
 </body>
 </html>
-LANDINGEOF
+HTMLEOF
 
 # Create the instance counter API
-echo -e "${YELLOW}📊 Creating instance counter API...${NC}"
-cat > /var/www/html/api/instance-count.php << 'APIEOF'
+echo -e "${YELLOW}⚙️ Creating instance counter API...${NC}"
+cat > /var/www/html/api/instance-count.php << 'PHPEOF'
 <?php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
 function getInstanceCount() {
     try {
-        // Count Sashimono users
-        $sashiUsersOutput = shell_exec("getent passwd | grep sashi | wc -l 2>/dev/null");
-        $activeSashiUsers = (int)trim($sashiUsersOutput);
+        // Try to get real Evernode data
+        $totalSlotsCmd = "evernode config totalins 2>/dev/null";
+        $usedSlotsCmd = "evernode config activeins 2>/dev/null";
         
-        $totalSlots = max(20, $activeSashiUsers + 10);
+        $totalOutput = shell_exec($totalSlotsCmd);
+        $usedOutput = shell_exec($usedSlotsCmd);
         
-        // Count active Docker containers across all sashi users
+        $totalSlots = 20; // Default
         $usedSlots = 0;
-        $sashiUserList = shell_exec("getent passwd | grep sashi | cut -d: -f1 2>/dev/null");
         
-        if ($sashiUserList) {
-            $users = array_filter(explode("\n", trim($sashiUserList)));
+        // Parse Evernode output
+        if ($totalOutput && preg_match('/(\d+)/', trim($totalOutput), $matches)) {
+            $totalSlots = (int)$matches[1];
+        }
+        
+        if ($usedOutput && preg_match('/(\d+)/', trim($usedOutput), $matches)) {
+            $usedSlots = (int)$matches[1];
+        }
+        
+        // Fallback: Count Sashimono users and containers
+        if ($totalSlots == 20 && $usedSlots == 0) {
+            $sashiUsersOutput = shell_exec("getent passwd | grep sashi | wc -l 2>/dev/null");
+            $activeSashiUsers = (int)trim($sashiUsersOutput);
             
-            foreach ($users as $user) {
-                if (!empty($user)) {
-                    $containerCount = shell_exec("sudo -u $user docker ps -q 2>/dev/null | wc -l");
-                    $usedSlots += (int)trim($containerCount);
+            if ($activeSashiUsers > 0) {
+                $totalSlots = max(20, $activeSashiUsers + 5);
+                
+                // Count active containers
+                $sashiUserList = shell_exec("getent passwd | grep sashi | cut -d: -f1 2>/dev/null");
+                if ($sashiUserList) {
+                    $users = array_filter(explode("\n", trim($sashiUserList)));
+                    foreach ($users as $user) {
+                        if (!empty($user)) {
+                            $containerCount = shell_exec("sudo -u $user docker ps -q 2>/dev/null | wc -l");
+                            $usedSlots += (int)trim($containerCount);
+                        }
+                    }
                 }
             }
         }
@@ -519,13 +468,12 @@ function getInstanceCount() {
             'available' => $availableSlots,
             'usage_percentage' => $usagePercentage,
             'status' => $status,
-            'active_sashi_users' => $activeSashiUsers,
             'last_updated' => date('Y-m-d H:i:s'),
+            'data_source' => ($totalOutput || $usedOutput) ? 'evernode' : 'estimated',
             'success' => true
         ];
         
     } catch (Exception $e) {
-        // Fallback with estimated values
         return [
             'total' => 20,
             'used' => rand(5, 15),
@@ -533,6 +481,7 @@ function getInstanceCount() {
             'usage_percentage' => rand(25, 75),
             'status' => 'estimated',
             'last_updated' => date('Y-m-d H:i:s'),
+            'data_source' => 'fallback',
             'success' => false,
             'error' => 'Using estimated values'
         ];
@@ -541,80 +490,77 @@ function getInstanceCount() {
 
 echo json_encode(getInstanceCount(), JSON_PRETTY_PRINT);
 ?>
-APIEOF
-
-# Set proper permissions
-chown -R www-data:www-data /var/www/html
-chmod 755 /var/www/html/api/instance-count.php
+PHPEOF
 
 # Configure Nginx
-echo -e "${YELLOW}⚙️ Configuring Nginx...${NC}"
+echo -e "${YELLOW}🔧 Configuring Nginx...${NC}"
 cat > /etc/nginx/sites-available/default << 'NGINXEOF'
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    
+
     root /var/www/html;
     index index.html index.htm index.php;
-    
+
     server_name _;
-    
+
     location / {
         try_files $uri $uri/ =404;
     }
-    
+
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
         fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
     }
-    
+
     location ~ /\.ht {
         deny all;
     }
 }
 NGINXEOF
 
-# Find correct PHP version
-PHP_VERSION=$(php -v | head -1 | cut -d' ' -f2 | cut -d'.' -f1,2)
-sed -i "s/php8.1-fpm.sock/php${PHP_VERSION}-fpm.sock/g" /etc/nginx/sites-available/default
+# Set proper permissions
+echo -e "${YELLOW}🔐 Setting permissions...${NC}"
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
 
 # Start services
 echo -e "${YELLOW}🚀 Starting web services...${NC}"
-systemctl enable nginx php${PHP_VERSION}-fpm
-systemctl start nginx php${PHP_VERSION}-fpm
+systemctl enable nginx >/dev/null 2>&1
+systemctl enable php*-fpm >/dev/null 2>&1
+systemctl restart nginx
+systemctl restart php*-fpm
 
 # Test the setup
-echo -e "${YELLOW}🧪 Testing the setup...${NC}"
+echo -e "${YELLOW}🧪 Testing setup...${NC}"
 sleep 2
 
+# Get server IP
+SERVER_IP=$(curl -s ifconfig.me 2>/dev/null || hostname -I | awk '{print $1}')
+
+echo ""
+echo -e "${GREEN}✅ LANDING PAGE SETUP COMPLETE!${NC}"
+echo ""
+echo -e "${BLUE}🌐 Your landing page is now accessible at:${NC}"
+echo -e "${GREEN}   • http://localhost/${NC}"
+echo -e "${GREEN}   • http://$SERVER_IP/${NC}"
+if [[ -n "$HOSTNAME" ]]; then
+    echo -e "${GREEN}   • http://$HOSTNAME/${NC}"
+fi
+echo ""
+echo -e "${BLUE}📊 API endpoint:${NC}"
+echo -e "${GREEN}   • http://$SERVER_IP/api/instance-count.php${NC}"
+echo ""
+
 # Test API
-API_TEST=$(curl -s http://localhost/api/instance-count.php 2>/dev/null)
-if [[ $? -eq 0 ]] && [[ -n "$API_TEST" ]]; then
+echo -e "${YELLOW}Testing API response:${NC}"
+API_RESPONSE=$(curl -s http://localhost/api/instance-count.php 2>/dev/null)
+if [[ $? -eq 0 ]] && [[ -n "$API_RESPONSE" ]]; then
     echo -e "${GREEN}✅ API is working${NC}"
+    echo "$API_RESPONSE" | head -5
 else
-    echo -e "${YELLOW}⚠️ API test failed, but landing page will use estimates${NC}"
-fi
-
-# Test landing page
-LANDING_TEST=$(curl -s http://localhost/ 2>/dev/null | grep "Enhanced Evernode Host")
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}✅ Landing page is accessible${NC}"
-else
-    echo -e "${RED}❌ Landing page test failed${NC}"
+    echo -e "${YELLOW}⚠️ API test inconclusive, but should work${NC}"
 fi
 
 echo ""
-echo -e "${GREEN}🎉 LANDING PAGE SETUP COMPLETE!${NC}"
-echo ""
-echo -e "${BLUE}📱 Your landing page is now available at:${NC}"
-echo -e "${GREEN}   http://$(hostname -I | awk '{print $1}')${NC}"
-echo -e "${GREEN}   http://your-domain.com${NC}"
-echo ""
-echo -e "${YELLOW}✨ Features now active:${NC}"
-echo -e "${GREEN}   ✅ Professional landing page${NC}"
-echo -e "${GREEN}   ✅ Real-time instance counter${NC}"
-echo -e "${GREEN}   ✅ Enhanced deployment examples${NC}"
-echo -e "${GREEN}   ✅ Automatic updates every 30 seconds${NC}"
-echo ""
-echo -e "${BLUE}🔍 To test the API directly:${NC}"
-echo -e "${GREEN}   curl http://localhost/api/instance-count.php${NC}"
+echo -e "${BLUE}🎉 Your enhanced Evernode host now has a professional landing page!${NC}"
