@@ -1,39 +1,3 @@
-#!/bin/bash
-
-# 🌐 COMPLETE EVERNODE LANDING PAGE SETUP
-# This script sets up the landing page and makes it accessible
-
-set -e
-
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m'
-
-echo -e "${BLUE}🌐 Setting up Evernode Landing Page${NC}"
-echo "=================================="
-echo ""
-
-# Check if running as root
-if [[ $EUID -ne 0 ]]; then
-   echo -e "${RED}❌ This script must be run as root (use sudo)${NC}"
-   exit 1
-fi
-
-# Install Nginx and PHP
-echo -e "${YELLOW}📦 Installing web server components...${NC}"
-apt-get update >/dev/null 2>&1
-apt-get install -y nginx php-fpm php-cli php-json >/dev/null 2>&1
-
-# Create web directory
-echo -e "${YELLOW}📁 Setting up web directories...${NC}"
-mkdir -p /var/www/html/api
-chown -R www-data:www-data /var/www/html
-
-# Create the enhanced landing page
-echo -e "${YELLOW}📝 Creating enhanced landing page...${NC}"
-cat > /var/www/html/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,6 +90,12 @@ cat > /var/www/html/index.html << 'HTMLEOF'
             opacity: 0.8;
         }
 
+        .data-source {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 10px;
+        }
+
         .availability-bar {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
@@ -151,6 +121,18 @@ cat > /var/www/html/index.html << 'HTMLEOF'
         .status-good { color: #00ff88; }
         .status-medium { color: #ffd700; }
         .status-full { color: #ff6b6b; }
+
+        .host-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .host-info-item {
+            margin: 5px 0;
+        }
 
         .features {
             display: grid;
@@ -253,14 +235,14 @@ cat > /var/www/html/index.html << 'HTMLEOF'
     <div class="container">
         <div class="header">
             <h1>🌐 Enhanced Evernode Host</h1>
-            <p>Professional Docker Platform with Advanced Features</p>
+            <p>Professional Docker Platform with Real-Time Monitoring</p>
         </div>
         
         <div class="highlight">
-            <strong>🚀 Host Status:</strong> This Evernode host has been enhanced with advanced Docker capabilities, SSL automation, and developer-friendly features!
+            <strong>🚀 Host Status:</strong> This Evernode host provides real-time instance availability with accurate data from Evernode CLI commands!
         </div>
 
-        <!-- Real-Time Instance Availability -->
+        <!-- Real-Time Instance Availability with Host Info -->
         <div class="availability-card">
             <h2>🚀 Real-Time Instance Availability</h2>
             <div class="availability-grid">
@@ -287,8 +269,18 @@ cat > /var/www/html/index.html << 'HTMLEOF'
             <div class="availability-message" id="availability-message">
                 Checking availability...
             </div>
-            <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7;">
-                Last updated: <span id="last-updated">--</span>
+            
+            <!-- Host Information -->
+            <div class="host-info" id="host-info" style="display:none;">
+                <div class="host-info-item"><strong>Host Address:</strong> <span id="host-address">--</span></div>
+                <div class="host-info-item"><strong>Domain:</strong> <span id="host-domain">--</span></div>
+                <div class="host-info-item"><strong>Version:</strong> <span id="host-version">--</span></div>
+                <div class="host-info-item"><strong>Reputation:</strong> <span id="host-reputation">--</span></div>
+                <div class="host-info-item"><strong>Lease Rate:</strong> <span id="host-lease">--</span></div>
+            </div>
+            
+            <p class="data-source">
+                Data source: <span id="data-source">--</span> | Last updated: <span id="last-updated">--</span>
             </p>
         </div>
         
@@ -304,8 +296,8 @@ cat > /var/www/html/index.html << 'HTMLEOF'
             </div>
             
             <div class="feature-card">
-                <h3>🔒 Automatic SSL</h3>
-                <p>One-command SSL certificate generation with Let's Encrypt. Deploy with --ssl--true for instant HTTPS setup.</p>
+                <h3>📊 Real-Time Monitoring</h3>
+                <p>Live instance availability using actual Evernode CLI data. See exact capacity and usage in real-time.</p>
             </div>
             
             <div class="feature-card">
@@ -319,21 +311,30 @@ cat > /var/www/html/index.html << 'HTMLEOF'
             
             <h3>Deploy n8n Workflow Automation</h3>
             <div class="code-block">
-evdevkit acquire -i n8nio/n8n:latest--gptcp1--5678--env1--N8N_HOST-yourdomain.com rYourHost -m 24
+evdevkit acquire -i n8nio/n8n:latest--gptcp1--5678--env1--N8N_HOST-yourdomain.com rThisHost -m 24
             </div>
             <p><strong>Result:</strong> Professional n8n instance accessible externally</p>
             
             <h3>Deploy WordPress Website</h3>
             <div class="code-block">
-evdevkit acquire -i wordpress:latest--gptcp1--80--env1--WORDPRESS_DB_HOST-db rYourHost -m 48
+evdevkit acquire -i wordpress:latest--gptcp1--80--env1--WORDPRESS_DB_HOST-db rThisHost -m 48
             </div>
             <p><strong>Result:</strong> WordPress site with proper port mapping</p>
+            
+            <h3>Current Host Status</h3>
+            <div class="code-block" id="host-status-example">
+# Real-time data from this host:
+# Total Instances: <span id="example-total">--</span>
+# Available Now: <span id="example-available">--</span>
+# Ready for deployment!
+            </div>
         </div>
         
         <div class="footer">
             <h2>🎉 Ready to Deploy?</h2>
-            <p>This enhanced Evernode host supports advanced Docker deployments with automatic port mapping and environment variables.</p>
+            <p>This enhanced Evernode host provides real-time instance monitoring with accurate Evernode data.</p>
             <a href="#" class="btn" onclick="copyHostAddress()">📋 Copy Host Address</a>
+            <a href="#" class="btn" onclick="refreshData()">🔄 Refresh Data</a>
         </div>
     </div>
     
@@ -344,46 +345,83 @@ evdevkit acquire -i wordpress:latest--gptcp1--80--env1--WORDPRESS_DB_HOST-db rYo
                 
                 if (response.ok) {
                     const data = await response.json();
-                    updateDisplay(data.total, data.used, data.available);
+                    updateDisplay(data);
                 } else {
-                    showEstimatedAvailability();
+                    console.log('API error, using fallback');
+                    showFallbackData();
                 }
             } catch (error) {
-                console.log('Using estimated availability');
-                showEstimatedAvailability();
+                console.log('Using fallback data:', error);
+                showFallbackData();
             }
         }
 
-        function updateDisplay(total, used, available) {
-            const usagePercentage = Math.round((used / total) * 100);
-            
-            document.getElementById('total-slots').textContent = total;
-            document.getElementById('used-slots').textContent = used;
-            document.getElementById('available-slots').textContent = available;
-            document.getElementById('usage-percentage').textContent = usagePercentage + '%';
+        function updateDisplay(data) {
+            // Update main metrics
+            document.getElementById('total-slots').textContent = data.total;
+            document.getElementById('used-slots').textContent = data.used;
+            document.getElementById('available-slots').textContent = data.available;
+            document.getElementById('usage-percentage').textContent = data.usage_percentage + '%';
             document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+            document.getElementById('data-source').textContent = data.data_source;
             
+            // Update progress bar
             const progressBar = document.getElementById('usage-bar');
-            progressBar.style.width = usagePercentage + '%';
+            progressBar.style.width = data.usage_percentage + '%';
             
+            // Update status message
             const messageEl = document.getElementById('availability-message');
-            if (available > 5) {
-                messageEl.textContent = '✅ Ready for new deployments!';
+            messageEl.textContent = data.status_message || getStatusMessage(data.available);
+            
+            if (data.available > 2) {
                 messageEl.className = 'availability-message status-good';
-            } else if (available > 0) {
-                messageEl.textContent = '⚡ Limited slots available';
+            } else if (data.available > 0) {
                 messageEl.className = 'availability-message status-medium';
             } else {
-                messageEl.textContent = '🔴 Currently at capacity';
                 messageEl.className = 'availability-message status-full';
             }
+            
+            // Update host information if available
+            if (data.host_info) {
+                const hostInfo = data.host_info;
+                const hostInfoEl = document.getElementById('host-info');
+                
+                if (hostInfo.address || hostInfo.domain || hostInfo.version) {
+                    document.getElementById('host-address').textContent = hostInfo.address || 'Not available';
+                    document.getElementById('host-domain').textContent = hostInfo.domain || 'Not configured';
+                    document.getElementById('host-version').textContent = hostInfo.version || 'Unknown';
+                    document.getElementById('host-reputation').textContent = hostInfo.reputation ? hostInfo.reputation + '/255' : 'Not available';
+                    document.getElementById('host-lease').textContent = hostInfo.lease_amount || 'Not configured';
+                    hostInfoEl.style.display = 'block';
+                }
+            }
+            
+            // Update examples
+            document.getElementById('example-total').textContent = data.total;
+            document.getElementById('example-available').textContent = data.available;
         }
 
-        function showEstimatedAvailability() {
-            const total = 20;
-            const used = Math.floor(Math.random() * 12) + 3;
-            const available = total - used;
-            updateDisplay(total, used, available);
+        function getStatusMessage(available) {
+            if (available > 5) return '✅ Ready for new deployments!';
+            if (available > 0) return '⚡ Limited slots available';
+            return '🔴 Currently at capacity';
+        }
+
+        function showFallbackData() {
+            const fallbackData = {
+                total: 20,
+                used: Math.floor(Math.random() * 12) + 3,
+                available: 0,
+                usage_percentage: 0,
+                status_message: '⚠️ Using estimated data',
+                data_source: 'fallback',
+                host_info: {}
+            };
+            
+            fallbackData.available = fallbackData.total - fallbackData.used;
+            fallbackData.usage_percentage = Math.round((fallbackData.used / fallbackData.total) * 100);
+            
+            updateDisplay(fallbackData);
         }
 
         function copyHostAddress() {
@@ -393,6 +431,11 @@ evdevkit acquire -i wordpress:latest--gptcp1--80--env1--WORDPRESS_DB_HOST-db rYo
             });
         }
         
+        function refreshData() {
+            updateInstanceAvailability();
+        }
+        
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             updateInstanceAvailability();
             setInterval(updateInstanceAvailability, 30000);
@@ -400,167 +443,3 @@ evdevkit acquire -i wordpress:latest--gptcp1--80--env1--WORDPRESS_DB_HOST-db rYo
     </script>
 </body>
 </html>
-HTMLEOF
-
-# Create the instance counter API
-echo -e "${YELLOW}⚙️ Creating instance counter API...${NC}"
-cat > /var/www/html/api/instance-count.php << 'PHPEOF'
-<?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-
-function getInstanceCount() {
-    try {
-        // Try to get real Evernode data
-        $totalSlotsCmd = "evernode config totalins 2>/dev/null";
-        $usedSlotsCmd = "evernode config activeins 2>/dev/null";
-        
-        $totalOutput = shell_exec($totalSlotsCmd);
-        $usedOutput = shell_exec($usedSlotsCmd);
-        
-        $totalSlots = 20; // Default
-        $usedSlots = 0;
-        
-        // Parse Evernode output
-        if ($totalOutput && preg_match('/(\d+)/', trim($totalOutput), $matches)) {
-            $totalSlots = (int)$matches[1];
-        }
-        
-        if ($usedOutput && preg_match('/(\d+)/', trim($usedOutput), $matches)) {
-            $usedSlots = (int)$matches[1];
-        }
-        
-        // Fallback: Count Sashimono users and containers
-        if ($totalSlots == 20 && $usedSlots == 0) {
-            $sashiUsersOutput = shell_exec("getent passwd | grep sashi | wc -l 2>/dev/null");
-            $activeSashiUsers = (int)trim($sashiUsersOutput);
-            
-            if ($activeSashiUsers > 0) {
-                $totalSlots = max(20, $activeSashiUsers + 5);
-                
-                // Count active containers
-                $sashiUserList = shell_exec("getent passwd | grep sashi | cut -d: -f1 2>/dev/null");
-                if ($sashiUserList) {
-                    $users = array_filter(explode("\n", trim($sashiUserList)));
-                    foreach ($users as $user) {
-                        if (!empty($user)) {
-                            $containerCount = shell_exec("sudo -u $user docker ps -q 2>/dev/null | wc -l");
-                            $usedSlots += (int)trim($containerCount);
-                        }
-                    }
-                }
-            }
-        }
-        
-        $availableSlots = max(0, $totalSlots - $usedSlots);
-        $usagePercentage = $totalSlots > 0 ? round(($usedSlots / $totalSlots) * 100) : 0;
-        
-        $status = 'available';
-        if ($availableSlots <= 0) {
-            $status = 'full';
-        } elseif ($availableSlots <= 3) {
-            $status = 'limited';
-        }
-        
-        return [
-            'total' => $totalSlots,
-            'used' => $usedSlots,
-            'available' => $availableSlots,
-            'usage_percentage' => $usagePercentage,
-            'status' => $status,
-            'last_updated' => date('Y-m-d H:i:s'),
-            'data_source' => ($totalOutput || $usedOutput) ? 'evernode' : 'estimated',
-            'success' => true
-        ];
-        
-    } catch (Exception $e) {
-        return [
-            'total' => 20,
-            'used' => rand(5, 15),
-            'available' => rand(5, 15),
-            'usage_percentage' => rand(25, 75),
-            'status' => 'estimated',
-            'last_updated' => date('Y-m-d H:i:s'),
-            'data_source' => 'fallback',
-            'success' => false,
-            'error' => 'Using estimated values'
-        ];
-    }
-}
-
-echo json_encode(getInstanceCount(), JSON_PRETTY_PRINT);
-?>
-PHPEOF
-
-# Configure Nginx
-echo -e "${YELLOW}🔧 Configuring Nginx...${NC}"
-cat > /etc/nginx/sites-available/default << 'NGINXEOF'
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /var/www/html;
-    index index.html index.htm index.php;
-
-    server_name _;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-}
-NGINXEOF
-
-# Set proper permissions
-echo -e "${YELLOW}🔐 Setting permissions...${NC}"
-chown -R www-data:www-data /var/www/html
-chmod -R 755 /var/www/html
-
-# Start services
-echo -e "${YELLOW}🚀 Starting web services...${NC}"
-systemctl enable nginx >/dev/null 2>&1
-systemctl enable php*-fpm >/dev/null 2>&1
-systemctl restart nginx
-systemctl restart php*-fpm
-
-# Test the setup
-echo -e "${YELLOW}🧪 Testing setup...${NC}"
-sleep 2
-
-# Get server IP
-SERVER_IP=$(curl -s ifconfig.me 2>/dev/null || hostname -I | awk '{print $1}')
-
-echo ""
-echo -e "${GREEN}✅ LANDING PAGE SETUP COMPLETE!${NC}"
-echo ""
-echo -e "${BLUE}🌐 Your landing page is now accessible at:${NC}"
-echo -e "${GREEN}   • http://localhost/${NC}"
-echo -e "${GREEN}   • http://$SERVER_IP/${NC}"
-if [[ -n "$HOSTNAME" ]]; then
-    echo -e "${GREEN}   • http://$HOSTNAME/${NC}"
-fi
-echo ""
-echo -e "${BLUE}📊 API endpoint:${NC}"
-echo -e "${GREEN}   • http://$SERVER_IP/api/instance-count.php${NC}"
-echo ""
-
-# Test API
-echo -e "${YELLOW}Testing API response:${NC}"
-API_RESPONSE=$(curl -s http://localhost/api/instance-count.php 2>/dev/null)
-if [[ $? -eq 0 ]] && [[ -n "$API_RESPONSE" ]]; then
-    echo -e "${GREEN}✅ API is working${NC}"
-    echo "$API_RESPONSE" | head -5
-else
-    echo -e "${YELLOW}⚠️ API test inconclusive, but should work${NC}"
-fi
-
-echo ""
-echo -e "${BLUE}🎉 Your enhanced Evernode host now has a professional landing page!${NC}"
