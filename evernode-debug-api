@@ -1,0 +1,43 @@
+#!/bin/bash
+
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+echo -e "${BLUE}🔍 Evernode API Debug Tool${NC}"
+echo "=========================="
+echo ""
+
+echo -e "${YELLOW}Testing Evernode CLI commands:${NC}"
+echo -e "${GREEN}evernode config totalins:${NC}"
+evernode config totalins 2>/dev/null || echo "  Command not available"
+
+echo -e "${GREEN}evernode config activeins:${NC}"
+evernode config activeins 2>/dev/null || echo "  Command not available"
+
+echo -e "${GREEN}evernode info:${NC}"
+evernode info 2>/dev/null | head -10 || echo "  Command not available"
+
+echo -e "${GREEN}evernode config leaseamt:${NC}"
+evernode config leaseamt 2>/dev/null || echo "  Command not available"
+
+echo ""
+echo -e "${YELLOW}Testing fallback methods:${NC}"
+echo -e "${GREEN}Sashimono users:${NC}"
+getent passwd | grep sashi | wc -l
+
+echo -e "${GREEN}Sashimono user list:${NC}"
+getent passwd | grep sashi | cut -d: -f1 | head -5
+
+echo -e "${GREEN}Host config directories:${NC}"
+ls -la /home/*/evernode-host 2>/dev/null | head -5 || echo "  No config directories found"
+
+echo ""
+echo -e "${YELLOW}Testing API:${NC}"
+php /var/www/html/api/instance-count.php 2>/dev/null | jq . || php /var/www/html/api/instance-count.php
+
+echo ""
+echo -e "${YELLOW}Testing HTTP API:${NC}"
+curl -s http://localhost/api/instance-count.php | jq . 2>/dev/null || curl -s http://localhost/api/instance-count.php
