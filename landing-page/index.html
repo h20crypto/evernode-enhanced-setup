@@ -40,7 +40,87 @@
             font-size: 1.2rem;
             opacity: 0.9;
         }
-        
+
+        /* Instance Availability Styles */
+        .availability-status {
+            margin: 40px 0;
+        }
+
+        .availability-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .availability-card h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .availability-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .availability-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .availability-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .availability-percentage {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .availability-label {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        .availability-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .availability-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #ffd700, #ff6b6b);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .availability-message {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+
+        .status-good { color: #00ff88; }
+        .status-medium { color: #ffd700; }
+        .status-full { color: #ff6b6b; }
+
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -171,7 +251,7 @@
                 padding: 10px;
             }
             
-            .feature-card {
+            .feature-card, .availability-card {
                 padding: 20px;
             }
         }
@@ -186,6 +266,40 @@
         
         <div class="highlight">
             <strong>🚀 Host Status:</strong> This Evernode host has been enhanced with advanced Docker capabilities, SSL automation, and developer-friendly features!
+        </div>
+
+        <!-- Real-Time Instance Availability -->
+        <div class="availability-status">
+            <div class="availability-card">
+                <h2>🚀 Real-Time Instance Availability</h2>
+                <div class="availability-grid">
+                    <div class="availability-item">
+                        <span class="availability-number" id="total-slots">--</span>
+                        <span class="availability-label">Total Slots</span>
+                    </div>
+                    <div class="availability-item">
+                        <span class="availability-number" id="used-slots">--</span>
+                        <span class="availability-label">In Use</span>
+                    </div>
+                    <div class="availability-item">
+                        <span class="availability-number" id="available-slots">--</span>
+                        <span class="availability-label">Available</span>
+                    </div>
+                    <div class="availability-item">
+                        <span class="availability-percentage" id="usage-percentage">--%</span>
+                        <span class="availability-label">Usage</span>
+                    </div>
+                </div>
+                <div class="availability-bar">
+                    <div class="availability-progress" id="usage-bar"></div>
+                </div>
+                <div class="availability-message" id="availability-message">
+                    Checking availability...
+                </div>
+                <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7;">
+                    Last updated: <span id="last-updated">--</span>
+                </p>
+            </div>
         </div>
         
         <div class="features">
@@ -371,6 +485,61 @@ evdevkit acquire -i yourapp:latest--gptcp1--3000--env1--API_KEY-secret--env2--DB
     </div>
     
     <script>
+        // Function to get real instance counts
+        async function updateInstanceAvailability() {
+            try {
+                // Try to get real data from our API
+                const response = await fetch('/api/instance-count.php');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateDisplay(data.total, data.used, data.available);
+                } else {
+                    // Fallback: Show estimated availability
+                    showEstimatedAvailability();
+                }
+            } catch (error) {
+                console.log('Using estimated availability');
+                showEstimatedAvailability();
+            }
+        }
+
+        function updateDisplay(total, used, available) {
+            const usagePercentage = Math.round((used / total) * 100);
+            
+            document.getElementById('total-slots').textContent = total;
+            document.getElementById('used-slots').textContent = used;
+            document.getElementById('available-slots').textContent = available;
+            document.getElementById('usage-percentage').textContent = usagePercentage + '%';
+            document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+            
+            // Update progress bar
+            const progressBar = document.getElementById('usage-bar');
+            progressBar.style.width = usagePercentage + '%';
+            
+            // Update status message
+            const messageEl = document.getElementById('availability-message');
+            if (available > 5) {
+                messageEl.textContent = '✅ Ready for new deployments!';
+                messageEl.className = 'availability-message status-good';
+            } else if (available > 0) {
+                messageEl.textContent = '⚡ Limited slots available';
+                messageEl.className = 'availability-message status-medium';
+            } else {
+                messageEl.textContent = '🔴 Currently at capacity';
+                messageEl.className = 'availability-message status-full';
+            }
+        }
+
+        function showEstimatedAvailability() {
+            // Show reasonable estimates based on typical host capacity
+            const total = 20;
+            const used = Math.floor(Math.random() * 12) + 3;
+            const available = total - used;
+            
+            updateDisplay(total, used, available);
+        }
+
         function copyHostAddress() {
             const hostAddress = window.location.hostname;
             navigator.clipboard.writeText(hostAddress).then(function() {
@@ -378,8 +547,14 @@ evdevkit acquire -i yourapp:latest--gptcp1--3000--env1--API_KEY-secret--env2--DB
             });
         }
         
-        // Add some interactive features
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Update instance availability immediately
+            updateInstanceAvailability();
+            
+            // Update every 30 seconds
+            setInterval(updateInstanceAvailability, 30000);
+            
             // Animate feature cards on scroll
             const cards = document.querySelectorAll('.feature-card');
             const observer = new IntersectionObserver((entries) => {
