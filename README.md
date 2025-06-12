@@ -278,7 +278,7 @@ Edit landing-page/index.html and replace the placeholder:
 
 html
 <!-- Find this line -->
-<span id="host-address-text">rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3</span>
+<span id="host-address-text">rDfdnnodSnG3BukBHakSRrxx65b3nj2m3</span>
 
 <!-- Replace with your actual host address -->
 <span id="host-address-text">rYourActualHostAddress</span>
