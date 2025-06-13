@@ -424,6 +424,20 @@ evernode-enhanced-setup/
 └── README.md                   # 📚 This comprehensive documentation
 ```
 
+## 🔍 Host Discovery & Cluster Management
+
+### For Tenants - Find Enhanced Hosts
+
+```bash
+# Simple CLI discovery
+node tools/discover-cli.js
+
+# Filter by location and availability  
+node tools/discover-cli.js --location us --available-only
+
+# Creates cluster_hosts.txt for evdevkit
+evdevkit cluster-create /path/to/contract cluster_hosts.txt -m 24
+
 ## 🌐 Enhanced Live Demo v2.0
 
 ### **After Enhanced Installation**
