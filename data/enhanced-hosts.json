@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-06-13T00:00:00Z",
+  "hosts": [
+    {
+      "address": "rH8oZBoCQJE1aGwdNRH7icr93RrZkbVaaa",
+      "domain": "h20cryptonode3.dev",
+      "operator": "h20crypto",
+      "verified": true,
+      "features": ["cluster-management", "real-time-monitoring", "ssl-support"],
+      "location": "US-East",
+      "added": "2025-06-13"
+    }
+  ],
+  "instructions": {
+    "for_hosts": "To add your enhanced host, create a PR with your host info",
+    "for_tenants": "Use tools/discover-cli.js to find available hosts",
+    "api_endpoint": "/api/host-info.php"
+  }
+}
