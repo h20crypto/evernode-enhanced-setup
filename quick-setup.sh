@@ -462,4 +462,18 @@ async function discoverHosts() {
 </script>
 EOF
 
+# Add cluster management capabilities
+echo "Installing cluster management features..."
+
+# Copy cluster manager files
+wget -O /var/www/html/api/cluster-manager.php \
+  https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/api/cluster-manager.php
+
+# Install evdevkit if not present
+if ! command -v evdevkit &> /dev/null; then
+    npm install -g @hotpocket/evdevkit
+fi
+
+# Set permissions
+chmod +x /var/www/html/api/cluster-manager.php
 echo "✅ Host discovery features added!"
