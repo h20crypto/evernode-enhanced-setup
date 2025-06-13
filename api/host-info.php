@@ -1,5 +1,5 @@
 <?php
-// This goes in: api/host-info.php
+// Simple endpoint each enhanced host provides
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
@@ -10,14 +10,8 @@ $used_instances = intval(shell_exec('ls /home/ | grep sashi | wc -l 2>/dev/null'
 echo json_encode([
     'xahau_address' => $xahau_address,
     'enhanced' => true,
-    'cluster_support' => file_exists('/var/www/html/api/cluster-extension.php'),
-    'instances' => [
-        'total' => $total_instances,
-        'available' => max(0, $total_instances - $used_instances)
-    ],
-    'features' => ['cluster-management', 'real-time-monitoring', 'enhanced-syntax'],
-    'domain' => $_SERVER['HTTP_HOST'] ?? 'unknown',
-    'version' => 'enhanced-v2.1',
-    'last_updated' => date('c')
+    'instances' => ['total' => $total_instances, 'available' => max(0, $total_instances - $used_instances)],
+    'features' => ['cluster-management', 'real-time-monitoring'],
+    'domain' => $_SERVER['HTTP_HOST'] ?? 'unknown'
 ]);
 ?>
