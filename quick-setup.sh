@@ -389,3 +389,77 @@ echo ""
 echo -e "${PURPLE}🚀 Your professional Enhanced Evernode Host is ready!${NC}"
 echo -e "${BLUE}📚 Documentation: https://github.com/h20crypto/evernode-enhanced-setup${NC}"
 echo -e "${BLUE}🎯 Features: Real-time monitoring, modern UI, professional tools${NC}"
+# Add these lines to your existing quick-setup.sh
+echo "🔍 Adding host discovery features..."
+
+# Create host discovery API endpoint
+cat > /var/www/html/api/host-info.php << 'EOF'
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+
+$xahau_address = trim(shell_exec('evernode config account | grep "Address:" | awk \'{print $2}\' 2>/dev/null') ?: 'unknown');
+$total_instances = intval(shell_exec('evernode config resources | grep "Instances:" | awk \'{print $2}\' 2>/dev/null') ?: 0);
+$used_instances = intval(shell_exec('ls /home/ | grep sashi | wc -l 2>/dev/null') ?: 0);
+
+echo json_encode([
+    'xahau_address' => $xahau_address,
+    'enhanced' => true,
+    'cluster_support' => file_exists('/var/www/html/api/cluster-extension.php'),
+    'instances' => [
+        'total' => $total_instances,
+        'available' => max(0, $total_instances - $used_instances)
+    ],
+    'features' => ['cluster-management', 'real-time-monitoring', 'enhanced-syntax'],
+    'domain' => $_SERVER['HTTP_HOST'] ?? 'unknown',
+    'version' => 'enhanced-v2.1',
+    'last_updated' => date('c')
+]);
+?>
+EOF
+
+# Add discovery widget to main page
+cat >> /var/www/html/index.html << 'EOF'
+<!-- Enhanced Host Discovery Widget -->
+<div class="discovery-section" style="background: #f8f9fa; padding: 30px; margin: 30px 0; border-radius: 15px;">
+    <h3>🔍 Discover Other Enhanced Hosts</h3>
+    <p>Find cluster-capable hosts for your distributed applications</p>
+    <button onclick="discoverHosts()" class="btn" style="background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 5px;">
+        Find Enhanced Hosts
+    </button>
+    <div id="discoveredHosts" style="margin-top: 20px;"></div>
+</div>
+
+<script>
+async function discoverHosts() {
+    document.getElementById('discoveredHosts').innerHTML = '🔍 Searching...';
+    
+    const knownHosts = [
+        'h20cryptonode3.dev',
+        'evernode1.zerp.network', 
+        'x1.buildonevernode.cloud'
+    ];
+    
+    const results = [];
+    for (const domain of knownHosts) {
+        try {
+            const response = await fetch(`https://${domain}/api/host-info.php`);
+            const data = await response.json();
+            if (data.enhanced) results.push(data);
+        } catch (e) { /* ignore offline hosts */ }
+    }
+    
+    document.getElementById('discoveredHosts').innerHTML = results.length > 0 
+        ? results.map(host => `
+            <div style="background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                <strong>${host.domain}</strong><br>
+                <small>Available: ${host.instances.available}/${host.instances.total} slots</small><br>
+                <small>Address: ${host.xahau_address}</small>
+            </div>
+        `).join('')
+        : '<p>No other enhanced hosts found online.</p>';
+}
+</script>
+EOF
+
+echo "✅ Host discovery features added!"
