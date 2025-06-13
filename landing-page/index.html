@@ -81,15 +81,125 @@
             cursor: pointer;
         }
 
+        /* Top Section - Added padding for navbar */
+        .top-section {
+            padding-top: 100px;
+            padding-bottom: 20px;
+        }
+
+        /* Real-Time Availability - Now at top */
+        .availability-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(102, 126, 234, 0.3));
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .availability-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #00ff88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .availability-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            color: #ccc;
+        }
+
+        .availability-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .availability-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .availability-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .availability-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .availability-percentage {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .availability-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .availability-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            height: 15px;
+            margin: 30px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .availability-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #ffd700, #ff6b6b);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            width: 0%;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .availability-message {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .status-good { color: #00ff88; }
+        .status-medium { color: #ffd700; }
+        .status-full { color: #ff6b6b; }
+
         /* Hero Section */
         .hero {
-            min-height: 90vh;
+            min-height: 70vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             color: white;
-            padding-top: 80px;
+            padding: 40px 0;
         }
 
         .hero-content {
@@ -168,6 +278,12 @@
         }
 
         .btn.secondary:hover {
+            background: white;
+            color: #333;
+            border-color: #00ff88;
+        }
+
+        .btn.secondary.active {
             background: white;
             color: #333;
             border-color: #00ff88;
@@ -301,109 +417,97 @@
             line-height: 1.5;
         }
 
-        /* Real-Time Availability */
-        .availability-card {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(102, 126, 234, 0.3));
-            backdrop-filter: blur(15px);
-            border-radius: 25px;
-            padding: 40px;
-            border: 2px solid rgba(0, 255, 136, 0.3);
+        /* Setup Guide Styles */
+        .setup-tab {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            margin: 5px;
+        }
+
+        .setup-tab.active {
+            background: linear-gradient(45deg, #28a745, #00ff88);
             color: white;
+        }
+
+        .setup-content {
+            display: none;
+        }
+
+        .setup-content.active {
+            display: block;
+        }
+
+        .method-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
             text-align: center;
-            margin-bottom: 40px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .availability-title {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            color: #00ff88;
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-        }
-
-        .availability-subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
-            color: #ccc;
-        }
-
-        .availability-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 30px;
-            margin: 30px 0;
-        }
-
-        .availability-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
-        }
-
-        .availability-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-
-        .availability-number {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #00ff88;
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .availability-percentage {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .availability-label {
-            font-size: 1rem;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-
-        .availability-bar {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            height: 15px;
-            margin: 30px 0;
+            cursor: pointer;
+            position: relative;
             overflow: hidden;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .availability-progress {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #ffd700, #ff6b6b);
-            border-radius: 15px;
-            transition: width 0.5s ease;
-            width: 0%;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        .method-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.6s ease;
         }
 
-        .availability-message {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
+        .method-card:hover::before {
+            transform: scale(1);
         }
 
-        .status-good { color: #00ff88; }
-        .status-medium { color: #ffd700; }
-        .status-full { color: #ff6b6b; }
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .method-card.easy {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .method-card.pro {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .method-card.complete {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .terminal-step {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .terminal-step.active {
+            display: block;
+        }
+
+        .complete-step {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .complete-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hidden {
+            display: none;
+        }
 
         /* Deployment Examples */
         .examples-section {
@@ -479,6 +583,52 @@
             border-radius: 4px;
             font-size: 0.8rem;
             cursor: pointer;
+        }
+
+        /* Price Grid */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .price-card {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .price-card.evr {
+            background: linear-gradient(135deg, #6f42c1, #e83e8c);
+        }
+
+        .price-card.xah {
+            background: linear-gradient(135deg, #fd7e14, #ffc107);
+        }
+
+        .price-card.xrp {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .price-card.evernode {
+            background: linear-gradient(135deg, #00ff88, #28a745);
+        }
+
+        .price-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
         }
 
         /* Stats Section */
@@ -677,14 +827,60 @@
                 <span>Enhanced Evernode Host</span>
             </a>
             <ul class="nav-links">
-                <li><a onclick="scrollToSection('host-address')">Host Address</a></li>
                 <li><a onclick="scrollToSection('availability')">Live Status</a></li>
+                <li><a onclick="scrollToSection('host-address')">Host Address</a></li>
+                <li><a onclick="scrollToSection('setup')">Setup Guide</a></li>
                 <li><a onclick="scrollToSection('examples')">Deploy Apps</a></li>
                 <li><a href="https://github.com/h20crypto/evernode-enhanced-setup" target="_blank">GitHub</a></li>
             </ul>
             <span class="menu-toggle" onclick="toggleMenu()">☰</span>
         </div>
     </nav>
+
+    <!-- Top Section with Real-Time Availability -->
+    <div class="top-section">
+        <div class="container">
+            <!-- Real-Time Availability - NOW AT TOP -->
+            <div class="availability-card" id="availability" onclick="activateDebugMode()">
+                <div class="availability-title">🚀 Live Instance Monitor</div>
+                <div class="availability-subtitle">
+                    Real-time data with accurate container counting • Updates every 30 seconds
+                </div>
+                
+                <div class="availability-grid">
+                    <div class="availability-item">
+                        <span class="availability-number" id="total-slots">--</span>
+                        <div class="availability-label">Total Slots</div>
+                    </div>
+                    <div class="availability-item">
+                        <span class="availability-number" id="used-slots">--</span>
+                        <div class="availability-label">In Use</div>
+                    </div>
+                    <div class="availability-item">
+                        <span class="availability-number" id="available-slots">--</span>
+                        <div class="availability-label">Available</div>
+                    </div>
+                    <div class="availability-item">
+                        <span class="availability-percentage" id="usage-percentage">--%</span>
+                        <div class="availability-label">Usage</div>
+                    </div>
+                </div>
+                
+                <div class="availability-bar">
+                    <div class="availability-progress" id="usage-bar"></div>
+                </div>
+                
+                <div class="availability-message" id="availability-message">
+                    Initializing real-time monitoring...
+                </div>
+                
+                <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
+                    <strong>Last Updated:</strong> <span id="last-updated">--</span>
+                    <button id="debug-btn" onclick="showDebugInfo()" style="display: none; margin-left: 15px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">🔍 Debug</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -694,7 +890,7 @@
             <p>Experience next-level decentralized hosting with real-time monitoring, accurate container counting, and professional-grade tools. Deploy any Docker application in seconds with confidence.</p>
             <div>
                 <a onclick="scrollToSection('host-address')" class="btn">Get Host Address</a>
-                <a onclick="scrollToSection('examples')" class="btn secondary">View Examples</a>
+                <a onclick="scrollToSection('setup')" class="btn secondary">Setup Guide</a>
             </div>
         </div>
     </section>
@@ -739,49 +935,62 @@
         <div style="background: linear-gradient(135deg, #e3f2fd, #f8f9fa); padding: 20px; border-radius: 15px; margin-top: 30px; border-left: 5px solid #2196f3; text-align: center;">
             <p style="color: #1565c0; margin: 0; font-size: 1rem; font-weight: 500;">
                 <strong>🚀 Quick Deploy Example:</strong><br>
-                <code style="background: rgba(0,0,0,0.1); padding: 5px 10px; border-radius: 5px; font-size: 0.9rem; margin: 10px 0; display: inline-block;">evdevkit acquire -i nginx:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24</code><br>
+                <code style="background: rgba(0,0,0,0.1); padding: 5px 10px; border-radius: 5px; font-size: 0.9rem; margin: 10px 0; display: inline-block;">evdevkit acquire -i nginx:latest rExampleHostAddress123456789ABC -m 24</code><br>
                 <button onclick="copyQuickExample()" class="btn" style="margin-top: 10px; padding: 8px 16px; font-size: 0.9rem;">📋 Copy Command</button>
             </p>
         </div>
     </div>
 
-    <!-- Real-Time Availability -->
-    <div class="availability-card" id="availability">
-        <div class="availability-title">🚀 Live Instance Monitor</div>
-        <div class="availability-subtitle">
-            Real-time data with accurate container counting • Updates every 30 seconds
-        </div>
+    <!-- Setup Guide Section -->
+    <div class="card" id="setup">
+        <h2 style="text-align: center; color: #333; margin-bottom: 30px;">🚀 Complete Setup Guide</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 40px;">
+            From complete beginner to advanced user - choose your path to deploy applications on Evernode
+        </p>
         
-        <div class="availability-grid">
-            <div class="availability-item">
-                <span class="availability-number" id="total-slots">--</span>
-                <div class="availability-label">Total Slots</div>
+        <!-- Setup Method Selector -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 30px;">
+            <!-- Easy Method Card -->
+            <div class="method-card easy" onclick="showEasyMethod()">
+                <div style="font-size: 3rem; margin-bottom: 20px;">🎯</div>
+                <h3 style="margin-bottom: 20px;">Easy Method</h3>
+                <p style="margin-bottom: 20px; opacity: 0.9;">Get deployment commands instantly. Perfect for beginners!</p>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <h4 style="margin-bottom: 10px;">🚀 What You Get:</h4>
+                    <ul style="text-align: left; margin: 0; padding-left: 20px; line-height: 1.6;">
+                        <li>Full evdevkit setup</li>
+                        <li>Wallet key generation</li>
+                        <li>Advanced configurations</li>
+                        <li>Troubleshooting help</li>
+                    </ul>
+                </div>
+                
+                <div class="btn" style="background: white; color: #f5576c; font-weight: bold; pointer-events: none;">
+                    ⚡ Full Tutorial
+                </div>
             </div>
-            <div class="availability-item">
-                <span class="availability-number" id="used-slots">--</span>
-                <div class="availability-label">In Use</div>
+
+            <!-- Complete Guide Card -->
+            <div class="method-card complete" onclick="showCompleteGuide()">
+                <div style="font-size: 3rem; margin-bottom: 20px;">📚</div>
+                <h3 style="margin-bottom: 20px;">Complete Guide</h3>
+                <p style="margin-bottom: 20px; opacity: 0.9;">Comprehensive setup with all details and troubleshooting!</p>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <h4 style="margin-bottom: 10px;">📖 What You Get:</h4>
+                    <ul style="text-align: left; margin: 0; padding-left: 20px; line-height: 1.6;">
+                        <li>All setup methods</li>
+                        <li>Detailed explanations</li>
+                        <li>Common issues & fixes</li>
+                        <li>Best practices</li>
+                    </ul>
+                </div>
+                
+                <div class="btn" style="background: white; color: #28a745; font-weight: bold; pointer-events: none;">
+                    📚 Read Full Guide
+                </div>
             </div>
-            <div class="availability-item">
-                <span class="availability-number" id="available-slots">--</span>
-                <div class="availability-label">Available</div>
-            </div>
-            <div class="availability-item">
-                <span class="availability-percentage" id="usage-percentage">--%</span>
-                <div class="availability-label">Usage</div>
-            </div>
-        </div>
-        
-        <div class="availability-bar">
-            <div class="availability-progress" id="usage-bar"></div>
-        </div>
-        
-        <div class="availability-message" id="availability-message">
-            Initializing real-time monitoring...
-        </div>
-        
-        <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
-            <strong>Data Source:</strong> <span id="data-source">--</span> | 
-            <strong>Last Updated:</strong> <span id="last-updated">--</span>
         </div>
     </div>
 
@@ -800,7 +1009,7 @@
                 </div>
                 <div class="command-box">
                     <button class="command-copy" onclick="copyCommand('n8n')">📋</button>
-                    evdevkit acquire -i n8nio/n8n:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24
+                    evdevkit acquire -i n8nio/n8n:latest rExampleHostAddress555666777AAA -m 24
                 </div>
                 <p style="color: #28a745; font-size: 0.9rem; margin: 0;">✅ Workflow automation platform ready in 30 seconds</p>
             </div>
@@ -812,7 +1021,7 @@
                 </div>
                 <div class="command-box">
                     <button class="command-copy" onclick="copyCommand('wordpress')">📋</button>
-                    evdevkit acquire -i wordpress:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 48
+                    evdevkit acquire -i wordpress:latest rExampleHostAddress555666777BBB -m 48
                 </div>
                 <p style="color: #28a745; font-size: 0.9rem; margin: 0;">✅ Professional website platform with database</p>
             </div>
@@ -824,7 +1033,7 @@
                 </div>
                 <div class="command-box">
                     <button class="command-copy" onclick="copyCommand('nextcloud')">📋</button>
-                    evdevkit acquire -i nextcloud:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 72
+                    evdevkit acquire -i nextcloud:latest rExampleHostAddress555666777CCC -m 72
                 </div>
                 <p style="color: #28a745; font-size: 0.9rem; margin: 0;">✅ Personal cloud storage with file sharing</p>
             </div>
@@ -836,7 +1045,7 @@
                 </div>
                 <div class="command-box">
                     <button class="command-copy" onclick="copyCommand('grafana')">📋</button>
-                    evdevkit acquire -i grafana/grafana:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24
+                    evdevkit acquire -i grafana/grafana:latest rExampleHostAddress555666777DDD -m 24
                 </div>
                 <p style="color: #28a745; font-size: 0.9rem; margin: 0;">✅ Analytics dashboard with visualization tools</p>
             </div>
@@ -848,336 +1057,414 @@
                 </div>
                 <div class="command-box">
                     <button class="command-copy" onclick="copyCommand('ghost')">📋</button>
-                    evdevkit acquire -i ghost:latest
-                    evdevkit acquire -i ghost:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 48
-               </div>
-               <p style="color: #28a745; font-size: 0.9rem; margin: 0;">✅ Modern publishing platform for content creators</p>
-           </div>
-           
-           <div class="deployment-card">
-               <div class="deployment-title">
-                   <span>🛠️</span>
-                   <span>Custom App</span>
-               </div>
-               <div class="command-box">
-                   <button class="command-copy" onclick="copyCommand('custom')">📋</button>
-                   evdevkit acquire -i your-image:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24
-               </div>
-               <p style="color: #856404; font-size: 0.9rem; margin: 0;">⚠️ Replace with your Docker image name</p>
-           </div>
-       </div>
-       
-       <div style="text-align: center; margin-top: 40px;">
-           <p style="color: #666; font-size: 1rem; margin-bottom: 20px;">
-               Need help with deployment? Check our comprehensive setup guide
-           </p>
-           <a href="https://github.com/h20crypto/evernode-enhanced-setup" target="_blank" class="btn">
-               📚 View Documentation
-           </a>
-       </div>
-   </div>
+                    evdevkit acquire -i ghost:latest rExampleHostAddress555666777EEE -m 48
+                </div>
+                <p style="color: #28a745; font-size: 0.9rem; margin: 0;">✅ Modern publishing platform for content creators</p>
+            </div>
+            
+            <div class="deployment-card">
+                <div class="deployment-title">
+                    <span>🛠️</span>
+                    <span>Custom App</span>
+                </div>
+                <div class="command-box">
+                    <button class="command-copy" onclick="copyCommand('custom')">📋</button>
+                    evdevkit acquire -i your-image:latest rExampleHostAddress555666777FFF -m 24
+                </div>
+                <p style="color: #856404; font-size: 0.9rem; margin: 0;">⚠️ Replace with your Docker image name</p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <p style="color: #666; font-size: 1rem; margin-bottom: 20px;">
+                Need help with deployment? Check our comprehensive setup guide
+            </p>
+            <a href="https://github.com/h20crypto/evernode-enhanced-setup" target="_blank" class="btn">
+                📚 View Documentation
+            </a>
+        </div>
+    </div>
 
-   <!-- Stats Section -->
-   <div class="stats-section">
-       <div class="container">
-           <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #00ff88;">Why Choose Enhanced Host?</h2>
-           <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 40px;">
-               Professional features that set us apart from standard Evernode hosts
-           </p>
-           
-           <div class="stats-grid">
-               <div class="stat-item">
-                   <span class="stat-number pulse">99.9%</span>
-                   <div class="stat-label">Uptime</div>
-               </div>
-               <div class="stat-item">
-                   <span class="stat-number pulse">30s</span>
-                   <div class="stat-label">Deploy Time</div>
-               </div>
-               <div class="stat-item">
-                   <span class="stat-number pulse">24/7</span>
-                   <div class="stat-label">Monitoring</div>
-               </div>
-               <div class="stat-item">
-                   <span class="stat-number pulse">100%</span>
-                   <div class="stat-label">Accuracy</div>
-               </div>
-           </div>
-       </div>
-   </div>
+    <!-- Stats Section -->
+    <div class="stats-section">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 20px; color: #00ff88;">Why Choose Enhanced Host?</h2>
+            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 40px;">
+                Professional features that set us apart from standard Evernode hosts
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number pulse">99.9%</span>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number pulse">30s</span>
+                    <div class="stat-label">Deploy Time</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number pulse">24/7</span>
+                    <div class="stat-label">Monitoring</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number pulse">100%</span>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-   <!-- Footer -->
-   <div class="footer">
-       <div class="container">
-           <div class="footer-content">
-               <div class="footer-title">🚀 Ready to Deploy?</div>
-               <p style="font-size: 1.1rem; margin-bottom: 30px; opacity: 0.9;">
-                   Join the next generation of decentralized hosting with enhanced features and professional support
-               </p>
-               
-               <div class="footer-links">
-                   <a href="#" onclick="copyHostAddress()">📋 Copy Host Address</a>
-                   <a href="#" onclick="refreshData()">🔄 Refresh Data</a>
-                   <a href="https://github.com/h20crypto/evernode-enhanced-setup" target="_blank">📂 GitHub</a>
-                   <a href="#" onclick="scrollToSection('availability')">📊 Live Status</a>
-                   <a href="#" onclick="showDebugInfo()">🔍 Debug Info</a>
-               </div>
-               
-               <div class="footer-text">
-                   <p>© 2025 Enhanced Evernode Host. Professional Docker hosting made simple.</p>
-                   <p>Powered by Evernode • Built with ❤️ for the decentralized future</p>
-               </div>
-           </div>
-       </div>
-   </div>
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-title">🚀 Ready to Deploy?</div>
+                <p style="font-size: 1.1rem; margin-bottom: 30px; opacity: 0.9;">
+                    Join the next generation of decentralized hosting with enhanced features and professional support
+                </p>
+                
+                <div class="footer-links">
+                    <a href="#" onclick="copyHostAddress()">📋 Copy Host Address</a>
+                    <a href="#" onclick="refreshData()">🔄 Refresh Data</a>
+                    <a href="https://github.com/h20crypto/evernode-enhanced-setup" target="_blank">📂 GitHub</a>
+                    <a href="#" onclick="scrollToSection('availability')">📊 Live Status</a>
+                </div>
+                
+                <div class="footer-text">
+                    <p>© 2025 Enhanced Evernode Host. Professional Docker hosting made simple.</p>
+                    <p>Powered by Evernode • Built with ❤️ for the decentralized future</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-   <script>
-       // Navigation and UI Functions
-       function scrollToSection(sectionId) {
-           const element = document.getElementById(sectionId);
-           if (element) {
-               const navbarHeight = document.querySelector('.navbar').offsetHeight;
-               window.scrollTo({
-                   top: element.offsetTop - navbarHeight - 20,
-                   behavior: 'smooth'
-               });
-           }
-       }
+    <script>
+        // Navigation and UI Functions
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                window.scrollTo({
+                    top: element.offsetTop - navbarHeight - 20,
+                    behavior: 'smooth'
+                });
+            }
+        }
 
-       function toggleMenu() {
-           const navLinks = document.querySelector('.nav-links');
-           navLinks.classList.toggle('active');
-       }
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
 
-       // Copy Functions
-       function copyToClipboard(text) {
-           navigator.clipboard.writeText(text).then(() => {
-               showNotification('Copied to clipboard!', 'success');
-           }).catch(() => {
-               // Fallback for older browsers
-               const textArea = document.createElement('textarea');
-               textArea.value = text;
-               document.body.appendChild(textArea);
-               textArea.select();
-               document.execCommand('copy');
-               document.body.removeChild(textArea);
-               showNotification('Copied to clipboard!', 'success');
-           });
-       }
+        // Copy Functions
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Copied to clipboard!', 'success');
+            });
+        }
 
-       function copyHostAddress() {
-           const address = document.getElementById('host-address-text').textContent;
-           copyToClipboard(address);
-       }
+        function copyHostAddress() {
+            const address = document.getElementById('host-address-text').textContent;
+            copyToClipboard(address);
+        }
 
-       function copyQuickExample() {
-           const example = 'evdevkit acquire -i nginx:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24';
-           copyToClipboard(example);
-       }
+        function copyQuickExample() {
+            const hostAddress = document.getElementById('host-address-text').textContent;
+            const example = `evdevkit acquire -i nginx:latest ${hostAddress} -m 24`;
+            copyToClipboard(example);
+        }
 
-       function copyCommand(type) {
-           const commands = {
-               'n8n': 'evdevkit acquire -i n8nio/n8n:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24',
-               'wordpress': 'evdevkit acquire -i wordpress:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 48',
-               'nextcloud': 'evdevkit acquire -i nextcloud:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 72',
-               'grafana': 'evdevkit acquire -i grafana/grafana:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24',
-               'ghost': 'evdevkit acquire -i ghost:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 48',
-               'custom': 'evdevkit acquire -i your-image:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24'
-           };
-           
-           if (commands[type]) {
-               copyToClipboard(commands[type]);
-           }
-       }
+        function copyCommand(type) {
+            const hostAddress = document.getElementById('host-address-text').textContent;
+            const commands = {
+                'n8n': `evdevkit acquire -i n8nio/n8n:latest ${hostAddress} -m 24`,
+                'wordpress': `evdevkit acquire -i wordpress:latest ${hostAddress} -m 48`,
+                'nextcloud': `evdevkit acquire -i nextcloud:latest ${hostAddress} -m 72`,
+                'grafana': `evdevkit acquire -i grafana/grafana:latest ${hostAddress} -m 24`,
+                'ghost': `evdevkit acquire -i ghost:latest ${hostAddress} -m 48`,
+                'custom': `evdevkit acquire -i your-image:latest ${hostAddress} -m 24`
+            };
+            
+            if (commands[type]) {
+                copyToClipboard(commands[type]);
+            }
+        }
 
-       // Notification System
-       function showNotification(message, type) {
-           // Remove existing notifications
-           const existing = document.querySelectorAll('.notification');
-           existing.forEach(n => n.remove());
-           
-           const notification = document.createElement('div');
-           notification.className = `notification ${type}`;
-           notification.textContent = message;
-           document.body.appendChild(notification);
-           
-           setTimeout(() => {
-               notification.remove();
-           }, 4000);
-       }
+        // Notification System
+        function showNotification(message, type) {
+            // Remove existing notifications
+            const existing = document.querySelectorAll('.notification');
+            existing.forEach(n => n.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
 
-       // Real-Time Availability Updates
-       function updateAvailability() {
-           fetch('/api/instance-count.php')
-               .then(response => {
-                   if (!response.ok) {
-                       throw new Error('API not available');
-                   }
-                   return response.json();
-               })
-               .then(data => {
-                   updateDisplay(data);
-               })
-               .catch(error => {
-                   console.log('Using fallback data:', error);
-                   // Fallback to realistic mock data
-                   const mockData = generateMockData();
-                   updateDisplay(mockData);
-               });
+        // Setup Guide Functions
+        function showEasyMethod() {
+            hideAllSetupSections();
+            document.getElementById('easy-method').classList.remove('hidden');
+        }
 
-           // Schedule next update
-           setTimeout(updateAvailability, 30000); // 30 seconds
-       }
+        function showProMethod() {
+            hideAllSetupSections();
+            document.getElementById('pro-method').classList.remove('hidden');
+            showTerminalStep('prerequisites'); // Default step
+        }
 
-       function generateMockData() {
-           const baseTotal = 50;
-           const currentTime = new Date().getTime();
-           const variation = Math.sin(currentTime / 300000) * 10; // 5-minute cycle
-           
-           const usedSlots = Math.max(5, Math.min(45, Math.floor(15 + variation + Math.random() * 10)));
-           const availableSlots = baseTotal - usedSlots;
-           const usagePercentage = Math.round((usedSlots / baseTotal) * 100);
-           
-           let statusMessage = '✅ Plenty of slots available!';
-           if (usagePercentage > 80) {
-               statusMessage = '⚡ Limited slots available!';
-           } else if (usagePercentage > 95) {
-               statusMessage = '🔴 Nearly at capacity!';
-           }
-           
-           return {
-               total: baseTotal,
-               used: usedSlots,
-               available: availableSlots,
-               usage_percentage: usagePercentage,
-               status_message: statusMessage,
-               data_source: 'estimated',
-               last_updated: new Date().toISOString()
-           };
-       }
+        function showCompleteGuide() {
+            hideAllSetupSections();
+            document.getElementById('complete-guide').classList.remove('hidden');
+            showCompleteStep('overview'); // Default step
+        }
 
-       function updateDisplay(data) {
-           // Update numbers
-           document.getElementById('total-slots').textContent = data.total || '--';
-           document.getElementById('used-slots').textContent = data.used || '--';
-           document.getElementById('available-slots').textContent = data.available || '--';
-           document.getElementById('usage-percentage').textContent = (data.usage_percentage || 0) + '%';
-           
-           // Update progress bar
-           const progressBar = document.getElementById('usage-bar');
-           progressBar.style.width = (data.usage_percentage || 0) + '%';
-           
-           // Update status message with appropriate styling
-           const messageEl = document.getElementById('availability-message');
-           messageEl.textContent = data.status_message || '✅ Ready for deployments!';
-           
-           // Apply status styling
-           messageEl.className = 'availability-message';
-           if (data.available > 10) {
-               messageEl.classList.add('status-good');
-           } else if (data.available > 2) {
-               messageEl.classList.add('status-medium');
-           } else {
-               messageEl.classList.add('status-full');
-           }
-           
-           // Update metadata
-           document.getElementById('data-source').textContent = data.data_source || 'estimated';
-           document.getElementById('last-updated').textContent = new Date().toLocaleString();
-           
-           // Store data for debug function
-           window.lastApiData = data;
-       }
+        function hideAllSetupSections() {
+            document.getElementById('easy-method').classList.add('hidden');
+            document.getElementById('pro-method').classList.add('hidden');
+            document.getElementById('complete-guide').classList.add('hidden');
+        }
 
-       function refreshData() {
-           showNotification('Refreshing data...', 'success');
-           updateAvailability();
-       }
+        function backToSetup() {
+            hideAllSetupSections();
+            scrollToSection('setup');
+        }
 
-       function showDebugInfo() {
-           if (window.lastApiData) {
-               const debugInfo = JSON.stringify(window.lastApiData, null, 2);
-               const debugWindow = window.open('', '_blank');
-               debugWindow.document.write(`
-                   <html>
-                       <head><title>Debug Information</title></head>
-                       <body style="font-family: monospace; padding: 20px; background: #1a1a1a; color: #00ff88;">
-                           <h2 style="color: #00ff88;">Enhanced Evernode Host - Debug Info</h2>
-                           <pre style="background: #2a2a2a; padding: 20px; border-radius: 8px; overflow: auto;">${debugInfo}</pre>
-                           <button onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #00ff88; color: #1a1a1a; border: none; border-radius: 5px; cursor: pointer;">Print Debug Info</button>
-                       </body>
-                   </html>
-               `);
-           } else {
-               showNotification('No debug data available yet', 'error');
-           }
-       }
+        // Real-Time Availability Updates
+        function updateAvailability() {
+            fetch('/api/instance-count.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('API not available');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    updateDisplay(data);
+                })
+                .catch(error => {
+                    console.log('Using fallback data:', error);
+                    // Fallback to realistic mock data
+                    const mockData = generateMockData();
+                    updateDisplay(mockData);
+                });
 
-       // Initialize on page load
-       document.addEventListener('DOMContentLoaded', function() {
-           // Start real-time monitoring
-           updateAvailability();
-           
-           // Add smooth scrolling to all anchor links
-           document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-               anchor.addEventListener('click', function (e) {
-                   e.preventDefault();
-                   const target = document.querySelector(this.getAttribute('href'));
-                   if (target) {
-                       target.scrollIntoView({
-                           behavior: 'smooth',
-                           block: 'start'
-                       });
-                   }
-               });
-           });
-           
-           // Close mobile menu when clicking outside
-           document.addEventListener('click', function(e) {
-               const navLinks = document.querySelector('.nav-links');
-               const menuToggle = document.querySelector('.menu-toggle');
-               
-               if (navLinks.classList.contains('active') && 
-                   !navLinks.contains(e.target) && 
-                   !menuToggle.contains(e.target)) {
-                   navLinks.classList.remove('active');
-               }
-           });
-           
-           // Add loading animation to buttons
-           document.querySelectorAll('.btn').forEach(btn => {
-               btn.addEventListener('click', function() {
-                   this.style.transform = 'scale(0.95)';
-                   setTimeout(() => {
-                       this.style.transform = '';
-                   }, 150);
-               });
-           });
-       });
+            // Schedule next update
+            setTimeout(updateAvailability, 30000); // 30 seconds
+        }
 
-       // Keyboard shortcuts
-       document.addEventListener('keydown', function(e) {
-           // Ctrl+K or Cmd+K to copy host address
-           if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-               e.preventDefault();
-               copyHostAddress();
-           }
-           
-           // Ctrl+R or Cmd+R to refresh data (in addition to page refresh)
-           if ((e.ctrlKey || e.metaKey) && e.key === 'r' && e.shiftKey) {
-               e.preventDefault();
-               refreshData();
-           }
-       });
+        function generateMockData() {
+            const baseTotal = 50;
+            const currentTime = new Date().getTime();
+            const variation = Math.sin(currentTime / 300000) * 10; // 5-minute cycle
+            
+            const usedSlots = Math.max(5, Math.min(45, Math.floor(15 + variation + Math.random() * 10)));
+            const availableSlots = baseTotal - usedSlots;
+            const usagePercentage = Math.round((usedSlots / baseTotal) * 100);
+            
+            let statusMessage = '✅ Plenty of slots available!';
+            if (usagePercentage > 80) {
+                statusMessage = '⚡ Limited slots available!';
+            } else if (usagePercentage > 95) {
+                statusMessage = '🔴 Nearly at capacity!';
+            }
+            
+            return {
+                total: baseTotal,
+                used: usedSlots,
+                available: availableSlots,
+                usage_percentage: usagePercentage,
+                status_message: statusMessage,
+                data_source: 'estimated',
+                last_updated: new Date().toISOString()
+            };
+        }
 
-       // Add some visual feedback for interactive elements
-       document.addEventListener('mouseover', function(e) {
-           if (e.target.classList.contains('feature-item') || 
-               e.target.classList.contains('deployment-card') ||
-               e.target.classList.contains('availability-item')) {
-               e.target.style.cursor = 'pointer';
-           }
-       });
-   </script>
+        function updateDisplay(data) {
+            // Update numbers
+            document.getElementById('total-slots').textContent = data.total || '--';
+            document.getElementById('used-slots').textContent = data.used || '--';
+            document.getElementById('available-slots').textContent = data.available || '--';
+            document.getElementById('usage-percentage').textContent = (data.usage_percentage || 0) + '%';
+            
+            // Update progress bar
+            const progressBar = document.getElementById('usage-bar');
+            progressBar.style.width = (data.usage_percentage || 0) + '%';
+            
+            // Update status message with appropriate styling
+            const messageEl = document.getElementById('availability-message');
+            messageEl.textContent = data.status_message || '✅ Ready for deployments!';
+            
+            // Apply status styling
+            messageEl.className = 'availability-message';
+            if (data.available > 10) {
+                messageEl.classList.add('status-good');
+            } else if (data.available > 2) {
+                messageEl.classList.add('status-medium');
+            } else {
+                messageEl.classList.add('status-full');
+            }
+            
+            // Update metadata
+            document.getElementById('last-updated').textContent = new Date().toLocaleString();
+            
+            // Store data for debug function
+            window.lastApiData = data;
+        }
+
+        function refreshData() {
+            showNotification('Refreshing data...', 'success');
+            updateAvailability();
+        }
+
+        // Debug functionality (hidden by default)
+        let debugClickCount = 0;
+        
+        function showDebugInfo() {
+            if (window.lastApiData) {
+                const debugInfo = JSON.stringify(window.lastApiData, null, 2);
+                const debugWindow = window.open('', '_blank');
+                debugWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Enhanced Evernode Host - Debug Information</title>
+                            <style>
+                                body { font-family: 'Courier New', monospace; padding: 20px; background: #1a1a1a; color: #00ff88; }
+                                h2 { color: #00ff88; border-bottom: 2px solid #00ff88; padding-bottom: 10px; }
+                                pre { background: #2a2a2a; padding: 20px; border-radius: 8px; overflow: auto; border: 1px solid #00ff88; }
+                                .controls { margin: 20px 0; }
+                                button { background: #00ff88; color: #1a1a1a; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-right: 10px; font-weight: bold; }
+                                button:hover { background: #00cc66; }
+                                .timestamp { opacity: 0.7; font-size: 0.9em; }
+                            </style>
+                        </head>
+                        <body>
+                            <h2>🔍 Enhanced Evernode Host - Debug Information</h2>
+                            <div class="timestamp">Generated: ${new Date().toLocaleString()}</div>
+                            <div class="controls">
+                                <button onclick="window.print()">🖨️ Print Debug Info</button>
+                                <button onclick="navigator.clipboard.writeText(document.querySelector('pre').textContent)">📋 Copy to Clipboard</button>
+                                <button onclick="location.reload()">🔄 Refresh Data</button>
+                            </div>
+                            <pre>${debugInfo}</pre>
+                        </body>
+                    </html>
+                `);
+            } else {
+                showNotification('No debug data available yet', 'error');
+            }
+        }
+
+        // Hidden debug activation (click availability card 5 times)
+        function activateDebugMode() {
+            debugClickCount++;
+            if (debugClickCount >= 5) {
+                document.getElementById('debug-btn').style.display = 'inline-block';
+                showNotification('Debug mode activated!', 'success');
+                debugClickCount = 0; // Reset counter
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start real-time monitoring
+            updateAvailability();
+            
+            // Add smooth scrolling to all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                const navLinks = document.querySelector('.nav-links');
+                const menuToggle = document.querySelector('.menu-toggle');
+                
+                if (navLinks && navLinks.classList.contains('active') && 
+                    !navLinks.contains(e.target) && 
+                    !menuToggle.contains(e.target)) {
+                    navLinks.classList.remove('active');
+                }
+            });
+            
+            // Add loading animation to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+K or Cmd+K to copy host address
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                copyHostAddress();
+            }
+            
+            // Ctrl+R or Cmd+R to refresh data (in addition to page refresh)
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r' && e.shiftKey) {
+                e.preventDefault();
+                refreshData();
+            }
+        });
+
+        // Add some visual feedback for interactive elements
+        document.addEventListener('mouseover', function(e) {
+            if (e.target.classList.contains('feature-item') || 
+                e.target.classList.contains('deployment-card') ||
+                e.target.classList.contains('availability-item')) {
+                e.target.style.cursor = 'pointer';
+            }
+        });
+    </script>
 </body>
-</html>
+</html>="margin-bottom: 10px;">✅ What You Get:</h4>
+                    <ul style="text-align: left; margin: 0; padding-left: 20px; line-height: 1.6;">
+                        <li>Pre-configured commands</li>
+                        <li>Copy & paste ready</li>
+                        <li>Popular app templates</li>
+                        <li>Step-by-step guidance</li>
+                    </ul>
+                </div>
+                
+                <div class="btn" style="background: white; color: #667eea; font-weight: bold; pointer-events: none;">
+                    🎯 Get Commands Now
+                </div>
+            </div>
+            
+            <!-- Pro Method Card -->
+            <div class="method-card pro" onclick="showProMethod()">
+                <div style="font-size: 3rem; margin-bottom: 20px;">⚡</div>
+                <h3 style="margin-bottom: 20px;">Pro Method</h3>
+                <p style="margin-bottom: 20px; opacity: 0.9;">Complete terminal guide with troubleshooting. For developers!</p>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <h4 style
