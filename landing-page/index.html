@@ -585,52 +585,6 @@
             cursor: pointer;
         }
 
-        /* Price Grid */
-        .price-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .price-card {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .price-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .price-card.evr {
-            background: linear-gradient(135deg, #6f42c1, #e83e8c);
-        }
-
-        .price-card.xah {
-            background: linear-gradient(135deg, #fd7e14, #ffc107);
-        }
-
-        .price-card.xrp {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        }
-
-        .price-card.evernode {
-            background: linear-gradient(135deg, #00ff88, #28a745);
-        }
-
-        .price-value {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
         /* Stats Section */
         .stats-section {
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(102, 126, 234, 0.3));
@@ -957,6 +911,27 @@
                 <p style="margin-bottom: 20px; opacity: 0.9;">Get deployment commands instantly. Perfect for beginners!</p>
                 
                 <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <h4 style="margin-bottom: 10px;">✅ What You Get:</h4>
+                    <ul style="text-align: left; margin: 0; padding-left: 20px; line-height: 1.6;">
+                        <li>Pre-configured commands</li>
+                        <li>Copy & paste ready</li>
+                        <li>Popular app templates</li>
+                        <li>Step-by-step guidance</li>
+                    </ul>
+                </div>
+                
+                <div class="btn" style="background: white; color: #667eea; font-weight: bold; pointer-events: none;">
+                    🎯 Get Commands Now
+                </div>
+            </div>
+            
+            <!-- Pro Method Card -->
+            <div class="method-card pro" onclick="showProMethod()">
+                <div style="font-size: 3rem; margin-bottom: 20px;">⚡</div>
+                <h3 style="margin-bottom: 20px;">Pro Method</h3>
+                <p style="margin-bottom: 20px; opacity: 0.9;">Complete terminal guide with troubleshooting. For developers!</p>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 20px 0;">
                     <h4 style="margin-bottom: 10px;">🚀 What You Get:</h4>
                     <ul style="text-align: left; margin: 0; padding-left: 20px; line-height: 1.6;">
                         <li>Full evdevkit setup</li>
@@ -991,6 +966,684 @@
                     📚 Read Full Guide
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Easy Method Section -->
+    <div class="card hidden" id="easy-method">
+        <h2 style="text-align: center; color: #333; margin-bottom: 20px;">🎯 Easy Deployment Commands</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Just copy, paste in terminal, and go! No complex setup needed.
+        </p>
+        
+        <!-- Simple 3-Step Process -->
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 15px; margin-bottom: 30px;">
+            <h3 style="color: #495057; text-align: center; margin-bottom: 30px;">Quick Start (3 Steps)</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #007bff; text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">1️⃣</div>
+                    <h4 style="color: #495057; margin-bottom: 15px;">Setup Keys</h4>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('npm install -g evdevkit && evdevkit keygen')">📋 Copy</button>
+                        npm install -g evdevkit && evdevkit keygen
+                    </div>
+                    <p style="color: #6c757d; font-size: 0.9rem; margin-top: 10px;">Install tool & generate key</p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745; text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">2️⃣</div>
+                    <h4 style="color: #495057; margin-bottom: 15px;">Set Credentials</h4>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-size: 0.9rem;">
+                        <div style="margin-bottom: 10px;">
+                            <strong>🪟 Windows:</strong><br>
+                            <code>set EV_TENANT_SECRET=sYourSecret</code><br>
+                            <code>set EV_USER_PRIVATE_KEY=edYourKey</code>
+                        </div>
+                        <div>
+                            <strong>🍎 Mac/Linux:</strong><br>
+                            <code>export EV_TENANT_SECRET=sYourSecret</code><br>
+                            <code>export EV_USER_PRIVATE_KEY=edYourKey</code>
+                        </div>
+                    </div>
+                    <p style="color: #6c757d; font-size: 0.9rem; margin-top: 10px;">Use your wallet & generated key</p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107; text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">3️⃣</div>
+                    <h4 style="color: #495057; margin-bottom: 15px;">Deploy App</h4>
+                    <button onclick="showAppCommands()" class="btn" style="width: 100%; background: #ffc107; color: #212529;">
+                        📱 Choose Your App
+                    </button>
+                    <p style="color: #6c757d; font-size: 0.9rem; margin-top: 10px;">Pick from ready commands below</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- App Command Grid -->
+        <div id="app-commands-grid" class="hidden">
+            <h3 style="text-align: center; color: #333; margin-bottom: 25px;">📱 Choose Your Application</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #667eea; transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <span style="font-size: 2rem;">⚡</span>
+                        <div>
+                            <h4 style="margin: 0; color: #333;">n8n Automation</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">Workflow automation platform</p>
+                        </div>
+                    </div>
+                    <div class="host-address-display" style="font-size: 0.85rem;">
+                        <button class="copy-btn" onclick="copyAppCommand('n8n')">📋 Copy</button>
+                        evdevkit acquire -i n8nio/n8n:latest rExampleHostAddress123456789ABC -m 24
+                    </div>
+                    <p style="color: #155724; font-size: 0.85rem; margin-top: 10px;">
+                        ✅ Access at: <strong>http://host-domain:port</strong>
+                    </p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #28a745; transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <span style="font-size: 2rem;">📝</span>
+                        <div>
+                            <h4 style="margin: 0; color: #333;">WordPress</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">Website & blog platform</p>
+                        </div>
+                    </div>
+                    <div class="host-address-display" style="font-size: 0.85rem;">
+                        <button class="copy-btn" onclick="copyAppCommand('wordpress')">📋 Copy</button>
+                        evdevkit acquire -i wordpress:latest rExampleHostAddress123456789DEF -m 24
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #17a2b8; transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <span style="font-size: 2rem;">☁️</span>
+                        <div>
+                            <h4 style="margin: 0; color: #333;">Nextcloud</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">Personal cloud storage</p>
+                        </div>
+                    </div>
+                    <div class="host-address-display" style="font-size: 0.85rem;">
+                        <button class="copy-btn" onclick="copyAppCommand('nextcloud')">📋 Copy</button>
+                        evdevkit acquire -i nextcloud:latest rExampleHostAddress123456789GHI -m 24
+                    </div>
+                    <p style="color: #155724; font-size: 0.85rem; margin-top: 10px;">
+                        ✅ Access at: <strong>http://host-domain:port</strong>
+                    </p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #6f42c1; transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <span style="font-size: 2rem;">👻</span>
+                        <div>
+                            <h4 style="margin: 0; color: #333;">Ghost Blog</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">Publishing platform</p>
+                        </div>
+                    </div>
+                    <div class="host-address-display" style="font-size: 0.85rem;">
+                        <button class="copy-btn" onclick="copyAppCommand('ghost')">📋 Copy</button>
+                        evdevkit acquire -i ghost:latest rExampleHostAddress123456789JKL -m 24
+                    </div>
+                    <p style="color: #155724; font-size: 0.85rem; margin-top: 10px;">
+                        ✅ Access at: <strong>http://host-domain:port/ghost</strong> (admin)
+                    </p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #dc3545; transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <span style="font-size: 2rem;">📊</span>
+                        <div>
+                            <h4 style="margin: 0; color: #333;">Grafana</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">Analytics dashboard</p>
+                        </div>
+                    </div>
+                    <div class="host-address-display" style="font-size: 0.85rem;">
+                        <button class="copy-btn" onclick="copyAppCommand('grafana')">📋 Copy</button>
+                        evdevkit acquire -i grafana/grafana:latest rExampleHostAddress123456789MNO -m 24
+                    </div>
+                    <p style="color: #155724; font-size: 0.85rem; margin-top: 10px;">
+                        ✅ Login: <strong>admin/admin</strong> (change after first login)
+                    </p>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #fd7e14; transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <span style="font-size: 2rem;">🛠️</span>
+                        <div>
+                            <h4 style="margin: 0; color: #333;">Custom App</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">Any Docker image</p>
+                        </div>
+                    </div>
+                    <div class="host-address-display" style="font-size: 0.85rem;">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit acquire -i your-image:latest rExampleHostAddress123456789PQR -m 24')">📋 Copy</button>
+                        evdevkit acquire -i your-image:latest rExampleHostAddress123456789PQR -m 24
+                    </div>
+                    <p style="color: #856404; font-size: 0.85rem; margin-top: 10px;">
+                        ⚠️ Replace <strong>your-image:latest</strong> with actual image name
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="backToSetup()" class="btn" style="background: #6c757d; font-size: 1.1rem; padding: 12px 24px;">
+                ← Back to Setup Options
+            </button>
+            <button onclick="showProMethod()" class="btn secondary" style="margin-left: 10px;">
+                ⚡ Try Pro Method Instead
+            </button>
+        </div>
+    </div>
+
+    <!-- Pro Method Section -->
+    <div class="card hidden" id="pro-method">
+        <h2 style="text-align: center; color: #333; margin-bottom: 20px;">⚡ Complete Terminal Guide</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Full evdevkit setup with troubleshooting and advanced options
+        </p>
+        
+        <!-- Step Selector -->
+        <div style="display: flex; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px;">
+            <button onclick="showTerminalStep('prerequisites')" class="btn secondary" id="btn-prerequisites">📋 Prerequisites</button>
+            <button onclick="showTerminalStep('terminal')" class="btn secondary" id="btn-terminal">💻 Open Terminal</button>
+            <button onclick="showTerminalStep('install')" class="btn secondary" id="btn-install">⚙️ Install evdevkit</button>
+            <button onclick="showTerminalStep('wallet')" class="btn secondary" id="btn-wallet">🔑 Setup Wallet</button>
+            <button onclick="showTerminalStep('deploy')" class="btn secondary" id="btn-deploy">🚀 Deploy Apps</button>
+            <button onclick="showTerminalStep('troubleshooting')" class="btn secondary" id="btn-troubleshooting">🛠️ Troubleshooting</button>
+        </div>
+
+        <!-- Terminal Steps -->
+        <div id="step-prerequisites" class="terminal-step">
+            <h3 style="color: #333; margin-bottom: 20px;">📋 What You'll Need</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                        <h4 style="margin: 0 0 10px 0; color: #333;">✅ Computer</h4>
+                        <p style="margin: 0; color: #666;">Mac, Windows, or Linux</p>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <h4 style="margin: 0 0 10px 0; color: #333;">💰 EVR Tokens</h4>
+                        <p style="margin: 0; color: #666;">1-2 EVR for deployments</p>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff;">
+                        <h4 style="margin: 0 0 10px 0; color: #333;">🔑 Xahau Wallet</h4>
+                        <p style="margin: 0; color: #666;">Secret key starting with 's'</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-terminal" class="terminal-step">
+            <h3 style="color: #333; margin-bottom: 20px;">💻 Opening Your Terminal</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; border-left: 4px solid #2196f3;">
+                    <h4 style="color: #1565c0; margin-bottom: 15px;">🪟 Windows Users</h4>
+                    <div style="color: #1565c0;">
+                        <p><strong>Search Method:</strong></p>
+                        <ol style="margin-left: 20px; line-height: 1.6;">
+                            <li>Click Start button</li>
+                            <li>Type "cmd"</li>
+                            <li>Click "Command Prompt"</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div style="background: #f3e5f5; padding: 20px; border-radius: 10px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #6a1b9a; margin-bottom: 15px;">🍎 Mac Users</h4>
+                    <div style="color: #6a1b9a;">
+                        <p><strong>Spotlight Method:</strong></p>
+                        <ol style="margin-left: 20px; line-height: 1.6;">
+                            <li>Press Cmd + Space</li>
+                            <li>Type "terminal"</li>
+                            <li>Press Enter</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-install" class="terminal-step">
+            <h3 style="color: #333; margin-bottom: 20px;">⚙️ Install evdevkit</h3>
+            
+            <div class="host-address-display">
+                <button class="copy-btn" onclick="copyToClipboard('npm install -g evdevkit')">📋 Copy</button>
+                npm install -g evdevkit
+            </div>
+            
+            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107; margin-top: 20px;">
+                <h4 style="color: #856404; margin-bottom: 10px;">🛠️ Troubleshooting</h4>
+                <div style="color: #856404;">
+                    <p><strong>❌ "npm not found":</strong> Install Node.js from nodejs.org</p>
+                    <p><strong>❌ "Permission denied" (Mac):</strong></p>
+                    <div class="host-address-display" style="margin: 10px 0;">
+                        <button class="copy-btn" onclick="copyToClipboard('sudo npm install -g evdevkit')">📋 Copy</button>
+                        sudo npm install -g evdevkit
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-wallet" class="terminal-step">
+            <h3 style="color: #333; margin-bottom: 20px;">🔑 Setup Your Credentials</h3>
+            
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #28a745;">
+                <h4 style="color: #155724; margin-bottom: 15px;">Step 1: Generate Deployment Key</h4>
+                <div class="host-address-display">
+                    <button class="copy-btn" onclick="copyToClipboard('evdevkit keygen')">📋 Copy</button>
+                    evdevkit keygen
+                </div>
+                <p style="color: #155724; margin-top: 15px;">💾 Copy the privateKey value (starts with 'ed')</p>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #495057; margin-bottom: 15px;">Step 2: Set Your Credentials</h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div>
+                        <p style="font-weight: bold; color: #495057; margin-bottom: 10px;">🪟 Windows:</p>
+                        <div class="host-address-display">
+                            <button class="copy-btn" onclick="copyToClipboard('set EV_TENANT_SECRET=sYourXahauSecret\nset EV_USER_PRIVATE_KEY=edYourGeneratedKey')">📋 Copy</button>
+                            set EV_TENANT_SECRET=sYourXahauSecret<br>
+                            set EV_USER_PRIVATE_KEY=edYourGeneratedKey
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <p style="font-weight: bold; color: #495057; margin-bottom: 10px;">🍎 Mac:</p>
+                        <div class="host-address-display">
+                            <button class="copy-btn" onclick="copyToClipboard('export EV_TENANT_SECRET=sYourXahauSecret\nexport EV_USER_PRIVATE_KEY=edYourGeneratedKey')">📋 Copy</button>
+                            export EV_TENANT_SECRET=sYourXahauSecret<br>
+                            export EV_USER_PRIVATE_KEY=edYourGeneratedKey
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-deploy" class="terminal-step">
+            <h3 style="color: #333; margin-bottom: 20px;">🚀 Deploy Your Apps</h3>
+            
+            <div style="display: grid; gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff;">
+                    <h5 style="margin: 0 0 10px 0; color: #333;">⚡ Quick Example - Nginx Web Server</h5>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit acquire -i nginx:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24')">📋 Copy</button>
+                        evdevkit acquire -i nginx:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                    <h5 style="margin: 0 0 10px 0; color: #333;">📝 WordPress Website</h5>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit acquire -i wordpress:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24')">📋 Copy</button>
+                        evdevkit acquire -i wordpress:latest rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 24
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #6f42c1;">
+                    <h5 style="margin: 0 0 10px 0; color: #333;">⚙️ Advanced with Environment Variables</h5>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit acquire -i postgres:13 rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 72 -e POSTGRES_PASSWORD=mypassword')">📋 Copy</button>
+                        evdevkit acquire -i postgres:13 rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3 -m 72 -e POSTGRES_PASSWORD=mypassword
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-troubleshooting" class="terminal-step">
+            <h3 style="color: #333; margin-bottom: 20px;">🛠️ Troubleshooting</h3>
+            
+            <div style="display: grid; gap: 20px;">
+                <div style="background: #f8d7da; padding: 20px; border-radius: 10px; border-left: 4px solid #dc3545;">
+                    <h4 style="color: #721c24; margin-bottom: 15px;">❌ "command run not found"</h4>
+                    <div style="color: #721c24;">
+                        <p style="margin-bottom: 10px;"><strong>This is normal for web applications!</strong></p>
+                        <p style="margin-bottom: 10px;">Many Docker images are designed to run web servers, not execute commands.</p>
+                        <p style="margin: 0; font-weight: bold;">✅ Solution: Use Enhanced Hosts that support Docker web applications</p>
+                    </div>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
+                    <h4 style="color: #856404; margin-bottom: 15px;">⚠️ "insufficient funds"</h4>
+                    <div style="color: #856404;">
+                        <p style="margin-bottom: 10px;"><strong>You need more EVR tokens</strong></p>
+                        <p style="margin-bottom: 10px;">• Check your wallet balance</p>
+                        <p style="margin-bottom: 10px;">• Typical cost: 0.0005-0.003 EVR per hour</p>
+                        <p style="margin: 0;">• For 24 hours: ~0.036 EVR needed</p>
+                    </div>
+                </div>
+                
+                <div style="background: #e2e3e5; padding: 20px; border-radius: 10px; border-left: 4px solid #6c757d;">
+                    <h4 style="color: #495057; margin-bottom: 15px;">🔧 "evdevkit: command not found"</h4>
+                    <div style="color: #495057;">
+                        <p style="margin-bottom: 10px;"><strong>evdevkit not installed properly</strong></p>
+                        <div class="host-address-display" style="margin: 10px 0;">
+                            <button class="copy-btn" onclick="copyToClipboard('npm install -g evdevkit')">📋 Copy</button>
+                            npm install -g evdevkit
+                        </div>
+                        <p style="margin: 0; font-size: 0.9rem;">If still failing, try with sudo (Mac/Linux) or run as Administrator (Windows)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="backToSetup()" class="btn" style="background: #6c757d; font-size: 1.1rem; padding: 12px 24px;">
+                ← Back to Setup Options
+            </button>
+            <button onclick="showEasyMethod()" class="btn secondary" style="margin-left: 10px;">
+                🎯 Try Easy Method Instead
+            </button>
+        </div>
+    </div>
+
+    <!-- Complete Setup Guide Section -->
+    <div class="card hidden" id="complete-guide">
+        <h2 style="text-align: center; color: #333; margin-bottom: 20px;">📚 Complete Evernode Setup Guide</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Everything you need to know about deploying applications on Evernode
+        </p>
+        
+        <!-- Step Selector for Complete Guide -->
+        <div style="display: flex; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px;">
+            <button onclick="showCompleteStep('overview')" class="btn secondary" id="complete-btn-overview">🌟 Overview</button>
+            <button onclick="showCompleteStep('prerequisites')" class="btn secondary" id="complete-btn-prerequisites">📋 Prerequisites</button>
+            <button onclick="showCompleteStep('installation')" class="btn secondary" id="complete-btn-installation">⚙️ Installation</button>
+            <button onclick="showCompleteStep('configuration')" class="btn secondary" id="complete-btn-configuration">🔧 Configuration</button>
+            <button onclick="showCompleteStep('deployment')" class="btn secondary" id="complete-btn-deployment">🚀 Deployment</button>
+            <button onclick="showCompleteStep('management')" class="btn secondary" id="complete-btn-management">📊 Management</button>
+            <button onclick="showCompleteStep('troubleshooting')" class="btn secondary" id="complete-btn-troubleshooting">🛠️ Troubleshooting</button>
+        </div>
+
+        <!-- Overview Step -->
+        <div id="complete-step-overview" class="complete-step">
+            <h3 style="color: #333; margin-bottom: 20px;">🌟 What is Evernode?</h3>
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin-bottom: 20px;">
+                <p style="color: #495057; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px;">
+                    Evernode is a decentralized hosting platform built on the Xahau network that allows you to deploy Docker applications quickly and securely. Think of it as a decentralized alternative to traditional cloud hosting.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 25px;">
+                    <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #007bff;">
+                        <h4 style="color: #007bff; margin-bottom: 10px;">🌍 Decentralized</h4>
+                        <p style="color: #495057; margin: 0; font-size: 0.95rem;">No single point of failure. Your apps run on a network of independent hosts worldwide.</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                        <h4 style="color: #28a745; margin-bottom: 10px;">⚡ Fast Deployment</h4>
+                        <p style="color: #495057; margin: 0; font-size: 0.95rem;">Deploy any Docker application in under 30 seconds with simple commands.</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
+                        <h4 style="color: #856404; margin-bottom: 10px;">💰 Cost Effective</h4>
+                        <p style="color: #495057; margin: 0; font-size: 0.95rem;">Pay only for what you use. Typical costs: ~$0.18 per day for 24/7 hosting.</p>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #dc3545;">
+                        <h4 style="color: #dc3545; margin-bottom: 10px;">🔒 Secure</h4>
+                        <p style="color: #495057; margin: 0; font-size: 0.95rem;">Cryptographic security built-in SSL certificates automatically managed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prerequisites Step -->
+        <div id="complete-step-prerequisites" class="complete-step">
+            <h3 style="color: #333; margin-bottom: 20px;">📋 What You'll Need</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745;">
+                        <h4 style="margin: 0 0 15px 0; color: #333;">✅ Computer & Internet</h4>
+                        <ul style="color: #666; margin: 0; padding-left: 20px; line-height: 1.6;">
+                            <li>Windows, Mac, or Linux computer</li>
+                            <li>Stable internet connection</li>
+                            <li>Command line/terminal access</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #007bff;">
+                        <h4 style="margin: 0 0 15px 0; color: #333;">🔧 Software Requirements</h4>
+                        <ul style="color: #666; margin: 0; padding-left: 20px; line-height: 1.6;">
+                            <li>Node.js (version 14 or higher)</li>
+                            <li>npm (comes with Node.js)</li>
+                            <li>Basic terminal knowledge</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <h4 style="margin: 0 0 15px 0; color: #333;">💰 Tokens & Wallet</h4>
+                        <ul style="color: #666; margin: 0; padding-left: 20px; line-height: 1.6;">
+                            <li>1-2 EVR tokens for hosting</li>
+                            <li>Xahau wallet with secret key</li>
+                            <li>Small amount of XAH for transactions</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #6f42c1;">
+                        <h4 style="margin: 0 0 15px 0; color: #333;">🐳 Docker Knowledge</h4>
+                        <ul style="color: #666; margin: 0; padding-left: 20px; line-height: 1.6;">
+                            <li>Basic understanding of Docker</li>
+                            <li>Know how to find Docker images</li>
+                            <li>Understanding of ports & environments</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Installation Step -->
+        <div id="complete-step-installation" class="complete-step">
+            <h3 style="color: #333; margin-bottom: 20px;">⚙️ Installing evdevkit</h3>
+            
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745; margin-bottom: 20px;">
+                <h4 style="color: #155724; margin-bottom: 15px;">Step 1: Install Node.js (if not installed)</h4>
+                <p style="color: #155724; margin-bottom: 15px;">First, check if you have Node.js installed:</p>
+                <div class="host-address-display">
+                    <button class="copy-btn" onclick="copyToClipboard('node --version')">📋 Copy</button>
+                    node --version
+                </div>
+                <p style="color: #155724; margin-top: 15px; font-size: 0.9rem;">
+                    ❌ If you get "command not found", download Node.js from <strong>nodejs.org</strong><br>
+                    ✅ If you see a version number (v14.0.0 or higher), you're good to go!
+                </p>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h4 style="color: #495057; margin-bottom: 15px;">Step 2: Install evdevkit globally</h4>
+                <div class="host-address-display">
+                    <button class="copy-btn" onclick="copyToClipboard('npm install -g evdevkit')">📋 Copy</button>
+                    npm install -g evdevkit
+                </div>
+                <p style="color: #495057; margin-top: 15px; font-size: 0.9rem;">
+                    This installs the Evernode development kit globally on your system.
+                </p>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
+                <h4 style="color: #856404; margin-bottom: 15px;">🛠️ Common Installation Issues</h4>
+                <div style="color: #856404;">
+                    <p><strong>❌ "Permission denied" (Mac/Linux):</strong></p>
+                    <div class="host-address-display" style="margin: 10px 0;">
+                        <button class="copy-btn" onclick="copyToClipboard('sudo npm install -g evdevkit')">📋 Copy</button>
+                        sudo npm install -g evdevkit
+                    </div>
+                    
+                    <p style="margin-top: 20px;"><strong>❌ "npm not found":</strong></p>
+                    <p style="margin: 5px 0; font-size: 0.9rem;">Install Node.js from nodejs.org, which includes npm</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Step -->
+        <div id="complete-step-configuration" class="complete-step">
+            <h3 style="color: #333; margin-bottom: 20px;">🔧 Configuration & Setup</h3>
+            
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745; margin-bottom: 20px;">
+                <h4 style="color: #155724; margin-bottom: 15px;">Step 1: Generate Deployment Key</h4>
+                <p style="color: #155724; margin-bottom: 15px;">Generate a unique key for your deployments:</p>
+                <div class="host-address-display">
+                    <button class="copy-btn" onclick="copyToClipboard('evdevkit keygen')">📋 Copy</button>
+                    evdevkit keygen
+                </div>
+                <p style="color: #155724; margin-top: 15px; font-size: 0.9rem;">
+                    💾 <strong>Important:</strong> Copy the privateKey value (starts with 'ed'). You'll need this!
+                </p>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h4 style="color: #495057; margin-bottom: 15px;">Step 2: Set Environment Variables</h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div>
+                        <p style="font-weight: bold; color: #495057; margin-bottom: 10px;">🪟 Windows (Command Prompt):</p>
+                        <div class="host-address-display">
+                            <button class="copy-btn" onclick="copyToClipboard('set EV_TENANT_SECRET=sYourXahauSecret\nset EV_USER_PRIVATE_KEY=edYourGeneratedKey')">📋 Copy</button>
+                            set EV_TENANT_SECRET=sYourXahauSecret<br>
+                            set EV_USER_PRIVATE_KEY=edYourGeneratedKey
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <p style="font-weight: bold; color: #495057; margin-bottom: 10px;">🍎 Mac/Linux:</p>
+                        <div class="host-address-display">
+                            <button class="copy-btn" onclick="copyToClipboard('export EV_TENANT_SECRET=sYourXahauSecret\nexport EV_USER_PRIVATE_KEY=edYourGeneratedKey')">📋 Copy</button>
+                            export EV_TENANT_SECRET=sYourXahauSecret<br>
+                            export EV_USER_PRIVATE_KEY=edYourGeneratedKey
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deployment Step -->
+        <div id="complete-step-deployment" class="complete-step">
+            <h3 style="color: #333; margin-bottom: 20px;">🚀 Deploying Applications</h3>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h4 style="color: #495057; margin-bottom: 15px;">Basic Deployment Command Structure</h4>
+                <div class="host-address-display">
+                    <button class="copy-btn" onclick="copyToClipboard('evdevkit acquire -i IMAGE:TAG HOST_ADDRESS -m HOURS')">📋 Copy</button>
+                    evdevkit acquire -i IMAGE:TAG HOST_ADDRESS -m HOURS
+                </div>
+                <div style="margin-top: 15px; color: #495057;">
+                    <p style="margin: 5px 0;"><strong>IMAGE:TAG</strong> - Docker image (e.g., nginx:latest)</p>
+                    <p style="margin: 5px 0;"><strong>HOST_ADDRESS</strong> - Evernode host address</p>
+                    <p style="margin: 5px 0;"><strong>HOURS</strong> - How long to run (e.g., 24 for 24 hours)</p>
+                </div>
+            </div>
+            
+            <div style="display: grid; gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff;">
+                    <h5 style="margin: 0 0 10px 0; color: #333;">⚡ Quick Example - Nginx Web Server</h5>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit acquire -i nginx:latest rExampleHostAddress987654321ABC -m 24')">📋 Copy</button>
+                        evdevkit acquire -i nginx:latest rExampleHostAddress987654321ABC -m 24
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                    <h5 style="margin: 0 0 10px 0; color: #333;">📝 WordPress Website</h5>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit acquire -i wordpress:latest rExampleHostAddress987654321DEF -m 48')">📋 Copy</button>
+                        evdevkit acquire -i wordpress:latest rExampleHostAddress987654321DEF -m 48
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #6f42c1;">
+                    <h5 style="margin: 0 0 10px 0; color: #333;">⚙️ Advanced with Environment Variables</h5>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit acquire -i postgres:13 rExampleHostAddress987654321GHI -m 72 -e POSTGRES_PASSWORD=mypassword')">📋 Copy</button>
+                        evdevkit acquire -i postgres:13 rExampleHostAddress987654321GHI -m 72 -e POSTGRES_PASSWORD=mypassword
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Step -->
+        <div id="complete-step-management" class="complete-step">
+            <h3 style="color: #333; margin-bottom: 20px;">📊 Managing Your Deployments</h3>
+            
+            <div style="display: grid; gap: 20px;">
+                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                    <h4 style="color: #155724; margin-bottom: 15px;">📋 List Active Instances</h4>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit list')">📋 Copy</button>
+                        evdevkit list
+                    </div>
+                    <p style="color: #155724; margin-top: 10px; font-size: 0.9rem;">Shows all your running applications and their details</p>
+                </div>
+                
+                <div style="background: #f8d7da; padding: 20px; border-radius: 10px; border-left: 4px solid #dc3545;">
+                    <h4 style="color: #721c24; margin-bottom: 15px;">🛑 Stop an Instance</h4>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit terminate INSTANCE_ID')">📋 Copy</button>
+                        evdevkit terminate INSTANCE_ID
+                    </div>
+                    <p style="color: #721c24; margin-top: 10px; font-size: 0.9rem;">Replace INSTANCE_ID with the ID from 'evdevkit list'</p>
+                </div>
+                
+                <div style="background: #d1ecf1; padding: 20px; border-radius: 10px; border-left: 4px solid #17a2b8;">
+                    <h4 style="color: #0c5460; margin-bottom: 15px;">🔄 Monitor Instances</h4>
+                    <div class="host-address-display">
+                        <button class="copy-btn" onclick="copyToClipboard('evdevkit status INSTANCE_ID')">📋 Copy</button>
+                        evdevkit status INSTANCE_ID
+                    </div>
+                    <p style="color: #0c5460; margin-top: 10px; font-size: 0.9rem;">Check the status of a specific instance using its ID</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Troubleshooting Step -->
+        <div id="complete-step-troubleshooting" class="complete-step">
+            <h3 style="color: #333; margin-bottom: 20px;">🛠️ Troubleshooting</h3>
+            
+            <div style="display: grid; gap: 20px;">
+                <div style="background: #f8d7da; padding: 20px; border-radius: 10px; border-left: 4px solid #dc3545;">
+                    <h4 style="color: #721c24; margin-bottom: 15px;">❌ "command run not found"</h4>
+                    <div style="color: #721c24;">
+                        <p style="margin-bottom: 10px;"><strong>This is normal for web applications!</strong></p>
+                        <p style="margin-bottom: 10px;">Many Docker images are designed to run web servers, not execute commands.</p>
+                        <p style="margin: 0; font-weight: bold;">✅ Solution: Use Enhanced Hosts that support Docker web applications</p>
+                    </div>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #ffc107;">
+                    <h4 style="color: #856404; margin-bottom: 15px;">⚠️ "insufficient funds"</h4>
+                    <div style="color: #856404;">
+                        <p style="margin-bottom: 10px;"><strong>You need more EVR tokens</strong></p>
+                        <p style="margin-bottom: 10px;">• Check your wallet balance</p>
+                        <p style="margin-bottom: 10px;">• Typical cost: 0.0005-0.003 EVR per hour</p>
+                        <p style="margin: 0;">• For 24 hours: ~0.036 EVR needed</p>
+                    </div>
+                </div>
+                
+                <div style="background: #e2e3e5; padding: 20px; border-radius: 10px; border-left: 4px solid #6c757d;">
+                    <h4 style="color: #495057; margin-bottom: 15px;">🔧 "evdevkit: command not found"</h4>
+                    <div style="color: #495057;">
+                        <p style="margin-bottom: 10px;"><strong>evdevkit not installed properly</strong></p>
+                        <div class="host-address-display" style="margin: 10px 0;">
+                            <button class="copy-btn" onclick="copyToClipboard('npm install -g evdevkit')">📋 Copy</button>
+                            npm install -g evdevkit
+                        </div>
+                        <p style="margin: 0; font-size: 0.9rem;">If still failing, try with sudo (Mac/Linux) or run as Administrator (Windows)</p>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; border-left: 4px solid #2196f3;">
+                    <h4 style="color: #1565c0; margin-bottom: 15px;">⚠️ "connection refused"</h4>
+                    <div style="color: #1565c0;">
+                        <p style="margin-bottom: 10px;"><strong>Host might be temporarily unavailable</strong></p>
+                        <p style="margin-bottom: 10px;">• Check host status with 'evdevkit status'</p>
+                        <p style="margin-bottom: 10px;">• Ensure correct host address</p>
+                        <p style="margin: 0;">• Try again after a few minutes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="backToSetup()" class="btn" style="background: #6c757d; font-size: 1.1rem; padding: 12px 24px;">
+                ← Back to Setup Options
+            </button>
+            <button onclick="showProMethod()" class="btn secondary" style="margin-left: 10px;">
+                ⚡ Try Pro Method Instead
+            </button>
         </div>
     </div>
 
@@ -1199,6 +1852,18 @@
             }
         }
 
+        function copyAppCommand(app) {
+            const hostAddress = document.getElementById('host-address-text').textContent;
+            const commands = {
+                n8n: `evdevkit acquire -i n8nio/n8n:latest ${hostAddress} -m 24`,
+                wordpress: `evdevkit acquire -i wordpress:latest ${hostAddress} -m 24`,
+                nextcloud: `evdevkit acquire -i nextcloud:latest ${hostAddress} -m 24`,
+                ghost: `evdevkit acquire -i ghost:latest ${hostAddress} -m 24`,
+                grafana: `evdevkit acquire -i grafana/grafana:latest ${hostAddress} -m 24`
+            };
+            copyToClipboard(commands[app]);
+        }
+
         // Notification System
         function showNotification(message, type) {
             // Remove existing notifications
@@ -1234,14 +1899,55 @@
         }
 
         function hideAllSetupSections() {
-            document.getElementById('easy-method').classList.add('hidden');
-            document.getElementById('pro-method').classList.add('hidden');
-            document.getElementById('complete-guide').classList.add('hidden');
+            const sections = ['easy-method', 'pro-method', 'complete-guide'];
+            sections.forEach(sectionId => {
+                const element = document.getElementById(sectionId);
+                if (element) {
+                    element.classList.add('hidden');
+                }
+            });
         }
 
         function backToSetup() {
             hideAllSetupSections();
             scrollToSection('setup');
+        }
+
+        // App Commands Grid
+        function showAppCommands() {
+            document.getElementById('app-commands-grid').classList.remove('hidden');
+        }
+
+        // Pro Method Steps
+        function showTerminalStep(step) {
+            const steps = ['prerequisites', 'terminal', 'install', 'wallet', 'deploy', 'troubleshooting'];
+            steps.forEach(s => {
+                const stepElement = document.getElementById(`step-${s}`);
+                const btnElement = document.getElementById(`btn-${s}`);
+                if (stepElement) stepElement.classList.remove('active');
+                if (btnElement) btnElement.classList.remove('active');
+            });
+            
+            const activeStep = document.getElementById(`step-${step}`);
+            const activeBtn = document.getElementById(`btn-${step}`);
+            if (activeStep) activeStep.classList.add('active');
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        // Complete Guide Steps
+        function showCompleteStep(step) {
+            const steps = ['overview', 'prerequisites', 'installation', 'configuration', 'deployment', 'management', 'troubleshooting'];
+            steps.forEach(s => {
+                const stepElement = document.getElementById(`complete-step-${s}`);
+                const btnElement = document.getElementById(`complete-btn-${s}`);
+                if (stepElement) stepElement.classList.remove('active');
+                if (btnElement) btnElement.classList.remove('active');
+            });
+            
+            const activeStep = document.getElementById(`complete-step-${step}`);
+            const activeBtn = document.getElementById(`complete-btn-${step}`);
+            if (activeStep) activeStep.classList.add('active');
+            if (activeBtn) activeBtn.classList.add('active');
         }
 
         // Real-Time Availability Updates
@@ -1384,6 +2090,12 @@
             // Start real-time monitoring
             updateAvailability();
             
+            // Initialize setup steps to show first step active
+            setTimeout(() => {
+                showTerminalStep('prerequisites');
+                showCompleteStep('overview');
+            }, 100);
+            
             // Add smooth scrolling to all anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -1446,25 +2158,4 @@
         });
     </script>
 </body>
-</html>="margin-bottom: 10px;">✅ What You Get:</h4>
-                    <ul style="text-align: left; margin: 0; padding-left: 20px; line-height: 1.6;">
-                        <li>Pre-configured commands</li>
-                        <li>Copy & paste ready</li>
-                        <li>Popular app templates</li>
-                        <li>Step-by-step guidance</li>
-                    </ul>
-                </div>
-                
-                <div class="btn" style="background: white; color: #667eea; font-weight: bold; pointer-events: none;">
-                    🎯 Get Commands Now
-                </div>
-            </div>
-            
-            <!-- Pro Method Card -->
-            <div class="method-card pro" onclick="showProMethod()">
-                <div style="font-size: 3rem; margin-bottom: 20px;">⚡</div>
-                <h3 style="margin-bottom: 20px;">Pro Method</h3>
-                <p style="margin-bottom: 20px; opacity: 0.9;">Complete terminal guide with troubleshooting. For developers!</p>
-                
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 20px 0;">
-                    <h4 style
+</html>
