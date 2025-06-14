@@ -519,10 +519,10 @@ echo "   - Host discovery: /api/host-info.php"
 echo "   - NFT licensing: /api/xahau-nft-licenses.php" 
 echo "   - Crypto rates: /api/crypto-rates.php"
 
-# Install evdevkit if not present
-if ! command -v evdevkit &> /dev/null; then
-    npm install -g @hotpocket/evdevkit
-fi
+# Note: evdevkit installation (users install separately as needed)
+echo "💡 For cluster creation, tenants install evdevkit separately:"
+echo "   npm install -g evdevkit"
+echo "   or download from: https://github.com/EvernodeXRPL/evdevkit"
 
 # Set permissions
 chmod +x /var/www/html/api/cluster-manager.php
