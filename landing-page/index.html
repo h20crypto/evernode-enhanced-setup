@@ -2174,6 +2174,7 @@
                 refreshData();
             }
         });
+});
 
         // Add some visual feedback for interactive elements
         document.addEventListener('mouseover', function(e) {
@@ -2182,12 +2183,22 @@
                 e.target.classList.contains('availability-item')) {
                 e.target.style.cursor = 'pointer';
             }
-   })
-        .catch(error => console.log("Update failed:", error));
-}, 30000);
+        });
 
-    </script>
-    
+        // Force periodic updates
+        setInterval(() => {
+            fetch("/api/instance-count.php")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("total-slots").textContent = data.total;
+                    document.getElementById("available-slots").textContent = data.available;
+                    document.getElementById("used-slots").textContent = data.used;
+                    document.getElementById("usage-percentage").textContent = data.usage_percentage + "%";
+                })
+                .catch(error => console.log("Update failed:", error));
+        }, 30000);
+
     </script>
 </body>
 </html>
+       
