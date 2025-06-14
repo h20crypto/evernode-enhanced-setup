@@ -886,9 +886,9 @@
         </div>
         
         <div class="host-address-display">
-            <span id="host-address-text">rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3</span>
-            <button class="copy-btn" onclick="copyHostAddress()">📋 Copy</button>
-        </div>
+    <span id="host-address-text">Loading host address...</span>
+    <button class="copy-btn" onclick="copyHostAddress()">📋 Copy</button>
+</div>
         
         <div class="feature-grid">
             <div class="feature-item green">
@@ -1999,7 +1999,37 @@
             // Schedule next update
             setTimeout(updateAvailability, 30000); // 30 seconds
         }
+function updateAvailability() {
+    // ... existing updateAvailability code ...
+}
 
+// Load dynamic host address
+function loadHostAddress() {
+    fetch('/api/host-info.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.xahau_address && data.xahau_address !== 'unknown') {
+                document.getElementById('host-address-text').textContent = data.xahau_address;
+            } else {
+                // Fallback - try to get from another API
+                fetch('/api/instance-count.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.host_info && data.host_info.address) {
+                            document.getElementById('host-address-text').textContent = data.host_info.address;
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Could not load host address:', error);
+                        document.getElementById('host-address-text').textContent = 'rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3';
+                    });
+            }
+        })
+        .catch(error => {
+            console.log('Host address API error:', error);
+            document.getElementById('host-address-text').textContent = 'rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3';
+        });
+}
         function generateMockData() {
             const baseTotal = 50;
             const currentTime = new Date().getTime();
