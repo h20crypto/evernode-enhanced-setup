@@ -1,170 +1,155 @@
 #!/usr/bin/env node
 /**
  * Enhanced Host Discovery CLI
- * Usage: node tools/discover-cli.js [--location us] [--available-only]
+ * Usage: node discover-cli.js [--location us] [--available-only]
  */
 
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
 
 class HostDiscovery {
     constructor() {
-        this.knownHostsFile = path.join(__dirname, '../data/enhanced-hosts.json');
-    }
-    
-    async loadKnownHosts() {
-        try {
-            const data = fs.readFileSync(this.knownHostsFile, 'utf8');
-            return JSON.parse(data).hosts;
-        } catch (error) {
-            console.error('Error loading known hosts:', error.message);
-            return this.getDefaultHosts();
-        }
-    }
-    
-    getDefaultHosts() {
-        // Fallback hosts if file doesn't exist
-        return [
+        this.knownHosts = [
             {
-                address: "rH8oZBoCQJE1aGwdNRH7icr93RrZkbVaaa",
-                domain: "h20cryptonode3.dev",
-                operator: "h20crypto",
-                verified: true,
-                features: ["cluster-management", "real-time-monitoring"],
-                location: "US-East"
+                domain: 'h20cryptoxah.click',
+                location: 'AT-Europe',
+                operator: 'h20crypto'
             }
         ];
     }
-    
+
+    async discoverHosts(options = {}) {
+        console.log('🔍 Discovering enhanced hosts...\n');
+        
+        const availableHosts = [];
+        
+        for (const host of this.knownHosts) {
+            try {
+                const hostInfo = await this.checkHost(host.domain);
+                if (hostInfo && hostInfo.enhanced) {
+                    if (options.availableOnly && hostInfo.instances.available === 0) {
+                        continue;
+                    }
+                    
+                    if (options.location && !host.location.toLowerCase().includes(options.location.toLowerCase())) {
+                        continue;
+                    }
+                    
+                    availableHosts.push({
+                        ...host,
+                        ...hostInfo,
+                        status: hostInfo.instances.available > 0 ? '✅ Available' : '⚠️ Full'
+                    });
+                }
+            } catch (error) {
+                console.log(`❌ ${host.domain}: Offline or not enhanced`);
+            }
+        }
+        
+        this.displayResults(availableHosts);
+        this.generateClusterFile(availableHosts);
+        
+        return availableHosts;
+    }
+
     async checkHost(domain) {
-        return new Promise((resolve) => {
-            const req = https.get(`https://${domain}/api/host-info.php`, (res) => {
+        return new Promise((resolve, reject) => {
+            const options = {
+                hostname: domain,
+                port: 443,
+                path: '/api/host-info.php',
+                method: 'GET',
+                timeout: 5000
+            };
+
+            const req = https.request(options, (res) => {
                 let data = '';
                 res.on('data', chunk => data += chunk);
                 res.on('end', () => {
                     try {
                         resolve(JSON.parse(data));
-                    } catch {
-                        resolve(null);
+                    } catch (error) {
+                        reject(error);
                     }
                 });
             });
-            
-            req.on('error', () => resolve(null));
-            req.setTimeout(5000, () => {
-                req.destroy();
-                resolve(null);
-            });
+
+            req.on('error', reject);
+            req.on('timeout', () => reject(new Error('Timeout')));
+            req.setTimeout(5000);
+            req.end();
         });
     }
-    
-    async discover(filters = {}) {
-        console.log('🔍 Discovering enhanced hosts...\n');
-        
-        const knownHosts = await this.loadKnownHosts();
-        const results = [];
-        
-        for (const host of knownHosts) {
-            process.stdout.write(`Checking ${host.domain}... `);
-            
-            const status = await this.checkHost(host.domain);
-            
-            if (status && status.enhanced) {
-                console.log('✅ Online');
-                
-                // Apply filters
-                if (filters.availableOnly && status.instances.available === 0) continue;
-                if (filters.location && !host.location?.toLowerCase().includes(filters.location)) continue;
-                
-                results.push({ ...host, ...status });
-            } else {
-                console.log('❌ Offline');
-            }
-        }
-        
-        return results;
-    }
-    
+
     displayResults(hosts) {
         if (hosts.length === 0) {
-            console.log('\n❌ No enhanced hosts found matching criteria\n');
-            console.log('💡 Suggestions:');
-            console.log('   - Try without filters: node tools/discover-cli.js');
-            console.log('   - Check if hosts are online');
-            console.log('   - Add more hosts to data/enhanced-hosts.json\n');
+            console.log('❌ No enhanced hosts found matching your criteria\n');
             return;
         }
+
+        console.log(`✅ Found ${hosts.length} enhanced host(s):\n`);
         
-        console.log(`\n🚀 Found ${hosts.length} enhanced host(s):\n`);
-        
-        hosts.forEach((host, i) => {
-            console.log(`${i + 1}. ${host.domain}`);
-            console.log(`   Address: ${host.xahau_address}`);
-            console.log(`   Available: ${host.instances.available}/${host.instances.total} slots`);
+        hosts.forEach(host => {
+            console.log(`🏠 ${host.domain}`);
+            console.log(`   Location: ${host.location}`);
+            console.log(`   Operator: ${host.operator}`);
+            console.log(`   Available: ${host.instances.available}/${host.instances.total} instances`);
+            console.log(`   Status: ${host.status}`);
             console.log(`   Features: ${host.features.join(', ')}`);
-            console.log(`   Location: ${host.location || 'Unknown'}`);
             console.log('');
         });
+    }
+
+    generateClusterFile(hosts) {
+        const availableHosts = hosts.filter(h => h.instances.available > 0);
         
-        // Generate hosts.txt for cluster creation
-        const addresses = hosts.map(h => h.xahau_address);
-        fs.writeFileSync('cluster_hosts.txt', addresses.join('\n'));
+        if (availableHosts.length === 0) {
+            console.log('⚠️ No hosts with available capacity for cluster creation\n');
+            return;
+        }
+
+        const hostList = availableHosts.map(h => h.xahau_address).join('\n');
         
-        console.log('📋 Saved addresses to cluster_hosts.txt');
-        console.log('💡 Create cluster: evdevkit cluster-create /path/to/contract cluster_hosts.txt -m 24\n');
-        
-        // Show example usage
-        console.log('🎯 Example cluster deployment:');
-        console.log(`   evdevkit cluster-create ./my-contract cluster_hosts.txt -m 24`);
-        console.log(`   # Deploys to ${hosts.length} enhanced hosts for 24 hours\n`);
+        try {
+            fs.writeFileSync('cluster_hosts.txt', hostList);
+            console.log('📝 Generated cluster_hosts.txt for evdevkit:');
+            console.log(`   evdevkit acquire -i your-contract:latest cluster_hosts.txt -m 24\n`);
+        } catch (error) {
+            console.log('❌ Could not write cluster_hosts.txt file\n');
+        }
     }
 }
 
-// CLI interface
-async function main() {
-    const args = process.argv.slice(2);
-    
-    if (args.includes('--help') || args.includes('-h')) {
-        console.log(`
-🔍 Enhanced Host Discovery CLI
+// CLI Usage
+const args = process.argv.slice(2);
+const options = {};
 
-Usage:
-  node tools/discover-cli.js [options]
+for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--location' && args[i + 1]) {
+        options.location = args[i + 1];
+        i++;
+    } else if (args[i] === '--available-only') {
+        options.availableOnly = true;
+    } else if (args[i] === '--help') {
+        console.log(`
+Enhanced Host Discovery CLI
+
+Usage: node discover-cli.js [options]
 
 Options:
-  --location <region>     Filter by location (us, eu, asia)
-  --available-only        Show only hosts with available slots
-  --help, -h              Show this help
+  --location <region>    Filter by location (us, eu, asia)
+  --available-only       Only show hosts with available capacity
+  --help                Show this help message
 
 Examples:
-  node tools/discover-cli.js
-  node tools/discover-cli.js --location us --available-only
-  node tools/discover-cli.js --location eu
-
-Output:
-  - Displays available enhanced hosts
-  - Creates cluster_hosts.txt for evdevkit
-  - Shows cluster deployment examples
+  node discover-cli.js                    # Find all enhanced hosts
+  node discover-cli.js --available-only   # Only available hosts
+  node discover-cli.js --location eu      # European hosts only
         `);
-        return;
-    }
-    
-    const filters = {
-        location: args[args.indexOf('--location') + 1] || '',
-        availableOnly: args.includes('--available-only')
-    };
-    
-    try {
-        const discovery = new HostDiscovery();
-        const hosts = await discovery.discover(filters);
-        discovery.displayResults(hosts);
-    } catch (error) {
-        console.error('❌ Discovery failed:', error.message);
-        console.log('\n💡 Try running with --help for usage information');
+        process.exit(0);
     }
 }
 
-if (require.main === module) {
-    main().catch(console.error);
-}
+// Run discovery
+const discovery = new HostDiscovery();
+discovery.discoverHosts(options).catch(console.error);
