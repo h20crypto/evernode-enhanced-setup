@@ -3,12 +3,12 @@
   "last_updated": "2025-06-14T00:00:00Z",
   "hosts": [
     {
-      "address": "rH8oZBoCQJE1aGwdNRH7icr93RrZkbVaaa",
-      "domain": "h20cryptonode3.dev",
+      "address": "rwdiiNxkA93niGQKsJHP5nG7dDMvLEsXrB",
+      "domain": "h20cryptoxah.click",
       "operator": "h20crypto",
       "verified": true,
       "features": ["cluster-management", "real-time-monitoring", "ssl-support"],
-      "location": "US-East",
+      "location": "AT-Europe",
       "added": "2025-06-14"
     }
   ],
