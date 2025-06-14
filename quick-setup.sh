@@ -519,11 +519,11 @@ echo "   - Host discovery: /api/host-info.php"
 echo "   - NFT licensing: /api/xahau-nft-licenses.php" 
 echo "   - Crypto rates: /api/crypto-rates.php"
 
-# Note: evdevkit installation (users install separately as needed)
+# Note: evdevkit installed separately by tenants who need cluster creation
 echo "💡 For cluster creation, tenants install evdevkit separately:"
-echo "   npm install -g evdevkit"
-echo "   or download from: https://github.com/EvernodeXRPL/evdevkit"
+echo "   - npm install -g evdevkit"
+echo "   - Download from: https://github.com/EvernodeXRPL/evdevkit"
 
-# Set permissions
-chmod +x /var/www/html/api/cluster-manager.php
-echo "✅ Host discovery features added!"
+# Set proper permissions for host discovery
+chmod 644 /var/www/html/api/host-info.php
+chown www-data:www-data /var/www/html/api/host-info.php
