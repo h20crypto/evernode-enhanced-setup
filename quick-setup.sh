@@ -386,6 +386,54 @@ echo -e "${CYAN}   curl http://localhost/api/instance-count.php | jq .${NC}"
 echo -e "${CYAN}   evernode-debug-api${NC}"
 echo -e "${CYAN}   evernode-monitor${NC}"
 echo ""
+echo ""
+echo -e "${YELLOW}🚀 Adding premium cluster management promotion...${NC}"
+
+# Add cluster management promotion section to landing page
+cat >> /var/www/html/index.html << 'EOF'
+
+<!-- Premium Cluster Management Section -->
+<div class="cluster-section" style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; margin: 40px 0; padding: 40px; border-radius: 15px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="font-size: 36px; margin-bottom: 15px;">🚀 Premium: Cluster Management</h2>
+        <p style="font-size: 20px; opacity: 0.9;">Deploy and manage distributed applications across multiple hosts</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin: 30px 0;">
+        <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 15px;">🔍</div>
+            <h3>Auto-Discovery</h3>
+            <p>Find cluster-capable hosts automatically. No more manual hunting.</p>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 15px;">⚡</div>
+            <h3>One-Click Deployment</h3>
+            <p>Deploy across multiple hosts with a single command. 95% faster.</p>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 15px;">💰</div>
+            <h3>NFT Licenses</h3>
+            <p>True digital ownership. Transfer, trade, or keep forever.</p>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/cluster/paywall.html" style="background: white; color: #4CAF50; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin: 10px; display: inline-block;">
+            💎 Buy NFT License ($49.99)
+        </a>
+        <a href="/cluster/dashboard.html" style="background: rgba(255,255,255,0.2); color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin: 10px; display: inline-block;">
+            📊 Manage Clusters
+        </a>
+        <a href="/cluster/roi-calculator.html" style="background: rgba(255,255,255,0.1); color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin: 10px; display: inline-block;">
+            💡 Calculate ROI
+        </a>
+    </div>
+</div>
+EOF
+
+echo -e "${GREEN}✅ Premium cluster management promotion added!${NC}"
 echo -e "${PURPLE}🚀 Your professional Enhanced Evernode Host is ready!${NC}"
 echo -e "${BLUE}📚 Documentation: https://github.com/h20crypto/evernode-enhanced-setup${NC}"
 echo -e "${BLUE}🎯 Features: Real-time monitoring, modern UI, professional tools${NC}"
