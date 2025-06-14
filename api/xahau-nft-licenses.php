@@ -110,11 +110,26 @@ class XahauNFTLicenseSystem {
         return [];
     }
     
-    // 5. MINT NFT LICENSE ON XAHAU
+// 5. MINT NFT LICENSE ON XAHAU
     public function mintXahauNFTLicense($paymentTx) {
         try {
-            // 1. Create metadata for the license NFT
-            $metadata = $this->createLicenseMetadata($paymentTx);
+            // NEW: Generate unique image first
+            require_once(__DIR__ . '/nft-image-generator.php');
+            $imageGenerator = new DynamicNFTImageGenerator();
+            $licenseNumber = $imageGenerator->getNextLicenseNumber();
+            
+            // Create personalized NFT image
+            $imageResult = $imageGenerator->generatePersonalizedNFT(
+                $licenseNumber, 
+                $paymentTx['Account']
+            );
+            
+            if (!$imageResult['success']) {
+                throw new Exception('Image generation failed: ' . $imageResult['error']);
+            }
+            
+            // 1. Create metadata for the license NFT (MODIFIED)
+            $metadata = $this->createLicenseMetadata($paymentTx, $licenseNumber, $imageResult['url']);
             $metadataUri = $this->uploadMetadata($metadata);
             
             // 2. Mint NFToken on Xahau network
@@ -146,7 +161,9 @@ class XahauNFTLicenseSystem {
                     'tx_hash' => $result['tx_hash'],
                     'network' => 'xahau',
                     'customer_address' => $paymentTx['Account'],
-                    'metadata_uri' => $metadataUri
+                    'metadata_uri' => $metadataUri,
+                    'license_number' => $licenseNumber,
+                    'image_url' => $imageResult['url']
                 ];
             }
             
@@ -157,20 +174,21 @@ class XahauNFTLicenseSystem {
         return ['success' => false, 'error' => 'Minting failed'];
     }
     
-    // 6. CREATE LICENSE METADATA
-    private function createLicenseMetadata($paymentTx) {
+    // UPDATED: Create license metadata with dynamic values
+    private function createLicenseMetadata($paymentTx, $licenseNumber, $imageUrl) {
         return [
-            'name' => 'Evernode Cluster Manager License',
+            'name' => "Evernode Cluster Manager License #" . sprintf('%03d', $licenseNumber),
             'description' => 'Premium license NFT for advanced cluster management on Evernode',
-            'image' => 'https://yourhost.com/assets/cluster-license-nft.png',
+            'image' => $imageUrl, // Dynamic image URL
             'external_url' => 'https://yourhost.com/cluster/',
             'attributes' => [
                 ['trait_type' => 'Product', 'value' => 'Cluster Manager'],
+                ['trait_type' => 'License Number', 'value' => sprintf('%03d', $licenseNumber)],
                 ['trait_type' => 'Network', 'value' => 'Xahau'],
                 ['trait_type' => 'License Type', 'value' => 'Lifetime'],
                 ['trait_type' => 'Features', 'value' => 'Unlimited Clusters'],
                 ['trait_type' => 'Payment TX', 'value' => $paymentTx['hash']],
-                ['trait_type' => 'Payment Amount', 'value' => $this->formatEVRAmount($paymentTx['Amount'])],
+                ['trait_type' => 'Payment Amount', 'value' => $this->formatPaymentAmount($paymentTx)],
                 ['trait_type' => 'Issued Date', 'value' => date('Y-m-d')],
                 ['trait_type' => 'Issued To', 'value' => $paymentTx['Account']],
                 ['trait_type' => 'Evernode Compatible', 'value' => 'Yes'],
@@ -193,6 +211,43 @@ class XahauNFTLicenseSystem {
             ]
         ];
     }
+    // 6. CREATE LICENSE METADATA
+private function createLicenseMetadata($paymentTx, $licenseNumber, $imageUrl) {
+    return [
+        'name' => "Evernode Cluster Manager License #" . sprintf('%03d', $licenseNumber),
+        'description' => 'Premium license NFT for advanced cluster management on Evernode',
+        'image' => $imageUrl, // ← NOW DYNAMIC
+        'external_url' => 'https://yourhost.com/cluster/',
+        'attributes' => [
+            ['trait_type' => 'Product', 'value' => 'Cluster Manager'],
+            ['trait_type' => 'License Number', 'value' => sprintf('%03d', $licenseNumber)], // ← NEW
+            ['trait_type' => 'Network', 'value' => 'Xahau'],
+            ['trait_type' => 'License Type', 'value' => 'Lifetime'],
+            ['trait_type' => 'Features', 'value' => 'Unlimited Clusters'],
+            ['trait_type' => 'Payment TX', 'value' => $paymentTx['hash']],
+            ['trait_type' => 'Payment Amount', 'value' => $this->formatEVRAmount($paymentTx['Amount'])],
+            ['trait_type' => 'Issued Date', 'value' => date('Y-m-d')],
+            ['trait_type' => 'Issued To', 'value' => $paymentTx['Account']],
+            ['trait_type' => 'Evernode Compatible', 'value' => 'Yes'],
+            ['trait_type' => 'Transferable', 'value' => 'Yes']
+        ],
+        'license_terms' => [
+            'usage' => 'Unlimited cluster creation and management',
+            'duration' => 'Lifetime',
+            'transferable' => true,
+            'network' => 'xahau',
+            'compatible_with' => ['evernode', 'xahau-apps'],
+            'support' => 'Priority technical support included'
+        ],
+        'technical' => [
+            'network' => 'xahau',
+            'network_id' => 21337,
+            'taxon' => 1337,
+            'issuer' => $this->issuer_address,
+            'version' => '1.0'
+        ]
+    ];
+}
     
     // 7. VERIFY NFT LICENSE OWNERSHIP ON XAHAU
     public function verifyXahauLicenseOwnership($userAddress) {
