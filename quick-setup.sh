@@ -513,9 +513,11 @@ EOF
 # Add cluster management capabilities
 echo "Installing cluster management features..."
 
-# Copy cluster manager files
-wget -O /var/www/html/api/cluster-manager.php \
-  https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/api/cluster-manager.php
+# Cluster management features are already integrated via existing APIs
+echo "✅ Cluster management ready via existing APIs"
+echo "   - Host discovery: /api/host-info.php"
+echo "   - NFT licensing: /api/xahau-nft-licenses.php" 
+echo "   - Crypto rates: /api/crypto-rates.php"
 
 # Install evdevkit if not present
 if ! command -v evdevkit &> /dev/null; then
