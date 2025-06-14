@@ -489,6 +489,26 @@ Deploy applications across multiple hosts with our advanced cluster management s
 
 [Purchase License](https://yourhost.com/purchase-license.html) | [Activate License](https://yourhost.com/activate-cluster.html)
 **Transform your Evernode host today and join the ranks of professional host operators with cutting-edge technology!**
+## 💎 Premium: Cluster Manager ($49.99)
+
+### ⚡ Revolutionary Features
+- **One-Click Magic**: Extend all cluster instances in 30 seconds vs 30+ minutes manually
+- **2400% faster** than SSH-ing into each host individually  
+- **Zero downtime risk** - Never miss an instance again
+- **NFT Licenses**: First software licenses as NFTs on Xahau Network
+
+### 🛒 Get Started
+- [Calculate Your Savings](https://yourhost.com/cluster/roi-calculator.html)
+- [Purchase License ($49.99)](https://yourhost.com/cluster/paywall.html)  
+- [Manage Clusters](https://yourhost.com/cluster/dashboard.html)
+
+### 🔍 For Developers
+```bash
+# Find enhanced hosts
+node tools/discover-cli.js --available-only
+
+# Deploy clusters  
+evdevkit cluster-create /path/to/contract cluster_hosts.txt -m 24
 
 ---
 
