@@ -849,6 +849,33 @@
         </div>
     </section>
 
+    <!-- Premium Cluster Management Section -->
+<section class="cluster-section" style="padding: 80px 0; background: rgba(0,0,0,0.1);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center;">
+        <h2 style="font-size: 36px; margin-bottom: 15px;">🚀 Premium: Cluster Management</h2>
+        <p style="font-size: 20px; opacity: 0.9; margin-bottom: 40px;">Deploy and manage distributed applications across multiple hosts</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin: 30px 0;">
+            <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
+                <h4>🎛️ Dashboard</h4>
+                <p>Manage all your clusters from one interface</p>
+                <a href="/cluster/dashboard.html" style="display: inline-block; background: #4CAF50; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin-top: 15px;">Access Dashboard</a>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
+                <h4>📊 ROI Calculator</h4>
+                <p>Calculate time and money savings</p>
+                <a href="/cluster/roi-calculator.html" style="display: inline-block; background: #2196F3; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin-top: 15px;">Calculate ROI</a>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
+                <h4>💎 Get License</h4>
+                <p>Purchase your NFT cluster license</p>
+                <a href="/cluster/paywall.html" style="display: inline-block; background: #FF9800; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin-top: 15px;">Buy License</a>
+            </div>
+        </div>
+    </div>
+</section>
     <!-- Host Address Section -->
     <div class="card" id="host-address">
         <div style="text-align: center; margin-bottom: 30px;">
@@ -2155,16 +2182,12 @@
                 e.target.classList.contains('availability-item')) {
                 e.target.style.cursor = 'pointer';
             }
-        });
-        <!-- Add to your existing index.html -->
-<div class="cluster-section">
-    <h3>🔗 Cluster Management</h3>
-    <p>Deploy and manage distributed applications across multiple hosts</p>
-    <button onclick="window.open('/cluster-dashboard.html', '_blank')" 
-            class="btn-primary">
-        Launch Cluster Manager
-    </button>
-</div>
+   })
+        .catch(error => console.log("Update failed:", error));
+}, 30000);
+
+    </script>
+    
     </script>
 </body>
 </html>
