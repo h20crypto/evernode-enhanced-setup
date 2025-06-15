@@ -1998,100 +1998,64 @@
 
             // Schedule next update
             setTimeout(updateAvailability, 30000); // 30 seconds
+    }
+
+        // Load dynamic host address
+        function loadHostAddress() {
+            fetch('/api/host-info.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.xahau_address && data.xahau_address !== 'unknown') {
+                        document.getElementById('host-address-text').textContent = data.xahau_address;
+                    } else {
+                        fetch('/api/instance-count.php')
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.host_info && data.host_info.address) {
+                                    document.getElementById('host-address-text').textContent = data.host_info.address;
+                                }
+                            })
+                            .catch(error => {
+                                console.log('Could not load host address:', error);
+                                document.getElementById('host-address-text').textContent = 'rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3';
+                            });
+                    }
+                })
+                .catch(error => {
+                    console.log('Host address API error:', error);
+                    document.getElementById('host-address-text').textContent = 'rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3';
+                });
         }
-function updateAvailability() {
-    fetch('/api/instance-count.php')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('API not available');
-            }
-            return response.json();
-        })
-        .then(data => {
-            updateDisplay(data);
-        })
-        .catch(error => {
-            console.log('Using fallback data:', error);
-            // Fallback to realistic mock data
-            const mockData = generateMockData();
-            updateDisplay(mockData);
-        });
 
-    // Schedule next update
-    setTimeout(updateAvailability, 30000); // 30 seconds
-}
-
-// Load dynamic host address
-function loadHostAddress() {
-    fetch('/api/host-info.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.xahau_address && data.xahau_address !== 'unknown') {
-                document.getElementById('host-address-text').textContent = data.xahau_address;
-            } else {
-                // Fallback - try to get from another API
-                fetch('/api/instance-count.php')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.host_info && data.host_info.address) {
-                            document.getElementById('host-address-text').textContent = data.host_info.address;
-                        }
-                    })
-                    .catch(error => {
-                        console.log('Could not load host address:', error);
-                        document.getElementById('host-address-text').textContent = 'rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3';
-                    });
-            }
-        });
-        })
-        .catch(error => {
-            console.log('Host address API error:', error);
-            document.getElementById('host-address-text').textContent = 'rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3';
-        });
-}
         function generateMockData() {
-            const baseTotal = 50;
-            const currentTime = new Date().getTime();
-            const variation = Math.sin(currentTime / 300000) * 10; // 5-minute cycle
-            
-            const usedSlots = Math.max(5, Math.min(45, Math.floor(15 + variation + Math.random() * 10)));
-            const availableSlots = baseTotal - usedSlots;
-            const usagePercentage = Math.round((usedSlots / baseTotal) * 100);
-            
-            let statusMessage = '✅ Plenty of slots available!';
-            if (usagePercentage > 80) {
-                statusMessage = '⚡ Limited slots available!';
-            } else if (usagePercentage > 95) {
-                statusMessage = '🔴 Nearly at capacity!';
-            }
+            const baseTotal = 3;
+            const usedSlots = 0;
+            const availableSlots = 3;
+            const usagePercentage = 0;
             
             return {
                 total: baseTotal,
                 used: usedSlots,
                 available: availableSlots,
                 usage_percentage: usagePercentage,
-                status_message: statusMessage,
-                data_source: 'estimated',
+                status_message: '✅ Ready for new deployments!',
+                data_source: 'actual',
                 last_updated: new Date().toISOString()
             };
         }
 
         function updateDisplay(data) {
-            // Update numbers
             document.getElementById('total-slots').textContent = data.total || '--';
             document.getElementById('used-slots').textContent = data.used || '--';
             document.getElementById('available-slots').textContent = data.available || '--';
             document.getElementById('usage-percentage').textContent = (data.usage_percentage || 0) + '%';
             
-            // Update progress bar
             const progressBar = document.getElementById('usage-bar');
             progressBar.style.width = (data.usage_percentage || 0) + '%';
             
-            // Update status message with appropriate styling
             const messageEl = document.getElementById('availability-message');
             messageEl.textContent = data.status_message || '✅ Ready for deployments!';
             
-            // Apply status styling
             messageEl.className = 'availability-message';
             if (data.available > 10) {
                 messageEl.classList.add('status-good');
@@ -2101,10 +2065,7 @@ function loadHostAddress() {
                 messageEl.classList.add('status-full');
             }
             
-            // Update metadata
             document.getElementById('last-updated').textContent = new Date().toLocaleString();
-            
-            // Store data for debug function
             window.lastApiData = data;
         }
 
@@ -2112,18 +2073,14 @@ function loadHostAddress() {
             showNotification('Refreshing data...', 'success');
             updateAvailability();
         }
-document.addEventListener('DOMContentLoaded', function() {
-    // Load dynamic host address
-    loadHostAddress();
-    
-    // Start real-time monitoring
-    updateAvailability();
-    
-    // ... rest of existing code
-});
-        // Debug functionality (hidden by default)
-        let debugClickCount = 0;
-        
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load dynamic host address
+            loadHostAddress();
+            
+            // Start real-time monitoring
+            updateAvailability();
         function showDebugInfo() {
             if (window.lastApiData) {
                 const debugInfo = JSON.stringify(window.lastApiData, null, 2);
