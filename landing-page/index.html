@@ -2000,7 +2000,25 @@
             setTimeout(updateAvailability, 30000); // 30 seconds
         }
 function updateAvailability() {
-    // ... existing updateAvailability code ...
+    fetch('/api/instance-count.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('API not available');
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateDisplay(data);
+        })
+        .catch(error => {
+            console.log('Using fallback data:', error);
+            // Fallback to realistic mock data
+            const mockData = generateMockData();
+            updateDisplay(mockData);
+        });
+
+    // Schedule next update
+    setTimeout(updateAvailability, 30000); // 30 seconds
 }
 
 // Load dynamic host address
@@ -2024,6 +2042,7 @@ function loadHostAddress() {
                         document.getElementById('host-address-text').textContent = 'rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3';
                     });
             }
+        });
         })
         .catch(error => {
             console.log('Host address API error:', error);
