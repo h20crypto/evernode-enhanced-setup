@@ -2169,8 +2169,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Initialize on page load
+// Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Load dynamic host address
+            loadHostAddress();
+            
             // Start real-time monitoring
             updateAvailability();
             
@@ -2231,7 +2234,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 refreshData();
             }
         });
-});
 
         // Add some visual feedback for interactive elements
         document.addEventListener('mouseover', function(e) {
@@ -2242,20 +2244,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Force periodic updates
-        setInterval(() => {
-            fetch("/api/instance-count.php")
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("total-slots").textContent = data.total;
-                    document.getElementById("available-slots").textContent = data.available;
-                    document.getElementById("used-slots").textContent = data.used;
-                    document.getElementById("usage-percentage").textContent = data.usage_percentage + "%";
-                })
-                .catch(error => console.log("Update failed:", error));
-        }, 30000);
-
     </script>
 </body>
-</html>
-       
+</html>  
