@@ -68,6 +68,13 @@ Most Evernode hosts provide basic functionality with minimal user experience. Th
 
 ## 🚀 Quick Start v2.0
 
+# Enhanced Evernode Setup v2.0
+## One-Command Installation with Dhali Oracle Integration
+
+```bash
+# Install complete Enhanced Evernode system
+curl -sL https://raw.githubusercontent.com/yourusername/evernode-enhanced-setup/main/quick-setup.sh | bash
+
 ### Option 1: **One-Command Installation** (Recommended)
 ```bash
 # Clone the repository
