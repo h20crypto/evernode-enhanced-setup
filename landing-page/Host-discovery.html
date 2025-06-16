@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host Discovery - Enhanced Evernode Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .discovery-controls {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            min-width: 250px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-tag:hover,
+        .filter-tag.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .hosts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .host-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .host-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .host-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .host-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-online {
+            background: #28a745;
+        }
+
+        .status-offline {
+            background: #dc3545;
+        }
+
+        .status-warning {
+            background: #ffc107;
+        }
+
+        .host-details {
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .host-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .feature-badge {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .host-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .loading-indicator {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .discovery-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-btn">← Back to Home</a>
+            <h1>🔍 Host Discovery</h1>
+            <p style="color: rgba(255,255,255,0.9);">Discover enhanced Evernode hosts in the network</p>
+            
+            <div class="discovery-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalHosts">0</div>
+                    <div class="stat-label">Hosts Found</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="onlineHosts">0</div>
+                    <div class="stat-label">Online</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="availableSlots">0</div>
+                    <div class="stat-label">Available Slots</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="enhancedHosts">0</div>
+                    <div class="stat-label">Enhanced</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Discovery Controls -->
+        <div class="discovery-controls">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search by host address, domain, or location..." id="searchInput">
+                <button class="btn" onclick="startDiscovery()">🔍 Discover Hosts</button>
+                <button class="btn" onclick="refreshHosts()">🔄 Refresh</button>
+            </div>
+            
+            <div class="filter-tags">
+                <div class="filter-tag active" onclick="filterHosts('all')">All Hosts</div>
+                <div class="filter-tag" onclick="filterHosts('online')">Online Only</div>
+                <div class="filter-tag" onclick="filterHosts('enhanced')">Enhanced</div>
+                <div class="filter-tag" onclick="filterHosts('available')">Available Slots</div>
+                <div class="filter-tag" onclick="filterHosts('cluster')">Cluster Support</div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+            🔍 Scanning network for enhanced hosts...
+        </div>
+
+        <!-- Hosts Grid -->
+        <div class="hosts-grid" id="hostsGrid">
+            <!-- Hosts will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        let discoveredHosts = [];
+        let currentFilter = 'all';
+
+        // Sample host data for demonstration
+        const sampleHosts = [
+            {
+                name: "CryptoNode Pro",
+                address: "rH8oZBoCQJE1aGwdNRH7icr93RrZkbVaaa",
+                domain: "h20cryptonode3.dev",
+                location: "US East",
+                status: "online",
+                name: "Standard Host",
+                address: "rStandardHost123Example456789",
+                domain: "standard.example.com",
+                location: "Asia Pacific",
+                status: "warning",
+                instances: { total: 3, used: 3, available: 0 },
+                features: ["basic"],
+                uptime: 98.2,
+                rate: "$0.15/hour",
+                enhanced: false
+            }
+        ];
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'online': return 'status-online';
+                case 'offline': return 'status-offline';
+                case 'warning': return 'status-warning';
+                default: return 'status-offline';
+            }
+        }
+
+        function formatAddress(address) {
+            return address.substring(0, 8) + '...' + address.substring(address.length - 6);
+        }
+
+        function renderHosts(hosts = discoveredHosts) {
+            const grid = document.getElementById('hostsGrid');
+            grid.innerHTML = '';
+
+            if (hosts.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: white;">
+                        <h3>No hosts found</h3>
+                        <p>Try adjusting your search criteria or click "Discover Hosts" to scan the network.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            hosts.forEach(host => {
+                const hostCard = document.createElement('div');
+                hostCard.className = 'host-card';
+                if (host.isMyHost) {
+                    hostCard.style.border = '2px solid #28a745';
+                    hostCard.style.background = 'rgba(40, 167, 69, 0.05)';
+                }
+
+                const featureBadges = host.features.map(feature => 
+                    `<span class="feature-badge">${feature}</span>`
+                ).join('');
+
+                hostCard.innerHTML = `
+                    <div class="host-header">
+                        <div class="host-name">${host.name}${host.isMyHost ? ' (You)' : ''}</div>
+                        <div class="status-indicator">
+                            <div class="status-dot ${getStatusColor(host.status)}"></div>
+                            ${host.status.charAt(0).toUpperCase() + host.status.slice(1)}
+                        </div>
+                    </div>
+                    
+                    <div class="host-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Address:</span>
+                            <span class="detail-value">${formatAddress(host.address)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Domain:</span>
+                            <span class="detail-value">${host.domain}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Location:</span>
+                            <span class="detail-value">${host.location}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Available:</span>
+                            <span class="detail-value">${host.instances.available}/${host.instances.total} slots</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Uptime:</span>
+                            <span class="detail-value">${host.uptime}%</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Rate:</span>
+                            <span class="detail-value">${host.rate}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="host-features">
+                        ${featureBadges}
+                    </div>
+                    
+                    <div class="host-actions">
+                        <button class="btn btn-small" onclick="connectToHost('${host.address}')">
+                            🔗 Connect
+                        </button>
+                        <button class="btn btn-small btn-outline" onclick="viewHostDetails('${host.address}')">
+                            📊 Details
+                        </button>
+                    </div>
+                `;
+
+                grid.appendChild(hostCard);
+            });
+        }
+
+        function updateStats(hosts = discoveredHosts) {
+            const totalHosts = hosts.length;
+            const onlineHosts = hosts.filter(h => h.status === 'online').length;
+            const availableSlots = hosts.reduce((sum, h) => sum + h.instances.available, 0);
+            const enhancedHosts = hosts.filter(h => h.enhanced).length;
+
+            document.getElementById('totalHosts').textContent = totalHosts;
+            document.getElementById('onlineHosts').textContent = onlineHosts;
+            document.getElementById('availableSlots').textContent = availableSlots;
+            document.getElementById('enhancedHosts').textContent = enhancedHosts;
+        }
+
+        function filterHosts(filterType) {
+            // Update active filter
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            currentFilter = filterType;
+            
+            let filteredHosts = discoveredHosts;
+            
+            switch(filterType) {
+                case 'online':
+                    filteredHosts = discoveredHosts.filter(h => h.status === 'online');
+                    break;
+                case 'enhanced':
+                    filteredHosts = discoveredHosts.filter(h => h.enhanced);
+                    break;
+                case 'available':
+                    filteredHosts = discoveredHosts.filter(h => h.instances.available > 0);
+                    break;
+                case 'cluster':
+                    filteredHosts = discoveredHosts.filter(h => h.features.includes('cluster-support'));
+                    break;
+                case 'all':
+                default:
+                    filteredHosts = discoveredHosts;
+                    break;
+            }
+            
+            renderHosts(filteredHosts);
+        }
+
+        function startDiscovery() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const hostsGrid = document.getElementById('hostsGrid');
+            
+            loadingIndicator.style.display = 'block';
+            hostsGrid.style.display = 'none';
+            
+            // Simulate discovery process
+            setTimeout(() => {
+                discoveredHosts = [...sampleHosts];
+                loadingIndicator.style.display = 'none';
+                hostsGrid.style.display = 'grid';
+                
+                renderHosts();
+                updateStats();
+                
+                // Apply current filter
+                filterHosts(currentFilter);
+            }, 2000);
+        }
+
+        function refreshHosts() {
+            startDiscovery();
+        }
+
+        function connectToHost(address) {
+            alert(`🔗 Connecting to host: ${address}\n\nThis would normally:\n• Test connection to the host\n• Verify compatibility\n• Add to your trusted hosts list\n• Enable cluster deployment\n\nDemo: Connection successful!`);
+        }
+
+        function viewHostDetails(address) {
+            const host = discoveredHosts.find(h => h.address === address);
+            if (host) {
+                alert(`📊 Host Details: ${host.name}\n\nFull Address: ${host.address}\nDomain: ${host.domain}\nLocation: ${host.location}\nStatus: ${host.status}\nUptime: ${host.uptime}%\nFeatures: ${host.features.join(', ')}\nRate: ${host.rate}\n\nThis would normally open a detailed dashboard with:\n• Performance graphs\n• Historical data\n• Contact information\n• Pricing details`);
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (searchTerm === '') {
+                filterHosts(currentFilter);
+                return;
+            }
+            
+            const searchResults = discoveredHosts.filter(host => {
+                return host.name.toLowerCase().includes(searchTerm) ||
+                       host.address.toLowerCase().includes(searchTerm) ||
+                       host.domain.toLowerCase().includes(searchTerm) ||
+                       host.location.toLowerCase().includes(searchTerm);
+            });
+            
+            renderHosts(searchResults);
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start with sample data
+            discoveredHosts = [...sampleHosts];
+            renderHosts();
+            updateStats();
+        });
+    </script>
+</body>
+</html>3, used: 1, available: 2 },
+                features: ["enhanced", "cluster-support", "real-time-monitoring"],
+                uptime: 99.8,
+                rate: "$0.18/hour",
+                enhanced: true
+            },
+            {
+                name: "Your Host",
+                address: "rDfdnnodSnG3BukBHakSRrxx44ZY21RFX3",
+                domain: "localhost",
+                location: "Unknown",
+                status: "online",
+                instances: { total: 3, used: 0, available: 3 },
+                features: ["enhanced", "cluster-support", "auto-discovery"],
+                uptime: 99.9,
+                rate: "$0.18/hour",
+                enhanced: true,
+                isMyHost: true
+            },
+            {
+                name: "SuperHost Elite",
+                address: "rDKgSroMoh5Ur1EDxFZnGJXzk2MFeDg3ts",
+                domain: "evernode1.zerp.network",
+                location: "EU West",
+                status: "online",
+                instances: { total: 3, used: 2, available: 1 },
+                features: ["enhanced", "cluster-support"],
+                uptime: 99.5,
+                rate: "$0.20/hour",
+                enhanced: true
+            },
+            {
+                name: "Standard Host",
+                address: "rStandardHost123Example456789",
+                domain: "standard.example.com",
+                location: "Asia Pacific",
+                status: "warning",
+                instances: { total:
