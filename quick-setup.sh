@@ -1,533 +1,600 @@
 #!/bin/bash
 
-# 🌟 EVERNODE ENHANCED HOST - PROFESSIONAL QUICK SETUP v2.0
-# One-command setup for professional Evernode host operators with modern UI
+# Enhanced Evernode Quick Setup Script - Updated with Dhali Oracle Integration
+# Version: 2.0 with Cluster Manager
 
 set -e
 
+# Colors for output
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
-RED='\033[0;31m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-NC='\033[0m'
+NC='\033[0m' # No Color
 
-echo -e "${PURPLE}🌟 Enhanced Evernode Host - Professional Setup v2.0${NC}"
-echo -e "${PURPLE}====================================================${NC}"
+print_status() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+print_info() {
+    echo -e "${BLUE}ℹ️  $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+# Configuration
+DOMAIN=${1:-$(hostname -f)}
+INSTALL_DIR="/var/www/html"
+NGINX_SITE="/etc/nginx/sites-available/enhanced-evernode"
+API_DIR="$INSTALL_DIR/api"
+CLUSTER_DIR="$INSTALL_DIR/cluster"
+DATA_DIR="$INSTALL_DIR/data"
+
+echo -e "${BLUE}🚀 Enhanced Evernode Setup with Dhali Oracle Integration${NC}"
+echo "=================================================="
+echo "Domain: $DOMAIN"
+echo "Install Directory: $INSTALL_DIR"
 echo ""
 
 # Check if running as root
-if [[ $EUID -ne 0 ]]; then
-   echo -e "${RED}❌ This script must be run as root (use sudo)${NC}"
-   echo -e "${YELLOW}💡 Run: sudo $0${NC}"
-   exit 1
-fi
-
-# Enhanced host information gathering
-echo -e "${YELLOW}📋 Gathering enhanced host information...${NC}"
-HOST_IP=$(curl -s -4 ifconfig.me 2>/dev/null || curl -s https://ipinfo.io/ip 2>/dev/null || echo "unknown")
-HOST_IPV6=$(ip -6 addr show | grep -oP '(?<=inet6\s)2a0a[^/]+' | head -1)
-HOSTNAME=$(hostname -f 2>/dev/null || hostname)
-OS_VERSION=$(lsb_release -ds 2>/dev/null || cat /etc/os-release | grep PRETTY_NAME | cut -d'"' -f2)
-MEMORY_GB=$(free -h | awk '/^Mem:/ {print $2}')
-DISK_SPACE=$(df -h / | awk 'NR==2 {print $4}')
-CPU_CORES=$(nproc)
-
-echo -e "${CYAN}🌐 IPv4: ${HOST_IP}${NC}"
-echo -e "${CYAN}🌐 IPv6: ${HOST_IPV6:-Not configured}${NC}"
-echo -e "${CYAN}🏷️ Hostname: ${HOSTNAME}${NC}"
-echo -e "${CYAN}💻 OS: ${OS_VERSION}${NC}"
-echo -e "${CYAN}🧠 Memory: ${MEMORY_GB}${NC}"
-echo -e "${CYAN}💾 Disk Available: ${DISK_SPACE}${NC}"
-echo -e "${CYAN}⚡ CPU Cores: ${CPU_CORES}${NC}"
-echo ""
-
-# Install enhanced prerequisites
-echo -e "${YELLOW}📦 Installing enhanced components...${NC}"
-apt-get update >/dev/null 2>&1
-apt-get install -y curl wget nginx php-fpm php-cli php-json jq certbot python3-certbot-nginx git htop unzip >/dev/null 2>&1
-
-# Enhanced PHP version detection
-PHP_VERSION=$(php -v | head -n 1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
-echo -e "${GREEN}🐘 PHP version detected: ${PHP_VERSION}${NC}"
-
-# Create enhanced directory structure
-echo -e "${YELLOW}📁 Setting up enhanced directory structure...${NC}"
-mkdir -p /var/www/html/api
-mkdir -p /opt/evernode-enhanced/{logs,backups,scripts,configs}
-mkdir -p /var/log/evernode-enhanced
-
-# Deploy enhanced files with fallback logic
-echo -e "${YELLOW}📄 Deploying enhanced landing page and API...${NC}"
-if [[ -f "landing-page/index.html" ]]; then
-    echo "  ✅ Using local enhanced files..."
-    cp landing-page/index.html /var/www/html/
-    cp landing-page/api/instance-count.php /var/www/html/api/
-else
-    echo "  📥 Downloading enhanced files from GitHub..."
-    # Download the enhanced landing page
-    curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/landing-page/index.html > /var/www/html/index.html || {
-        echo -e "${RED}❌ Failed to download landing page${NC}"
-        exit 1
-    }
-    
-    # Download the enhanced API
-    curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/landing-page/api/instance-count.php > /var/www/html/api/instance-count.php || {
-        echo -e "${RED}❌ Failed to download API${NC}"
-        exit 1
-    }
-fi
-
-# Update host address in landing page (if specific address needed)
-if [[ "$HOST_IP" != "unknown" ]] && [[ -n "$HOST_IP" ]]; then
-    # Replace example host address with actual host IP for demonstration
-    sed -i "s/rExampleHostAddress[a-zA-Z0-9]*/r${HOST_IP//./}Host/g" /var/www/html/index.html 2>/dev/null || true
-fi
-
-# Set enhanced ownership and permissions
-chown -R www-data:www-data /var/www/html
-chmod -R 644 /var/www/html
-chmod 755 /var/www/html /var/www/html/api
-chmod +x /var/www/html/api/instance-count.php
-
-# Enhanced PHP-FPM socket detection
-echo -e "${YELLOW}⚙️ Configuring enhanced web server...${NC}"
-
-FPM_SOCKET=""
-if [[ -S "/var/run/php/php${PHP_VERSION}-fpm.sock" ]]; then
-    FPM_SOCKET="/var/run/php/php${PHP_VERSION}-fpm.sock"
-elif [[ -S "/var/run/php/php8.3-fpm.sock" ]]; then
-    FPM_SOCKET="/var/run/php/php8.3-fpm.sock"
-elif [[ -S "/var/run/php/php8.1-fpm.sock" ]]; then
-    FPM_SOCKET="/var/run/php/php8.1-fpm.sock"
-elif [[ -S "/var/run/php/php8.2-fpm.sock" ]]; then
-    FPM_SOCKET="/var/run/php/php8.2-fpm.sock"
-else
-    echo -e "${RED}❌ Could not find PHP-FPM socket${NC}"
-    echo "Available sockets:"
-    ls -la /var/run/php/ 2>/dev/null || echo "No PHP sockets found"
+if [[ $EUID -eq 0 ]]; then
+    print_error "This script should not be run as root for security reasons"
     exit 1
 fi
 
-echo -e "${GREEN}🔌 Using PHP-FPM socket: ${FPM_SOCKET}${NC}"
+# Check for required commands
+check_requirements() {
+    print_info "Checking system requirements..."
+    
+    local required_commands=("curl" "nginx" "php" "node" "npm")
+    local missing_commands=()
+    
+    for cmd in "${required_commands[@]}"; do
+        if ! command -v $cmd &> /dev/null; then
+            missing_commands+=($cmd)
+        fi
+    done
+    
+    if [ ${#missing_commands[@]} -ne 0 ]; then
+        print_error "Missing required commands: ${missing_commands[*]}"
+        print_info "Please install the missing dependencies and try again"
+        exit 1
+    fi
+    
+    print_status "All requirements satisfied"
+}
 
-# Create enhanced Nginx configuration
-cat > /etc/nginx/sites-available/evernode-enhanced << NGINXEOF
+# Install system dependencies
+install_dependencies() {
+    print_info "Installing/updating system dependencies..."
+    
+    # Update package list
+    sudo apt update
+    
+    # Install required packages
+    sudo apt install -y nginx php-fpm php-cli php-json php-curl php-mbstring nodejs npm
+    
+    # Install global npm packages for Evernode
+    sudo npm install -g evernode evdevkit
+    
+    print_status "System dependencies installed"
+}
+
+# Setup web server directories
+setup_directories() {
+    print_info "Setting up directory structure..."
+    
+    # Create main directories
+    sudo mkdir -p $INSTALL_DIR
+    sudo mkdir -p $API_DIR
+    sudo mkdir -p $CLUSTER_DIR
+    sudo mkdir -p $DATA_DIR
+    sudo mkdir -p $INSTALL_DIR/assets
+    sudo mkdir -p $INSTALL_DIR/tools
+    sudo mkdir -p $INSTALL_DIR/dhali_cache
+    
+    # Set permissions
+    sudo chown -R www-data:www-data $INSTALL_DIR
+    sudo chmod -R 755 $INSTALL_DIR
+    sudo chmod -R 766 $DATA_DIR
+    sudo chmod -R 766 $INSTALL_DIR/dhali_cache
+    
+    print_status "Directory structure created"
+}
+
+# Copy enhanced host files
+copy_host_files() {
+    print_info "Installing enhanced host files..."
+    
+    # Copy main landing page
+    if [ -f "index.html" ]; then
+        sudo cp index.html $INSTALL_DIR/
+        print_status "Main landing page installed"
+    else
+        print_warning "index.html not found, skipping"
+    fi
+    
+    # Copy existing API files
+    if [ -d "api" ]; then
+        sudo cp -r api/* $API_DIR/
+        print_status "API files installed"
+    else
+        print_warning "api directory not found, creating basic structure"
+        sudo mkdir -p $API_DIR
+    fi
+    
+    print_status "Enhanced host files installed"
+}
+
+# Install cluster management files
+install_cluster_files() {
+    print_info "Installing cluster management system..."
+    
+    # Copy cluster directory if exists
+    if [ -d "cluster" ]; then
+        sudo cp -r cluster/* $CLUSTER_DIR/
+        print_status "Cluster management files installed"
+    else
+        print_warning "cluster directory not found, creating from templates"
+        
+        # Create basic cluster directory structure
+        sudo mkdir -p $CLUSTER_DIR
+        
+        # Create placeholder files if they don't exist
+        sudo tee $CLUSTER_DIR/index.html > /dev/null << 'EOF'
+<!DOCTYPE html>
+<html><head><title>Cluster Manager</title></head>
+<body><h1>Cluster Manager Coming Soon</h1><p>The cluster management interface will be available here.</p></body></html>
+EOF
+    fi
+    
+    # Set permissions for cluster files
+    sudo chown -R www-data:www-data $CLUSTER_DIR
+    sudo chmod -R 644 $CLUSTER_DIR/*.html
+    
+    print_status "Cluster management system installed"
+}
+
+# Install Dhali Oracle integration
+install_dhali_integration() {
+    print_info "Setting up Dhali Oracle integration..."
+    
+    # Create crypto-rates-optimized.php if it doesn't exist
+    if [ ! -f "$API_DIR/crypto-rates-optimized.php" ]; then
+        print_warning "crypto-rates-optimized.php not found, creating template"
+        
+        sudo tee $API_DIR/crypto-rates-optimized.php > /dev/null << 'EOF'
+<?php
+// crypto-rates-optimized.php - Template for Dhali Oracle integration
+// TODO: Replace with actual implementation
+header('Content-Type: application/json');
+
+class OptimizedDhaliRates {
+    private $payment_claim = 'YOUR_DHALI_PAYMENT_CLAIM_HERE'; // ← UPDATE THIS!
+    
+    public function getRates($mode = 'balanced') {
+        // Fallback rates for testing
+        return [
+            'xrp' => [
+                'rate' => 0.42,
+                'amount_for_license' => 119.05,
+                'display' => '~119 XRP',
+                'source' => 'fallback'
+            ],
+            'evr' => [
+                'rate' => 0.22,
+                'amount_for_license' => 227.23,
+                'display' => '~227 EVR',
+                'source' => 'estimated'
+            ],
+            'usd' => [
+                'rate' => 1.00,
+                'amount_for_license' => 49.99,
+                'display' => '$49.99 USDC',
+                'source' => 'fixed'
+            ],
+            'license_usd' => 49.99,
+            'mode' => $mode,
+            'timestamp' => time(),
+            'last_updated' => date('Y-m-d H:i:s'),
+            'costs_incurred' => 0
+        ];
+    }
+}
+
+$mode = $_GET['mode'] ?? 'balanced';
+$rates = new OptimizedDhaliRates();
+echo json_encode($rates->getRates($mode));
+?>
+EOF
+    fi
+    
+    # Create xahau-nft-licenses.php if it doesn't exist
+    if [ ! -f "$API_DIR/xahau-nft-licenses.php" ]; then
+        print_warning "xahau-nft-licenses.php not found, creating template"
+        
+        sudo tee $API_DIR/xahau-nft-licenses.php > /dev/null << 'EOF'
+<?php
+// xahau-nft-licenses.php - Template for NFT license management
+// TODO: Replace with actual implementation
+header('Content-Type: application/json');
+
+// Basic template response
+$method = $_SERVER['REQUEST_METHOD'];
+$input = json_decode(file_get_contents('php://input'), true);
+
+if ($method === 'POST') {
+    $action = $input['action'] ?? '';
+    
+    switch ($action) {
+        case 'generate_payment':
+            echo json_encode([
+                'dest_tag' => rand(100000, 999999),
+                'address' => 'rYourXahauAddress', // ← UPDATE THIS!
+                'exact_amount' => '119.05',
+                'rate_used' => 0.42,
+                'currency' => $input['currency'] ?? 'xrp'
+            ]);
+            break;
+            
+        default:
+            echo json_encode(['error' => 'Not implemented yet']);
+    }
+} else {
+    echo json_encode(['error' => 'Not implemented yet']);
+}
+?>
+EOF
+    fi
+    
+    # Set permissions
+    sudo chmod +x $API_DIR/*.php
+    
+    print_status "Dhali Oracle integration templates installed"
+    print_warning "Remember to update API files with your actual Dhali payment claim and Xahau address!"
+}
+
+# Configure enhanced features
+configure_enhanced_features() {
+    print_info "Configuring enhanced Evernode features..."
+    
+    # Create enhanced configuration
+    sudo tee $INSTALL_DIR/enhanced-config.json > /dev/null << EOF
+{
+    "version": "2.0",
+    "features": {
+        "enhanced_host": true,
+        "cluster_manager": true,
+        "dhali_oracle": true,
+        "real_time_monitoring": true,
+        "nft_licenses": true
+    },
+    "endpoints": {
+        "instance_count": "/api/instance-count.php",
+        "host_info": "/api/host-info.php",
+        "crypto_rates": "/api/crypto-rates-optimized.php",
+        "nft_licenses": "/api/xahau-nft-licenses.php"
+    },
+    "cluster": {
+        "paywall": "/cluster/paywall.html",
+        "wizard": "/cluster/wizard.html",
+        "calculator": "/cluster/roi-calculator.html"
+    },
+    "dhali": {
+        "payment_claim": "UPDATE_WITH_YOUR_CLAIM",
+        "endpoints": {
+            "xrpl_raw": "https://run.api.dhali.io/d74e99cb-166d-416b-b171-4d313e0f079d/",
+            "xrpl_stats": "https://run.api.dhali.io/c74e147c-a14c-4038-a6aa-9619d2c92596/",
+            "xahau_raw": "https://run.api.dhali.io/f642bad0-acaf-4b2e-852b-66d9a6b6b1ef/"
+        }
+    },
+    "install_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+    "domain": "$DOMAIN"
+}
+EOF
+    
+    sudo chown www-data:www-data $INSTALL_DIR/enhanced-config.json
+    
+    print_status "Enhanced features configured"
+}
+
+# Setup Nginx configuration
+configure_nginx() {
+    print_info "Configuring Nginx web server..."
+    
+    # Create Nginx site configuration
+    sudo tee $NGINX_SITE > /dev/null << EOF
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+    listen 80;
+    server_name $DOMAIN;
+    root $INSTALL_DIR;
+    index index.html index.php;
     
-    # Support domain and IP access
-    server_name ${HOSTNAME} ${HOST_IP} ${HOST_IPV6} localhost _;
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
     
-    root /var/www/html;
-    index index.html index.htm index.php;
+    # CORS headers for API
+    add_header Access-Control-Allow-Origin "*" always;
+    add_header Access-Control-Allow-Methods "GET, POST, OPTIONS" always;
+    add_header Access-Control-Allow-Headers "Origin, Content-Type, Accept" always;
     
-    # Enhanced logging
-    access_log /var/log/nginx/evernode-access.log;
-    error_log /var/log/nginx/evernode-error.log;
-    
-    # Main location with enhanced caching
+    # Main site
     location / {
         try_files \$uri \$uri/ =404;
-        add_header Cache-Control "no-cache, must-revalidate";
-        
-        # Enhanced security headers
-        add_header X-Frame-Options DENY;
-        add_header X-Content-Type-Options nosniff;
-        add_header X-XSS-Protection "1; mode=block";
-        add_header Referrer-Policy "strict-origin-when-cross-origin";
     }
     
-    # Enhanced PHP handling
-    location ~ \.php\$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:${FPM_SOCKET};
-        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-        include fastcgi_params;
-        
-        # Enhanced timeout settings
-        fastcgi_connect_timeout 60;
-        fastcgi_send_timeout 60;
-        fastcgi_read_timeout 60;
-        fastcgi_buffering on;
-        fastcgi_buffer_size 16k;
-        fastcgi_buffers 16 16k;
-    }
-    
-    # Enhanced API configuration with CORS
+    # API endpoints
     location /api/ {
-        add_header Access-Control-Allow-Origin *;
-        add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
-        add_header Access-Control-Allow-Headers "Content-Type, Authorization";
-        add_header Access-Control-Max-Age 86400;
+        try_files \$uri \$uri/ =404;
         
-        # Handle preflight requests
-        if (\$request_method = 'OPTIONS') {
-            return 204;
-        }
-        
-        location ~ \.php\$ {
+        location ~ \.php$ {
             include snippets/fastcgi-php.conf;
-            fastcgi_pass unix:${FPM_SOCKET};
+            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
             fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
             include fastcgi_params;
         }
     }
     
-    # Enhanced static file handling
-    location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
-        expires 30d;
+    # Cluster management
+    location /cluster/ {
+        try_files \$uri \$uri/ =404;
+        
+        # Enable PHP for cluster APIs if needed
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+            include fastcgi_params;
+        }
+    }
+    
+    # Data directory protection
+    location /data/ {
+        deny all;
+        return 403;
+    }
+    
+    # Cache directory protection  
+    location /dhali_cache/ {
+        deny all;
+        return 403;
+    }
+    
+    # Static assets
+    location /assets/ {
+        expires 1y;
         add_header Cache-Control "public, immutable";
-        access_log off;
     }
     
-    # Deny access to hidden files and sensitive directories
-    location ~ /\. {
-        deny all;
-    }
-    
-    location ~ /(config|logs|backups)/ {
-        deny all;
-    }
+    # Gzip compression
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
 }
-NGINXEOF
-
-# Remove default site and enable enhanced configuration
-rm -f /etc/nginx/sites-enabled/default
-ln -sf /etc/nginx/sites-available/evernode-enhanced /etc/nginx/sites-enabled/
-
-# Test Nginx configuration
-echo -e "${YELLOW}🧪 Testing enhanced Nginx configuration...${NC}"
-if nginx -t; then
-    echo -e "${GREEN}✅ Enhanced Nginx configuration is valid${NC}"
-else
-    echo -e "${RED}❌ Nginx configuration error${NC}"
-    nginx -t
-    exit 1
-fi
-
-# Start and enable enhanced services
-echo -e "${YELLOW}🚀 Starting enhanced services...${NC}"
-systemctl enable nginx php${PHP_VERSION}-fpm >/dev/null 2>&1
-systemctl restart php${PHP_VERSION}-fpm
-systemctl restart nginx
-
-# Install enhanced debug and management tools
-echo -e "${YELLOW}🔧 Installing enhanced debug tools...${NC}"
-
-# Enhanced debug tool
-if [[ -f "evernode-debug-api" ]]; then
-    cp evernode-debug-api /usr/local/bin/evernode-debug-api
-else
-    curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/evernode-debug-api > /usr/local/bin/evernode-debug-api
-fi
-
-# Enhanced domain fix tool
-if [[ -f "Domain and Nginx Fix" ]]; then
-    cp "Domain and Nginx Fix" /usr/local/bin/fix-domain-nginx
-else
-    curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/Domain%20and%20Nginx%20Fix > /usr/local/bin/fix-domain-nginx
-fi
-
-# Instance count fix tool
-if [[ -f "fix instance count API" ]]; then
-    cp "fix instance count API" /usr/local/bin/fix-instance-count
-else
-    curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/fix%20instance%20count%20API > /usr/local/bin/fix-instance-count
-fi
-
-# Make all tools executable
-chmod +x /usr/local/bin/evernode-debug-api
-chmod +x /usr/local/bin/fix-domain-nginx
-chmod +x /usr/local/bin/fix-instance-count
-
-# Create enhanced monitoring script
-cat > /usr/local/bin/evernode-monitor << 'MONITOREOF'
-#!/bin/bash
-# Enhanced Evernode monitoring script
-
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-NC='\033[0m'
-
-echo -e "${BLUE}🌟 Enhanced Evernode Host Monitor${NC}"
-echo "================================="
-echo ""
-
-# System status
-echo -e "${YELLOW}System Status:${NC}"
-echo "  CPU Usage: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)%"
-echo "  Memory: $(free -h | awk '/^Mem:/ {printf "%.1f%% used", $3/$2 * 100.0}')"
-echo "  Disk: $(df -h / | awk 'NR==2 {print $5 " used"}')"
-echo ""
-
-# Service status
-echo -e "${YELLOW}Service Status:${NC}"
-systemctl is-active nginx >/dev/null && echo -e "  ${GREEN}✅ Nginx: Running${NC}" || echo -e "  ${RED}❌ Nginx: Not running${NC}"
-systemctl is-active php*-fpm >/dev/null && echo -e "  ${GREEN}✅ PHP-FPM: Running${NC}" || echo -e "  ${RED}❌ PHP-FPM: Not running${NC}"
-echo ""
-
-# API status
-echo -e "${YELLOW}API Status:${NC}"
-API_RESPONSE=$(curl -s http://localhost/api/instance-count.php)
-if echo "$API_RESPONSE" | jq . >/dev/null 2>&1; then
-    echo -e "  ${GREEN}✅ API: Working${NC}"
-    TOTAL=$(echo "$API_RESPONSE" | jq -r '.total')
-    USED=$(echo "$API_RESPONSE" | jq -r '.used')
-    AVAILABLE=$(echo "$API_RESPONSE" | jq -r '.available')
-    echo "     Total: $TOTAL | Used: $USED | Available: $AVAILABLE"
-else
-    echo -e "  ${RED}❌ API: Not responding${NC}"
-fi
-MONITOREOF
-
-chmod +x /usr/local/bin/evernode-monitor
-
-# Enhanced service startup wait
-echo -e "${YELLOW}⏳ Waiting for enhanced services to start...${NC}"
-sleep 8
-
-# Enhanced testing suite
-echo -e "${YELLOW}🧪 Running enhanced test suite...${NC}"
-
-# Test PHP
-echo "<?php echo 'PHP OK'; ?>" > /tmp/test.php
-PHP_TEST=$(php /tmp/test.php 2>/dev/null)
-rm /tmp/test.php
-
-if [[ "$PHP_TEST" == "PHP OK" ]]; then
-    echo -e "${GREEN}✅ PHP is working${NC}"
-else
-    echo -e "${RED}❌ PHP test failed${NC}"
-fi
-
-# Test enhanced API
-API_RESPONSE=$(curl -s -w "%{http_code}" http://localhost/api/instance-count.php 2>/dev/null)
-HTTP_CODE="${API_RESPONSE: -3}"
-HTTP_BODY="${API_RESPONSE%???}"
-
-if [[ "$HTTP_CODE" == "200" ]]; then
-    echo -e "${GREEN}✅ Enhanced API is working${NC}"
-    
-    # Parse enhanced API response
-    if echo "$HTTP_BODY" | jq . >/dev/null 2>&1; then
-        TOTAL=$(echo "$HTTP_BODY" | jq -r '.total' 2>/dev/null)
-        USED=$(echo "$HTTP_BODY" | jq -r '.used' 2>/dev/null)
-        AVAILABLE=$(echo "$HTTP_BODY" | jq -r '.available' 2>/dev/null)
-        DATA_SOURCE=$(echo "$HTTP_BODY" | jq -r '.data_source' 2>/dev/null)
-        STATUS_MSG=$(echo "$HTTP_BODY" | jq -r '.status_message' 2>/dev/null)
-        
-        if [[ "$TOTAL" != "null" ]] && [[ -n "$TOTAL" ]]; then
-            echo -e "${BLUE}📊 Real-time instance status:${NC}"
-            echo -e "${CYAN}   📈 Total: ${TOTAL} | Used: ${USED} | Available: ${AVAILABLE}${NC}"
-            echo -e "${CYAN}   📡 Source: ${DATA_SOURCE}${NC}"
-            echo -e "${CYAN}   💬 Status: ${STATUS_MSG}${NC}"
-        fi
-    fi
-else
-    echo -e "${RED}❌ Enhanced API test failed (HTTP $HTTP_CODE)${NC}"
-    echo "Response: $HTTP_BODY"
-fi
-
-# Test enhanced landing page
-LANDING_TEST=$(curl -s http://localhost/ | grep -c "Enhanced Evernode Host" || echo "0")
-if [[ "$LANDING_TEST" -gt 0 ]]; then
-    echo -e "${GREEN}✅ Enhanced landing page is working${NC}"
-else
-    echo -e "${RED}❌ Landing page test failed${NC}"
-fi
-
-# Test external access
-echo -e "${YELLOW}🌐 Testing external access...${NC}"
-if [[ "$HOST_IP" != "unknown" ]] && [[ -n "$HOST_IP" ]]; then
-    EXTERNAL_TEST=$(curl -s -m 10 http://$HOST_IP/ | grep -c "Enhanced Evernode Host" || echo "0")
-    if [[ "$EXTERNAL_TEST" -gt 0 ]]; then
-        echo -e "${GREEN}✅ External access working${NC}"
-    else
-        echo -e "${YELLOW}⚠️ External access may have issues${NC}"
-    fi
-fi
-
-echo ""
-echo -e "${PURPLE}🎉 ENHANCED EVERNODE HOST SETUP COMPLETE!${NC}"
-echo ""
-echo -e "${BLUE}🌟 Enhanced Features Installed:${NC}"
-echo -e "${GREEN}   ✅ Modern glassmorphism UI with animations${NC}"
-echo -e "${GREEN}   ✅ Real-time container monitoring (30s updates)${NC}"
-echo -e "${GREEN}   ✅ Accurate container counting technology${NC}"
-echo -e "${GREEN}   ✅ One-click deployment commands${NC}"
-echo -e "${GREEN}   ✅ Professional debug tools${NC}"
-echo -e "${GREEN}   ✅ Mobile responsive design${NC}"
-echo -e "${GREEN}   ✅ Hidden debug mode (click availability 5x)${NC}"
-echo -e "${GREEN}   ✅ Enhanced security headers${NC}"
-echo -e "${GREEN}   ✅ CORS-enabled API${NC}"
-echo -e "${GREEN}   ✅ Comprehensive monitoring tools${NC}"
-echo ""
-echo -e "${BLUE}📋 Your Enhanced Evernode Host Details:${NC}"
-echo -e "${CYAN}   🌐 Landing Page: http://${HOST_IP}${NC}"
-echo -e "${CYAN}   📊 API Endpoint: http://${HOST_IP}/api/instance-count.php${NC}"
-echo -e "${CYAN}   🏷️ Hostname: ${HOSTNAME}${NC}"
-echo -e "${CYAN}   💻 OS: ${OS_VERSION}${NC}"
-echo -e "${CYAN}   🐘 PHP: ${PHP_VERSION}${NC}"
-echo -e "${CYAN}   🧠 Memory: ${MEMORY_GB}${NC}"
-echo -e "${CYAN}   ⚡ CPU Cores: ${CPU_CORES}${NC}"
-echo ""
-echo -e "${YELLOW}🛠️ Enhanced Management Commands:${NC}"
-echo -e "${GREEN}   • evernode-debug-api         - Comprehensive API diagnostics${NC}"
-echo -e "${GREEN}   • fix-domain-nginx          - Fix domain and Nginx issues${NC}"
-echo -e "${GREEN}   • fix-instance-count        - Fix container counting logic${NC}"
-echo -e "${GREEN}   • evernode-monitor          - Real-time system monitoring${NC}"
-echo ""
-echo -e "${BLUE}🧪 Test Your Enhanced Installation:${NC}"
-echo -e "${CYAN}   curl http://localhost/api/instance-count.php | jq .${NC}"
-echo -e "${CYAN}   evernode-debug-api${NC}"
-echo -e "${CYAN}   evernode-monitor${NC}"
-echo ""
-echo ""
-echo -e "${YELLOW}🚀 Adding premium cluster management promotion...${NC}"
-
-# Add cluster management promotion section to landing page
-cat >> /var/www/html/index.html << 'EOF'
-
-<!-- Premium Cluster Management Section -->
-<div class="cluster-section" style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; margin: 40px 0; padding: 40px; border-radius: 15px;">
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h2 style="font-size: 36px; margin-bottom: 15px;">🚀 Premium: Cluster Management</h2>
-        <p style="font-size: 20px; opacity: 0.9;">Deploy and manage distributed applications across multiple hosts</p>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin: 30px 0;">
-        <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
-            <div style="font-size: 48px; margin-bottom: 15px;">🔍</div>
-            <h3>Auto-Discovery</h3>
-            <p>Find cluster-capable hosts automatically. No more manual hunting.</p>
-        </div>
-        
-        <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
-            <div style="font-size: 48px; margin-bottom: 15px;">⚡</div>
-            <h3>One-Click Deployment</h3>
-            <p>Deploy across multiple hosts with a single command. 95% faster.</p>
-        </div>
-        
-        <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 10px; text-align: center;">
-            <div style="font-size: 48px; margin-bottom: 15px;">💰</div>
-            <h3>NFT Licenses</h3>
-            <p>True digital ownership. Transfer, trade, or keep forever.</p>
-        </div>
-    </div>
-    
-    <div style="text-align: center; margin-top: 30px;">
-        <a href="/cluster/paywall.html" style="background: white; color: #4CAF50; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin: 10px; display: inline-block;">
-            💎 Buy NFT License ($49.99)
-        </a>
-        <a href="/cluster/dashboard.html" style="background: rgba(255,255,255,0.2); color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin: 10px; display: inline-block;">
-            📊 Manage Clusters
-        </a>
-        <a href="/cluster/roi-calculator.html" style="background: rgba(255,255,255,0.1); color: white; padding: 15px 30px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 18px; margin: 10px; display: inline-block;">
-            💡 Calculate ROI
-        </a>
-    </div>
-</div>
 EOF
+    
+    # Enable the site
+    sudo ln -sf $NGINX_SITE /etc/nginx/sites-enabled/
+    
+    # Remove default site if it exists
+    sudo rm -f /etc/nginx/sites-enabled/default
+    
+    # Test Nginx configuration
+    sudo nginx -t
+    
+    # Restart services
+    sudo systemctl restart nginx
+    sudo systemctl restart php8.1-fpm
+    
+    print_status "Nginx configured and restarted"
+}
 
-echo -e "${GREEN}✅ Premium cluster management promotion added!${NC}"
-echo -e "${PURPLE}🚀 Your professional Enhanced Evernode Host is ready!${NC}"
-echo -e "${BLUE}📚 Documentation: https://github.com/h20crypto/evernode-enhanced-setup${NC}"
-echo -e "${BLUE}🎯 Features: Real-time monitoring, modern UI, professional tools${NC}"
-# Add these lines to your existing quick-setup.sh
-echo "🔍 Adding host discovery features..."
-
-# Create host discovery API endpoint
-cat > /var/www/html/api/host-info.php << 'EOF'
+# Create maintenance scripts
+create_maintenance_scripts() {
+    print_info "Creating maintenance scripts..."
+    
+    # Create cleanup script
+    sudo tee $INSTALL_DIR/tools/cleanup-expired-payments.php > /dev/null << 'EOF'
+#!/usr/bin/env php
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+// Cleanup expired payments script
+require_once __DIR__ . '/../api/xahau-nft-licenses.php';
 
-$xahau_address = trim(shell_exec('evernode config account | grep "Address:" | awk \'{print $2}\' 2>/dev/null') ?: 'unknown');
-$total_instances = intval(shell_exec('evernode config resources | grep "Instances:" | awk \'{print $2}\' 2>/dev/null') ?: 0);
-$used_instances = intval(shell_exec('ls /home/ | grep sashi | wc -l 2>/dev/null') ?: 0);
+echo "🧹 Cleaning up expired payments...\n";
 
-echo json_encode([
-    'xahau_address' => $xahau_address,
-    'enhanced' => true,
-    'cluster_support' => file_exists('/var/www/html/api/cluster-extension.php'),
-    'instances' => [
-        'total' => $total_instances,
-        'available' => max(0, $total_instances - $used_instances)
-    ],
-    'features' => ['cluster-management', 'real-time-monitoring', 'enhanced-syntax'],
-    'domain' => $_SERVER['HTTP_HOST'] ?? 'unknown',
-    'version' => 'enhanced-v2.1',
-    'last_updated' => date('c')
-]);
-?>
-EOF
-
-# Add discovery widget to main page
-cat >> /var/www/html/index.html << 'EOF'
-<!-- Enhanced Host Discovery Widget -->
-<div class="discovery-section" style="background: #f8f9fa; padding: 30px; margin: 30px 0; border-radius: 15px;">
-    <h3>🔍 Discover Other Enhanced Hosts</h3>
-    <p>Find cluster-capable hosts for your distributed applications</p>
-    <button onclick="discoverHosts()" class="btn" style="background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 5px;">
-        Find Enhanced Hosts
-    </button>
-    <div id="discoveredHosts" style="margin-top: 20px;"></div>
-</div>
-
-<script>
-async function discoverHosts() {
-    document.getElementById('discoveredHosts').innerHTML = '🔍 Searching...';
-    
-    const knownHosts = [
-        'h20cryptonode3.dev',
-        'evernode1.zerp.network', 
-        'x1.buildonevernode.cloud'
-    ];
-    
-    const results = [];
-    for (const domain of knownHosts) {
-        try {
-            const response = await fetch(`https://${domain}/api/host-info.php`);
-            const data = await response.json();
-            if (data.enhanced) results.push(data);
-        } catch (e) { /* ignore offline hosts */ }
-    }
-    
-    document.getElementById('discoveredHosts').innerHTML = results.length > 0 
-        ? results.map(host => `
-            <div style="background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #4CAF50;">
-                <strong>${host.domain}</strong><br>
-                <small>Available: ${host.instances.available}/${host.instances.total} slots</small><br>
-                <small>Address: ${host.xahau_address}</small>
-            </div>
-        `).join('')
-        : '<p>No other enhanced hosts found online.</p>';
+try {
+    $manager = new XahauNFTLicenseManager();
+    $cleaned = $manager->cleanupExpiredPayments();
+    echo "✅ Cleaned up {$cleaned} expired payments\n";
+} catch (Exception $e) {
+    echo "❌ Error: " . $e->getMessage() . "\n";
+    exit(1);
 }
-</script>
 EOF
+    
+    # Create health check script
+    sudo tee $INSTALL_DIR/tools/health-check.sh > /dev/null << 'EOF'
+#!/bin/bash
+# Health check script for Enhanced Evernode
 
-# Add cluster management capabilities
-echo "Installing cluster management features..."
+echo "🏥 Enhanced Evernode Health Check"
+echo "================================="
 
-# Cluster management features are already integrated via existing APIs
-echo "✅ Cluster management ready via existing APIs"
-echo "   - Host discovery: /api/host-info.php"
-echo "   - NFT licensing: /api/xahau-nft-licenses.php" 
-echo "   - Crypto rates: /api/crypto-rates.php"
+# Check web server
+if curl -f -s http://localhost/ > /dev/null; then
+    echo "✅ Web server: Online"
+else
+    echo "❌ Web server: Offline"
+fi
 
-# Add at the end of your existing installer
-echo "🏆 Installing Commission Leaderboard..."
-bash <(curl -s https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/scripts/install-leaderboard.sh)
+# Check APIs
+if curl -f -s http://localhost/api/crypto-rates-optimized.php > /dev/null; then
+    echo "✅ Crypto rates API: Working"
+else
+    echo "❌ Crypto rates API: Failed"
+fi
 
-# Note: evdevkit installed separately by tenants who need cluster creation
-echo "💡 For cluster creation, tenants install evdevkit separately:"
-echo "   - npm install -g evdevkit"
-echo "   - Download from: https://github.com/EvernodeXRPL/evdevkit"
+# Check data directories
+if [ -w "/var/www/html/data" ]; then
+    echo "✅ Data directory: Writable"
+else
+    echo "❌ Data directory: Not writable"
+fi
 
-# Set proper permissions for host discovery
-chmod 644 /var/www/html/api/host-info.php
-chown www-data:www-data /var/www/html/api/host-info.php
+# Check disk space
+DISK_USAGE=$(df /var/www/html | awk 'NR==2 {print $5}' | sed 's/%//')
+if [ $DISK_USAGE -lt 80 ]; then
+    echo "✅ Disk space: ${DISK_USAGE}% used"
+else
+    echo "⚠️  Disk space: ${DISK_USAGE}% used (warning)"
+fi
+
+echo ""
+echo "🎯 Quick Links:"
+echo "   Main site: http://$(hostname -f)/"
+echo "   ROI Calculator: http://$(hostname -f)/cluster/roi-calculator.html"
+echo "   License Purchase: http://$(hostname -f)/cluster/paywall.html"
+EOF
+    
+    # Make scripts executable
+    sudo chmod +x $INSTALL_DIR/tools/*.php
+    sudo chmod +x $INSTALL_DIR/tools/*.sh
+    
+    # Add cron job for cleanup (run daily at 2 AM)
+    (crontab -l 2>/dev/null; echo "0 2 * * * /usr/bin/php $INSTALL_DIR/tools/cleanup-expired-payments.php") | crontab -
+    
+    print_status "Maintenance scripts created and scheduled"
+}
+
+# Generate installation report
+generate_report() {
+    print_info "Generating installation report..."
+    
+    sudo tee $INSTALL_DIR/INSTALLATION_REPORT.md > /dev/null << EOF
+# Enhanced Evernode Installation Report
+
+**Installation Date:** $(date)
+**Domain:** $DOMAIN
+**Version:** 2.0 (with Dhali Oracle Integration)
+
+## 🎯 What's Installed
+
+### Core Features
+- ✅ Enhanced host landing page
+- ✅ Real-time instance monitoring
+- ✅ Professional host interface
+- ✅ Cluster management system (NEW)
+- ✅ Dhali Oracle integration (NEW)
+- ✅ NFT license system (NEW)
+
+### API Endpoints
+- \`/api/instance-count.php\` - Real-time instance data
+- \`/api/host-info.php\` - Host information
+- \`/api/crypto-rates-optimized.php\` - Live crypto pricing (NEW)
+- \`/api/xahau-nft-licenses.php\` - NFT license management (NEW)
+
+### Cluster Features
+- \`/cluster/roi-calculator.html\` - ROI calculator with live pricing
+- \`/cluster/paywall.html\` - NFT license purchase page
+- \`/cluster/wizard.html\` - Cluster creation wizard (coming soon)
+
+## 🔧 Configuration Required
+
+### 1. Update Dhali Oracle Integration
+Edit \`/var/www/html/api/crypto-rates-optimized.php\`:
+\`\`\`php
+private \$payment_claim = 'YOUR_ACTUAL_DHALI_CLAIM_HERE';
+\`\`\`
+
+### 2. Update Xahau Wallet Address  
+Edit \`/var/www/html/api/xahau-nft-licenses.php\`:
+\`\`\`php
+private \$xahau_address = 'rYourActualXahauAddress';
+\`\`\`
+
+### 3. Test Your Integration
+\`\`\`bash
+# Test crypto rates
+curl http://$DOMAIN/api/crypto-rates-optimized.php?mode=balanced
+
+# Test health check
+sudo /var/www/html/tools/health-check.sh
+\`\`\`
+
+## 💰 Revenue Streams
+
+1. **Enhanced Host Premium** - Attract more tenants with professional interface
+2. **NFT License Sales** - \$49.99 per Cluster Manager license
+3. **Network Effects** - More enhanced hosts = more license demand
+
+## 🚀 Next Steps
+
+1. Configure Dhali Oracle payment channel
+2. Set your Xahau wallet address
+3. Test the complete license purchase flow
+4. Share ROI calculator with potential customers
+5. Onboard other hosts to the enhanced network
+
+## 📊 Monitoring
+
+- **Health Check:** \`sudo /var/www/html/tools/health-check.sh\`
+- **Cleanup Expired:** Runs automatically daily at 2 AM
+- **API Stats:** \`curl http://$DOMAIN/api/xahau-nft-licenses.php?action=stats\`
+
+## 🌐 Access Your System
+
+- **Main Site:** http://$DOMAIN/
+- **ROI Calculator:** http://$DOMAIN/cluster/roi-calculator.html  
+- **License Purchase:** http://$DOMAIN/cluster/paywall.html
+- **Enhanced Config:** http://$DOMAIN/enhanced-config.json
+
+---
+**Enhanced Evernode v2.0** - Transforming Evernode hosting into enterprise-grade infrastructure! 🚀
+EOF
+    
+    print_status "Installation report generated: $INSTALL_DIR/INSTALLATION_REPORT.md"
+}
+
+# Main installation flow
+main() {
+    echo ""
+    print_info "Starting Enhanced Evernode installation with Dhali Oracle integration..."
+    echo ""
+    
+    check_requirements
+    install_dependencies
+    setup_directories
+    copy_host_files
+    install_cluster_files
+    install_dhali_integration
+    configure_enhanced_features
+    configure_nginx
+    create_maintenance_scripts
+    generate_report
+    
+    echo ""
+    print_status "🎉 Enhanced Evernode installation completed successfully!"
+    echo ""
+    print_info "🌟 Your enhanced Evernode host is now ready with:"
+    print_info "   • Professional landing page at http://$DOMAIN/"
+    print_info "   • Cluster Manager ROI calculator"
+    print_info "   • NFT license purchase system"
+    print_info "   • Dhali Oracle real-time pricing"
+    echo ""
+    print_warning "⚠️  IMPORTANT: Update your Dhali payment claim and Xahau address in API files!"
+    print_info "📋 See $INSTALL_DIR/INSTALLATION_REPORT.md for complete setup instructions"
+    echo ""
+    print_info "🚀 Run health check: sudo $INSTALL_DIR/tools/health-check.sh"
+    echo ""
+}
+
+# Run main installation
+main "$@"
