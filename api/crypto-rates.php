@@ -1,29 +1,27 @@
 <?php
-// api/crypto-rates.php - Real-time crypto pricing with smart caching
+// api/crypto-rates.php - Real-time crypto pricing with Dhali Oracle
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
-class SmartCryptoRates {
+class DhaliCryptoRates {
     private $cache_file = 'crypto_rates_cache.json';
-    private $cache_duration = 30; // seconds
+    private $cache_duration = 60; // Cache for 60 seconds
+    private $dhali_payment_claim = 'eyJ2ZXJzaW9uIjoiMiIsImFjY291bnQiOiJyR3FxVUNuRWN2SmNjN2U3TGJyaVpTUW54M3pmZlVTblIzIiwicHJvdG9jb2wiOiJYQUhMLk1BSU5ORVQiLCJjdXJyZW5jeSI6eyJjb2RlIjoiWEFIIiwic2NhbGUiOjYsImlzc3VlciI6bnVsbH0sImRlc3RpbmF0aW9uX2FjY291bnQiOiJyTGdnVEV3bVRlM2VKZ3lRYkNTazR3UWF6b3cyVGVLcnRSIiwiYXV0aG9yaXplZF90b19jbGFpbSI6IjUwMDAwMDAwIiwic2lnbmF0dXJlIjoiM0MwMjExQ0EzREI5NTIzNkY3NUQ0N0VFNkZBODdDMTBDNjIwNTk1RkM1NENERTJCNjk3MTNGNkU5QkNDRUEyNDZBQzAwMzFBNzZERDJDMUFGRTY5MDMwNDFBQzFCMzdGNTQwQUM3NDdGOUQwQTIxODY0QUVEMDI2RTdCNzFCMDciLCJjaGFubmVsX2lkIjoiODdEMUQzMDE1NDc0NTM1Nzg4MjkzREVFMjY0OEVEMTJBMkZFRkVBRTE3NzAxQzk1QkMwNjUwRDczOTZFM0NCMSJ9';
     
     public function getRates() {
         $cached = $this->getCachedRates();
         
-        // Return cached data if still fresh
+        // Use cache if fresh (under 60 seconds old)
         if ($cached && (time() - $cached['timestamp']) < $this->cache_duration) {
             return $cached;
         }
         
-        // Fetch fresh data and cache it
         return $this->fetchAndCacheRates();
     }
     
     private function getCachedRates() {
-        if (!file_exists($this->cache_file)) {
-            return null;
-        }
+        if (!file_exists($this->cache_file)) return null;
         
         $data = file_get_contents($this->cache_file);
         return json_decode($data, true);
@@ -31,80 +29,137 @@ class SmartCryptoRates {
     
     private function fetchAndCacheRates() {
         try {
-            // Your existing logic - enhanced with error handling
-            $xrp_response = $this->fetchWithTimeout('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd');
-            $xrp_data = json_decode($xrp_response, true);
-            $xrp_rate = $xrp_data['ripple']['usd'] ?? 0.42;
+            // Primary: Dhali Oracle for XRPL/Xahau data
+            $dhali_xrpl = $this->fetchFromDhaliXRPL();
+            $dhali_xahau = $this->fetchFromDhaliXahau();
             
-            // EVR rate (estimated until on major exchanges)
-            $evr_rate = 0.02;
-            
-            $target_usd = 49.99;
+            // Fallback: CoinGecko for XRP if Dhali fails
+            $coingecko_backup = $this->fetchFromCoinGecko();
             
             $rates = [
                 'xrp' => [
-                    'rate' => $xrp_rate,
-                    'amount' => round($target_usd / $xrp_rate, 2),
-                    'display' => '$' . number_format($xrp_rate, 3)
+                    'rate' => $dhali_xrpl['xrp_usd'] ?? $coingecko_backup['xrp_usd'] ?? 0.42,
+                    'source' => $dhali_xrpl ? 'dhali_oracle' : 'coingecko_backup',
+                    'amount_for_license' => 0, // Calculated below
+                    'display' => ''
                 ],
                 'evr' => [
-                    'rate' => $evr_rate,
-                    'amount' => round($target_usd / $evr_rate, 0),
-                    'display' => '$' . number_format($evr_rate, 3)
+                    'rate' => $dhali_xahau['evr_usd'] ?? 0.22, // Current EVR rate
+                    'source' => $dhali_xahau ? 'dhali_oracle' : 'estimated',
+                    'amount_for_license' => 0,
+                    'display' => ''
                 ],
-                'usdc' => [
-                    'rate' => 1.0,
-                    'amount' => $target_usd,
-                    'display' => '$1.000'
+                'usd' => [
+                    'rate' => 1.00,
+                    'source' => 'fixed',
+                    'amount_for_license' => 49.99,
+                    'display' => '$49.99 USDC'
                 ],
-                'target_usd' => $target_usd,
-                'updated' => date('c'),
+                'license_usd' => 49.99,
                 'timestamp' => time(),
-                'source' => 'live',
-                'cache_expires' => time() + $this->cache_duration
+                'expires_at' => time() + $this->cache_duration,
+                'last_updated' => date('Y-m-d H:i:s')
             ];
             
-            // Cache the fresh data
-            $this->saveCache($rates);
+            // Calculate required amounts for license
+            $rates['xrp']['amount_for_license'] = round($rates['license_usd'] / $rates['xrp']['rate'], 2);
+            $rates['xrp']['display'] = "~{$rates['xrp']['amount_for_license']} XRP";
+            
+            $rates['evr']['amount_for_license'] = round($rates['license_usd'] / $rates['evr']['rate'], 2);
+            $rates['evr']['display'] = "~{$rates['evr']['amount_for_license']} EVR";
+            
+            // Cache the result
+            file_put_contents($this->cache_file, json_encode($rates));
             
             return $rates;
             
         } catch (Exception $e) {
-            // If fetching fails, try to return stale cache or fallback
-            $stale_cache = $this->getCachedRates();
-            if ($stale_cache) {
-                $stale_cache['source'] = 'stale_cache';
-                return $stale_cache;
-            }
-            
+            error_log("Crypto rates fetch failed: " . $e->getMessage());
             return $this->getFallbackRates();
         }
     }
     
-    private function fetchWithTimeout($url, $timeout = 5) {
-        $context = stream_context_create([
-            'http' => [
-                'timeout' => $timeout,
-                'user_agent' => 'Evernode-Enhanced-Setup/2.0',
-                'method' => 'GET'
-            ]
-        ]);
-        
-        $response = file_get_contents($url, false, $context);
-        
-        if ($response === false) {
-            throw new Exception('Failed to fetch data from ' . $url);
+    private function fetchFromDhaliXRPL() {
+        try {
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 5,
+                    'header' => "Payment-Claim: {$this->dhali_payment_claim}\r\n"
+                ]
+            ]);
+            
+            $response = file_get_contents(
+                'https://run.api.dhali.io/d74e99cb-166d-416b-b171-4d313e0f079d/',
+                false,
+                $context
+            );
+            
+            $data = json_decode($response, true);
+            
+            // Extract XRP rate from Dhali oracle data
+            return [
+                'xrp_usd' => $data['xrp_usd'] ?? null,
+                'timestamp' => $data['timestamp'] ?? time()
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Dhali XRPL fetch failed: " . $e->getMessage());
+            return null;
         }
-        
-        return $response;
     }
     
-    private function saveCache($data) {
+    private function fetchFromDhaliXahau() {
         try {
-            file_put_contents($this->cache_file, json_encode($data));
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 5,
+                    'header' => "Payment-Claim: {$this->dhali_payment_claim}\r\n"
+                ]
+            ]);
+            
+            $response = file_get_contents(
+                'https://run.api.dhali.io/f642bad0-acaf-4b2e-852b-66d9a6b6b1ef/',
+                false,
+                $context
+            );
+            
+            $data = json_decode($response, true);
+            
+            // Extract EVR rate from Dhali oracle data
+            return [
+                'evr_usd' => $data['evr_usd'] ?? null,
+                'timestamp' => $data['timestamp'] ?? time()
+            ];
+            
         } catch (Exception $e) {
-            // Silently fail if can't write cache
-            error_log('Cache write failed: ' . $e->getMessage());
+            error_log("Dhali Xahau fetch failed: " . $e->getMessage());
+            return null;
+        }
+    }
+    
+    private function fetchFromCoinGecko() {
+        try {
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 5,
+                    'user_agent' => 'Evernode-Enhanced-Setup/1.0'
+                ]
+            ]);
+            
+            $response = file_get_contents(
+                'https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd',
+                false,
+                $context
+            );
+            
+            $data = json_decode($response, true);
+            return [
+                'xrp_usd' => $data['ripple']['usd'] ?? 0.42
+            ];
+            
+        } catch (Exception $e) {
+            error_log("CoinGecko backup fetch failed: " . $e->getMessage());
+            return ['xrp_usd' => 0.42];
         }
     }
     
@@ -112,50 +167,59 @@ class SmartCryptoRates {
         return [
             'xrp' => [
                 'rate' => 0.42,
-                'amount' => 119,
-                'display' => '$0.420'
+                'source' => 'fallback',
+                'amount_for_license' => round(49.99 / 0.42, 2),
+                'display' => '~119 XRP'
             ],
             'evr' => [
-                'rate' => 0.02,
-                'amount' => 2500,
-                'display' => '$0.020'
+                'rate' => 0.22,
+                'source' => 'fallback', 
+                'amount_for_license' => round(49.99 / 0.22, 2),
+                'display' => '~227 EVR'
             ],
-            'usdc' => [
-                'rate' => 1.0,
-                'amount' => 49.99,
-                'display' => '$1.000'
+            'usd' => [
+                'rate' => 1.00,
+                'source' => 'fixed',
+                'amount_for_license' => 49.99,
+                'display' => '$49.99 USDC'
             ],
-            'target_usd' => 49.99,
-            'updated' => date('c'),
+            'license_usd' => 49.99,
             'timestamp' => time(),
-            'source' => 'fallback',
-            'cache_expires' => time() + 300 // 5 min fallback cache
+            'expires_at' => time() + 300, // 5 min fallback cache
+            'last_updated' => date('Y-m-d H:i:s'),
+            'status' => 'fallback_rates_active'
         ];
     }
     
-    // Debug endpoint
-    public function getDebugInfo() {
-        $cached = $this->getCachedRates();
-        
-        return [
-            'cache_file_exists' => file_exists($this->cache_file),
-            'cache_age_seconds' => $cached ? (time() - $cached['timestamp']) : null,
-            'cache_expires_in' => $cached ? ($cached['timestamp'] + $this->cache_duration - time()) : null,
-            'cache_is_fresh' => $cached ? ((time() - $cached['timestamp']) < $this->cache_duration) : false,
-            'cache_duration' => $this->cache_duration,
-            'current_time' => time(),
-            'cached_data' => $cached
-        ];
+    // Method for ROI calculator to get current hosting costs
+    public function getHostingCostsInUSD($evr_per_hour) {
+        $rates = $this->getRates();
+        return $evr_per_hour * $rates['evr']['rate'];
     }
 }
 
-// Handle requests
-$cryptoRates = new SmartCryptoRates();
-
-// Check for debug parameter
-if (isset($_GET['debug'])) {
-    echo json_encode($cryptoRates->getDebugInfo());
-} else {
-    echo json_encode($cryptoRates->getRates());
+// API endpoint
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $action = $_GET['action'] ?? 'rates';
+    
+    switch ($action) {
+        case 'rates':
+            $pricer = new DhaliCryptoRates();
+            echo json_encode($pricer->getRates());
+            break;
+            
+        case 'hosting-cost':
+            $evr_rate = floatval($_GET['evr_rate'] ?? 0.005);
+            $pricer = new DhaliCryptoRates();
+            echo json_encode([
+                'evr_per_hour' => $evr_rate,
+                'usd_per_hour' => $pricer->getHostingCostsInUSD($evr_rate),
+                'updated' => date('c')
+            ]);
+            break;
+            
+        default:
+            echo json_encode(['error' => 'Invalid action']);
+    }
 }
 ?>
