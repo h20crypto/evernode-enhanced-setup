@@ -1,6 +1,339 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    /**
+ * Seamless Auto-Discovery System
+ * File: /js/auto-discovery.js
+ * 
+ * This automatically runs on every enhanced host to discover
+ * and connect with other enhanced hosts in the network.
+ * No manual configuration required!
+ */
+
+class SeamlessHostDiscovery {
+    constructor() {
+        this.discoveredHosts = new Map();
+        this.isDiscovering = false;
+        this.discoveryInterval = null;
+        this.lastDiscovery = 0;
+        this.discoveryFrequency = 5 * 60 * 1000; // 5 minutes
+        
+        this.init();
+    }
+    
+    /**
+     * Initialize the seamless discovery system
+     */
+    async init() {
+        console.log('🔍 Initializing seamless host discovery...');
+        
+        // Start automatic discovery immediately
+        await this.performDiscovery();
+        
+        // Set up periodic discovery
+        this.startPeriodicDiscovery();
+        
+        // Discovery on page focus (when user returns to tab)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && Date.now() - this.lastDiscovery > 60000) {
+                this.performDiscovery();
+            }
+        });
+        
+        // Expose discovery data globally for other components
+        window.discoveredHosts = this.discoveredHosts;
+        
+        console.log('✅ Seamless discovery initialized');
+    }
+    
+    /**
+     * Start periodic background discovery
+     */
+    startPeriodicDiscovery() {
+        if (this.discoveryInterval) {
+            clearInterval(this.discoveryInterval);
+        }
+        
+        this.discoveryInterval = setInterval(() => {
+            this.performDiscovery();
+        }, this.discoveryFrequency);
+    }
+    
+    /**
+     * Perform automatic discovery
+     */
+    async performDiscovery() {
+        if (this.isDiscovering) return;
+        
+        this.isDiscovering = true;
+        this.lastDiscovery = Date.now();
+        
+        try {
+            console.log('🔍 Starting automatic host discovery...');
+            
+            // Call our auto-discovery API
+            const response = await fetch('/api/auto-discovery.php?action=discover', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.updateDiscoveredHosts(result.data.hosts);
+                    
+                    console.log(`✅ Discovered ${result.data.discovered_count} hosts using methods: ${result.data.methods_used.join(', ')}`);
+                    
+                    // Trigger discovery events for other components
+                    this.triggerDiscoveryEvents(result.data);
+                } else {
+                    console.warn('Discovery API returned error:', result.error);
+                }
+            } else {
+                console.warn('Discovery API request failed:', response.status);
+            }
+        } catch (error) {
+            console.error('Discovery failed:', error);
+        } finally {
+            this.isDiscovering = false;
+        }
+    }
+    
+    /**
+     * Update our local discovered hosts cache
+     */
+    updateDiscoveredHosts(hosts) {
+        // Clear existing cache
+        this.discoveredHosts.clear();
+        
+        // Add new hosts
+        hosts.forEach(host => {
+            this.discoveredHosts.set(host.domain, {
+                ...host,
+                discoveredAt: Date.now()
+            });
+        });
+        
+        // Update any UI components that show discovered hosts
+        this.updateHostDisplays();
+    }
+    
+    /**
+     * Update UI components with discovered hosts
+     */
+    updateHostDisplays() {
+        // Update host discovery page if it exists
+        if (typeof renderHosts === 'function') {
+            const hostsArray = Array.from(this.discoveredHosts.values());
+            renderHosts(hostsArray);
+            updateStats(hostsArray);
+        }
+        
+        // Update cluster creation page if it exists
+        if (typeof updateAvailableHosts === 'function') {
+            const onlineHosts = Array.from(this.discoveredHosts.values())
+                .filter(h => h.status === 'online' && h.enhanced);
+            updateAvailableHosts(onlineHosts);
+        }
+        
+        // Update navigation stats
+        this.updateNavigationStats();
+    }
+    
+    /**
+     * Update navigation statistics
+     */
+    updateNavigationStats() {
+        const hosts = Array.from(this.discoveredHosts.values());
+        const online = hosts.filter(h => h.status === 'online').length;
+        const enhanced = hosts.filter(h => h.enhanced).length;
+        const available = hosts.reduce((sum, h) => sum + (h.instances?.available || 0), 0);
+        
+        // Update stats in header if elements exist
+        this.updateElementText('totalHosts', hosts.length);
+        this.updateElementText('onlineHosts', online);
+        this.updateElementText('enhancedHosts', enhanced);
+        this.updateElementText('availableSlots', available);
+        
+        // Update discovery indicator
+        this.updateDiscoveryIndicator(hosts.length > 0);
+    }
+    
+    /**
+     * Trigger custom events for other components
+     */
+    triggerDiscoveryEvents(discoveryData) {
+        // Dispatch custom event
+        const event = new CustomEvent('hostsDiscovered', {
+            detail: {
+                hosts: Array.from(this.discoveredHosts.values()),
+                stats: discoveryData,
+                timestamp: Date.now()
+            }
+        });
+        
+        document.dispatchEvent(event);
+    }
+    
+    /**
+     * Get discovered hosts for external use
+     */
+    getDiscoveredHosts() {
+        return Array.from(this.discoveredHosts.values());
+    }
+    
+    /**
+     * Get online enhanced hosts only
+     */
+    getOnlineEnhancedHosts() {
+        return Array.from(this.discoveredHosts.values())
+            .filter(h => h.status === 'online' && h.enhanced);
+    }
+    
+    /**
+     * Get discovery statistics
+     */
+    getStats() {
+        const hosts = Array.from(this.discoveredHosts.values());
+        
+        return {
+            total: hosts.length,
+            online: hosts.filter(h => h.status === 'online').length,
+            enhanced: hosts.filter(h => h.enhanced).length,
+            available_slots: hosts.reduce((sum, h) => sum + (h.instances?.available || 0), 0),
+            last_discovery: this.lastDiscovery
+        };
+    }
+    
+    /**
+     * Manual discovery trigger
+     */
+    async discover() {
+        await this.performDiscovery();
+        return this.getDiscoveredHosts();
+    }
+    
+    /**
+     * Helper: Update element text if exists
+     */
+    updateElementText(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+    
+    /**
+     * Update discovery indicator in UI
+     */
+    updateDiscoveryIndicator(hasHosts) {
+        // Add visual indicator that discovery is working
+        const indicators = document.querySelectorAll('.discovery-indicator');
+        indicators.forEach(indicator => {
+            indicator.style.display = hasHosts ? 'inline' : 'none';
+            indicator.textContent = hasHosts ? '🟢 Network Connected' : '🔴 Discovering...';
+        });
+    }
+}
+
+/**
+ * Auto-start discovery when DOM is ready
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // Only start if we're on an enhanced host (has the discovery API)
+    fetch('/api/auto-discovery.php?action=status')
+        .then(response => {
+            if (response.ok) {
+                // Initialize seamless discovery
+                window.hostDiscovery = new SeamlessHostDiscovery();
+                
+                console.log('🌐 Enhanced host network discovery active');
+            }
+        })
+        .catch(() => {
+            // Not an enhanced host or API not available
+            console.log('ℹ️ Auto-discovery not available on this host');
+        });
+});
+
+/**
+ * Global helper functions for other pages to use
+ */
+
+// Function for cluster creation page to get available hosts
+window.getAvailableHosts = function() {
+    if (window.hostDiscovery) {
+        return window.hostDiscovery.getOnlineEnhancedHosts();
+    }
+    return [];
+};
+
+// Function to manually trigger discovery
+window.refreshHostDiscovery = function() {
+    if (window.hostDiscovery) {
+        return window.hostDiscovery.discover();
+    }
+    return Promise.resolve([]);
+};
+
+// Function to get discovery stats
+window.getDiscoveryStats = function() {
+    if (window.hostDiscovery) {
+        return window.hostDiscovery.getStats();
+    }
+    return { total: 0, online: 0, enhanced: 0, available_slots: 0 };
+};
+
+// Event listener for components that want to react to discovery
+document.addEventListener('hostsDiscovered', function(event) {
+    console.log('📡 New hosts discovered:', event.detail.hosts.length);
+    
+    // Update any dynamic content that depends on discovered hosts
+    if (typeof onHostsDiscovered === 'function') {
+        onHostsDiscovered(event.detail.hosts);
+    }
+});
+
+/**
+ * Enhanced hosts automatically broadcast their presence
+ */
+class HostPresenceBroadcaster {
+    constructor() {
+        this.broadcastInterval = null;
+        this.startBroadcasting();
+    }
+    
+    startBroadcasting() {
+        // Broadcast our presence every 10 minutes
+        this.broadcastInterval = setInterval(() => {
+            this.broadcastPresence();
+        }, 10 * 60 * 1000);
+        
+        // Initial broadcast
+        this.broadcastPresence();
+    }
+    
+    async broadcastPresence() {
+        try {
+            await fetch('/api/auto-discovery.php?action=register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        } catch (error) {
+            // Silent fail
+        }
+    }
+}
+
+// Start presence broadcasting
+document.addEventListener('DOMContentLoaded', function() {
+    new HostPresenceBroadcaster();
+});
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enhanced Evernode Host - Professional Docker Deployment Platform</title>
