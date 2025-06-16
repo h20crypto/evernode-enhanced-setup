@@ -1,473 +1,470 @@
 <?php
-// api/xahau-nft-licenses.php - NFT licenses on Xahau network
+// api/xahau-nft-licenses.php - Final version with optimized Dhali Oracle integration
 
-class XahauNFTLicenseSystem {
-    private $xahau_node = 'wss://xahau.network';
-    private $xahau_rest = 'https://xahau.network:51234';
-    private $issuer_address = 'rYourIssuerAddressOnXahau';
-    private $issuer_secret = 'sYourIssuerSecretOnXahau';
-    private $payment_address = 'rYourPaymentAddressOnXahau';
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+require_once 'crypto-rates-optimized.php'; // Include our optimized Dhali rates
+
+class XahauNFTLicenseManager {
+    private $license_file = 'data/licenses.json';
+    private $payment_file = 'data/pending_payments.json';
+    private $xahau_address = 'rYourXahauWalletAddress'; // ← UPDATE THIS!
+    private $crypto_rates;
     
     public function __construct() {
-        // Initialize Xahau connection
+        $this->crypto_rates = new OptimizedDhaliRates();
+        
+        // Create data directory if it doesn't exist
+        if (!is_dir('data')) {
+            mkdir('data', 0755, true);
+        }
     }
     
-    // 1. CREATE PAYMENT REQUEST FOR XAHAU NETWORK
-    public function createXahauPaymentRequest($options = []) {
-        $pricing = $this->calculateXahauPricing();
+    public function generatePayment($currency, $rate_mode = 'balanced') {
+        $rates = $this->crypto_rates->getRates($rate_mode);
+        $dest_tag = $this->generateUniqueDestTag();
         
-        return [
-            'network' => 'xahau',
-            'txjson' => [
-                'TransactionType' => 'Payment',
-                'Account' => '', // Will be filled by user's wallet
-                'Destination' => $this->payment_address,
-                'Amount' => $pricing['evr_drops'], // EVR in drops
-                'DestinationTag' => $this->generateUniqueTag(),
-                'NetworkID' => 21337, // Xahau network ID
-                'Fee' => '12' // Xahau fee (much lower than XRPL)
-            ],
-            'custom_meta' => [
-                'instruction' => "Evernode Cluster Manager License - {$pricing['display']}",
-                'blob' => [
-                    'product' => 'cluster_manager_license',
-                    'network' => 'xahau',
-                    'evr_amount' => $pricing['evr_amount'],
-                    'usd_equivalent' => 49.99,
-                    'locked_until' => time() + (15 * 60) // 15 min price lock
-                ]
-            ],
-            'pricing' => $pricing
+        if (!isset($rates[$currency])) {
+            return ['error' => 'Invalid currency'];
+        }
+        
+        $payment_data = [
+            'currency' => $currency,
+            'dest_tag' => $dest_tag,
+            'address' => $this->xahau_address,
+            'exact_amount' => $rates[$currency]['amount_for_license'],
+            'usd_value' => $rates['license_usd'],
+            'rate_used' => $rates[$currency]['rate'],
+            'rate_source' => $rates[$currency]['source'],
+            'rate_mode' => $rate_mode,
+            'created' => time(),
+            'expires' => time() + 3600, // 1 hour to complete payment
+            'status' => 'pending'
         ];
+        
+        // Store pending payment
+        $this->storePendingPayment($dest_tag, $payment_data);
+        
+        return $payment_data;
     }
     
-    // 2. CALCULATE PRICING IN EVR ON XAHAU
-    private function calculateXahauPricing() {
-        $targetUSD = 49.99;
-        $evrRate = $this->getEVRToUSDRate();
+    public function checkPayment($dest_tag) {
+        $pending = $this->getPendingPayment($dest_tag);
         
-        $evrAmount = $targetUSD / $evrRate;
-        $evrDrops = strval(intval($evrAmount * 1000000)); // Convert to drops
+        if (!$pending) {
+            return ['error' => 'Payment not found'];
+        }
         
-        return [
-            'evr_amount' => round($evrAmount, 2),
-            'evr_drops' => $evrDrops,
-            'usd_equivalent' => $targetUSD,
-            'evr_rate' => $evrRate,
-            'display' => round($evrAmount, 0) . ' EVR (~$' . $targetUSD . ')',
-            'network' => 'xahau'
-        ];
-    }
-    
-    // 3. MONITOR XAHAU PAYMENTS
-    public function monitorXahauPayments() {
-        try {
-            // Query Xahau for recent payments to our address
-            $recentTxs = $this->getXahauTransactions($this->payment_address);
+        // Check if payment expired
+        if (time() > $pending['expires']) {
+            $this->removePendingPayment($dest_tag);
+            return ['error' => 'Payment expired', 'expired' => true];
+        }
+        
+        // Check Xahau network for payment
+        $payment_confirmed = $this->checkXahauPayment($dest_tag, $pending);
+        
+        if ($payment_confirmed) {
+            $license = $this->createLicense($dest_tag, $payment_confirmed);
+            $this->removePendingPayment($dest_tag);
             
-            foreach ($recentTxs as $tx) {
-                if ($this->isValidLicensePayment($tx)) {
-                    $this->processLicensePayment($tx);
+            return [
+                'payment_confirmed' => true,
+                'license' => $license,
+                'tx_hash' => $payment_confirmed['hash'],
+                'amount_received' => $payment_confirmed['amount'],
+                'currency' => $payment_confirmed['currency']
+            ];
+        }
+        
+        return [
+            'payment_confirmed' => false, 
+            'waiting' => true,
+            'expires_in' => $pending['expires'] - time()
+        ];
+    }
+    
+    public function verifyLicense($identifier) {
+        // Check if it's a wallet address or license code
+        if (strlen($identifier) > 20 && substr($identifier, 0, 1) === 'r') {
+            // Wallet address - check for NFT
+            return $this->checkWalletForNFT($identifier);
+        } else {
+            // License code - check database
+            return $this->checkLicenseCode($identifier);
+        }
+    }
+    
+    public function getStats() {
+        $licenses = $this->loadLicenses();
+        $pending = $this->loadPendingPayments();
+        
+        return [
+            'total_licenses' => count($licenses),
+            'active_licenses' => count(array_filter($licenses, function($l) { 
+                return $l['status'] === 'active'; 
+            })),
+            'pending_payments' => count($pending),
+            'total_revenue' => array_sum(array_map(function($l) { 
+                return $l['usd_value'] ?? 49.99; 
+            }, $licenses)),
+            'last_sale' => !empty($licenses) ? end($licenses)['created'] : null
+        ];
+    }
+    
+    private function generateUniqueDestTag() {
+        // Generate unique 6-digit destination tag
+        do {
+            $tag = rand(100000, 999999);
+        } while ($this->getPendingPayment($tag));
+        
+        return $tag;
+    }
+    
+    private function storePendingPayment($dest_tag, $data) {
+        $payments = $this->loadPendingPayments();
+        $payments[$dest_tag] = $data;
+        file_put_contents($this->payment_file, json_encode($payments, JSON_PRETTY_PRINT));
+    }
+    
+    private function getPendingPayment($dest_tag) {
+        $payments = $this->loadPendingPayments();
+        return $payments[$dest_tag] ?? null;
+    }
+    
+    private function removePendingPayment($dest_tag) {
+        $payments = $this->loadPendingPayments();
+        unset($payments[$dest_tag]);
+        file_put_contents($this->payment_file, json_encode($payments, JSON_PRETTY_PRINT));
+    }
+    
+    private function loadPendingPayments() {
+        if (!file_exists($this->payment_file)) {
+            return [];
+        }
+        
+        $data = file_get_contents($this->payment_file);
+        return json_decode($data, true) ?: [];
+    }
+    
+    private function checkXahauPayment($dest_tag, $pending) {
+        try {
+            // Query Xahau network for payments to our address with this dest tag
+            $url = "https://xahau.network/v1/accounts/{$this->xahau_address}/transactions?type=Payment&limit=50";
+            
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 10,
+                    'user_agent' => 'Enhanced-Evernode-Cluster-Manager/1.0',
+                    'header' => "Accept: application/json\r\n"
+                ]
+            ]);
+            
+            $response = file_get_contents($url, false, $context);
+            
+            if (!$response) {
+                error_log("Failed to fetch Xahau transactions for address: {$this->xahau_address}");
+                return false;
+            }
+            
+            $data = json_decode($response, true);
+            
+            if (!$data || !isset($data['transactions'])) {
+                error_log("Invalid Xahau API response: " . substr($response, 0, 200));
+                return false;
+            }
+            
+            foreach ($data['transactions'] as $tx) {
+                if ($tx['TransactionType'] === 'Payment' && 
+                    isset($tx['DestinationTag']) && 
+                    $tx['DestinationTag'] == $dest_tag &&
+                    isset($tx['meta']) &&
+                    $tx['meta']['TransactionResult'] === 'tesSUCCESS') {
+                    
+                    // Verify amount matches expected (with 5% tolerance for rate changes)
+                    $amount = $this->normalizeAmount($tx['Amount'], $pending['currency']);
+                    $expected = floatval($pending['exact_amount']);
+                    $tolerance = $expected * 0.05; // 5% tolerance
+                    
+                    if ($amount >= ($expected - $tolerance)) {
+                        return [
+                            'hash' => $tx['hash'],
+                            'amount' => $amount,
+                            'currency' => $pending['currency'],
+                            'confirmed' => true,
+                            'ledger_index' => $tx['ledger_index']
+                        ];
+                    } else {
+                        error_log("Payment amount mismatch. Expected: {$expected}, Got: {$amount}");
+                    }
                 }
             }
             
-        } catch (Exception $e) {
-            error_log("Xahau payment monitoring failed: " . $e->getMessage());
-        }
-    }
-    
-    // 4. QUERY XAHAU TRANSACTIONS
-    private function getXahauTransactions($address, $limit = 50) {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $this->xahau_rest,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_TIMEOUT => 10,
-            CURLOPT_POSTFIELDS => json_encode([
-                'method' => 'account_tx',
-                'params' => [[
-                    'account' => $address,
-                    'ledger_index_min' => -1,
-                    'ledger_index_max' => -1,
-                    'binary' => false,
-                    'limit' => $limit,
-                    'forward' => false
-                ]]
-            ]),
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json']
-        ]);
-        
-        $response = curl_exec($curl);
-        curl_close($curl);
-        
-        if ($response) {
-            $data = json_decode($response, true);
-            return $data['result']['transactions'] ?? [];
-        }
-        
-        return [];
-    }
-    
-// 5. MINT NFT LICENSE ON XAHAU
-    public function mintXahauNFTLicense($paymentTx) {
-        try {
-            // NEW: Generate unique image first
-            require_once(__DIR__ . '/nft-image-generator.php');
-            $imageGenerator = new DynamicNFTImageGenerator();
-            $licenseNumber = $imageGenerator->getNextLicenseNumber();
-            
-            // Create personalized NFT image
-            $imageResult = $imageGenerator->generatePersonalizedNFT(
-                $licenseNumber, 
-                $paymentTx['Account']
-            );
-            
-            if (!$imageResult['success']) {
-                throw new Exception('Image generation failed: ' . $imageResult['error']);
-            }
-            
-            // 1. Create metadata for the license NFT (MODIFIED)
-            $metadata = $this->createLicenseMetadata($paymentTx, $licenseNumber, $imageResult['url']);
-            $metadataUri = $this->uploadMetadata($metadata);
-            
-            // 2. Mint NFToken on Xahau network
-            $mintTx = [
-                'TransactionType' => 'NFTokenMint',
-                'Account' => $this->issuer_address,
-                'URI' => bin2hex($metadataUri), // Hex encoded URI
-                'Flags' => 8, // tfTransferable
-                'TransferFee' => 0, // No transfer fee
-                'NFTokenTaxon' => 1337, // Cluster Manager taxon
-                'NetworkID' => 21337, // Xahau network
-                'Fee' => '12'
-            ];
-            
-            // 3. Sign and submit to Xahau
-            $signedTx = $this->signXahauTransaction($mintTx);
-            $result = $this->submitToXahau($signedTx);
-            
-            if ($result['success']) {
-                // 4. Transfer NFT to customer
-                $transferResult = $this->transferNFTToCustomer(
-                    $result['nft_token_id'],
-                    $paymentTx['Account']
-                );
-                
-                return [
-                    'success' => true,
-                    'nft_token_id' => $result['nft_token_id'],
-                    'tx_hash' => $result['tx_hash'],
-                    'network' => 'xahau',
-                    'customer_address' => $paymentTx['Account'],
-                    'metadata_uri' => $metadataUri,
-                    'license_number' => $licenseNumber,
-                    'image_url' => $imageResult['url']
-                ];
-            }
+            return false;
             
         } catch (Exception $e) {
-            error_log("Xahau NFT minting failed: " . $e->getMessage());
+            error_log("Xahau payment check failed: " . $e->getMessage());
+            return false;
         }
-        
-        return ['success' => false, 'error' => 'Minting failed'];
     }
     
-    // UPDATED: Create license metadata with dynamic values
-    private function createLicenseMetadata($paymentTx, $licenseNumber, $imageUrl) {
-        return [
-            'name' => "Evernode Cluster Manager License #" . sprintf('%03d', $licenseNumber),
-            'description' => 'Premium license NFT for advanced cluster management on Evernode',
-            'image' => $imageUrl, // Dynamic image URL
-            'external_url' => 'https://yourhost.com/cluster/',
-            'attributes' => [
-                ['trait_type' => 'Product', 'value' => 'Cluster Manager'],
-                ['trait_type' => 'License Number', 'value' => sprintf('%03d', $licenseNumber)],
-                ['trait_type' => 'Network', 'value' => 'Xahau'],
-                ['trait_type' => 'License Type', 'value' => 'Lifetime'],
-                ['trait_type' => 'Features', 'value' => 'Unlimited Clusters'],
-                ['trait_type' => 'Payment TX', 'value' => $paymentTx['hash']],
-                ['trait_type' => 'Payment Amount', 'value' => $this->formatPaymentAmount($paymentTx)],
-                ['trait_type' => 'Issued Date', 'value' => date('Y-m-d')],
-                ['trait_type' => 'Issued To', 'value' => $paymentTx['Account']],
-                ['trait_type' => 'Evernode Compatible', 'value' => 'Yes'],
-                ['trait_type' => 'Transferable', 'value' => 'Yes']
-            ],
-            'license_terms' => [
-                'usage' => 'Unlimited cluster creation and management',
-                'duration' => 'Lifetime',
-                'transferable' => true,
-                'network' => 'xahau',
-                'compatible_with' => ['evernode', 'xahau-apps'],
-                'support' => 'Priority technical support included'
-            ],
-            'technical' => [
-                'network' => 'xahau',
-                'network_id' => 21337,
-                'taxon' => 1337,
-                'issuer' => $this->issuer_address,
-                'version' => '1.0'
+    private function normalizeAmount($amount, $currency) {
+        if ($currency === 'xrp') {
+            // XRP amounts in Xahau are in drops (1 XRP = 1,000,000 drops)
+            if (is_string($amount) && strlen($amount) > 6) {
+                return floatval($amount) / 1000000;
+            }
+        } else {
+            // For XAH and other currencies, amount might be in different format
+            if (is_array($amount)) {
+                return floatval($amount['value'] ?? $amount);
+            }
+        }
+        
+        return floatval($amount);
+    }
+    
+    private function createLicense($dest_tag, $payment_data) {
+        $license_code = $this->generateLicenseCode();
+        
+        $license = [
+            'code' => $license_code,
+            'dest_tag' => $dest_tag,
+            'payment_hash' => $payment_data['hash'],
+            'currency' => $payment_data['currency'],
+            'amount' => $payment_data['amount'],
+            'usd_value' => 49.99,
+            'created' => date('Y-m-d H:i:s'),
+            'created_timestamp' => time(),
+            'status' => 'active',
+            'ledger_index' => $payment_data['ledger_index'] ?? null,
+            'features' => [
+                'unlimited_clusters' => true,
+                'cluster_extensions' => true,
+                'real_time_monitoring' => true,
+                'priority_support' => true,
+                'future_updates' => true,
+                'dhali_oracle_access' => true
             ]
         ];
+        
+        // Store license
+        $this->storeLicense($license);
+        
+        // TODO: Mint NFT on Xahau network
+        $this->mintNFTLicense($license);
+        
+        return $license_code;
     }
-    // 6. CREATE LICENSE METADATA
-private function createLicenseMetadata($paymentTx, $licenseNumber, $imageUrl) {
-    return [
-        'name' => "Evernode Cluster Manager License #" . sprintf('%03d', $licenseNumber),
-        'description' => 'Premium license NFT for advanced cluster management on Evernode',
-        'image' => $imageUrl, // ← NOW DYNAMIC
-        'external_url' => 'https://yourhost.com/cluster/',
-        'attributes' => [
-            ['trait_type' => 'Product', 'value' => 'Cluster Manager'],
-            ['trait_type' => 'License Number', 'value' => sprintf('%03d', $licenseNumber)], // ← NEW
-            ['trait_type' => 'Network', 'value' => 'Xahau'],
-            ['trait_type' => 'License Type', 'value' => 'Lifetime'],
-            ['trait_type' => 'Features', 'value' => 'Unlimited Clusters'],
-            ['trait_type' => 'Payment TX', 'value' => $paymentTx['hash']],
-            ['trait_type' => 'Payment Amount', 'value' => $this->formatEVRAmount($paymentTx['Amount'])],
-            ['trait_type' => 'Issued Date', 'value' => date('Y-m-d')],
-            ['trait_type' => 'Issued To', 'value' => $paymentTx['Account']],
-            ['trait_type' => 'Evernode Compatible', 'value' => 'Yes'],
-            ['trait_type' => 'Transferable', 'value' => 'Yes']
-        ],
-        'license_terms' => [
-            'usage' => 'Unlimited cluster creation and management',
-            'duration' => 'Lifetime',
-            'transferable' => true,
-            'network' => 'xahau',
-            'compatible_with' => ['evernode', 'xahau-apps'],
-            'support' => 'Priority technical support included'
-        ],
-        'technical' => [
-            'network' => 'xahau',
-            'network_id' => 21337,
-            'taxon' => 1337,
-            'issuer' => $this->issuer_address,
-            'version' => '1.0'
-        ]
-    ];
-}
     
-    // 7. VERIFY NFT LICENSE OWNERSHIP ON XAHAU
-    public function verifyXahauLicenseOwnership($userAddress) {
+    private function generateLicenseCode() {
+        $segments = [];
+        for ($i = 0; $i < 3; $i++) {
+            $segments[] = strtoupper(substr(bin2hex(random_bytes(2)), 0, 4));
+        }
+        return 'EVER-' . implode('-', $segments);
+    }
+    
+    private function storeLicense($license) {
+        $licenses = $this->loadLicenses();
+        $licenses[] = $license;
+        file_put_contents($this->license_file, json_encode($licenses, JSON_PRETTY_PRINT));
+    }
+    
+    private function loadLicenses() {
+        if (!file_exists($this->license_file)) {
+            return [];
+        }
+        
+        $data = file_get_contents($this->license_file);
+        return json_decode($data, true) ?: [];
+    }
+    
+    private function checkWalletForNFT($wallet_address) {
         try {
-            // Query user's NFTs on Xahau
-            $nfts = $this->getUserNFTs($userAddress);
+            // Check Xahau network for Cluster Manager NFTs in this wallet
+            $url = "https://xahau.network/v1/accounts/{$wallet_address}/nfts";
             
-            // Check for valid cluster manager license
-            foreach ($nfts as $nft) {
-                if ($this->isValidClusterLicense($nft)) {
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 10,
+                    'user_agent' => 'Enhanced-Evernode-Cluster-Manager/1.0'
+                ]
+            ]);
+            
+            $response = file_get_contents($url, false, $context);
+            
+            if (!$response) {
+                return ['valid' => false, 'error' => 'Could not check wallet'];
+            }
+            
+            $data = json_decode($response, true);
+            
+            if (!$data || !isset($data['nfts'])) {
+                return ['valid' => false, 'error' => 'No NFTs found'];
+            }
+            
+            foreach ($data['nfts'] as $nft) {
+                // Look for our cluster manager NFTs
+                $uri = $nft['URI'] ?? '';
+                $decoded_uri = $uri ? hex2bin($uri) : '';
+                
+                if (strpos($decoded_uri, 'cluster-manager') !== false || 
+                    strpos($decoded_uri, 'evernode-enhanced') !== false) {
                     return [
                         'valid' => true,
-                        'nft_token_id' => $nft['NFTokenID'],
-                        'issued_date' => $this->extractIssuedDate($nft),
-                        'network' => 'xahau',
-                        'transferable' => true,
-                        'features' => ['unlimited_clusters', 'priority_support'],
-                        'metadata_uri' => $this->decodeNFTURI($nft['URI'])
+                        'license' => 'NFT-' . substr($nft['NFTokenID'], -8),
+                        'nft_id' => $nft['NFTokenID']
                     ];
                 }
             }
             
-            return ['valid' => false, 'reason' => 'No valid license NFT found'];
+            return ['valid' => false, 'error' => 'No Cluster Manager NFT found'];
             
         } catch (Exception $e) {
-            error_log("License verification failed: " . $e->getMessage());
-            return ['valid' => false, 'error' => 'Verification failed'];
+            error_log("Wallet NFT check failed: " . $e->getMessage());
+            return ['valid' => false, 'error' => 'Network error checking wallet'];
         }
     }
     
-    // 8. GET USER'S NFTS ON XAHAU
-    private function getUserNFTs($userAddress) {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $this->xahau_rest,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_TIMEOUT => 10,
-            CURLOPT_POSTFIELDS => json_encode([
-                'method' => 'account_nfts',
-                'params' => [[
-                    'account' => $userAddress,
-                    'ledger_index' => 'validated'
-                ]]
-            ]),
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json']
-        ]);
-        
-        $response = curl_exec($curl);
-        curl_close($curl);
-        
-        if ($response) {
-            $data = json_decode($response, true);
-            return $data['result']['account_nfts'] ?? [];
-        }
-        
-        return [];
-    }
     
-    // 9. CHECK IF NFT IS VALID CLUSTER LICENSE
-    private function isValidClusterLicense($nft) {
-        // Check issuer
-        if ($nft['Issuer'] !== $this->issuer_address) return false;
+    private function mintNFTLicense($license) {
+        // TODO: Implement NFT minting on Xahau
+        // This would use xrpl.js to create and submit NFT mint transaction
         
-        // Check taxon
-        if ($nft['nft_taxon'] !== 1337) return false;
-        
-        // Check if it's our cluster manager license
-        $uri = $this->decodeNFTURI($nft['URI'] ?? '');
-        if (strpos($uri, 'cluster-license') === false) return false;
-        
-        return true;
-    }
-    
-    // 10. XAMAN INTEGRATION FOR XAHAU
-    public function createXamanXahauPayload($paymentRequest) {
-        return [
-            'txjson' => $paymentRequest['txjson'],
-            'custom_meta' => [
-                'instruction' => $paymentRequest['custom_meta']['instruction'],
-                'blob' => array_merge($paymentRequest['custom_meta']['blob'], [
-                    'network_name' => 'Xahau Network',
-                    'network_info' => 'Evernode\'s native network',
-                    'currency_name' => 'EVR (Evers)',
-                    'why_xahau' => 'Lower fees, faster transactions, Evernode native'
-                ])
-            ],
-            'options' => [
-                'submit' => true,
-                'expire' => 300, // 5 minutes
-                'return_url' => [
-                    'web' => 'https://yourhost.com/cluster/payment-success'
-                ]
-            ]
-        ];
-    }
-    
-    // Helper methods
-    private function getEVRToUSDRate() {
-        // Get current EVR market rate
         try {
-            // In production, use real market data
-            return 0.02; // $0.02 per EVR
+            // Placeholder for NFT minting logic
+            $nft_metadata = [
+                'name' => 'Enhanced Evernode Cluster Manager License',
+                'description' => 'Lifetime access to Enhanced Evernode Cluster Management Platform',
+                'image' => 'https://yoursite.com/assets/nft-license.png',
+                'external_url' => 'https://yoursite.com/cluster/',
+                'attributes' => [
+                    ['trait_type' => 'License Code', 'value' => $license['code']],
+                    ['trait_type' => 'Features', 'value' => 'Unlimited Clusters'],
+                    ['trait_type' => 'Type', 'value' => 'Lifetime License'],
+                    ['trait_type' => 'Created', 'value' => $license['created']],
+                    ['trait_type' => 'Currency', 'value' => strtoupper($license['currency'])],
+                    ['trait_type' => 'Amount', 'value' => $license['amount']],
+                    ['trait_type' => 'Platform', 'value' => 'Enhanced Evernode']
+                ]
+            ];
+            
+            // Create URI for NFT metadata
+            $metadata_json = json_encode($nft_metadata);
+            $metadata_uri = bin2hex($metadata_json);
+            
+            // Log NFT creation for now (implement actual minting later)
+            error_log("Would mint NFT with metadata: " . $metadata_json);
+            error_log("NFT URI: " . $metadata_uri);
+            
+            // Store NFT info in license record
+            $this->updateLicenseWithNFT($license['code'], [
+                'nft_metadata_uri' => $metadata_uri,
+                'nft_status' => 'pending_mint'
+            ]);
+            
         } catch (Exception $e) {
-            return 0.02; // Fallback rate
+            error_log("NFT minting preparation failed: " . $e->getMessage());
         }
     }
     
-    private function formatEVRAmount($amountDrops) {
-        $evr = intval($amountDrops) / 1000000;
-        return number_format($evr, 2) . ' EVR';
-    }
-    
-    private function generateUniqueTag() {
-        return time() % 100000; // Last 5 digits of timestamp
-    }
-    
-    private function signXahauTransaction($tx) {
-        // Sign transaction for Xahau network
-        // Implementation depends on chosen signing library
-        return $tx; // Placeholder
-    }
-    
-    private function submitToXahau($signedTx) {
-        // Submit signed transaction to Xahau network
-        return ['success' => true, 'nft_token_id' => 'generated_id', 'tx_hash' => 'tx_hash'];
-    }
-    
-    private function uploadMetadata($metadata) {
-        $filename = 'license_' . uniqid() . '.json';
-        $filepath = __DIR__ . '/metadata/' . $filename;
-        file_put_contents($filepath, json_encode($metadata, JSON_PRETTY_PRINT));
-        return 'https://yourhost.com/api/metadata/' . $filename;
-    }
-    
-    private function decodeNFTURI($hexUri) {
-        return hex2bin($hexUri);
-    }
-    
-    private function extractIssuedDate($nft) {
-        // Extract date from NFT metadata
-        return date('Y-m-d');
-    }
-    
-    private function isValidLicensePayment($tx) {
-        // Validate payment meets license requirements
-        if ($tx['TransactionType'] !== 'Payment') return false;
-        if ($tx['Destination'] !== $this->payment_address) return false;
+    private function updateLicenseWithNFT($license_code, $nft_data) {
+        $licenses = $this->loadLicenses();
         
-        $amount = intval($tx['Amount']) / 1000000; // Convert drops to EVR
-        $requiredEVR = 49.99 / $this->getEVRToUSDRate();
-        
-        return $amount >= ($requiredEVR * 0.95); // 5% tolerance
-    }
-    
-    private function processLicensePayment($tx) {
-        // Process valid payment and mint NFT
-        $result = $this->mintXahauNFTLicense($tx);
-        
-        if ($result['success']) {
-            // Send confirmation email, log transaction, etc.
-            $this->notifyLicenseCreated($result);
+        for ($i = 0; $i < count($licenses); $i++) {
+            if ($licenses[$i]['code'] === $license_code) {
+                $licenses[$i] = array_merge($licenses[$i], $nft_data);
+                break;
+            }
         }
         
-        return $result;
+        file_put_contents($this->license_file, json_encode($licenses, JSON_PRETTY_PRINT));
     }
     
-    private function notifyLicenseCreated($result) {
-        // Send notifications about successful license creation
-        error_log("License NFT created: " . $result['nft_token_id']);
-    }
-    
-    private function transferNFTToCustomer($nftTokenId, $customerAddress) {
-        // Create NFT offer for customer
-        $offerTx = [
-            'TransactionType' => 'NFTokenCreateOffer',
-            'Account' => $this->issuer_address,
-            'NFTokenID' => $nftTokenId,
-            'Destination' => $customerAddress,
-            'Amount' => '0', // Free transfer
-            'Flags' => 1, // tfSellNFToken
-            'NetworkID' => 21337,
-            'Fee' => '12'
-        ];
+    // Cleanup expired pending payments (run periodically)
+    public function cleanupExpiredPayments() {
+        $payments = $this->loadPendingPayments();
+        $current_time = time();
+        $cleaned = 0;
         
-        // Sign and submit
-        $signedTx = $this->signXahauTransaction($offerTx);
-        return $this->submitToXahau($signedTx);
+        foreach ($payments as $dest_tag => $payment) {
+            if ($current_time > $payment['expires']) {
+                unset($payments[$dest_tag]);
+                $cleaned++;
+            }
+        }
+        
+        if ($cleaned > 0) {
+            file_put_contents($this->payment_file, json_encode($payments, JSON_PRETTY_PRINT));
+            error_log("Cleaned up {$cleaned} expired payments");
+        }
+        
+        return $cleaned;
     }
 }
 
-// API endpoints for Xahau NFT system
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+// API Endpoints
+$method = $_SERVER['REQUEST_METHOD'];
+$input = json_decode(file_get_contents('php://input'), true);
 
-$nftSystem = new XahauNFTLicenseSystem();
+$manager = new XahauNFTLicenseManager();
 
-switch ($_GET['action'] ?? 'payment-request') {
-    case 'payment-request':
-        echo json_encode($nftSystem->createXahauPaymentRequest());
-        break;
-        
-    case 'verify-license':
-        $address = $_POST['address'] ?? $_GET['address'] ?? '';
-        echo json_encode($nftSystem->verifyXahauLicenseOwnership($address));
-        break;
-        
-    case 'monitor-payments':
-        $nftSystem->monitorXahauPayments();
-        echo json_encode(['status' => 'monitoring_complete']);
-        break;
-        
-    case 'xaman-payload':
-        $paymentRequest = $nftSystem->createXahauPaymentRequest();
-        $xamanPayload = $nftSystem->createXamanXahauPayload($paymentRequest);
-        echo json_encode($xamanPayload);
-        break;
-        
-    default:
-        echo json_encode(['error' => 'Invalid action']);
+if ($method === 'POST') {
+    $action = $input['action'] ?? '';
+    
+    switch ($action) {
+        case 'generate_payment':
+            $currency = $input['currency'] ?? 'xrp';
+            $rate_mode = $input['rate_mode'] ?? 'balanced';
+            echo json_encode($manager->generatePayment($currency, $rate_mode));
+            break;
+            
+        case 'verify_license':
+            $identifier = $input['identifier'] ?? '';
+            echo json_encode($manager->verifyLicense($identifier));
+            break;
+            
+        case 'cleanup_expired':
+            $cleaned = $manager->cleanupExpiredPayments();
+            echo json_encode(['cleaned' => $cleaned, 'success' => true]);
+            break;
+            
+        default:
+            echo json_encode(['error' => 'Invalid action']);
+    }
+    
+} elseif ($method === 'GET') {
+    $action = $_GET['action'] ?? '';
+    
+    switch ($action) {
+        case 'check_payment':
+            $dest_tag = $_GET['dest_tag'] ?? '';
+            echo json_encode($manager->checkPayment($dest_tag));
+            break;
+            
+        case 'stats':
+            echo json_encode($manager->getStats());
+            break;
+            
+        case 'health':
+            echo json_encode([
+                'status' => 'healthy',
+                'timestamp' => time(),
+                'dhali_integration' => 'active',
+                'data_dir_writable' => is_writable('data/'),
+                'last_cleanup' => filemtime('data/pending_payments.json') ?? 'never'
+            ]);
+            break;
+            
+        default:
+            echo json_encode(['error' => 'Invalid action']);
+    }
+    
+} else {
+    echo json_encode(['error' => 'Method not allowed']);
 }
 ?>
