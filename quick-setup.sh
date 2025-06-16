@@ -519,6 +519,10 @@ echo "   - Host discovery: /api/host-info.php"
 echo "   - NFT licensing: /api/xahau-nft-licenses.php" 
 echo "   - Crypto rates: /api/crypto-rates.php"
 
+# Add at the end of your existing installer
+echo "🏆 Installing Commission Leaderboard..."
+bash <(curl -s https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/scripts/install-leaderboard.sh)
+
 # Note: evdevkit installed separately by tenants who need cluster creation
 echo "💡 For cluster creation, tenants install evdevkit separately:"
 echo "   - npm install -g evdevkit"
