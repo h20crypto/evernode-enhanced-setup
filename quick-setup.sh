@@ -143,7 +143,7 @@ setup_directories() {
 # Download enhanced files
 download_enhanced_files() {
     print_info "Downloading enhanced Evernode files..."
-    
+    sudo curl -fsSL "$github_base/cluster/dapp-manager.html" -o /var/www/html/cluster/dapp-manager.html
     local github_base="https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main"
     
     # Download landing page files
