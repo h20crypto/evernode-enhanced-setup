@@ -1,13 +1,13 @@
 #!/bin/bash
-# cluster-manager-addon.sh - Add to your existing quick-setup.sh
+# cluster-manager-nft.sh - Clean cluster manager with NFT integration
 
-echo "🚀 Installing Cluster Manager Premium Add-on..."
+echo "🚀 Installing Cluster Manager with Xahau NFT Integration..."
 
 # Create cluster management directory
 mkdir -p /var/www/html/cluster
 mkdir -p /var/www/html/api
 
-# Install enhanced cluster management files
+# Install cluster manager that uses YOUR existing NFT system
 cat > /var/www/html/cluster/index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +36,7 @@ cat > /var/www/html/cluster/index.html << 'EOF'
             margin-bottom: 30px;
             color: white;
         }
-        .license-check {
+        .nft-check {
             background: white;
             border-radius: 15px;
             padding: 30px;
@@ -64,7 +64,7 @@ cat > /var/www/html/cluster/index.html << 'EOF'
             margin-bottom: 15px;
             font-size: 20px;
         }
-        .license-input {
+        .xahau-input {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -104,6 +104,13 @@ cat > /var/www/html/cluster/index.html << 'EOF'
             border-radius: 8px;
             margin-top: 15px;
         }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
         .cluster-list {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
@@ -132,40 +139,40 @@ cat > /var/www/html/cluster/index.html << 'EOF'
     <div class="container">
         <div class="header">
             <h1>🚀 Evernode Cluster Manager</h1>
-            <p>Deploy, manage, and extend distributed applications with one click</p>
+            <p>Deploy and manage distributed applications with Xahau NFT licensing</p>
         </div>
 
-        <div class="license-check" id="licenseSection">
-            <h2>Activate Premium Features</h2>
-            <p>Enter your license key to unlock advanced cluster management capabilities.</p>
+        <div class="nft-check" id="nftSection">
+            <h2>🎫 Verify Your Xahau NFT License</h2>
+            <p>Enter your Xahau address to verify your cluster management NFT.</p>
             
-            <input type="text" id="licenseKey" class="license-input" placeholder="EVER-XXXX-XXXX-XXXX">
+            <input type="text" id="xahauAddress" class="xahau-input" placeholder="rYourXahauAddress...">
             <br>
-            <button onclick="activateLicense()" class="btn">Activate License</button>
-            <a href="/purchase-license.html" class="btn btn-secondary">Purchase License ($49.99)</a>
+            <button onclick="verifyNFTLicense()" class="btn">🔍 Verify NFT License</button>
+            <a href="/purchase-license.html" class="btn btn-secondary">🛒 Purchase NFT License</a>
             
-            <div id="licenseResult"></div>
+            <div id="nftResult"></div>
         </div>
 
         <div class="dashboard" id="dashboardSection">
             <div class="feature-grid">
                 <div class="feature-card">
                     <h3>⚡ One-Click Extensions</h3>
-                    <p>Extend all cluster instances simultaneously. Save 95% of your time compared to manual extensions.</p>
+                    <p>Extend all cluster instances simultaneously using your verified NFT license.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>💰 Cost Optimization</h3>
-                    <p>Real-time cost tracking and savings calculator. See exactly how much you're saving.</p>
+                    <h3>💎 NFT-Powered</h3>
+                    <p>Your Xahau NFT grants you lifetime access to cluster management features.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>📊 Live Monitoring</h3>
-                    <p>Real-time status monitoring across all hosts. Never lose track of your deployments.</p>
+                    <h3>🔗 Blockchain Verified</h3>
+                    <p>All operations are verified against your NFT ownership on Xahau network.</p>
                 </div>
             </div>
 
             <div class="extension-controls">
-                <h2>🔧 Quick Extension</h2>
-                <p>Extend all your clusters with a single click:</p>
+                <h2>🔧 Cluster Management</h2>
+                <p>Manage your clusters using verified NFT license:</p>
                 
                 <select id="extensionHours" style="padding: 8px; margin: 10px 0;">
                     <option value="6">6 hours</option>
@@ -175,9 +182,8 @@ cat > /var/www/html/cluster/index.html << 'EOF'
                     <option value="72">72 hours</option>
                 </select>
                 
-                
                 <button onclick="extendAllClusters()" class="btn">Extend All Clusters</button>
-                <button onclick="openROICalculator()" class="btn btn-secondary">View ROI Calculator</button>
+                <button onclick="openCreateCluster()" class="btn btn-secondary">Create New Cluster</button>
                 <button onclick="openDappManager()" class="btn btn-secondary">💻 Advanced dApp Manager</button>
                 
                 <div id="extensionResult"></div>
@@ -191,55 +197,59 @@ cat > /var/www/html/cluster/index.html << 'EOF'
     </div>
 
     <script>
-        let userLicense = localStorage.getItem('cluster_license');
+        let userNFTAddress = localStorage.getItem('nft_xahau_address');
         
-        if (userLicense) {
-            document.getElementById('licenseKey').value = userLicense;
-            activateLicense();
+        if (userNFTAddress) {
+            document.getElementById('xahauAddress').value = userNFTAddress;
+            verifyNFTLicense();
         }
 
-        async function activateLicense() {
-            const licenseKey = document.getElementById('licenseKey').value.trim();
+        async function verifyNFTLicense() {
+            const xahauAddress = document.getElementById('xahauAddress').value.trim();
             
-            if (!licenseKey) {
-                showResult('licenseResult', 'Please enter a license key', 'error');
+            if (!xahauAddress || !xahauAddress.startsWith('r')) {
+                showResult('nftResult', 'Please enter a valid Xahau address (starts with "r")', 'error');
                 return;
             }
-
+            
+            showResult('nftResult', 'Verifying NFT license on Xahau network...', 'info');
+            
             try {
-                const response = await fetch('/api/cluster-extension.php?action=validate', {
+                // Use YOUR existing NFT verification API
+                const response = await fetch('/api/xahau-nft-licenses.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        license_key: licenseKey,
-                        host_address: window.location.hostname
+                        action: 'verify_cluster_license',
+                        xahau_address: xahauAddress
                     })
                 });
 
                 const result = await response.json();
-
-                if (result.valid) {
-                    localStorage.setItem('cluster_license', licenseKey);
-                    showResult('licenseResult', 'License activated successfully!', 'success');
+                
+                if (result.success && result.has_license) {
+                    localStorage.setItem('nft_xahau_address', xahauAddress);
+                    showResult('nftResult', `✅ NFT License verified! Token ID: ${result.nft_id || 'Unknown'}`, 'success');
                     
                     setTimeout(() => {
-                        document.getElementById('licenseSection').style.display = 'none';
+                        document.getElementById('nftSection').style.display = 'none';
                         document.getElementById('dashboardSection').style.display = 'block';
                         loadClusters();
-                    }, 1000);
+                    }, 1500);
                 } else {
-                    showResult('licenseResult', result.error || 'Invalid license key', 'error');
+                    showResult('nftResult', `❌ No valid cluster management NFT found for this address. ${result.purchase_url ? `<a href="${result.purchase_url}">Purchase License</a>` : ''}`, 'error');
                 }
             } catch (error) {
-                document.getElementById('clustersList').innerHTML = '<p>Error loading clusters. Please refresh the page.</p>';
+                showResult('nftResult', 'Error verifying NFT license. Please try again.', 'error');
             }
         }
 
-         async function loadClusters() {
-            const licenseKey = localStorage.getItem('cluster_license');
+        async function loadClusters() {
+            const xahauAddress = localStorage.getItem('nft_xahau_address');
             
             try {
-                const response = await fetch(`/api/cluster-extension.php?action=cluster-status&license_key=${licenseKey}`);
+                // Load clusters using NFT-verified address
+                const response = await fetch(`/api/cluster-manager.php?action=get_clusters&xahau_address=${xahauAddress}`);
                 const clusters = await response.json();
                 
                 if (clusters && clusters.length > 0) {
@@ -253,23 +263,16 @@ cat > /var/www/html/cluster/index.html << 'EOF'
                 document.getElementById('clustersList').innerHTML = '<p>Error loading clusters. Please refresh the page.</p>';
             }
         }
+
         function displayClusters(clusters) {
             const html = clusters.map(cluster => `
                 <div class="cluster-item">
                     <h3>${cluster.name}</h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 15px 0;">
-                        <div>
-                            <strong>Instances:</strong> ${cluster.instances}
-                        </div>
-                        <div>
-                            <strong>Time Remaining:</strong> ${cluster.time_remaining}
-                        </div>
-                        <div>
-                            <strong>Status:</strong> <span style="color: ${getUrgencyColor(cluster.urgency)}">${cluster.urgency}</span>
-                        </div>
-                        <div>
-                            <strong>Hosts:</strong> ${cluster.hosts.length}
-                        </div>
+                        <div><strong>Instances:</strong> ${cluster.instances}</div>
+                        <div><strong>Time Remaining:</strong> ${cluster.time_remaining}</div>
+                        <div><strong>Status:</strong> <span style="color: ${getUrgencyColor(cluster.urgency)}">${cluster.urgency}</span></div>
+                        <div><strong>Hosts:</strong> ${cluster.hosts?.length || 0}</div>
                     </div>
                     <button onclick="extendSingleCluster('${cluster.id}')" class="btn" style="margin-right: 10px;">
                         Extend This Cluster
@@ -293,17 +296,19 @@ cat > /var/www/html/cluster/index.html << 'EOF'
         }
 
         async function extendAllClusters() {
-            const licenseKey = localStorage.getItem('cluster_license');
+            const xahauAddress = localStorage.getItem('nft_xahau_address');
             const hours = document.getElementById('extensionHours').value;
             
-            showResult('extensionResult', 'Extending all clusters...', 'info');
+            showResult('extensionResult', 'Extending all clusters using NFT license...', 'info');
             
             try {
-                const response = await fetch('/api/cluster-extension.php?action=extend-all', {
+                // Use NFT-verified extension
+                const response = await fetch('/api/cluster-manager.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        license_key: licenseKey,
+                        action: 'extend_all_clusters',
+                        xahau_address: xahauAddress,
                         extension_hours: parseInt(hours)
                     })
                 });
@@ -311,15 +316,12 @@ cat > /var/www/html/cluster/index.html << 'EOF'
                 const result = await response.json();
 
                 if (result.success) {
-                    const summary = result.summary;
                     showResult('extensionResult', `
-                        ✅ Successfully extended ${summary.total_clusters} clusters (${summary.total_instances} instances)<br>
-                        💰 Total cost: ${summary.total_cost.toFixed(2)}<br>
-                        ⏱️ Time saved: ${summary.time_saved_hours} hours vs manual process<br>
-                        🚀 Efficiency gain: ${summary.efficiency_gain_percent}% faster
+                        ✅ Successfully extended ${result.clusters_extended} clusters<br>
+                        💰 Total cost: $${result.total_cost.toFixed(2)}<br>
+                        🎫 Verified via NFT: ${result.nft_id || 'Verified'}
                     `, 'success');
                     
-                    // Reload clusters to show updated times
                     setTimeout(loadClusters, 2000);
                 } else {
                     showResult('extensionResult', result.error || 'Extension failed', 'error');
@@ -330,14 +332,17 @@ cat > /var/www/html/cluster/index.html << 'EOF'
         }
 
         async function extendSingleCluster(clusterId) {
+            const xahauAddress = localStorage.getItem('nft_xahau_address');
             const hours = document.getElementById('extensionHours').value;
             
             try {
-                const response = await fetch('/api/cluster-extension.php?action=extend-cluster', {
+                const response = await fetch('/api/cluster-manager.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        action: 'extend_cluster',
                         cluster_id: clusterId,
+                        xahau_address: xahauAddress,
                         extension_hours: parseInt(hours)
                     })
                 });
@@ -345,8 +350,8 @@ cat > /var/www/html/cluster/index.html << 'EOF'
                 const result = await response.json();
 
                 if (result.success) {
-                    showResult('extensionResult', `✅ Cluster extended successfully! Cost: ${result.cost.toFixed(2)}`, 'success');
-                    loadClusters(); // Refresh the list
+                    showResult('extensionResult', `✅ Cluster extended! Cost: $${result.cost.toFixed(2)}`, 'success');
+                    loadClusters();
                 } else {
                     showResult('extensionResult', result.error || 'Extension failed', 'error');
                 }
@@ -359,17 +364,19 @@ cat > /var/www/html/cluster/index.html << 'EOF'
             window.open(`/cluster/details.html?id=${clusterId}`, '_blank');
         }
 
-        function openROICalculator() {
-            window.open('/cluster/roi-calculator.html', '_blank');
+        function openCreateCluster() {
+            window.open('/cluster/create.html', '_blank');
         }
 
         function openDappManager() {
             window.open('/cluster/dapp-manager.html', '_blank');
-        } 
-       
+        }
+
         function showResult(elementId, message, type) {
             const element = document.getElementById(elementId);
-            element.innerHTML = `<div class="${type}">${message}</div>`;
+            if (element) {
+                element.innerHTML = `<div class="${type}">${message}</div>`;
+            }
         }
 
         // Auto-refresh clusters every 60 seconds if dashboard is active
@@ -383,397 +390,11 @@ cat > /var/www/html/cluster/index.html << 'EOF'
 </html>
 EOF
 
-# Create cluster creation page
-cat > /var/www/html/cluster/create.html << 'EOF'
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Cluster</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 25px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: transform 0.2s;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-        .cost-estimate {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 4px solid #667eea;
-        }
-        .savings-preview {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🚀 Create New Cluster</h1>
-        <p>Deploy applications across multiple Evernode hosts with automated management.</p>
-
-        <form id="clusterForm">
-            <div class="form-group">
-                <label for="clusterName">Cluster Name *</label>
-                <input type="text" id="clusterName" required placeholder="My Production API">
-            </div>
-
-            <div class="form-group">
-                <label for="targetHosts">Target Hosts (one per line) *</label>
-                <textarea id="targetHosts" rows="5" required placeholder="rH8oZBoCQJE1aGwdNRH7icr93RrZkbVaaa
-rDKgSroMoh5Ur1EDxFZnGJXzk2MFeDg3ts
-rKRjgkwZABgh6e38cES7aor6cLjFETkpBA"></textarea>
-                <small>Enter Xahau addresses of enhanced hosts you want to use</small>
-            </div>
-
-            <div class="form-group">
-                <label for="contractPath">Contract Directory Path</label>
-                <input type="text" id="contractPath" placeholder="/path/to/your/contract" value="/tmp/default-contract">
-                <small>Path to your HotPocket contract directory</small>
-            </div>
-
-            <div class="form-group">
-                <label for="instanceCount">Number of Instances *</label>
-                <select id="instanceCount" required onchange="updateEstimate()">
-                    <option value="3">3 instances</option>
-                    <option value="5" selected>5 instances</option>
-                    <option value="7">7 instances</option>
-                    <option value="10">10 instances</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="duration">Initial Duration *</label>
-                <select id="duration" onchange="updateEstimate()">
-                    <option value="12">12 hours</option>
-                    <option value="24" selected>24 hours</option>
-                    <option value="48">48 hours</option>
-                    <option value="72">72 hours</option>
-                    <option value="168">1 week</option>
-                </select>
-            </div>
-
-            <div class="cost-estimate">
-                <h3>💰 Cost Estimate</h3>
-                <div id="costBreakdown">
-                    <p><strong>Total instances:</strong> <span id="totalInstances">5</span></p>
-                    <p><strong>Duration:</strong> <span id="totalDuration">24</span> hours</p>
-                    <p><strong>Estimated cost:</strong> $<span id="totalCost">30.00</span></p>
-                    <p><small>Rate: $0.25/hour per instance (may vary by host)</small></p>
-                </div>
-            </div>
-
-            <div class="savings-preview">
-                <h3>⏱️ Time Savings Preview</h3>
-                <div id="savingsBreakdown">
-                    <p><strong>Manual setup time:</strong> <span id="manualTime">2.5</span> hours</p>
-                    <p><strong>Cluster manager time:</strong> 3 minutes</p>
-                    <p><strong>Time saved:</strong> <span id="timeSaved">2.4</span> hours</p>
-                    <p><strong>Efficiency gain:</strong> <span id="efficiency">5000</span>% faster</p>
-                </div>
-            </div>
-
-            <button type="submit" class="btn">Create Cluster</button>
-        </form>
-
-        <div id="result"></div>
-    </div>
-
-    <script>
-        function updateEstimate() {
-            const instances = parseInt(document.getElementById('instanceCount').value);
-            const duration = parseInt(document.getElementById('duration').value);
-            const cost = instances * 0.25 * duration;
-            const manualTime = instances * 0.5;
-            const timeSaved = manualTime - 0.05;
-            const efficiency = (manualTime / 0.05) * 100;
-
-            document.getElementById('totalInstances').textContent = instances;
-            document.getElementById('totalDuration').textContent = duration;
-            document.getElementById('totalCost').textContent = cost.toFixed(2);
-            document.getElementById('manualTime').textContent = manualTime.toFixed(1);
-            document.getElementById('timeSaved').textContent = timeSaved.toFixed(1);
-            document.getElementById('efficiency').textContent = efficiency.toFixed(0);
-        }
-
-        document.getElementById('clusterForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const licenseKey = localStorage.getItem('cluster_license');
-            if (!licenseKey) {
-                showResult('Please activate your license first. <a href="/cluster/">Go back to dashboard</a>', 'error');
-                return;
-            }
-
-            const formData = {
-                license_key: licenseKey,
-                name: document.getElementById('clusterName').value,
-                target_hosts: document.getElementById('targetHosts').value.split('\n').filter(h => h.trim()),
-                contract_path: document.getElementById('contractPath').value,
-                instance_count: parseInt(document.getElementById('instanceCount').value),
-                duration: parseInt(document.getElementById('duration').value)
-            };
-
-            showResult('Creating cluster... This may take a few minutes.', 'info');
-
-            try {
-                const response = await fetch('/api/cluster-extension.php?action=create-cluster', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showResult(`
-                        ✅ Cluster created successfully!<br>
-                        <strong>Cluster ID:</strong> ${result.cluster_id}<br>
-                        <strong>Instances:</strong> ${result.instances.length}<br>
-                        <a href="/cluster/">Return to Dashboard</a>
-                    `, 'success');
-                } else {
-                    showResult(`❌ ${result.error}<br>${result.license_error ? `<a href="${result.purchase_url}">Purchase License</a>` : ''}`, 'error');
-                }
-            } catch (error) {
-                showResult('❌ Error creating cluster. Please try again.', 'error');
-            }
-        });
-
-        function showResult(message, type) {
-            const colors = {
-                success: '#d4edda',
-                error: '#f8d7da', 
-                info: '#d1ecf1'
-            };
-            
-            document.getElementById('result').innerHTML = `
-                <div style="background: ${colors[type]}; padding: 15px; border-radius: 8px; margin-top: 20px;">
-                    ${message}
-                </div>
-            `;
-        }
-
-        // Initial calculation
-        updateEstimate();
-    </script>
-</body>
-</html>
-EOF
-
-# Copy the ROI calculator
-cp /var/www/html/purchase-license.html /var/www/html/cluster/roi-calculator.html
-
-# Create the PHP backend files
-cat > /var/www/html/api/cluster-extension.php << 'PHPEOF'
-<?php
-// Include the cluster extension backend we created earlier
-require_once(__DIR__ . '/cluster-manager.php');
-
-// The ClusterExtensionManager class code goes here
-// (This would be the content from the previous artifact)
-
-// Handle CORS for frontend requests
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
-
-// Route requests to appropriate handlers
-$extension_manager = new ClusterExtensionManager();
-$input = json_decode(file_get_contents('php://input'), true);
-
-switch ($_SERVER['REQUEST_METHOD']) {
-    case 'POST':
-        switch ($_GET['action'] ?? '') {
-            case 'extend-all':
-                $result = $extension_manager->extendAllClusters(
-                    $input['license_key'],
-                    $input['extension_hours']
-                );
-                break;
-                
-            case 'extend-cluster':
-                $result = $extension_manager->extendSingleCluster(
-                    $input['cluster_id'],
-                    $input['extension_hours']
-                );
-                break;
-                
-            case 'create-cluster':
-                $result = $extension_manager->createCluster($input);
-                break;
-                
-            case 'cost-estimate':
-                $result = $extension_manager->getExtensionCostEstimate(
-                    $input['license_key'],
-                    $input['extension_hours']
-                );
-                break;
-                
-            case 'validate':
-                $license_manager = new SimpleLicenseManager();
-                $result = $license_manager->validateLicense(
-                    $input['license_key'], 
-                    $input['host_address'] ?? null
-                );
-                break;
-                
-            default:
-                $result = ['error' => 'Invalid action'];
-        }
-        break;
-        
-    case 'GET':
-        switch ($_GET['action'] ?? '') {
-            case 'cluster-status':
-                $result = $extension_manager->getClusterStatus($_GET['license_key']);
-                break;
-                
-            default:
-                $result = ['error' => 'Invalid action'];
-        }
-        break;
-        
-    default:
-        $result = ['error' => 'Method not allowed'];
-}
-
-header('Content-Type: application/json');
-echo json_encode($result);
-?>
-PHPEOF
-
-# Update main landing page to include cluster manager promotion
-cat >> /var/www/html/index.html << 'EOF'
-
-<!-- Cluster Manager Section -->
-<div class="feature-section" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; margin: 30px 0; padding: 30px; border-radius: 15px;">
-    <h3>🚀 NEW: Premium Cluster Manager</h3>
-    <p style="font-size: 18px; margin: 15px 0;">Deploy and manage distributed applications across multiple hosts with one click!</p>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
-        <div>
-            <h4>⚡ 2400% Faster</h4>
-            <p>Extend all clusters in 30 seconds vs 12+ minutes manually</p>
-        </div>
-        <div>
-            <h4>💰 Save $1000s</h4>
-            <p>Prevent downtime and reduce operational costs</p>
-        </div>
-        <div>
-            <h4>🎯 One-Time $49.99</h4>
-            <p>Lifetime access, pays for itself in days</p>
-        </div>
-    </div>
-    
-    <div style="text-align: center; margin-top: 25px;">
-        <a href="/cluster/roi-calculator.html" style="background: white; color: #667eea; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-right: 15px;">
-            📊 Calculate Your Savings
-        </a>
-        <a href="/purchase-license.html" style="background: rgba(255,255,255,0.2); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-right: 15px;">
-            🛒 Purchase License
-        </a>
-        <a href="/cluster/" style="background: rgba(255,255,255,0.1); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-            🔓 Activate License
-        </a>
-    </div>
-</div>
-EOF
-
-# Set proper permissions
-chmod 755 /var/www/html/cluster/
-chmod 644 /var/www/html/cluster/*.html
-chmod 755 /var/www/html/api/cluster-extension.php
-
-# Install evdevkit if not present
-if ! command -v evdevkit &> /dev/null; then
-    echo "Installing evdevkit..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm install node
-    npm install -g @hotpocket/evdevkit
-fi
-
-echo "✅ Cluster Manager add-on installed successfully!"
+echo "✅ Cluster Manager with Xahau NFT integration installed!"
 echo ""
-echo "🎯 Next steps:"
-echo "1. Purchase a license at: http://$(hostname -I | awk '{print $1}')/purchase-license.html"
-echo "2. Activate at: http://$(hostname -I | awk '{print $1}')/cluster/"
-echo "3. Start creating clusters and saving time!"
+echo "🎯 This version:"
+echo "✅ Uses YOUR existing Xahau NFT system"
+echo "✅ Verifies licenses against YOUR NFT contracts"
+echo "✅ Integrates with YOUR existing APIs"
 echo ""
-echo "💡 The cluster manager pays for itself in just a few extensions!"
-                showResult('licenseResult', 'Connection error. Please try again.', 'error');
-            }
-        }
-
-        async function loadClusters() {
-            const licenseKey = localStorage.getItem('cluster_license');
-            
-            try {
-                const response = await fetch(`/api/cluster-extension.php?action=cluster-status&license_key=${licenseKey}`);
-                const clusters = await response.json();
-                
-                if (clusters && clusters.length > 0) {
-                    displayClusters(clusters);
-                } else {
-                    document.getElementById('clustersList').innerHTML = `
-                        <p>No clusters found. <a href="/cluster/create.html" style="color: #ffd700;">Create your first cluster</a></p>
-                    `;
-                }
-            } catch (error) {
+echo "🌐 Access at: http://$(hostname -I | awk '{print $1}')/cluster/"
