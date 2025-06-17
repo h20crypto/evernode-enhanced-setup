@@ -435,7 +435,7 @@
         
         async function updateCryptoRates() {
             try {
-                const response = await fetch(`../api/crypto-rates-optimized.php?mode=${currentMode}`);
+                const response = await fetch('../api/crypto-rates-optimized.php?mode=balanced');
                 cryptoRates = await response.json();
                 
                 // Update XRP pricing
@@ -557,7 +557,7 @@
         function startPaymentMonitoring(destTag) {
             paymentMonitor = setInterval(async () => {
                 try {
-                    const response = await fetch(`../api/xahau-nft-licenses.php?action=check_payment&dest_tag=${destTag}`);
+                    const response = await fetch('../api/crypto-rates-optimized.php?mode=balanced');
                     const result = await response.json();
                     
                     if (result.payment_confirmed) {
