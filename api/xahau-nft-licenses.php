@@ -15,7 +15,7 @@ class XahauNFTLicenseManager {
     private $crypto_rates;
     
     public function __construct() {
-        $this->crypto_rates = new OptimizedDhaliRates();
+       $this->crypto_rates = new OptimizedCoinGeckoRates();
         
         // Create data directory if it doesn't exist
         if (!is_dir('data')) {
