@@ -175,8 +175,10 @@ cat > /var/www/html/cluster/index.html << 'EOF'
                     <option value="72">72 hours</option>
                 </select>
                 
+                
                 <button onclick="extendAllClusters()" class="btn">Extend All Clusters</button>
                 <button onclick="openROICalculator()" class="btn btn-secondary">View ROI Calculator</button>
+                <button onclick="openDappManager()" class="btn btn-secondary">💻 Advanced dApp Manager</button>
                 
                 <div id="extensionResult"></div>
             </div>
@@ -233,6 +235,24 @@ cat > /var/www/html/cluster/index.html << 'EOF'
             }
         }
 
+         async function loadClusters() {
+            const licenseKey = localStorage.getItem('cluster_license');
+            
+            try {
+                const response = await fetch(`/api/cluster-extension.php?action=cluster-status&license_key=${licenseKey}`);
+                const clusters = await response.json();
+                
+                if (clusters && clusters.length > 0) {
+                    displayClusters(clusters);
+                } else {
+                    document.getElementById('clustersList').innerHTML = `
+                        <p>No clusters found. <a href="/cluster/create.html" style="color: #ffd700;">Create your first cluster</a></p>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('clustersList').innerHTML = '<p>Error loading clusters. Please refresh the page.</p>';
+            }
+        }
         function displayClusters(clusters) {
             const html = clusters.map(cluster => `
                 <div class="cluster-item">
@@ -343,6 +363,10 @@ cat > /var/www/html/cluster/index.html << 'EOF'
             window.open('/cluster/roi-calculator.html', '_blank');
         }
 
+        function openDappManager() {
+            window.open('/cluster/dapp-manager.html', '_blank');
+        } 
+       
         function showResult(elementId, message, type) {
             const element = document.getElementById(elementId);
             element.innerHTML = `<div class="${type}">${message}</div>`;
