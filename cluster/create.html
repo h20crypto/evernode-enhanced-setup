@@ -1,755 +1,678 @@
-#!/bin/bash
-# cluster-manager-addon.sh - Add to your existing quick-setup.sh
-
-echo "🚀 Installing Cluster Manager Premium Add-on..."
-
-# Create cluster management directory
-mkdir -p /var/www/html/cluster
-mkdir -p /var/www/html/api
-
-# Install enhanced cluster management files
-cat > /var/www/html/cluster/index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cluster Manager Dashboard</title>
+    <title>Create New Cluster - Evernode Enhanced</title>
+    <link rel="stylesheet" href="/widgets/live-pricing.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 30px;
             color: white;
         }
-        .license-check {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 30px 0; }
+        .header h1 { font-size: 2.5em; margin-bottom: 15px; }
+        
+        .wizard-steps {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 20px;
         }
-        .dashboard {
+        .step {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+        .step.active {
+            opacity: 1;
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid #4CAF50;
+        }
+        .step.completed {
+            opacity: 1;
+            background: rgba(76, 175, 80, 0.5);
+        }
+        
+        .form-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
             display: none;
         }
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+        .form-section.active { display: block; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
-        .feature-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            color: white;
-            text-align: center;
-        }
-        .feature-card h3 {
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
-        .license-input {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid #ddd;
+            border: 2px solid rgba(255,255,255,0.3);
             border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
             font-size: 16px;
-            margin-bottom: 15px;
         }
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .host-discovery {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        .host-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .host-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .host-card:hover {
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+        .host-card.selected {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+        }
+        .host-availability {
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .available { color: #4CAF50; }
+        .busy { color: #FFA726; }
+        .offline { color: #EF5350; }
+        
+        .cost-estimate {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .cost-item {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .cost-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
         .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: linear-gradient(45deg, #4CAF50, #45a049);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 30px;
             border-radius: 8px;
-            cursor: pointer;
             font-size: 16px;
-            font-weight: 600;
-            transition: transform 0.2s;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
         }
         .btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         .btn-secondary {
-            background: #6c757d;
-            margin-left: 10px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
         }
-        .success {
-            background: #d4edda;
-            color: #155724;
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .alert {
             padding: 15px;
             border-radius: 8px;
-            margin-top: 15px;
+            margin: 15px 0;
         }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+        .alert.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid rgba(76, 175, 80, 0.5);
         }
-        .cluster-list {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
-            color: white;
+        .alert.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid rgba(244, 67, 54, 0.5);
         }
-        .cluster-item {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-        .extension-controls {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
-            color: white;
+        .alert.info {
+            background: rgba(33, 150, 243, 0.2);
+            border: 2px solid rgba(33, 150, 243, 0.5);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Evernode Cluster Manager</h1>
-            <p>Deploy, manage, and extend distributed applications with one click</p>
+            <h1>🚀 Create New Cluster</h1>
+            <p>Deploy applications across multiple Evernode hosts with automated management</p>
         </div>
 
-        <div class="license-check" id="licenseSection">
-            <h2>Activate Premium Features</h2>
-            <p>Enter your license key to unlock advanced cluster management capabilities.</p>
+        <!-- Wizard Steps -->
+        <div class="wizard-steps">
+            <div class="step active" data-step="1">
+                <span>1. License Verification</span>
+            </div>
+            <div class="step" data-step="2">
+                <span>2. Cluster Configuration</span>
+            </div>
+            <div class="step" data-step="3">
+                <span>3. Host Selection</span>
+            </div>
+            <div class="step" data-step="4">
+                <span>4. Review & Deploy</span>
+            </div>
+        </div>
+
+        <!-- Step 1: License Verification -->
+        <div class="form-section active" id="step1">
+            <h2>🎫 Verify Your License</h2>
+            <p>Enter your Xahau address to verify your cluster management license (NFT).</p>
             
-            <input type="text" id="licenseKey" class="license-input" placeholder="EVER-XXXX-XXXX-XXXX">
-            <br>
-            <button onclick="activateLicense()" class="btn">Activate License</button>
-            <a href="/purchase-license.html" class="btn btn-secondary">Purchase License ($49.99)</a>
+            <div class="form-group">
+                <label for="xahauAddress">Xahau Address:</label>
+                <input type="text" id="xahauAddress" placeholder="rYourXahauAddress..." required>
+            </div>
+            
+            <button onclick="verifyLicense()" class="btn">🔍 Verify License</button>
             
             <div id="licenseResult"></div>
-        </div>
-
-        <div class="dashboard" id="dashboardSection">
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>⚡ One-Click Extensions</h3>
-                    <p>Extend all cluster instances simultaneously. Save 95% of your time compared to manual extensions.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>💰 Cost Optimization</h3>
-                    <p>Real-time cost tracking and savings calculator. See exactly how much you're saving.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📊 Live Monitoring</h3>
-                    <p>Real-time status monitoring across all hosts. Never lose track of your deployments.</p>
-                </div>
-            </div>
-
-            <div class="extension-controls">
-                <h2>🔧 Quick Extension</h2>
-                <p>Extend all your clusters with a single click:</p>
-                
-                <select id="extensionHours" style="padding: 8px; margin: 10px 0;">
-                    <option value="6">6 hours</option>
-                    <option value="12">12 hours</option>
-                    <option value="24" selected>24 hours</option>
-                    <option value="48">48 hours</option>
-                    <option value="72">72 hours</option>
-                </select>
-                
-                <button onclick="extendAllClusters()" class="btn">Extend All Clusters</button>
-                <button onclick="openROICalculator()" class="btn btn-secondary">View ROI Calculator</button>
-                
-                <div id="extensionResult"></div>
-            </div>
-
-            <div class="cluster-list">
-                <h2>📋 Your Clusters</h2>
-                <div id="clustersList">Loading clusters...</div>
+            
+            <div class="navigation">
+                <button onclick="goToStep(0)" class="btn btn-secondary">← Back to Dashboard</button>
+                <button onclick="goToStep(2)" class="btn" id="nextStep1" disabled>Next: Configure Cluster →</button>
             </div>
         </div>
-    </div>
 
-    <script>
-        let userLicense = localStorage.getItem('cluster_license');
-        
-        if (userLicense) {
-            document.getElementById('licenseKey').value = userLicense;
-            activateLicense();
-        }
-
-        async function activateLicense() {
-            const licenseKey = document.getElementById('licenseKey').value.trim();
+        <!-- Step 2: Cluster Configuration -->
+        <div class="form-section" id="step2">
+            <h2>⚙️ Configure Your Cluster</h2>
             
-            if (!licenseKey) {
-                showResult('licenseResult', 'Please enter a license key', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/cluster-extension.php?action=validate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        license_key: licenseKey,
-                        host_address: window.location.hostname
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.valid) {
-                    localStorage.setItem('cluster_license', licenseKey);
-                    showResult('licenseResult', 'License activated successfully!', 'success');
-                    
-                    setTimeout(() => {
-                        document.getElementById('licenseSection').style.display = 'none';
-                        document.getElementById('dashboardSection').style.display = 'block';
-                        loadClusters();
-                    }, 1000);
-                } else {
-                    showResult('licenseResult', result.error || 'Invalid license key', 'error');
-                }
-            } catch (error) {
-                document.getElementById('clustersList').innerHTML = '<p>Error loading clusters. Please refresh the page.</p>';
-            }
-        }
-
-        function displayClusters(clusters) {
-            const html = clusters.map(cluster => `
-                <div class="cluster-item">
-                    <h3>${cluster.name}</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 15px 0;">
-                        <div>
-                            <strong>Instances:</strong> ${cluster.instances}
-                        </div>
-                        <div>
-                            <strong>Time Remaining:</strong> ${cluster.time_remaining}
-                        </div>
-                        <div>
-                            <strong>Status:</strong> <span style="color: ${getUrgencyColor(cluster.urgency)}">${cluster.urgency}</span>
-                        </div>
-                        <div>
-                            <strong>Hosts:</strong> ${cluster.hosts.length}
-                        </div>
-                    </div>
-                    <button onclick="extendSingleCluster('${cluster.id}')" class="btn" style="margin-right: 10px;">
-                        Extend This Cluster
-                    </button>
-                    <button onclick="viewClusterDetails('${cluster.id}')" class="btn btn-secondary">
-                        View Details
-                    </button>
-                </div>
-            `).join('');
-            
-            document.getElementById('clustersList').innerHTML = html;
-        }
-
-        function getUrgencyColor(urgency) {
-            switch(urgency) {
-                case 'critical': return '#ff6b6b';
-                case 'moderate': return '#ffd93d';
-                case 'low': return '#6bcf7f';
-                default: return '#ffffff';
-            }
-        }
-
-        async function extendAllClusters() {
-            const licenseKey = localStorage.getItem('cluster_license');
-            const hours = document.getElementById('extensionHours').value;
-            
-            showResult('extensionResult', 'Extending all clusters...', 'info');
-            
-            try {
-                const response = await fetch('/api/cluster-extension.php?action=extend-all', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        license_key: licenseKey,
-                        extension_hours: parseInt(hours)
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    const summary = result.summary;
-                    showResult('extensionResult', `
-                        ✅ Successfully extended ${summary.total_clusters} clusters (${summary.total_instances} instances)<br>
-                        💰 Total cost: ${summary.total_cost.toFixed(2)}<br>
-                        ⏱️ Time saved: ${summary.time_saved_hours} hours vs manual process<br>
-                        🚀 Efficiency gain: ${summary.efficiency_gain_percent}% faster
-                    `, 'success');
-                    
-                    // Reload clusters to show updated times
-                    setTimeout(loadClusters, 2000);
-                } else {
-                    showResult('extensionResult', result.error || 'Extension failed', 'error');
-                }
-            } catch (error) {
-                showResult('extensionResult', 'Connection error during extension', 'error');
-            }
-        }
-
-        async function extendSingleCluster(clusterId) {
-            const hours = document.getElementById('extensionHours').value;
-            
-            try {
-                const response = await fetch('/api/cluster-extension.php?action=extend-cluster', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        cluster_id: clusterId,
-                        extension_hours: parseInt(hours)
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showResult('extensionResult', `✅ Cluster extended successfully! Cost: ${result.cost.toFixed(2)}`, 'success');
-                    loadClusters(); // Refresh the list
-                } else {
-                    showResult('extensionResult', result.error || 'Extension failed', 'error');
-                }
-            } catch (error) {
-                showResult('extensionResult', 'Error extending cluster', 'error');
-            }
-        }
-
-        function viewClusterDetails(clusterId) {
-            window.open(`/cluster/details.html?id=${clusterId}`, '_blank');
-        }
-
-        function openROICalculator() {
-            window.open('/cluster/roi-calculator.html', '_blank');
-        }
-
-        function showResult(elementId, message, type) {
-            const element = document.getElementById(elementId);
-            element.innerHTML = `<div class="${type}">${message}</div>`;
-        }
-
-        // Auto-refresh clusters every 60 seconds if dashboard is active
-        setInterval(() => {
-            if (document.getElementById('dashboardSection').style.display !== 'none') {
-                loadClusters();
-            }
-        }, 60000);
-    </script>
-</body>
-</html>
-EOF
-
-# Create cluster creation page
-cat > /var/www/html/cluster/create.html << 'EOF'
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Cluster</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 25px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: transform 0.2s;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-        .cost-estimate {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border-left: 4px solid #667eea;
-        }
-        .savings-preview {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🚀 Create New Cluster</h1>
-        <p>Deploy applications across multiple Evernode hosts with automated management.</p>
-
-        <form id="clusterForm">
             <div class="form-group">
                 <label for="clusterName">Cluster Name *</label>
-                <input type="text" id="clusterName" required placeholder="My Production API">
+                <input type="text" id="clusterName" placeholder="My Production API" required>
             </div>
-
+            
             <div class="form-group">
-                <label for="targetHosts">Target Hosts (one per line) *</label>
-                <textarea id="targetHosts" rows="5" required placeholder="rH8oZBoCQJE1aGwdNRH7icr93RrZkbVaaa
-rDKgSroMoh5Ur1EDxFZnGJXzk2MFeDg3ts
-rKRjgkwZABgh6e38cES7aor6cLjFETkpBA"></textarea>
-                <small>Enter Xahau addresses of enhanced hosts you want to use</small>
+                <label for="contractPath">Contract Directory Path *</label>
+                <input type="text" id="contractPath" placeholder="/path/to/your/contract" required>
+                <small style="opacity: 0.8;">Path to your HotPocket contract directory</small>
             </div>
-
-            <div class="form-group">
-                <label for="contractPath">Contract Directory Path</label>
-                <input type="text" id="contractPath" placeholder="/path/to/your/contract" value="/tmp/default-contract">
-                <small>Path to your HotPocket contract directory</small>
-            </div>
-
+            
             <div class="form-group">
                 <label for="instanceCount">Number of Instances *</label>
-                <select id="instanceCount" required onchange="updateEstimate()">
-                    <option value="3">3 instances</option>
-                    <option value="5" selected>5 instances</option>
+                <select id="instanceCount" onchange="updateCostEstimate()" required>
+                    <option value="">Select instances...</option>
+                    <option value="1">1 instance</option>
+                    <option value="3">3 instances (recommended)</option>
+                    <option value="5">5 instances</option>
                     <option value="7">7 instances</option>
                     <option value="10">10 instances</option>
                 </select>
             </div>
-
+            
             <div class="form-group">
                 <label for="duration">Initial Duration *</label>
-                <select id="duration" onchange="updateEstimate()">
+                <select id="duration" onchange="updateCostEstimate()" required>
+                    <option value="">Select duration...</option>
+                    <option value="6">6 hours</option>
                     <option value="12">12 hours</option>
-                    <option value="24" selected>24 hours</option>
+                    <option value="24">24 hours (recommended)</option>
                     <option value="48">48 hours</option>
                     <option value="72">72 hours</option>
-                    <option value="168">1 week</option>
                 </select>
             </div>
+            
+            <div class="navigation">
+                <button onclick="goToStep(1)" class="btn btn-secondary">← Previous</button>
+                <button onclick="goToStep(3)" class="btn" id="nextStep2" disabled>Next: Select Hosts →</button>
+            </div>
+        </div>
 
-            <div class="cost-estimate">
-                <h3>💰 Cost Estimate</h3>
-                <div id="costBreakdown">
-                    <p><strong>Total instances:</strong> <span id="totalInstances">5</span></p>
-                    <p><strong>Duration:</strong> <span id="totalDuration">24</span> hours</p>
-                    <p><strong>Estimated cost:</strong> $<span id="totalCost">30.00</span></p>
-                    <p><small>Rate: $0.25/hour per instance (may vary by host)</small></p>
+        <!-- Step 3: Host Selection -->
+        <div class="form-section" id="step3">
+            <h2>🌐 Select Enhanced Hosts</h2>
+            
+            <div class="host-discovery">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Available Enhanced Hosts</h3>
+                    <button onclick="discoverHosts()" class="btn btn-secondary">🔄 Refresh</button>
+                </div>
+                
+                <div id="hostGrid" class="host-grid">
+                    <div style="text-align: center; grid-column: 1 / -1; padding: 20px;">
+                        <div class="loading-spinner"></div>
+                        <p>Discovering enhanced hosts...</p>
+                    </div>
+                </div>
+                
+                <div id="selectedHosts" style="margin-top: 20px;">
+                    <h4>Selected Hosts: <span id="selectedCount">0</span></h4>
+                    <div id="selectedHostsList"></div>
                 </div>
             </div>
+            
+            <div class="navigation">
+                <button onclick="goToStep(2)" class="btn btn-secondary">← Previous</button>
+                <button onclick="goToStep(4)" class="btn" id="nextStep3" disabled>Next: Review & Deploy →</button>
+            </div>
+        </div>
 
-            <div class="savings-preview">
-                <h3>⏱️ Time Savings Preview</h3>
-                <div id="savingsBreakdown">
-                    <p><strong>Manual setup time:</strong> <span id="manualTime">2.5</span> hours</p>
-                    <p><strong>Cluster manager time:</strong> 3 minutes</p>
-                    <p><strong>Time saved:</strong> <span id="timeSaved">2.4</span> hours</p>
-                    <p><strong>Efficiency gain:</strong> <span id="efficiency">5000</span>% faster</p>
+        <!-- Step 4: Review & Deploy -->
+        <div class="form-section" id="step4">
+            <h2>📋 Review & Deploy</h2>
+            
+            <div class="cost-estimate" data-live-pricing="cluster">
+                <h3>💰 Live Cost Estimate</h3>
+                <div class="cost-grid">
+                    <div class="cost-item">
+                        <div class="cost-value" id="totalInstances">-</div>
+                        <div>Total Instances</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-value" id="totalDuration">-</div>
+                        <div>Duration</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-value" id="estimatedCostUSD">-</div>
+                        <div>USD Cost</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-value" id="estimatedCostCrypto">-</div>
+                        <div>Crypto Cost</div>
+                    </div>
                 </div>
             </div>
+            
+            <div class="alert info">
+                <h4>⏱️ Time Savings Preview</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 10px;">
+                    <div>Manual setup: <strong id="manualTime">-</strong></div>
+                    <div>Cluster manager: <strong>3 minutes</strong></div>
+                    <div>Time saved: <strong id="timeSaved">-</strong></div>
+                    <div>Efficiency gain: <strong id="efficiencyGain">-</strong></div>
+                </div>
+            </div>
+            
+            <div id="deploymentSummary" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h4>📄 Deployment Summary</h4>
+                <div id="summaryContent"></div>
+            </div>
+            
+            <div class="navigation">
+                <button onclick="goToStep(3)" class="btn btn-secondary">← Previous</button>
+                <button onclick="deployCluster()" class="btn" id="deployBtn">🚀 Deploy Cluster</button>
+                <button onclick="openDappManager()" class="btn btn-secondary">💻 Open dApp Manager</button>
+            </div>
+        </div>
 
-            <button type="submit" class="btn">Create Cluster</button>
-        </form>
-
-        <div id="result"></div>
+        <!-- Results -->
+        <div id="deploymentResult"></div>
     </div>
 
+    <script src="/widgets/live-pricing.js"></script>
     <script>
-        function updateEstimate() {
-            const instances = parseInt(document.getElementById('instanceCount').value);
-            const duration = parseInt(document.getElementById('duration').value);
-            const cost = instances * 0.25 * duration;
-            const manualTime = instances * 0.5;
-            const timeSaved = manualTime - 0.05;
-            const efficiency = (manualTime / 0.05) * 100;
+        let currentStep = 1;
+        let clusterConfig = {};
+        let selectedHosts = [];
+        let licenseVerified = false;
 
-            document.getElementById('totalInstances').textContent = instances;
-            document.getElementById('totalDuration').textContent = duration;
-            document.getElementById('totalCost').textContent = cost.toFixed(2);
-            document.getElementById('manualTime').textContent = manualTime.toFixed(1);
-            document.getElementById('timeSaved').textContent = timeSaved.toFixed(1);
-            document.getElementById('efficiency').textContent = efficiency.toFixed(0);
-        }
-
-        document.getElementById('clusterForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const licenseKey = localStorage.getItem('cluster_license');
-            if (!licenseKey) {
-                showResult('Please activate your license first. <a href="/cluster/">Go back to dashboard</a>', 'error');
+        // Step navigation
+        function goToStep(step) {
+            if (step === 0) {
+                window.location.href = '/cluster/';
                 return;
             }
+            
+            // Validate current step before proceeding
+            if (!validateStep(currentStep)) return;
+            
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((el, index) => {
+                el.classList.remove('active');
+                if (index < step - 1) {
+                    el.classList.add('completed');
+                } else if (index === step - 1) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('completed');
+                }
+            });
+            
+            // Hide all sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show target section
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            
+            // Update step-specific content
+            if (step === 3) {
+                discoverHosts();
+            } else if (step === 4) {
+                updateReviewSummary();
+            }
+        }
 
-            const formData = {
-                license_key: licenseKey,
-                name: document.getElementById('clusterName').value,
-                target_hosts: document.getElementById('targetHosts').value.split('\n').filter(h => h.trim()),
-                contract_path: document.getElementById('contractPath').value,
-                instance_count: parseInt(document.getElementById('instanceCount').value),
-                duration: parseInt(document.getElementById('duration').value)
-            };
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    return licenseVerified;
+                case 2:
+                    const name = document.getElementById('clusterName').value.trim();
+                    const path = document.getElementById('contractPath').value.trim();
+                    const instances = document.getElementById('instanceCount').value;
+                    const duration = document.getElementById('duration').value;
+                    
+                    if (!name || !path || !instances || !duration) {
+                        showAlert('Please fill in all required fields', 'error');
+                        return false;
+                    }
+                    
+                    clusterConfig = { name, path, instances: parseInt(instances), duration: parseInt(duration) };
+                    return true;
+                case 3:
+                    if (selectedHosts.length < clusterConfig.instances) {
+                        showAlert(`Please select at least ${clusterConfig.instances} hosts for your cluster`, 'error');
+                        return false;
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        }
 
-            showResult('Creating cluster... This may take a few minutes.', 'info');
-
+        // License verification
+        async function verifyLicense() {
+            const xahauAddress = document.getElementById('xahauAddress').value.trim();
+            
+            if (!xahauAddress || !xahauAddress.startsWith('r')) {
+                showAlert('Please enter a valid Xahau address', 'error');
+                return;
+            }
+            
             try {
-                const response = await fetch('/api/cluster-extension.php?action=create-cluster', {
+                const response = await fetch('/api/xahau-nft-licenses.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify({
+                        action: 'verify_cluster_license',
+                        xahau_address: xahauAddress
+                    })
                 });
 
                 const result = await response.json();
-
-                if (result.success) {
-                    showResult(`
-                        ✅ Cluster created successfully!<br>
-                        <strong>Cluster ID:</strong> ${result.cluster_id}<br>
-                        <strong>Instances:</strong> ${result.instances.length}<br>
-                        <a href="/cluster/">Return to Dashboard</a>
-                    `, 'success');
+                
+                if (result.success && result.has_license) {
+                    localStorage.setItem('cluster_xahau_address', xahauAddress);
+                    showAlert('✅ License verified! You can create clusters.', 'success');
+                    licenseVerified = true;
+                    document.getElementById('nextStep1').disabled = false;
                 } else {
-                    showResult(`❌ ${result.error}<br>${result.license_error ? `<a href="${result.purchase_url}">Purchase License</a>` : ''}`, 'error');
+                    showAlert('❌ No valid cluster license found. Please purchase a license first.', 'error');
+                    licenseVerified = false;
                 }
             } catch (error) {
-                showResult('❌ Error creating cluster. Please try again.', 'error');
+                showAlert('Connection error during verification', 'error');
             }
-        });
+        }
 
-        function showResult(message, type) {
-            const colors = {
-                success: '#d4edda',
-                error: '#f8d7da', 
-                info: '#d1ecf1'
-            };
-            
-            document.getElementById('result').innerHTML = `
-                <div style="background: ${colors[type]}; padding: 15px; border-radius: 8px; margin-top: 20px;">
-                    ${message}
+        // Host discovery
+        async function discoverHosts() {
+            document.getElementById('hostGrid').innerHTML = `
+                <div style="text-align: center; grid-column: 1 / -1; padding: 20px;">
+                    <div class="loading-spinner"></div>
+                    <p>Discovering enhanced hosts...</p>
                 </div>
             `;
-        }
-
-        // Initial calculation
-        updateEstimate();
-    </script>
-</body>
-</html>
-EOF
-
-# Copy the ROI calculator
-cp /var/www/html/purchase-license.html /var/www/html/cluster/roi-calculator.html
-
-# Create the PHP backend files
-cat > /var/www/html/api/cluster-extension.php << 'PHPEOF'
-<?php
-// Include the cluster extension backend we created earlier
-require_once(__DIR__ . '/cluster-manager.php');
-
-// The ClusterExtensionManager class code goes here
-// (This would be the content from the previous artifact)
-
-// Handle CORS for frontend requests
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
-
-// Route requests to appropriate handlers
-$extension_manager = new ClusterExtensionManager();
-$input = json_decode(file_get_contents('php://input'), true);
-
-switch ($_SERVER['REQUEST_METHOD']) {
-    case 'POST':
-        switch ($_GET['action'] ?? '') {
-            case 'extend-all':
-                $result = $extension_manager->extendAllClusters(
-                    $input['license_key'],
-                    $input['extension_hours']
-                );
-                break;
-                
-            case 'extend-cluster':
-                $result = $extension_manager->extendSingleCluster(
-                    $input['cluster_id'],
-                    $input['extension_hours']
-                );
-                break;
-                
-            case 'create-cluster':
-                $result = $extension_manager->createCluster($input);
-                break;
-                
-            case 'cost-estimate':
-                $result = $extension_manager->getExtensionCostEstimate(
-                    $input['license_key'],
-                    $input['extension_hours']
-                );
-                break;
-                
-            case 'validate':
-                $license_manager = new SimpleLicenseManager();
-                $result = $license_manager->validateLicense(
-                    $input['license_key'], 
-                    $input['host_address'] ?? null
-                );
-                break;
-                
-            default:
-                $result = ['error' => 'Invalid action'];
-        }
-        break;
-        
-    case 'GET':
-        switch ($_GET['action'] ?? '') {
-            case 'cluster-status':
-                $result = $extension_manager->getClusterStatus($_GET['license_key']);
-                break;
-                
-            default:
-                $result = ['error' => 'Invalid action'];
-        }
-        break;
-        
-    default:
-        $result = ['error' => 'Method not allowed'];
-}
-
-header('Content-Type: application/json');
-echo json_encode($result);
-?>
-PHPEOF
-
-# Update main landing page to include cluster manager promotion
-cat >> /var/www/html/index.html << 'EOF'
-
-<!-- Cluster Manager Section -->
-<div class="feature-section" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; margin: 30px 0; padding: 30px; border-radius: 15px;">
-    <h3>🚀 NEW: Premium Cluster Manager</h3>
-    <p style="font-size: 18px; margin: 15px 0;">Deploy and manage distributed applications across multiple hosts with one click!</p>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
-        <div>
-            <h4>⚡ 2400% Faster</h4>
-            <p>Extend all clusters in 30 seconds vs 12+ minutes manually</p>
-        </div>
-        <div>
-            <h4>💰 Save $1000s</h4>
-            <p>Prevent downtime and reduce operational costs</p>
-        </div>
-        <div>
-            <h4>🎯 One-Time $49.99</h4>
-            <p>Lifetime access, pays for itself in days</p>
-        </div>
-    </div>
-    
-    <div style="text-align: center; margin-top: 25px;">
-        <a href="/cluster/roi-calculator.html" style="background: white; color: #667eea; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-right: 15px;">
-            📊 Calculate Your Savings
-        </a>
-        <a href="/purchase-license.html" style="background: rgba(255,255,255,0.2); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-right: 15px;">
-            🛒 Purchase License
-        </a>
-        <a href="/cluster/" style="background: rgba(255,255,255,0.1); color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-            🔓 Activate License
-        </a>
-    </div>
-</div>
-EOF
-
-# Set proper permissions
-chmod 755 /var/www/html/cluster/
-chmod 644 /var/www/html/cluster/*.html
-chmod 755 /var/www/html/api/cluster-extension.php
-
-# Install evdevkit if not present
-if ! command -v evdevkit &> /dev/null; then
-    echo "Installing evdevkit..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm install node
-    npm install -g @hotpocket/evdevkit
-fi
-
-echo "✅ Cluster Manager add-on installed successfully!"
-echo ""
-echo "🎯 Next steps:"
-echo "1. Purchase a license at: http://$(hostname -I | awk '{print $1}')/purchase-license.html"
-echo "2. Activate at: http://$(hostname -I | awk '{print $1}')/cluster/"
-echo "3. Start creating clusters and saving time!"
-echo ""
-echo "💡 The cluster manager pays for itself in just a few extensions!"
-                showResult('licenseResult', 'Connection error. Please try again.', 'error');
-            }
-        }
-
-        async function loadClusters() {
-            const licenseKey = localStorage.getItem('cluster_license');
             
             try {
-                const response = await fetch(`/api/cluster-extension.php?action=cluster-status&license_key=${licenseKey}`);
-                const clusters = await response.json();
+                const response = await fetch('/api/auto-discovery.php');
+                const hosts = await response.json();
                 
-                if (clusters && clusters.length > 0) {
-                    displayClusters(clusters);
+                if (hosts && hosts.length > 0) {
+                    displayAvailableHosts(hosts);
                 } else {
-                    document.getElementById('clustersList').innerHTML = `
-                        <p>No clusters found. <a href="/cluster/create.html" style="color: #ffd700;">Create your first cluster</a></p>
+                    document.getElementById('hostGrid').innerHTML = `
+                        <div style="text-align: center; grid-column: 1 / -1; padding: 20px;">
+                            <p>No enhanced hosts found. Please try refreshing or contact support.</p>
+                        </div>
                     `;
                 }
             } catch (error) {
+                document.getElementById('hostGrid').innerHTML = `
+                    <div style="text-align: center; grid-column: 1 / -1; padding: 20px;">
+                        <p>Error discovering hosts. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayAvailableHosts(hosts) {
+            const html = hosts.map(host => `
+                <div class="host-card" onclick="toggleHost('${host.address}', '${host.domain}', ${host.available_slots})" 
+                     data-address="${host.address}">
+                    <div style="font-weight: bold;">${host.domain || host.address.substring(0, 12) + '...'}</div>
+                    <div style="font-size: 0.9em; opacity: 0.8;">${host.address}</div>
+                    <div class="host-availability ${host.status}">
+                        ${host.available_slots} slots available
+                    </div>
+                    <div style="font-size: 0.8em; margin-top: 5px;">
+                        Enhanced: ✅ | Response: ${host.response_time}ms
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('hostGrid').innerHTML = html;
+        }
+
+        function toggleHost(address, domain, availableSlots) {
+            const hostCard = document.querySelector(`[data-address="${address}"]`);
+            
+            if (hostCard.classList.contains('selected')) {
+                // Deselect
+                hostCard.classList.remove('selected');
+                selectedHosts = selectedHosts.filter(h => h.address !== address);
+            } else {
+                // Select
+                if (selectedHosts.length < clusterConfig.instances) {
+                    hostCard.classList.add('selected');
+                    selectedHosts.push({ address, domain, availableSlots });
+                } else {
+                    showAlert(`You can only select ${clusterConfig.instances} hosts for this cluster configuration`, 'info');
+                    return;
+                }
+            }
+            
+            updateSelectedHostsDisplay();
+        }
+
+        function updateSelectedHostsDisplay() {
+            document.getElementById('selectedCount').textContent = selectedHosts.length;
+            
+            const html = selectedHosts.map((host, index) => `
+                <div style="background: rgba(76, 175, 80, 0.2); padding: 10px; border-radius: 8px; margin: 5px 0;">
+                    ${index + 1}. ${host.domain || host.address.substring(0, 20) + '...'}
+                    <button onclick="removeHost('${host.address}')" style="float: right; background: none; border: none; color: #ff6b6b; cursor: pointer;">✕</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('selectedHostsList').innerHTML = html;
+            
+            // Enable/disable next button
+            document.getElementById('nextStep3').disabled = selectedHosts.length < clusterConfig.instances;
+        }
+
+        function removeHost(address) {
+            selectedHosts = selectedHosts.filter(h => h.address !== address);
+            document.querySelector(`[data-address="${address}"]`).classList.remove('selected');
+            updateSelectedHostsDisplay();
+        }
+
+        // Cost estimation
+        function updateCostEstimate() {
+            const instances = parseInt(document.getElementById('instanceCount').value) || 0;
+            const duration = parseInt(document.getElementById('duration').value) || 0;
+            
+            if (instances && duration) {
+                document.getElementById('nextStep2').disabled = false;
+            }
+        }
+
+        async function updateReviewSummary() {
+            // Update cost estimates
+            document.getElementById('totalInstances').textContent = clusterConfig.instances;
+            document.getElementById('totalDuration').textContent = `${clusterConfig.duration} hours`;
+            
+            // Get live pricing
+            if (window.livePricing) {
+                const rates = await window.livePricing.getClusterRates();
+                if (rates) {
+                    const totalCost = clusterConfig.instances * clusterConfig.duration * 0.25;
+                    document.getElementById('estimatedCostUSD').textContent = `$${totalCost.toFixed(2)}`;
+                    
+                    if (rates.currencies.xrp?.available) {
+                        const xrpCost = totalCost / rates.currencies.xrp.rate;
+                        document.getElementById('estimatedCostCrypto').textContent = `~${xrpCost.toFixed(1)} XRP`;
+                    }
+                }
+            }
+            
+            // Time savings
+            const manualTimeHours = clusterConfig.instances * 0.5; // 30 min per instance
+            document.getElementById('manualTime').textContent = `${manualTimeHours} hours`;
+            document.getElementById('timeSaved').textContent = `${(manualTimeHours - 0.05).toFixed(1)} hours`;
+            document.getElementById('efficiencyGain').textContent = `${Math.round((manualTimeHours / 0.05) * 100)}% faster`;
+            
+            // Summary
+            const summaryHtml = `
+                <div><strong>Cluster Name:</strong> ${clusterConfig.name}</div>
+                <div><strong>Contract Path:</strong> ${clusterConfig.path}</div>
+                <div><strong>Instances:</strong> ${clusterConfig.instances}</div>
+                <div><strong>Duration:</strong> ${clusterConfig.duration} hours</div>
+                <div><strong>Selected Hosts:</strong> ${selectedHosts.length}</div>
+            `;
+            document.getElementById('summaryContent').innerHTML = summaryHtml;
+        }
+
+        // Deployment
+        async function deployCluster() {
+            const xahauAddress = localStorage.getItem('cluster_xahau_address');
+            
+            try {
+                document.getElementById('deployBtn').disabled = true;
+                document.getElementById('deployBtn').textContent = 'Deploying...';
+                
+                const deploymentData = {
+                    xahau_address: xahauAddress,
+                    cluster_name: clusterConfig.name,
+                    contract_path: clusterConfig.path,
+                    instances: clusterConfig.instances,
+                    duration: clusterConfig.duration,
+                    selected_hosts: selectedHosts
+                };
+                
+                const response = await fetch('/api/cluster-manager.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'create_cluster',
+                        ...deploymentData
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(`✅ Cluster "${clusterConfig.name}" deployed successfully! Cluster ID: ${result.cluster_id}`, 'success');
+                    
+                    setTimeout(() => {
+                        openDappManager();
+                    }, 2000);
+                } else {
+                    showAlert(`❌ Deployment failed: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Deployment error. Please try again.', 'error');
+            } finally {
+                document.getElementById('deployBtn').disabled = false;
+                document.getElementById('deployBtn').textContent = '🚀 Deploy Cluster';
+            }
+        }
+
+        function openDappManager() {
+            window.location.href = '/cluster/dapp-manager.html';
+        }
+
+        // Utility functions
+        function showAlert(message, type) {
+            const alertHtml = `<div class="alert ${type}">${message}</div>`;
+            
+            // Add to current step
+            const currentSection = document.querySelector('.form-section.active');
+            const existingAlert = currentSection.querySelector('.alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            currentSection.insertAdjacentHTML('afterbegin', alertHtml);
+            
+            // Auto-remove success alerts
+            if (type === 'success') {
+                setTimeout(() => {
+                    const alert = currentSection.querySelector('.alert.success');
+                    if (alert) alert.remove();
+                }, 5000);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if license is already verified
+            const savedAddress = localStorage.getItem('cluster_xahau_address');
+            if (savedAddress) {
+                document.getElementById('xahauAddress').value = savedAddress;
+            }
+        });
+    </script>
+</body>
+</html>
