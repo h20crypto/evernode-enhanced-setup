@@ -1,0 +1,566 @@
+/* ==========================================
+   Enhanced Evernode Host - Interactive CSS
+   Version: 2.1 - Seamless UI States & Animations
+   ========================================== */
+
+/* ==========================================
+   BUTTON STATES & INTERACTIONS
+   ========================================== */
+
+/* Copy Button States */
+.copy-btn,
+.copy-app-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.copy-btn:hover,
+.copy-app-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+.copy-btn.state-success,
+.copy-app-btn.state-success {
+    background: linear-gradient(135deg, #4CAF50, #45a049) !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+.copy-btn.state-error,
+.copy-app-btn.state-error {
+    background: linear-gradient(135deg, #f44336, #d32f2f) !important;
+    color: white !important;
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Loading States */
+.loading .copy-btn,
+.loading .copy-app-btn {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.loading .copy-btn::after,
+.loading .copy-app-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #00ff88;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Navigation States */
+.nav-links a {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    border-radius: 1px;
+}
+
+.nav-links a:hover {
+    color: #00ff88;
+    transform: translateY(-1px);
+}
+
+/* Filter Button States */
+.filter-tab,
+.filter-btn {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.filter-tab.active,
+.filter-btn.active {
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    color: #1a1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+.filter-tab:hover,
+.filter-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================
+   PROGRESS BARS & STATUS INDICATORS
+   ========================================== */
+
+.progress-bar,
+.usage-bar {
+    transition: all 0.5s ease;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after,
+.usage-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.progress-bar.state-healthy,
+.usage-bar.state-healthy {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+.progress-bar.state-warning,
+.usage-bar.state-warning {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+}
+
+.progress-bar.state-critical,
+.usage-bar.state-critical {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    animation: pulse-critical 2s infinite;
+}
+
+/* Status Indicators */
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    transition: all 0.3s ease;
+}
+
+.status-indicator.status-available {
+    background: #4CAF50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+.status-indicator.status-limited {
+    background: #ff9800;
+    box-shadow: 0 0 8px rgba(255, 152, 0, 0.5);
+    animation: pulse-warning 2s infinite;
+}
+
+.status-indicator.status-full {
+    background: #f44336;
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.5);
+    animation: pulse-critical 1.5s infinite;
+}
+
+.status-indicator.status-offline {
+    background: #9e9e9e;
+    box-shadow: none;
+}
+
+/* ==========================================
+   DEBUG PANEL
+   ========================================== */
+
+.debug-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    overflow: hidden;
+    display: none;
+    animation: debugPanelShow 0.3s ease-out;
+}
+
+.debug-header {
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    color: #1a1a1a;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.debug-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.debug-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #1a1a1a;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.debug-close:hover {
+    background: rgba(26, 26, 26, 0.2);
+    transform: scale(1.1);
+}
+
+.debug-content {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+    color: #fff;
+}
+
+.debug-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border-left: 4px solid #00ff88;
+}
+
+.debug-section h4 {
+    color: #00ff88;
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+}
+
+.debug-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.debug-section li {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.debug-section li:last-child {
+    border-bottom: none;
+}
+
+/* ==========================================
+   LOADING INDICATORS
+   ========================================== */
+
+.loading-indicator {
+    display: none;
+    position: relative;
+}
+
+.loading-indicator::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    border-top: 2px solid #00ff88;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+/* Global Loading State */
+.loading .feature-card,
+.loading .app-card,
+.loading .stat-card {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.loading .feature-card::after,
+.loading .app-card::after,
+.loading .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* ==========================================
+   SCANNING STATES
+   ========================================== */
+
+.scan-btn.scanning,
+.scan-btn:disabled {
+    background: linear-gradient(135deg, #666, #555);
+    cursor: not-allowed;
+    position: relative;
+    overflow: hidden;
+}
+
+.scan-btn.scanning::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: scanProgress 2s infinite;
+}
+
+/* ==========================================
+   HOST CARDS & FILTERING
+   ========================================== */
+
+.host-card,
+.app-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.host-card[style*="display: none"],
+.app-card[style*="display: none"] {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+}
+
+.host-card:hover,
+.app-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.host-card.enhanced::before,
+.app-card.enhanced::before {
+    content: '✨';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    z-index: 2;
+}
+
+/* Enhanced Host Indicators */
+.enhanced-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    color: #1a1a1a;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    animation: glow 2s infinite alternate;
+}
+
+/* ==========================================
+   RESPONSIVE ENHANCEMENTS
+   ========================================== */
+
+@media (max-width: 768px) {
+    .debug-panel {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .debug-header {
+        padding: 15px;
+    }
+
+    .debug-content {
+        padding: 15px;
+    }
+
+    .copy-btn,
+    .copy-app-btn {
+        min-width: 60px;
+        font-size: 0.9rem;
+    }
+
+    .filter-tab,
+    .filter-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes pulse-warning {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes pulse-critical {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes scanProgress {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes debugPanelShow {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.5); }
+    100% { box-shadow: 0 0 15px rgba(0, 255, 136, 0.8); }
+}
+
+/* ==========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ========================================== */
+
+/* Focus states for keyboard navigation */
+.copy-btn:focus,
+.copy-app-btn:focus,
+.filter-tab:focus,
+.filter-btn:focus,
+.nav-links a:focus {
+    outline: 2px solid #00ff88;
+    outline-offset: 2px;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .debug-panel {
+        border: 2px solid #00ff88;
+        background: #000;
+    }
+    
+    .status-indicator {
+        border: 2px solid currentColor;
+    }
+}
+
+/* ==========================================
+   UTILITY CLASSES
+   ========================================== */
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-out;
+}
+
+.slide-up {
+    animation: slideUp 0.4s ease-out;
+}
+
+.bounce-in {
+    animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================== */
+
+/* GPU acceleration for smooth animations */
+.copy-btn,
+.copy-app-btn,
+.host-card,
+.app-card,
+.filter-tab,
+.filter-btn,
+.nav-links a {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Optimize repaints */
+.progress-bar,
+.usage-bar,
+.status-indicator {
+    contain: layout style paint;
+}
