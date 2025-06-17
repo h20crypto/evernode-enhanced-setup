@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant dApp Management Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-link {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .main-interface {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 30px;
+            min-height: 70vh;
+        }
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .panel-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cluster-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cluster-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .cluster-item.active {
+            border: 2px solid #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+        .cluster-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .status-healthy { background: #00ff88; }
+        .status-warning { background: #ffd700; }
+        .status-error { background: #ff6b6b; }
+        .code-editor {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            min-height: 300px;
+        }
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .file-tabs {
+            display: flex;
+            gap: 10px;
+        }
+        .file-tab {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .file-tab.active {
+            background: #00ff88;
+            color: #1a1a1a;
+        }
+        .btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+        }
+        .btn-danger {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+        }
+        .instance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .instance-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .logs-container {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        .log-line {
+            margin-bottom: 5px;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .log-info { color: #00ff88; }
+        .log-warning { color: #ffd700; }
+        .log-error { color: #ff6b6b; background: rgba(255, 107, 107, 0.1); }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .websocket-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .deployment-flow {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .flow-step:last-child {
+            border-bottom: none;
+        }
+        .step-number {
+            background: #00ff88;
+            color: #1a1a1a;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="navbar">
+            <div class="logo">🚀 Enhanced Evernode dApp Manager</div>
+            <div class="nav-links">
+                <div class="nav-link active">Dashboard</div>
+                <div class="nav-link">Deploy</div>
+                <div class="nav-link">Monitor</div>
+                <div class="nav-link">Settings</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div>💰 Balance: 245.7 EVR</div>
+                <div>🏆 Premium License Active</div>
+            </div>
+        </div>
+
+        <!-- Main Interface -->
+        <div class="main-interface">
+            <!-- Left Panel: Cluster Management -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>🏗️</span>
+                    <span>My Clusters</span>
+                </div>
+
+                <div class="cluster-item active">
+                    <div class="cluster-status">
+                        <div class="status-dot status-healthy"></div>
+                        <strong>DeFi Protocol v1.2</strong>
+                    </div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">
+                        7 instances • $127/month • 99.2% uptime
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <span style="background: rgba(0,255,136,0.2); padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">Production</span>
+                    </div>
+                </div>
+
+                <div class="cluster-item">
+                    <div class="cluster-status">
+                        <div class="status-dot status-warning"></div>
+                        <strong>API Gateway</strong>
+                    </div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">
+                        3 instances • $45/month • 97.8% uptime
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <span style="background: rgba(255,215,0,0.2); padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">Staging</span>
+                    </div>
+                </div>
+
+                <div class="cluster-item">
+                    <div class="cluster-status">
+                        <div class="status-dot status-healthy"></div>
+                        <strong>Game Server Beta</strong>
+                    </div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">
+                        4 instances • $89/month • 98.5% uptime
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <span style="background: rgba(0,191,255,0.2); padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">Testing</span>
+                    </div>
+                </div>
+
+                <button class="btn" style="width: 100%; margin-top: 20px;">
+                    ➕ Deploy New dApp
+                </button>
+            </div>
+
+            <!-- Center Panel: Code Editor & Management -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>💻</span>
+                    <span>dApp Development</span>
+                </div>
+
+                <!-- WebSocket Connection Status -->
+                <div class="websocket-status">
+                    <div class="connection-dot"></div>
+                    <span>Connected to enhanced-host-1.com:26201</span>
+                    <button class="btn btn-secondary" style="margin-left: auto; padding: 5px 10px; font-size: 0.8rem;">Switch Instance</button>
+                </div>
+
+                <!-- File Tabs -->
+                <div class="code-header">
+                    <div class="file-tabs">
+                        <div class="file-tab active">index.js</div>
+                        <div class="file-tab">config.json</div>
+                        <div class="file-tab">package.json</div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" style="padding: 5px 15px; font-size: 0.9rem;">💾 Save</button>
+                        <button class="btn btn-secondary" style="padding: 5px 15px; font-size: 0.9rem;">🚀 Deploy</button>
+                    </div>
+                </div>
+
+                <!-- Code Editor -->
+                <div class="code-editor">
+                    <div style="color: #00ff88;">// DeFi Protocol Smart Contract - HotPocket</div>
+                    <div style="color: #ffd700;">const HotPocket = require('hotpocket-nodejs-contract');</div>
+                    <div style="color: #ffd700;">const crypto = require('crypto');</div>
+                    <div style="color: #87ceeb;">
+                        <br>
+                        <span style="color: #ffd700;">const</span> <span style="color: #87ceeb;">defiContract</span> = <span style="color: #ffd700;">async</span> (ctx) => {<br>
+                        &nbsp;&nbsp;<span style="color: #98fb98;">// Handle DeFi transactions</span><br>
+                        &nbsp;&nbsp;<span style="color: #ffd700;">for</span> (<span style="color: #ffd700;">const</span> user <span style="color: #ffd700;">of</span> ctx.users.list()) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffd700;">if</span> (user.hasInputs()) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffd700;">const</span> input = user.inputs[0];<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffd700;">const</span> transaction = JSON.parse(input);<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #98fb98;">// Process DeFi logic</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffd700;">if</span> (transaction.type === 'swap') {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processSwap(transaction, ctx);<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                        &nbsp;&nbsp;}<br>
+                        };<br>
+                        <br>
+                        <span style="color: #98fb98;">// Initialize HotPocket contract</span><br>
+                        <span style="color: #ffd700;">const</span> hpc = <span style="color: #ffd700;">new</span> HotPocket.Contract();<br>
+                        hpc.init(defiContract);
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="btn">🔄 Hot Reload</button>
+                    <button class="btn btn-secondary">📊 Test Contract</button>
+                    <button class="btn btn-secondary">🐛 Debug Mode</button>
+                    <button class="btn btn-danger">🛑 Stop All</button>
+                </div>
+
+                <!-- Deployment Flow -->
+                <div class="deployment-flow">
+                    <h4 style="margin-bottom: 15px;">🚀 Last Deployment Status</h4>
+                    <div class="flow-step">
+                        <div class="step-number">✓</div>
+                        <div>Contract validated and bundled</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-number">✓</div>
+                        <div>Deployed to 7 Sashimono containers across cluster</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-number">✓</div>
+                        <div>HotPocket consensus established</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="step-number">✓</div>
+                        <div>WebSocket endpoints active</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Monitoring & Logs -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>📊</span>
+                    <span>Live Monitoring</span>
+                </div>
+
+                <!-- Instance Status -->
+                <div class="instance-grid">
+                    <div class="instance-card">
+                        <div style="font-size: 0.9rem; font-weight: bold;">US-East-1</div>
+                        <div class="status-dot status-healthy" style="margin: 8px auto;"></div>
+                        <div style="font-size: 0.8rem;">98.2% CPU</div>
+                    </div>
+                    <div class="instance-card">
+                        <div style="font-size: 0.9rem; font-weight: bold;">US-West-1</div>
+                        <div class="status-dot status-healthy" style="margin: 8px auto;"></div>
+                        <div style="font-size: 0.8rem;">76.5% CPU</div>
+                    </div>
+                    <div class="instance-card">
+                        <div style="font-size: 0.9rem; font-weight: bold;">EU-Central</div>
+                        <div class="status-dot status-warning" style="margin: 8px auto;"></div>
+                        <div style="font-size: 0.8rem;">89.1% CPU</div>
+                    </div>
+                    <div class="instance-card">
+                        <div style="font-size: 0.9rem; font-weight: bold;">Asia-East</div>
+                        <div class="status-dot status-healthy" style="margin: 8px auto;"></div>
+                        <div style="font-size: 0.8rem;">45.3% CPU</div>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">1,247</div>
+                        <div>Active Users</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">$4.2K</div>
+                        <div>TVL</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">156ms</div>
+                        <div>Avg Response</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">99.8%</div>
+                        <div>Uptime</div>
+                    </div>
+                </div>
+
+                <!-- Live Logs -->
+                <h4 style="margin: 20px 0 10px 0;">📜 Live Logs</h4>
+                <div class="logs-container">
+                    <div class="log-line log-info">[2025-01-15 14:32:01] Contract initialized on instance us-east-1</div>
+                    <div class="log-line log-info">[2025-01-15 14:32:15] New user connected: 0x742d...</div>
+                    <div class="log-line log-info">[2025-01-15 14:32:28] Swap executed: 100 USDC → 0.034 ETH</div>
+                    <div class="log-line log-warning">[2025-01-15 14:32:45] High CPU usage on eu-central (89.1%)</div>
+                    <div class="log-line log-info">[2025-01-15 14:33:02] Consensus round completed (7/7 nodes)</div>
+                    <div class="log-line log-info">[2025-01-15 14:33:18] User disconnected: 0x425a...</div>
+                    <div class="log-line log-info">[2025-01-15 14:33:35] Liquidity added: $1,250 USDC/ETH</div>
+                </div>
+
+                <!-- Management Actions -->
+                <div style="margin-top: 20px;">
+                    <button class="btn" style="width: 100%; margin-bottom: 10px;">⚡ Scale Up EU Instance</button>
+                    <button class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;">🔄 Extend All Leases</button>
+                    <button class="btn btn-secondary" style="width: 100%;">📈 View Analytics</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate real-time updates
+        function simulateRealTime() {
+            // Update metrics randomly
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics[0].textContent = Math.floor(Math.random() * 100) + 1200; // Users
+            
+            // Add new log entries
+            const logsContainer = document.querySelector('.logs-container');
+            const timestamp = new Date().toISOString().replace('T', ' ').substr(0, 19);
+            const newLog = document.createElement('div');
+            newLog.className = 'log-line log-info';
+            newLog.textContent = `[${timestamp}] Transaction processed: Block #${Math.floor(Math.random() * 1000000)}`;
+            logsContainer.insertBefore(newLog, logsContainer.firstChild);
+            
+            // Keep only last 10 logs
+            while (logsContainer.children.length > 10) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+
+        // Update every 3 seconds
+        setInterval(simulateRealTime, 3000);
+
+        // File tab switching
+        document.querySelectorAll('.file-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.file-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Simulate file content change
+                const editor = document.querySelector('.code-editor');
+                if (tab.textContent === 'config.json') {
+                    editor.innerHTML = `
+                        <div style="color: #00ff88;">// DeFi Protocol Configuration</div>
+                        <div style="color: #87ceeb;">{</div>
+                        <div style="color: #87ceeb;">&nbsp;&nbsp;"name": "DeFi Protocol",</div>
+                        <div style="color: #87ceeb;">&nbsp;&nbsp;"version": "1.2.0",</div>
+                        <div style="color: #87ceeb;">&nbsp;&nbsp;"consensus": {</div>
+                        <div style="color: #87ceeb;">&nbsp;&nbsp;&nbsp;&nbsp;"type": "pbft",</div>
+                        <div style="color: #87ceeb;">&nbsp;&nbsp;&nbsp;&nbsp;"nodes": 7</div>
+                        <div style="color: #87ceeb;">&nbsp;&nbsp;}</div>
+                        <div style="color: #87ceeb;">}</div>
+                    `;
+                }
+            });
+        });
+
+        // Cluster switching
+        document.querySelectorAll('.cluster-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.cluster-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
