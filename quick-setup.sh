@@ -164,6 +164,12 @@ download_enhanced_files() {
     sudo curl -fsSL "$github_base/cluster/create.html" -o /var/www/html/cluster/create.html
     sudo curl -fsSL "$github_base/cluster/paywall.html" -o /var/www/html/cluster/paywall.html
     sudo curl -fsSL "$github_base/cluster/roi-calculator.html" -o /var/www/html/cluster/roi-calculator.html 2>/dev/null || true
+ 
+     # Download live pricing widgets
+    print_info "💰 Downloading live pricing widgets..."
+    sudo mkdir -p /var/www/html/widgets
+    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.js" -o /var/www/html/widgets/live-pricing.js
+    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.css" -o /var/www/html/widgets/live-pricing.css
     
     # Download enhanced configuration
     print_info "⚙️ Downloading configuration..."
