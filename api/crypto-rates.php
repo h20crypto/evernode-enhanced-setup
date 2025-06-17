@@ -1,37 +1,42 @@
 <?php
-// api/crypto-rates-optimized.php - Cost-optimized multi-endpoint Dhali integration
+/**
+ * Enhanced Crypto Rates API - Live Only, No Static Values
+ * Integrates with existing Evernode Enhanced Setup
+ * Uses CoinGecko as reliable backup for both XRP and EVR
+ */
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-class OptimizedDhaliRates {
-    private $payment_claim = 'eyJ2ZXJzaW9uIjoiMiIsImFjY291bnQiOiJyR3FxVUNuRWN2SmNjN2U3TGJyaVpTUW54M3pmZlVTblIzIiwicHJvdG9jb2wiOiJYQUhMLk1BSU5ORVQiLCJjdXJyZW5jeSI6eyJjb2RlIjoiWEFIIiwic2NhbGUiOjYsImlzc3VlciI6bnVsbH0sImRlc3RpbmF0aW9uX2FjY291bnQiOiJyTGdnVEV3bVRlM2VKZ3lRYkNTazR3UWF6b3cyVGVLcnRSIiwiYXV0aG9yaXplZF90b19jbGFpbSI6IjUwMDAwMDAwIiwic2lnbmF0dXJlIjoiM0MwMjExQ0EzREI5NTIzNkY3NUQ0N0VFNkZBODdDMTBDNjIwNTk1RkM1NENERTJCNjk3MTNGNkU5QkNDRUEyNDZBQzAwMzFBNzZERDJDMUFGRTY5MDMwNDFBQzFCMzdGNTQwQUM3NDdGOUQwQTIxODY0QUVEMDI2RTdCNzFCMDciLCJjaGFubmVsX2lkIjoiODdEMUQzMDE1NDc0NTM1Nzg4MjkzREVFMjY0OEVEMTJBMkZFRkVBRTE3NzAxQzk1QkMwNjUwRDczOTZFM0NCMSJ9';
-    
-    private $endpoints = [
-        'xrpl_raw' => [
-            'url' => 'https://run.api.dhali.io/d74e99cb-166d-416b-b171-4d313e0f079d/',
-            'cost' => 0.0001, // XRP per call
-            'currency' => 'XRP',
-            'cache_duration' => 300, // 5 minutes - accurate but not too expensive
-            'description' => 'High-accuracy XRPL data'
-        ],
-        'xrpl_stats' => [
-            'url' => 'https://run.api.dhali.io/c74e147c-a14c-4038-a6aa-9619d2c92596/',
-            'cost' => 0.00001, // XRP per call  
-            'currency' => 'XRP',
-            'cache_duration' => 60, // 1 minute - cheap enough for frequent updates
-            'description' => '5-minute statistical window (cheaper)'
-        ],
-        'xahau_raw' => [
-            'url' => 'https://run.api.dhali.io/f642bad0-acaf-4b2e-852b-66d9a6b6b1ef/',
-            'cost' => 0.0021, // XAH per call
-            'currency' => 'XAH', 
-            'cache_duration' => 600, // 10 minutes - expensive, use sparingly
-            'description' => 'Xahau network data including EVR'
-        ]
-    ];
-    
-    private $cache_dir = 'dhali_cache/';
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+// Include your existing Dhali config if available
+$dhali_config_paths = [
+    '/opt/evernode-enhanced/config/dhali-config.php',
+    '../config/dhali-config.php',
+    __DIR__ . '/../config/dhali-config.php'
+];
+
+$dhali_configured = false;
+foreach ($dhali_config_paths as $path) {
+    if (file_exists($path)) {
+        require_once $path;
+        if (class_exists('DhaliConfig')) {
+            $dhali_configured = DhaliConfig::isConfigured();
+        }
+        break;
+    }
+}
+
+class LiveOnlyPricingSystem {
+    private $cache_dir = '/tmp/live_pricing_cache/';
+    private $base_license_usd = 49.99;
+    private $cluster_base_usd = 30.00;
     
     public function __construct() {
         if (!is_dir($this->cache_dir)) {
@@ -39,243 +44,327 @@ class OptimizedDhaliRates {
         }
     }
     
-    public function getRates($mode = 'balanced') {
-        switch ($mode) {
-            case 'cheap':
-                return $this->getCheapRates();
-            case 'accurate': 
-                return $this->getAccurateRates();
-            case 'realtime':
-                return $this->getRealtimeRates();
-            default:
-                return $this->getBalancedRates();
+    public function getAllRates() {
+        $license_rates = $this->getLicenseRates();
+        $cluster_rates = $this->getClusterRates();
+        $roi_data = $this->getROIData();
+        
+        return [
+            'success' => true,
+            'version' => 'live_only_v2.1',
+            'license' => $license_rates,
+            'cluster' => $cluster_rates,
+            'roi' => $roi_data,
+            'commission' => $this->getCommissionRates(),
+            'supported_currencies' => $this->getSupportedCurrencies(),
+            'data_sources' => $this->getDataSources(),
+            'timestamp' => time(),
+            'last_updated' => date('Y-m-d H:i:s'),
+            'live_rates_only' => true,
+            'no_static_fallbacks' => true
+        ];
+    }
+    
+    public function getLicenseRates() {
+        $xrp_data = $this->getLiveCurrency('xrp');
+        $evr_data = $this->getLiveCurrency('evr');
+        
+        $currencies = [];
+        
+        // XRP - only if live rate available
+        if ($xrp_data) {
+            $xrp_amount = round($this->base_license_usd / $xrp_data['rate'], 2);
+            $currencies['xrp'] = [
+                'available' => true,
+                'rate' => $xrp_data['rate'],
+                'amount' => $xrp_amount,
+                'display' => '~' . round($xrp_amount) . ' XRP',
+                'source' => $xrp_data['source'],
+                'network' => 'XRPL',
+                'last_updated' => $xrp_data['last_updated']
+            ];
+        } else {
+            $currencies['xrp'] = [
+                'available' => false,
+                'error' => 'Live rate unavailable',
+                'message' => 'XRP payments temporarily disabled - no live rate available'
+            ];
         }
+        
+        // EVR - only if live rate available
+        if ($evr_data) {
+            $evr_amount = round($this->base_license_usd / $evr_data['rate'], 2);
+            $currencies['evr'] = [
+                'available' => true,
+                'rate' => $evr_data['rate'],
+                'amount' => $evr_amount,
+                'display' => '~' . round($evr_amount) . ' EVR',
+                'source' => $evr_data['source'],
+                'network' => 'Evernode',
+                'last_updated' => $evr_data['last_updated']
+            ];
+        } else {
+            $currencies['evr'] = [
+                'available' => false,
+                'error' => 'Live rate unavailable',
+                'message' => 'EVR payments temporarily disabled - no live rate available'
+            ];
+        }
+        
+        // USD - always available
+        $currencies['usd'] = [
+            'available' => true,
+            'rate' => 1.00,
+            'amount' => $this->base_license_usd,
+            'display' => '$' . number_format($this->base_license_usd, 2),
+            'source' => 'fixed',
+            'network' => 'Multiple',
+            'last_updated' => date('Y-m-d H:i:s')
+        ];
+        
+        return [
+            'base_price_usd' => $this->base_license_usd,
+            'currencies' => $currencies,
+            'available_count' => count(array_filter($currencies, function($c) { return $c['available']; }))
+        ];
     }
     
-    private function getCheapRates() {
-        // Use cheapest endpoints with longer cache
-        $xrp_data = $this->fetchWithCache('xrpl_stats');
-        $evr_data = $this->getCachedOrFallback('xahau_raw', 3600); // Cache EVR for 1 hour
+    public function getClusterRates() {
+        $xrp_data = $this->getLiveCurrency('xrp');
+        $evr_data = $this->getLiveCurrency('evr');
         
-        return $this->buildRateResponse($xrp_data, $evr_data, 'cheap');
+        $currencies = [];
+        
+        if ($xrp_data) {
+            $currencies['xrp'] = [
+                'available' => true,
+                'rate' => $xrp_data['rate'],
+                'base_cost' => round($this->cluster_base_usd / $xrp_data['rate'], 2),
+                'hourly_rate' => round(0.25 / $xrp_data['rate'], 4),
+                'source' => $xrp_data['source']
+            ];
+        } else {
+            $currencies['xrp'] = ['available' => false];
+        }
+        
+        if ($evr_data) {
+            $currencies['evr'] = [
+                'available' => true,
+                'rate' => $evr_data['rate'],
+                'base_cost' => round($this->cluster_base_usd / $evr_data['rate'], 2),
+                'hourly_rate' => round(0.25 / $evr_data['rate'], 4),
+                'source' => $evr_data['source']
+            ];
+        } else {
+            $currencies['evr'] = ['available' => false];
+        }
+        
+        return [
+            'base_cost_usd' => $this->cluster_base_usd,
+            'hourly_rate_usd' => 0.25,
+            'currencies' => $currencies
+        ];
     }
     
-    private function getAccurateRates() {
-        // Use most accurate endpoints
-        $xrp_data = $this->fetchWithCache('xrpl_raw');
-        $evr_data = $this->fetchWithCache('xahau_raw');
+    public function getROIData() {
+        $xrp_data = $this->getLiveCurrency('xrp');
+        $evr_data = $this->getLiveCurrency('evr');
         
-        return $this->buildRateResponse($xrp_data, $evr_data, 'accurate');
+        $monthly_savings = 150.00;
+        $license_cost = $this->base_license_usd;
+        
+        return [
+            'license_cost_usd' => $license_cost,
+            'monthly_savings_usd' => $monthly_savings,
+            'break_even_days' => round($license_cost / ($monthly_savings / 30), 1),
+            'efficiency_gain_percent' => 2400,
+            'current_rates' => [
+                'xrp' => $xrp_data ? $xrp_data['rate'] : null,
+                'evr' => $evr_data ? $evr_data['rate'] : null
+            ],
+            'live_calculations' => [
+                'xrp_cost' => $xrp_data ? round($license_cost / $xrp_data['rate']) . ' XRP' : 'Rate unavailable',
+                'evr_cost' => $evr_data ? round($license_cost / $evr_data['rate']) . ' EVR' : 'Rate unavailable',
+                'payback_period' => round($license_cost / ($monthly_savings / 30), 1) . ' days'
+            ]
+        ];
     }
     
-    private function getRealtimeRates() {
-        // Use fastest updates (most expensive)
-        $xrp_data = $this->fetchDirect('xrpl_stats'); // Direct call, no cache
-        $evr_data = $this->fetchWithCache('xahau_raw', 300); // 5-min cache for EVR
-        
-        return $this->buildRateResponse($xrp_data, $evr_data, 'realtime');
+    public function getCommissionRates() {
+        return [
+            'host_commission_percent' => 5.0,
+            'network_fee_percent' => 2.5,
+            'developer_revenue_percent' => 92.5,
+            'supported_tokens' => ['XRP', 'EVR', 'USD']
+        ];
     }
     
-    private function getBalancedRates() {
-        // Good balance of cost vs accuracy (recommended)
-        $xrp_data = $this->fetchWithCache('xrpl_stats', 120); // 2-min cache
-        $evr_data = $this->fetchWithCache('xahau_raw', 600); // 10-min cache
+    private function getLiveCurrency($symbol) {
+        $cache_file = $this->cache_dir . $symbol . '.json';
+        $cache_duration = ($symbol === 'xrp') ? 120 : 180; // 2min for XRP, 3min for EVR
         
-        return $this->buildRateResponse($xrp_data, $evr_data, 'balanced');
-    }
-    
-    private function fetchWithCache($endpoint_key, $custom_cache_duration = null) {
-        $endpoint = $this->endpoints[$endpoint_key];
-        $cache_duration = $custom_cache_duration ?? $endpoint['cache_duration'];
-        $cache_file = $this->cache_dir . $endpoint_key . '.json';
-        
-        // Check cache first
+        // Check cache
         if (file_exists($cache_file)) {
-            $cache_data = json_decode(file_get_contents($cache_file), true);
-            if (time() - $cache_data['timestamp'] < $cache_duration) {
-                $cache_data['source'] = 'cache';
-                return $cache_data;
+            $cache = json_decode(file_get_contents($cache_file), true);
+            if ($cache && (time() - $cache['cache_time']) < $cache_duration) {
+                return $cache;
             }
         }
         
-        // Fetch fresh data
-        return $this->fetchDirect($endpoint_key);
+        // Try Dhali first (if configured)
+        global $dhali_configured;
+        if ($dhali_configured && class_exists('DhaliConfig')) {
+            $dhali_rate = $this->fetchDhaliRate($symbol);
+            if ($dhali_rate) {
+                $data = [
+                    'rate' => $dhali_rate,
+                    'source' => 'dhali_oracle',
+                    'cache_time' => time(),
+                    'last_updated' => date('Y-m-d H:i:s')
+                ];
+                file_put_contents($cache_file, json_encode($data));
+                return $data;
+            }
+        }
+        
+        // Fallback to CoinGecko
+        $coingecko_rate = $this->fetchCoinGeckoRate($symbol);
+        if ($coingecko_rate) {
+            $source = $dhali_configured ? 'coingecko_backup' : 'coingecko_primary';
+            $data = [
+                'rate' => $coingecko_rate,
+                'source' => $source,
+                'cache_time' => time(),
+                'last_updated' => date('Y-m-d H:i:s')
+            ];
+            file_put_contents($cache_file, json_encode($data));
+            return $data;
+        }
+        
+        // NO STATIC FALLBACKS - return null if no live rate
+        error_log("No live rate available for $symbol");
+        return null;
     }
     
-    private function fetchDirect($endpoint_key) {
-        $endpoint = $this->endpoints[$endpoint_key];
+    private function fetchDhaliRate($symbol) {
+        if (!class_exists('DhaliConfig')) return null;
         
         try {
+            $payment_claim = DhaliConfig::getPaymentClaim();
+            if (!$payment_claim) return null;
+            
+            $endpoints = [
+                'xrp' => 'https://run.api.dhali.io/d74e99cb-166d-416b-b171-4d313e0f079d/',
+                'evr' => 'https://run.api.dhali.io/f642bad0-acaf-4b2e-852b-66d9a6b6b1ef/'
+            ];
+            
+            if (!isset($endpoints[$symbol])) return null;
+            
             $context = stream_context_create([
                 'http' => [
                     'timeout' => 10,
-                    'header' => "Payment-Claim: {$this->payment_claim}\r\n"
+                    'header' => "Payment-Claim: {$payment_claim}\r\n"
                 ]
             ]);
             
-            $response = file_get_contents($endpoint['url'], false, $context);
+            $response = file_get_contents($endpoints[$symbol], false, $context);
             
             if ($response) {
                 $data = json_decode($response, true);
-                if ($data) {
-                    // Add metadata
-                    $cache_data = [
-                        'data' => $data,
-                        'timestamp' => time(),
-                        'endpoint' => $endpoint_key,
-                        'cost' => $endpoint['cost'],
-                        'source' => 'dhali_live'
-                    ];
-                    
-                    // Cache the result
-                    $cache_file = $this->cache_dir . $endpoint_key . '.json';
-                    file_put_contents($cache_file, json_encode($cache_data));
-                    
-                    return $cache_data;
+                
+                // Try multiple possible field names
+                $possible_fields = [
+                    'xrp' => ['price', 'rate', 'xrp_usd', 'close', 'last'],
+                    'evr' => ['evr_usd', 'EVR_USD', 'evernode_usd', 'price', 'rate']
+                ];
+                
+                foreach ($possible_fields[$symbol] as $field) {
+                    if (isset($data[$field]) && is_numeric($data[$field]) && $data[$field] > 0) {
+                        return floatval($data[$field]);
+                    }
                 }
             }
-            
-            return null;
-            
         } catch (Exception $e) {
-            error_log("Dhali fetch failed for {$endpoint_key}: " . $e->getMessage());
-            return null;
-        }
-    }
-    
-    private function getCachedOrFallback($endpoint_key, $max_age) {
-        $cache_file = $this->cache_dir . $endpoint_key . '.json';
-        
-        if (file_exists($cache_file)) {
-            $cache_data = json_decode(file_get_contents($cache_file), true);
-            if (time() - $cache_data['timestamp'] < $max_age) {
-                $cache_data['source'] = 'cache_extended';
-                return $cache_data;
-            }
-        }
-        
-        // Try to fetch fresh, but don't fail if it doesn't work
-        $fresh_data = $this->fetchDirect($endpoint_key);
-        if ($fresh_data) {
-            return $fresh_data;
-        }
-        
-        // Use stale cache if available
-        if (isset($cache_data)) {
-            $cache_data['source'] = 'cache_stale';
-            return $cache_data;
+            error_log("Dhali API error for $symbol: " . $e->getMessage());
         }
         
         return null;
     }
     
-    private function buildRateResponse($xrp_data, $evr_data, $mode) {
-        // Extract rates from oracle data
-        $xrp_rate = $this->extractXRPRate($xrp_data);
-        $evr_rate = $this->extractEVRRate($evr_data);
-        
-        // Fallback to CoinGecko for XRP if needed
-        if (!$xrp_rate) {
-            $xrp_rate = $this->getCoinGeckoXRP();
-        }
-        
-        // Default EVR rate if not available
-        if (!$evr_rate) {
-            $evr_rate = 0.22; // Current estimated EVR rate
-        }
-        
-        $license_usd = 49.99;
-        
-        $response = [
-            'xrp' => [
-                'rate' => $xrp_rate,
-                'amount_for_license' => round($license_usd / $xrp_rate, 2),
-                'display' => '~' . round($license_usd / $xrp_rate, 0) . ' XRP',
-                'source' => $xrp_data['source'] ?? 'fallback'
-            ],
-            'evr' => [
-                'rate' => $evr_rate,
-                'amount_for_license' => round($license_usd / $evr_rate, 2),
-                'display' => '~' . round($license_usd / $evr_rate, 0) . ' EVR',
-                'source' => $evr_data['source'] ?? 'estimated'
-            ],
-            'usd' => [
-                'rate' => 1.00,
-                'amount_for_license' => $license_usd,
-                'display' => '$49.99 USDC',
-                'source' => 'fixed'
-            ],
-            'license_usd' => $license_usd,
-            'mode' => $mode,
-            'timestamp' => time(),
-            'last_updated' => date('Y-m-d H:i:s'),
-            'costs_incurred' => $this->calculateCostsIncurred($xrp_data, $evr_data)
-        ];
-        
-        return $response;
-    }
-    
-    private function extractXRPRate($xrp_data) {
-        if (!$xrp_data || !isset($xrp_data['data'])) return null;
-        
-        $data = $xrp_data['data'];
-        
-        // Look for various XRP rate fields
-        $rate_fields = ['xrp_usd', 'XRP_USD', 'price', 'rate', 'close'];
-        
-        foreach ($rate_fields as $field) {
-            if (isset($data[$field]) && is_numeric($data[$field])) {
-                return floatval($data[$field]);
-            }
-        }
-        
-        return null;
-    }
-    
-    private function extractEVRRate($evr_data) {
-        if (!$evr_data || !isset($evr_data['data'])) return null;
-        
-        $data = $evr_data['data'];
-        
-        // Look for EVR rate fields
-        $rate_fields = ['evr_usd', 'EVR_USD', 'evernode_usd'];
-        
-        foreach ($rate_fields as $field) {
-            if (isset($data[$field]) && is_numeric($data[$field])) {
-                return floatval($data[$field]);
-            }
-        }
-        
-        return null;
-    }
-    
-    private function getCoinGeckoXRP() {
+    private function fetchCoinGeckoRate($symbol) {
         try {
-            $response = file_get_contents('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd');
-            $data = json_decode($response, true);
-            return $data['ripple']['usd'] ?? 0.42;
+            $coin_ids = [
+                'xrp' => 'ripple',
+                'evr' => 'evernode'
+            ];
+            
+            if (!isset($coin_ids[$symbol])) return null;
+            
+            $response = file_get_contents(
+                "https://api.coingecko.com/api/v3/simple/price?ids={$coin_ids[$symbol]}&vs_currencies=usd",
+                false,
+                stream_context_create(['http' => ['timeout' => 10]])
+            );
+            
+            if ($response) {
+                $data = json_decode($response, true);
+                if (isset($data[$coin_ids[$symbol]]['usd']) && $data[$coin_ids[$symbol]]['usd'] > 0) {
+                    return floatval($data[$coin_ids[$symbol]]['usd']);
+                }
+            }
         } catch (Exception $e) {
-            return 0.42; // Fallback
+            error_log("CoinGecko error for $symbol: " . $e->getMessage());
         }
+        
+        return null;
     }
     
-    private function calculateCostsIncurred($xrp_data, $evr_data) {
-        $total_cost_usd = 0;
+    private function getSupportedCurrencies() {
+        $xrp_available = $this->getLiveCurrency('xrp') !== null;
+        $evr_available = $this->getLiveCurrency('evr') !== null;
         
-        if ($xrp_data && $xrp_data['source'] === 'dhali_live') {
-            $total_cost_usd += $xrp_data['cost'] * 0.42; // Convert XRP to USD
-        }
+        return [
+            'xrp' => $xrp_available,
+            'evr' => $evr_available,
+            'usd' => true,
+            'total_available' => ($xrp_available ? 1 : 0) + ($evr_available ? 1 : 0) + 1
+        ];
+    }
+    
+    private function getDataSources() {
+        global $dhali_configured;
         
-        if ($evr_data && $evr_data['source'] === 'dhali_live') {
-            $total_cost_usd += $evr_data['cost'] * 0.22; // Convert XAH to USD
-        }
-        
-        return round($total_cost_usd, 6);
+        return [
+            'primary' => $dhali_configured ? 'dhali_oracle' : 'coingecko',
+            'backup' => 'coingecko',
+            'dhali_configured' => $dhali_configured,
+            'live_only_mode' => true,
+            'no_static_fallbacks' => true
+        ];
     }
 }
 
-// API endpoint
-$mode = $_GET['mode'] ?? 'balanced';
-$rates = new OptimizedDhaliRates();
-echo json_encode($rates->getRates($mode));
+// Handle the request
+$component = $_GET['component'] ?? 'all';
+$pricing = new LiveOnlyPricingSystem();
+
+switch ($component) {
+    case 'license':
+        echo json_encode(['success' => true] + $pricing->getLicenseRates());
+        break;
+    case 'cluster':
+        echo json_encode(['success' => true] + $pricing->getClusterRates());
+        break;
+    case 'roi':
+        echo json_encode(['success' => true] + $pricing->getROIData());
+        break;
+    case 'commission':
+        echo json_encode(['success' => true] + $pricing->getCommissionRates());
+        break;
+    case 'sources':
+        echo json_encode(['success' => true] + $pricing->getDataSources());
+        break;
+    default:
+        echo json_encode($pricing->getAllRates());
+}
 ?>
