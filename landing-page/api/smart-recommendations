@@ -1,0 +1,200 @@
+<?php
+/**
+ * Host Recommendations API
+ * Shows alternative hosts when current host is full
+ * Add this to: /var/www/html/api/host-recommendations.php
+ */
+
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+class HostRecommendations {
+    private $partner_hosts = [
+        // Add your trusted partner hosts here
+        [
+            'name' => 'Enhanced Host Partner',
+            'address' => 'rPartnerHostAddress123',
+            'api_url' => 'http://partner-host.com/api/instance-count.php',
+            'location' => 'US-West',
+            'features' => ['Enhanced UI', 'Smart URLs', 'Real-time Progress'],
+            'verified' => true,
+            'partner_since' => '2024-01-01'
+        ],
+        [
+            'name' => 'Professional Host Co',
+            'address' => 'rAnotherPartnerHost456',
+            'api_url' => 'http://professional-host.net/api/instance-count.php', 
+            'location' => 'EU-Central',
+            'features' => ['Enhanced UI', 'Professional Support'],
+            'verified' => true,
+            'partner_since' => '2024-02-01'
+        ]
+    ];
+    
+    public function getRecommendations($exclude_full = true, $max_hosts = 3) {
+        $recommendations = [];
+        
+        foreach ($this->partner_hosts as $host) {
+            if (!$host['verified']) continue;
+            
+            // Get real-time availability from partner host
+            $availability = $this->checkHostAvailability($host['api_url']);
+            
+            // Skip if we can't get data or host is full (when excluding full hosts)
+            if (!$availability) continue;
+            if ($exclude_full && $availability['available'] <= 0) continue;
+            
+            $recommendations[] = [
+                'name' => $host['name'],
+                'address' => $host['address'],
+                'location' => $host['location'],
+                'features' => $host['features'],
+                'availability' => $availability,
+                'status' => $this->getHostStatus($availability),
+                'partner_since' => $host['partner_since'],
+                'last_checked' => date('Y-m-d H:i:s')
+            ];
+            
+            // Limit number of recommendations
+            if (count($recommendations) >= $max_hosts) break;
+        }
+        
+        // Sort by availability (most available first)
+        usort($recommendations, function($a, $b) {
+            return $b['availability']['available'] - $a['availability']['available'];
+        });
+        
+        return $recommendations;
+    }
+    
+    private function checkHostAvailability($api_url) {
+        try {
+            // Set timeout to avoid slow responses
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 5,
+                    'user_agent' => 'Enhanced-Evernode-Host-Network/1.0'
+                ]
+            ]);
+            
+            $response = file_get_contents($api_url, false, $context);
+            
+            if (!$response) return null;
+            
+            $data = json_decode($response, true);
+            
+            if (!$data || !$data['success']) return null;
+            
+            return [
+                'total' => $data['total'] ?? 0,
+                'used' => $data['used'] ?? 0,
+                'available' => $data['available'] ?? 0,
+                'usage_percentage' => $data['usage_percentage'] ?? 0,
+                'status' => $data['status'] ?? 'unknown',
+                'lease_amount' => $data['host_info']['lease_amount'] ?? 'Unknown'
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Host availability check failed for $api_url: " . $e->getMessage());
+            return null;
+        }
+    }
+    
+    private function getHostStatus($availability) {
+        if (!$availability) return 'unknown';
+        
+        $available = $availability['available'];
+        $usage = $availability['usage_percentage'];
+        
+        if ($available <= 0) return 'full';
+        if ($usage >= 90) return 'limited';
+        if ($usage >= 70) return 'busy';
+        return 'available';
+    }
+    
+    public function addPartnerHost($host_data) {
+        // TODO: Implement partner host registration
+        // This would allow other enhanced hosts to register as partners
+        
+        $required_fields = ['name', 'address', 'api_url', 'location'];
+        
+        foreach ($required_fields as $field) {
+            if (!isset($host_data[$field]) || empty($host_data[$field])) {
+                return ['success' => false, 'error' => "Missing required field: $field"];
+            }
+        }
+        
+        // Verify the host has enhanced features by checking their API
+        $availability = $this->checkHostAvailability($host_data['api_url']);
+        if (!$availability) {
+            return ['success' => false, 'error' => 'Unable to verify host API'];
+        }
+        
+        // TODO: Save to database or file
+        // For now, just return success
+        return ['success' => true, 'message' => 'Partner host registered for verification'];
+    }
+}
+
+// Handle API requests
+$recommendations = new HostRecommendations();
+
+switch ($_GET['action'] ?? 'list') {
+    case 'list':
+        $exclude_full = isset($_GET['exclude_full']) ? (bool)$_GET['exclude_full'] : true;
+        $max_hosts = isset($_GET['max_hosts']) ? (int)$_GET['max_hosts'] : 3;
+        
+        $hosts = $recommendations->getRecommendations($exclude_full, $max_hosts);
+        
+        echo json_encode([
+            'success' => true,
+            'hosts' => $hosts,
+            'total_partners' => count($hosts),
+            'timestamp' => date('Y-m-d H:i:s'),
+            'note' => 'These are verified partner hosts in our Enhanced Host Network'
+        ]);
+        break;
+        
+    case 'register':
+        // Allow other enhanced hosts to register as partners
+        $host_data = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$host_data) {
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON data']);
+            break;
+        }
+        
+        $result = $recommendations->addPartnerHost($host_data);
+        echo json_encode($result);
+        break;
+        
+    case 'status':
+        // Quick health check for partner network
+        $hosts = $recommendations->getRecommendations(false, 10); // Include full hosts
+        
+        $stats = [
+            'total_partners' => count($hosts),
+            'available_hosts' => count(array_filter($hosts, function($h) { 
+                return $h['availability']['available'] > 0; 
+            })),
+            'total_capacity' => array_sum(array_column(array_column($hosts, 'availability'), 'total')),
+            'available_capacity' => array_sum(array_column(array_column($hosts, 'availability'), 'available'))
+        ];
+        
+        echo json_encode([
+            'success' => true,
+            'network_stats' => $stats,
+            'timestamp' => date('Y-m-d H:i:s')
+        ]);
+        break;
+        
+    default:
+        echo json_encode(['success' => false, 'error' => 'Invalid action']);
+}
+?>
