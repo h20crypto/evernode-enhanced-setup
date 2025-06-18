@@ -182,7 +182,9 @@ download_enhanced_files() {
     sudo curl -fsSL "$github_base/cluster/create.html" -o /var/www/html/cluster/create.html
     sudo curl -fsSL "$github_base/cluster/paywall.html" -o /var/www/html/cluster/paywall.html
     sudo curl -fsSL "$github_base/cluster/roi-calculator.html" -o /var/www/html/cluster/roi-calculator.html 2>/dev/null || print_warning "ROI calculator not found"
-    sudo curl -fsSL "$github_base/cluster/dapp-manager.html" -o /var/www/html/cluster/dapp-manager.html 2>/dev/null || print_warning "dApp manager not found"
+    sudo curl -fsSL "$github_base/cluster/dapp-manager.html" -o /var/www/html/dapp-manager.html  # ← Fixed path
+    sudo curl -fsSL "$github_base/cluster/dashboard.html" -o /var/www/html/cluster/dashboard.html 2>/dev/null || print_warning "Cluster dashboard not found"
+    sudo curl -fsSL "$github_base/cluster/index.html" -o /var/www/html/cluster/index.html 2>/dev/null || print_warning "Cluster index not found"
     
     # Download live pricing widgets
     print_info "💰 Downloading live pricing widgets..."
