@@ -139,70 +139,65 @@ setup_directories() {
     
     print_status "Directory structure created"
 }
-
 # Download enhanced files
 download_enhanced_files() {
     print_info "Downloading enhanced Evernode files..."
-    sudo curl -fsSL "$github_base/cluster/dapp-manager.html" -o /var/www/html/cluster/dapp-manager.html
+    
+    # ✅ FIXED: Define github_base FIRST
     local github_base="https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main"
-
-     # Download enhanced interactive components
-    print_info "✨ Downloading smart features..."
-    sudo mkdir -p /var/www/html/css /var/www/html/js
-    sudo curl -fsSL "$github_base/landing-page/css/enhanced-interactive.css" -o /var/www/html/css/enhanced-interactive.css 2>/dev/null || print_warning "Enhanced CSS not found"
-    sudo curl -fsSL "$github_base/landing-page/js/autonomous-discovery.js" -o /var/www/html/js/autonomous-discovery.js 2>/dev/null || print_warning "Autonomous JS not found"
     
-    # Download smart features APIs
-    print_info "🤖 Downloading autonomous discovery APIs..."
-    sudo curl -fsSL "$github_base/landing-page/api/smart-urls.php" -o /var/www/html/api/smart-urls.php 2>/dev/null || print_warning "Smart URLs API not found"
-    sudo curl -fsSL "$github_base/landing-page/api/deployment-status.php" -o /var/www/html/api/deployment-status.php 2>/dev/null || print_warning "Deployment Status API not found"
-    sudo curl -fsSL "$github_base/landing-page/api/host-discovery.php" -o /var/www/html/api/host-discovery.php 2>/dev/null || print_warning "Host Discovery API not found"
-    sudo curl -fsSL "$github_base/landing-page/api/smart-recommendations.php" -o /var/www/html/api/smart-recommendations.php 2>/dev/null || print_warning "Smart Recommendations API not found"
-    sudo curl -fsSL "$github_base/landing-page/css/commission-features.css" -o /var/www/html/css/commission-features.css
-    sudo curl -fsSL "$github_base/landing-page/js/commission-features.js" -o /var/www/html/js/commission-features.js
-    
-    # Download management tools
-    print_info "🔧 Downloading discovery management tools..."
-    sudo curl -fsSL "$github_base/tools/discovery-manager" -o /usr/local/bin/discovery-manager 2>/dev/null || print_warning "Discovery manager not found"
-    sudo chmod +x /usr/local/bin/discovery-manager 2>/dev/null || true
-    
-    # Download service files
-    print_info "⚙️ Downloading discovery services..."
-    sudo mkdir -p /etc/systemd/system
-    sudo curl -fsSL "$github_base/services/evernode-discovery.service" -o /etc/systemd/system/evernode-discovery.service 2>/dev/null || print_warning "Discovery service not found"
-    sudo curl -fsSL "$github_base/services/evernode-discovery" -o /usr/local/bin/evernode-discovery 2>/dev/null || print_warning "Discovery daemon not found"
-    sudo chmod +x /usr/local/bin/evernode-discovery 2>/dev/null || true
-    sudo systemctl daemon-reload 2>/dev/null || true
-    
-    # Download landing page files
+    # Download landing page files FIRST (most important)
     print_info "📄 Downloading landing page..."
-   sudo curl -fsSL "$github_base/landing-page/index.html" -o /var/www/html/index.html
+    sudo curl -fsSL "$github_base/landing-page/index.html" -o /var/www/html/index.html
     sudo curl -fsSL "$github_base/landing-page/monitoring-dashboard.html" -o /var/www/html/monitoring-dashboard.html
     sudo curl -fsSL "$github_base/landing-page/my-earnings.html" -o /var/www/html/my-earnings.html
     sudo curl -fsSL "$github_base/landing-page/leaderboard.html" -o /var/www/html/leaderboard.html
     sudo curl -fsSL "$github_base/landing-page/host-discovery.html" -o /var/www/html/host-discovery.html
-    sudo curl -fsSL "$github_base/landing-page/premium-dapp-manager.html" -o /var/www/html/premium-dapp-manager.html
+    
+    # Download enhanced interactive components
+    print_info "✨ Downloading enhanced interactive components..."
+    sudo mkdir -p /var/www/html/css /var/www/html/js
+    sudo curl -fsSL "$github_base/landing-page/css/enhanced-interactive.css" -o /var/www/html/css/enhanced-interactive.css 2>/dev/null || print_warning "Enhanced CSS not found"
+    sudo curl -fsSL "$github_base/landing-page/js/enhanced-interactive.js" -o /var/www/html/js/enhanced-interactive.js 2>/dev/null || print_warning "Enhanced JS not found"
+    sudo curl -fsSL "$github_base/landing-page/js/autonomous-discovery.js" -o /var/www/html/js/autonomous-discovery.js 2>/dev/null || print_warning "Autonomous JS not found"
+    
+    # Download commission features (NEW)
+    sudo curl -fsSL "$github_base/landing-page/css/commission-features.css" -o /var/www/html/css/commission-features.css 2>/dev/null || print_warning "Commission CSS not found"
+    sudo curl -fsSL "$github_base/landing-page/js/commission-features.js" -o /var/www/html/js/commission-features.js 2>/dev/null || print_warning "Commission JS not found"
     
     # Download API files
     print_info "🔧 Downloading API files..."
     sudo curl -fsSL "$github_base/landing-page/api/host-info.php" -o /var/www/html/api/host-info.php
     sudo curl -fsSL "$github_base/landing-page/api/instance-count.php" -o /var/www/html/api/instance-count.php
     
+    # Download smart features APIs (only if they exist)
+    print_info "🤖 Downloading smart APIs..."
+    sudo curl -fsSL "$github_base/landing-page/api/smart-urls.php" -o /var/www/html/api/smart-urls.php 2>/dev/null || print_warning "Smart URLs API not found"
+    sudo curl -fsSL "$github_base/landing-page/api/deployment-status.php" -o /var/www/html/api/deployment-status.php 2>/dev/null || print_warning "Deployment Status API not found"
+    sudo curl -fsSL "$github_base/landing-page/api/host-discovery.php" -o /var/www/html/api/host-discovery.php 2>/dev/null || print_warning "Host Discovery API not found"
+    sudo curl -fsSL "$github_base/landing-page/api/smart-recommendations.php" -o /var/www/html/api/smart-recommendations.php 2>/dev/null || print_warning "Smart Recommendations API not found"
+    
     # Download cluster files
     print_info "🚀 Downloading cluster management..."
     sudo curl -fsSL "$github_base/cluster/create.html" -o /var/www/html/cluster/create.html
     sudo curl -fsSL "$github_base/cluster/paywall.html" -o /var/www/html/cluster/paywall.html
-    sudo curl -fsSL "$github_base/cluster/roi-calculator.html" -o /var/www/html/cluster/roi-calculator.html 2>/dev/null || true
- 
-     # Download live pricing widgets
+    sudo curl -fsSL "$github_base/cluster/roi-calculator.html" -o /var/www/html/cluster/roi-calculator.html 2>/dev/null || print_warning "ROI calculator not found"
+    sudo curl -fsSL "$github_base/cluster/dapp-manager.html" -o /var/www/html/cluster/dapp-manager.html 2>/dev/null || print_warning "dApp manager not found"
+    
+    # Download live pricing widgets
     print_info "💰 Downloading live pricing widgets..."
     sudo mkdir -p /var/www/html/widgets
-    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.js" -o /var/www/html/widgets/live-pricing.js
-    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.css" -o /var/www/html/widgets/live-pricing.css
+    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.js" -o /var/www/html/widgets/live-pricing.js 2>/dev/null || print_warning "Live pricing JS not found"
+    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.css" -o /var/www/html/widgets/live-pricing.css 2>/dev/null || print_warning "Live pricing CSS not found"
     
     # Download enhanced configuration
     print_info "⚙️ Downloading configuration..."
-    sudo curl -fsSL "$github_base/data/enhanced-hosts.json" -o /var/www/html/data/enhanced-hosts.json 2>/dev/null || true
+    sudo curl -fsSL "$github_base/data/enhanced-hosts.json" -o /var/www/html/data/enhanced-hosts.json 2>/dev/null || print_warning "Enhanced hosts config not found"
+    
+    # Optional: Download management tools (only if they exist)
+    print_info "🔧 Downloading optional tools..."
+    sudo curl -fsSL "$github_base/tools/discovery-manager" -o /usr/local/bin/discovery-manager 2>/dev/null || print_warning "Discovery manager not found"
+    sudo chmod +x /usr/local/bin/discovery-manager 2>/dev/null || true
     
     print_status "Enhanced files downloaded"
 }
