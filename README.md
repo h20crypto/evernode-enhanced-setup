@@ -484,6 +484,88 @@ git clone https://github.com/h20crypto/evernode-enhanced-setup.git
 cd evernode-enhanced-setup
 sudo ./quick-setup.sh
 ```
+
+## 🤖 Autonomous Discovery System v3.0
+
+### **Self-Sustaining Host Network**
+Your enhanced host automatically discovers other enhanced hosts on the Evernode network, creating a collaborative ecosystem where hosts recommend each other when at capacity.
+
+**Key Features:**
+- 🔍 **Automatic Discovery**: Finds other enhanced hosts without manual configuration
+- 🤖 **Quality Scoring**: Rates discovered hosts based on features and performance (0-100)
+- 🔄 **Real-time Recommendations**: Shows quality alternatives when your host is full
+- 🌐 **Network Effects**: All enhanced hosts benefit from the growing network
+- 📊 **Professional Dashboard**: Tenants see transparent, helpful recommendations
+
+### **Smart Features for Tenants**
+- 🔗 **Smart URL Generator**: Automatically provides direct links to deployed applications
+- 📊 **Deployment Status Tracker**: Real-time progress with animated step-by-step feedback
+- 🎯 **Enhanced Recommendations**: Quality-scored host alternatives with one-click deployment
+- 📱 **Professional Interface**: Modern, trustworthy design that builds confidence
+
+### **Discovery Management**
+```bash
+# Check discovery system status
+discovery-manager status
+
+# Run manual discovery
+discovery-manager discover
+
+# View discovered network
+discovery-manager peers
+
+# Get current recommendations
+discovery-manager recommendations
+
+# Test all APIs
+discovery-manager test
+```
+
+### **What Tenants Experience**
+
+**When Your Host Has Capacity:**
+- Professional landing page with real-time availability
+- One-click deployment commands
+- Live deployment progress tracking
+- Automatic URL generation
+
+**When Your Host is Full:**
+- Professional "at capacity" message
+- Automatic recommendations for quality alternative hosts
+- One-click deployment to recommended hosts
+- Waitlist signup for future availability
+
+### **API Endpoints**
+
+```bash
+# Smart URL Detection
+GET /api/smart-urls.php?action=list
+
+# Deployment Status Tracking
+GET /api/deployment-status.php?action=status&deployment_id=123
+
+# Autonomous Host Discovery
+GET /api/host-discovery.php?action=discover
+
+# Smart Recommendations
+GET /api/smart-recommendations.php?action=list&max_hosts=3
+```
+
+## 🏆 Competitive Advantages
+
+### **vs Basic Evernode Hosts**
+- ✅ Professional appearance builds trust and credibility
+- ✅ Real-time feedback eliminates confusion and uncertainty
+- ✅ Automatic URLs remove guesswork for tenants
+- ✅ Network recommendations provide value even when full
+- ✅ Quality scoring ensures reliable alternatives
+
+### **vs Traditional Web Hosting**
+- ✅ One-command deployment (no complex setup required)
+- ✅ Instant availability with real-time monitoring
+- ✅ Built-in redundancy through enhanced host network
+- ✅ Transparent pricing and capacity information
+
 ## 🚀 Premium: Cluster Management
 
 Deploy applications across multiple hosts with our advanced cluster management system.
