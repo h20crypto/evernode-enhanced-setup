@@ -145,6 +145,32 @@ download_enhanced_files() {
     print_info "Downloading enhanced Evernode files..."
     sudo curl -fsSL "$github_base/cluster/dapp-manager.html" -o /var/www/html/cluster/dapp-manager.html
     local github_base="https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main"
+
+     # Download enhanced interactive components
+    print_info "✨ Downloading smart features..."
+    sudo mkdir -p /var/www/html/css /var/www/html/js
+    sudo curl -fsSL "$github_base/landing-page/css/enhanced-interactive.css" -o /var/www/html/css/enhanced-interactive.css 2>/dev/null || print_warning "Enhanced CSS not found"
+    sudo curl -fsSL "$github_base/landing-page/js/autonomous-discovery.js" -o /var/www/html/js/autonomous-discovery.js 2>/dev/null || print_warning "Autonomous JS not found"
+    
+    # Download smart features APIs
+    print_info "🤖 Downloading autonomous discovery APIs..."
+    sudo curl -fsSL "$github_base/landing-page/api/smart-urls.php" -o /var/www/html/api/smart-urls.php 2>/dev/null || print_warning "Smart URLs API not found"
+    sudo curl -fsSL "$github_base/landing-page/api/deployment-status.php" -o /var/www/html/api/deployment-status.php 2>/dev/null || print_warning "Deployment Status API not found"
+    sudo curl -fsSL "$github_base/landing-page/api/host-discovery.php" -o /var/www/html/api/host-discovery.php 2>/dev/null || print_warning "Host Discovery API not found"
+    sudo curl -fsSL "$github_base/landing-page/api/smart-recommendations.php" -o /var/www/html/api/smart-recommendations.php 2>/dev/null || print_warning "Smart Recommendations API not found"
+    
+    # Download management tools
+    print_info "🔧 Downloading discovery management tools..."
+    sudo curl -fsSL "$github_base/tools/discovery-manager" -o /usr/local/bin/discovery-manager 2>/dev/null || print_warning "Discovery manager not found"
+    sudo chmod +x /usr/local/bin/discovery-manager 2>/dev/null || true
+    
+    # Download service files
+    print_info "⚙️ Downloading discovery services..."
+    sudo mkdir -p /etc/systemd/system
+    sudo curl -fsSL "$github_base/services/evernode-discovery.service" -o /etc/systemd/system/evernode-discovery.service 2>/dev/null || print_warning "Discovery service not found"
+    sudo curl -fsSL "$github_base/services/evernode-discovery" -o /usr/local/bin/evernode-discovery 2>/dev/null || print_warning "Discovery daemon not found"
+    sudo chmod +x /usr/local/bin/evernode-discovery 2>/dev/null || true
+    sudo systemctl daemon-reload 2>/dev/null || true
     
     # Download landing page files
     print_info "📄 Downloading landing page..."
