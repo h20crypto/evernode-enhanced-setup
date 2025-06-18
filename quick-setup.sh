@@ -120,7 +120,7 @@ setup_directories() {
     print_info "Setting up directory structure..."
     
     # Create main directories
-    sudo mkdir -p /var/www/html/{api,cluster,data,assets,tools}
+    sudo mkdir -p /var/www/html/{api,cluster,data,assets,tools,css,js,widgets}
     sudo mkdir -p /opt/evernode-enhanced/{logs,backups,dhali_cache}
     
     # Set ownership based on running user
@@ -139,11 +139,12 @@ setup_directories() {
     
     print_status "Directory structure created"
 }
+
 # Download enhanced files
 download_enhanced_files() {
     print_info "Downloading enhanced Evernode files..."
     
-    # ✅ FIXED: Define github_base FIRST
+    # Define github_base FIRST
     local github_base="https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main"
     
     # Download landing page files FIRST (most important)
@@ -156,14 +157,14 @@ download_enhanced_files() {
     
     # Download enhanced interactive components
     print_info "✨ Downloading enhanced interactive components..."
-    sudo mkdir -p /var/www/html/css /var/www/html/js
     sudo curl -fsSL "$github_base/landing-page/css/enhanced-interactive.css" -o /var/www/html/css/enhanced-interactive.css 2>/dev/null || print_warning "Enhanced CSS not found"
     sudo curl -fsSL "$github_base/landing-page/js/enhanced-interactive.js" -o /var/www/html/js/enhanced-interactive.js 2>/dev/null || print_warning "Enhanced JS not found"
     sudo curl -fsSL "$github_base/landing-page/js/autonomous-discovery.js" -o /var/www/html/js/autonomous-discovery.js 2>/dev/null || print_warning "Autonomous JS not found"
     
     # Download commission features (NEW)
-    sudo curl -fsSL "$github_base/landing-page/css/commission-features.css" -o /var/www/html/css/commission-features.css 2>/dev/null || print_warning "Commission CSS not found"
-    sudo curl -fsSL "$github_base/landing-page/js/commission-features.js" -o /var/www/html/js/commission-features.js 2>/dev/null || print_warning "Commission JS not found"
+    print_info "💰 Downloading commission features..."
+    sudo curl -fsSL "$github_base/landing-page/css/commission-features.css" -o /var/www/html/css/commission-features.css 2>/dev/null || print_warning "Commission CSS not found - create landing-page/css/commission-features.css"
+    sudo curl -fsSL "$github_base/landing-page/js/commission-features.js" -o /var/www/html/js/commission-features.js 2>/dev/null || print_warning "Commission JS not found - create landing-page/js/commission-features.js"
     
     # Download API files
     print_info "🔧 Downloading API files..."
@@ -172,33 +173,32 @@ download_enhanced_files() {
     
     # Download smart features APIs (only if they exist)
     print_info "🤖 Downloading smart APIs..."
-    sudo curl -fsSL "$github_base/landing-page/api/smart-urls.php" -o /var/www/html/api/smart-urls.php 2>/dev/null || print_warning "Smart URLs API not found"
-    sudo curl -fsSL "$github_base/landing-page/api/deployment-status.php" -o /var/www/html/api/deployment-status.php 2>/dev/null || print_warning "Deployment Status API not found"
-    sudo curl -fsSL "$github_base/landing-page/api/host-discovery.php" -o /var/www/html/api/host-discovery.php 2>/dev/null || print_warning "Host Discovery API not found"
-    sudo curl -fsSL "$github_base/landing-page/api/smart-recommendations.php" -o /var/www/html/api/smart-recommendations.php 2>/dev/null || print_warning "Smart Recommendations API not found"
+    sudo curl -fsSL "$github_base/landing-page/api/smart-urls.php" -o /var/www/html/api/smart-urls.php 2>/dev/null || print_warning "Smart URLs API not found (optional)"
+    sudo curl -fsSL "$github_base/landing-page/api/deployment-status.php" -o /var/www/html/api/deployment-status.php 2>/dev/null || print_warning "Deployment Status API not found (optional)"
+    sudo curl -fsSL "$github_base/landing-page/api/host-discovery.php" -o /var/www/html/api/host-discovery.php 2>/dev/null || print_warning "Host Discovery API not found (optional)"
+    sudo curl -fsSL "$github_base/landing-page/api/smart-recommendations.php" -o /var/www/html/api/smart-recommendations.php 2>/dev/null || print_warning "Smart Recommendations API not found (optional)"
     
     # Download cluster files
     print_info "🚀 Downloading cluster management..."
     sudo curl -fsSL "$github_base/cluster/create.html" -o /var/www/html/cluster/create.html
     sudo curl -fsSL "$github_base/cluster/paywall.html" -o /var/www/html/cluster/paywall.html
-    sudo curl -fsSL "$github_base/cluster/roi-calculator.html" -o /var/www/html/cluster/roi-calculator.html 2>/dev/null || print_warning "ROI calculator not found"
-    sudo curl -fsSL "$github_base/cluster/dapp-manager.html" -o /var/www/html/dapp-manager.html  # ← Fixed path
-    sudo curl -fsSL "$github_base/cluster/dashboard.html" -o /var/www/html/cluster/dashboard.html 2>/dev/null || print_warning "Cluster dashboard not found"
-    sudo curl -fsSL "$github_base/cluster/index.html" -o /var/www/html/cluster/index.html 2>/dev/null || print_warning "Cluster index not found"
+    sudo curl -fsSL "$github_base/cluster/roi-calculator.html" -o /var/www/html/cluster/roi-calculator.html 2>/dev/null || print_warning "ROI calculator not found (optional)"
+    sudo curl -fsSL "$github_base/cluster/dapp-manager.html" -o /var/www/html/dapp-manager.html
+    sudo curl -fsSL "$github_base/cluster/dashboard.html" -o /var/www/html/cluster/dashboard.html 2>/dev/null || print_warning "Cluster dashboard not found (optional)"
+    sudo curl -fsSL "$github_base/cluster/index.html" -o /var/www/html/cluster/index.html 2>/dev/null || print_warning "Cluster index not found (optional)"
     
     # Download live pricing widgets
     print_info "💰 Downloading live pricing widgets..."
-    sudo mkdir -p /var/www/html/widgets
-    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.js" -o /var/www/html/widgets/live-pricing.js 2>/dev/null || print_warning "Live pricing JS not found"
-    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.css" -o /var/www/html/widgets/live-pricing.css 2>/dev/null || print_warning "Live pricing CSS not found"
+    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.js" -o /var/www/html/widgets/live-pricing.js 2>/dev/null || print_warning "Live pricing JS not found (optional)"
+    sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.css" -o /var/www/html/widgets/live-pricing.css 2>/dev/null || print_warning "Live pricing CSS not found (optional)"
     
     # Download enhanced configuration
     print_info "⚙️ Downloading configuration..."
-    sudo curl -fsSL "$github_base/data/enhanced-hosts.json" -o /var/www/html/data/enhanced-hosts.json 2>/dev/null || print_warning "Enhanced hosts config not found"
+    sudo curl -fsSL "$github_base/data/enhanced-hosts.json" -o /var/www/html/data/enhanced-hosts.json 2>/dev/null || print_warning "Enhanced hosts config not found (optional)"
     
     # Optional: Download management tools (only if they exist)
     print_info "🔧 Downloading optional tools..."
-    sudo curl -fsSL "$github_base/tools/discovery-manager" -o /usr/local/bin/discovery-manager 2>/dev/null || print_warning "Discovery manager not found"
+    sudo curl -fsSL "$github_base/tools/discovery-manager" -o /usr/local/bin/discovery-manager 2>/dev/null || print_warning "Discovery manager not found (optional)"
     sudo chmod +x /usr/local/bin/discovery-manager 2>/dev/null || true
     
     print_status "Enhanced files downloaded"
@@ -300,10 +300,12 @@ set_permissions() {
     # Set file permissions
     sudo find /var/www/html -type f -name "*.html" -exec chmod 644 {} \;
     sudo find /var/www/html -type f -name "*.php" -exec chmod 644 {} \;
+    sudo find /var/www/html -type f -name "*.css" -exec chmod 644 {} \;
+    sudo find /var/www/html -type f -name "*.js" -exec chmod 644 {} \;
     sudo find /var/www/html -type d -exec chmod 755 {} \;
     
     # Make PHP files executable
-    sudo chmod +x /var/www/html/api/*.php
+    sudo chmod +x /var/www/html/api/*.php 2>/dev/null || true
     
     print_status "Permissions set correctly"
 }
@@ -356,15 +358,17 @@ Installation User: $(whoami)
 • Enhanced landing page with professional design
 • Real-time monitoring dashboard
 • Earnings tracking and leaderboard system
-• Host discovery network
+• Host discovery network with commission features
 • Cluster management system (requires NFT license)
 • Complete API backend with Xahau integration
+• Commission tracking system for license sales
 
 📁 File Structure:
 • Main site: /var/www/html/
 • APIs: /var/www/html/api/
 • Cluster system: /var/www/html/cluster/
 • Configuration: /var/www/html/data/
+• Interactive features: /var/www/html/css/ & /var/www/html/js/
 
 🔧 Next Steps:
 1. Visit your host URL to see the enhanced interface
@@ -372,12 +376,20 @@ Installation User: $(whoami)
 3. Configure Dhali Oracle payment claims (if using cluster licenses)
 4. Test all functionality and navigation
 5. Share your enhanced host with the Evernode community!
+6. Start earning commissions on cluster license sales!
 
 🌐 Your Enhanced Host URLs:
 • Main: http://$(hostname -f 2>/dev/null || hostname)/
+• Host Discovery: http://$(hostname -f 2>/dev/null || hostname)/host-discovery.html
+• dApp Manager: http://$(hostname -f 2>/dev/null || hostname)/dapp-manager.html
 • Monitoring: http://$(hostname -f 2>/dev/null || hostname)/monitoring-dashboard.html
 • Earnings: http://$(hostname -f 2>/dev/null || hostname)/my-earnings.html
 • Leaderboard: http://$(hostname -f 2>/dev/null || hostname)/leaderboard.html
+
+💰 Commission Features:
+• Enhanced hosts earn 15% commission on cluster license sales
+• Automatic tracking via smart contracts
+• Passive income opportunity for premium hosts
 
 🎯 Support:
 • GitHub: https://github.com/h20crypto/evernode-enhanced-setup
@@ -417,13 +429,14 @@ main() {
     print_info "   • Professional landing page"
     print_info "   • Real-time monitoring and analytics"
     print_info "   • Earnings tracking and leaderboards"
-    print_info "   • Host discovery network"
+    print_info "   • Host discovery network with commission features"
     print_info "   • NFT-based cluster management system"
+    print_info "   • Commission earning system for license sales"
     echo ""
     print_info "🔧 View installation report:"
     print_info "   http://$(hostname -f 2>/dev/null || hostname)/installation-report.txt"
     echo ""
-    print_success "🚀 Your enhanced host is ready to compete!"
+    print_success "🚀 Your enhanced host is ready to compete and earn commissions!"
     echo ""
 }
 
