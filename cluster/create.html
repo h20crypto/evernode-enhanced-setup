@@ -1,678 +1,201 @@
+# Create a properly formatted cluster creation page
+cat > /var/www/html/cluster/create.html << 'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Cluster - Evernode Enhanced</title>
-    <link rel="stylesheet" href="/widgets/live-pricing.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: white;
+            padding: 20px;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        .header { text-align: center; padding: 30px 0; }
-        .header h1 { font-size: 2.5em; margin-bottom: 15px; }
-        
-        .wizard-steps {
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-            gap: 20px;
-        }
-        .step {
-            background: rgba(255,255,255,0.1);
-            padding: 10px 20px;
-            border-radius: 20px;
-            opacity: 0.5;
-            transition: all 0.3s;
-        }
-        .step.active {
-            opacity: 1;
-            background: rgba(76, 175, 80, 0.3);
-            border: 2px solid #4CAF50;
-        }
-        .step.completed {
-            opacity: 1;
-            background: rgba(76, 175, 80, 0.5);
-        }
-        
-        .form-section {
-            background: rgba(255,255,255,0.1);
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            margin: 20px 0;
-            display: none;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .form-section.active { display: block; }
-        
-        .form-group { margin-bottom: 20px; }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
+            font-weight: bold;
         }
-        .form-group input, .form-group select, .form-group textarea {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
             padding: 12px;
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             font-size: 16px;
         }
         .form-group input::placeholder, .form-group textarea::placeholder {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
         }
-        
-        .host-discovery {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 15px 0;
-        }
-        .host-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .host-card {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-        .host-card:hover {
-            border-color: rgba(76, 175, 80, 0.5);
-        }
-        .host-card.selected {
-            border-color: #4CAF50;
-            background: rgba(76, 175, 80, 0.2);
-        }
-        .host-availability {
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-        .available { color: #4CAF50; }
-        .busy { color: #FFA726; }
-        .offline { color: #EF5350; }
-        
         .cost-estimate {
-            background: rgba(76, 175, 80, 0.1);
-            border: 2px solid rgba(76, 175, 80, 0.3);
-            border-radius: 15px;
-            padding: 25px;
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: 20px;
             margin: 20px 0;
         }
-        .cost-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .cost-item {
-            text-align: center;
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .cost-value {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        
         .btn {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #1a1a1a;
             border: none;
-            padding: 12px 30px;
+            padding: 15px 30px;
             border-radius: 8px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            margin: 10px;
+            width: 100%;
+            transition: all 0.3s ease;
         }
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3);
         }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .note {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
         }
-        .btn-secondary {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-        
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-        }
-        
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-        .alert.success {
-            background: rgba(76, 175, 80, 0.2);
-            border: 2px solid rgba(76, 175, 80, 0.5);
-        }
-        .alert.error {
-            background: rgba(244, 67, 54, 0.2);
-            border: 2px solid rgba(244, 67, 54, 0.5);
-        }
-        .alert.info {
-            background: rgba(33, 150, 243, 0.2);
-            border: 2px solid rgba(33, 150, 243, 0.5);
+        .back-link {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="../" class="back-link">← Back to Main</a>
+        
         <div class="header">
             <h1>🚀 Create New Cluster</h1>
-            <p>Deploy applications across multiple Evernode hosts with automated management</p>
+            <p>Deploy applications across multiple Evernode hosts with automated management.</p>
         </div>
 
-        <!-- Wizard Steps -->
-        <div class="wizard-steps">
-            <div class="step active" data-step="1">
-                <span>1. License Verification</span>
-            </div>
-            <div class="step" data-step="2">
-                <span>2. Cluster Configuration</span>
-            </div>
-            <div class="step" data-step="3">
-                <span>3. Host Selection</span>
-            </div>
-            <div class="step" data-step="4">
-                <span>4. Review & Deploy</span>
-            </div>
-        </div>
-
-        <!-- Step 1: License Verification -->
-        <div class="form-section active" id="step1">
-            <h2>🎫 Verify Your License</h2>
-            <p>Enter your Xahau address to verify your cluster management license (NFT).</p>
-            
-            <div class="form-group">
-                <label for="xahauAddress">Xahau Address:</label>
-                <input type="text" id="xahauAddress" placeholder="rYourXahauAddress..." required>
-            </div>
-            
-            <button onclick="verifyLicense()" class="btn">🔍 Verify License</button>
-            
-            <div id="licenseResult"></div>
-            
-            <div class="navigation">
-                <button onclick="goToStep(0)" class="btn btn-secondary">← Back to Dashboard</button>
-                <button onclick="goToStep(2)" class="btn" id="nextStep1" disabled>Next: Configure Cluster →</button>
-            </div>
-        </div>
-
-        <!-- Step 2: Cluster Configuration -->
-        <div class="form-section" id="step2">
-            <h2>⚙️ Configure Your Cluster</h2>
-            
+        <form id="clusterForm">
             <div class="form-group">
                 <label for="clusterName">Cluster Name *</label>
-                <input type="text" id="clusterName" placeholder="My Production API" required>
+                <input type="text" id="clusterName" name="clusterName" placeholder="My Production API" required>
             </div>
-            
+
             <div class="form-group">
-                <label for="contractPath">Contract Directory Path *</label>
-                <input type="text" id="contractPath" placeholder="/path/to/your/contract" required>
-                <small style="opacity: 0.8;">Path to your HotPocket contract directory</small>
+                <label for="targetHosts">Target Hosts (one per line) *</label>
+                <textarea id="targetHosts" name="targetHosts" rows="5" placeholder="rH8oZBoCQJE1aGwdNRH7icr93RrZkbVaaa&#10;rDKgSroMoh5Ur1EDxFZnGJXzk2MFeDg3ts&#10;rKRjgkwZABgh6e38cES7aor6cLjFETkpBA" required></textarea>
+                <div class="note">Enter Xahau addresses of enhanced hosts you want to use</div>
             </div>
-            
+
             <div class="form-group">
-                <label for="instanceCount">Number of Instances *</label>
-                <select id="instanceCount" onchange="updateCostEstimate()" required>
-                    <option value="">Select instances...</option>
+                <label for="contractPath">Contract Directory Path</label>
+                <input type="text" id="contractPath" name="contractPath" placeholder="/tmp/default-contract">
+                <div class="note">Path to your HotPocket contract directory</div>
+            </div>
+
+            <div class="form-group">
+                <label for="instances">Number of Instances *</label>
+                <select id="instances" name="instances" required>
                     <option value="1">1 instance</option>
-                    <option value="3">3 instances (recommended)</option>
-                    <option value="5">5 instances</option>
-                    <option value="7">7 instances</option>
+                    <option value="3">3 instances</option>
+                    <option value="5" selected>5 instances</option>
                     <option value="10">10 instances</option>
+                    <option value="20">20 instances</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="duration">Initial Duration *</label>
-                <select id="duration" onchange="updateCostEstimate()" required>
-                    <option value="">Select duration...</option>
+                <select id="duration" name="duration" required>
                     <option value="6">6 hours</option>
                     <option value="12">12 hours</option>
-                    <option value="24">24 hours (recommended)</option>
+                    <option value="24" selected>24 hours</option>
                     <option value="48">48 hours</option>
                     <option value="72">72 hours</option>
                 </select>
             </div>
-            
-            <div class="navigation">
-                <button onclick="goToStep(1)" class="btn btn-secondary">← Previous</button>
-                <button onclick="goToStep(3)" class="btn" id="nextStep2" disabled>Next: Select Hosts →</button>
-            </div>
-        </div>
 
-        <!-- Step 3: Host Selection -->
-        <div class="form-section" id="step3">
-            <h2>🌐 Select Enhanced Hosts</h2>
-            
-            <div class="host-discovery">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3>Available Enhanced Hosts</h3>
-                    <button onclick="discoverHosts()" class="btn btn-secondary">🔄 Refresh</button>
-                </div>
-                
-                <div id="hostGrid" class="host-grid">
-                    <div style="text-align: center; grid-column: 1 / -1; padding: 20px;">
-                        <div class="loading-spinner"></div>
-                        <p>Discovering enhanced hosts...</p>
-                    </div>
-                </div>
-                
-                <div id="selectedHosts" style="margin-top: 20px;">
-                    <h4>Selected Hosts: <span id="selectedCount">0</span></h4>
-                    <div id="selectedHostsList"></div>
+            <div class="cost-estimate">
+                <h3>💰 Cost Estimate</h3>
+                <div id="costDetails">
+                    <p><strong>Total instances:</strong> <span id="totalInstances">5</span></p>
+                    <p><strong>Duration:</strong> <span id="totalDuration">24 hours</span></p>
+                    <p><strong>Estimated cost:</strong> <span id="estimatedCost">$30.00</span></p>
+                    <p><em>Rate: $0.25/hour per instance (may vary by host)</em></p>
                 </div>
             </div>
-            
-            <div class="navigation">
-                <button onclick="goToStep(2)" class="btn btn-secondary">← Previous</button>
-                <button onclick="goToStep(4)" class="btn" id="nextStep3" disabled>Next: Review & Deploy →</button>
-            </div>
-        </div>
 
-        <!-- Step 4: Review & Deploy -->
-        <div class="form-section" id="step4">
-            <h2>📋 Review & Deploy</h2>
-            
-            <div class="cost-estimate" data-live-pricing="cluster">
-                <h3>💰 Live Cost Estimate</h3>
-                <div class="cost-grid">
-                    <div class="cost-item">
-                        <div class="cost-value" id="totalInstances">-</div>
-                        <div>Total Instances</div>
-                    </div>
-                    <div class="cost-item">
-                        <div class="cost-value" id="totalDuration">-</div>
-                        <div>Duration</div>
-                    </div>
-                    <div class="cost-item">
-                        <div class="cost-value" id="estimatedCostUSD">-</div>
-                        <div>USD Cost</div>
-                    </div>
-                    <div class="cost-item">
-                        <div class="cost-value" id="estimatedCostCrypto">-</div>
-                        <div>Crypto Cost</div>
-                    </div>
-                </div>
+            <div class="cost-estimate" style="background: rgba(33, 150, 243, 0.2); border-color: rgba(33, 150, 243, 0.3);">
+                <h3>⏱️ Time Savings Preview</h3>
+                <p><strong>Manual setup time:</strong> 2.5 hours</p>
+                <p><strong>Cluster manager time:</strong> 3 minutes</p>
+                <p><strong>Time saved:</strong> 2.5 hours</p>
+                <p><strong>Efficiency gain:</strong> 5000% faster</p>
             </div>
-            
-            <div class="alert info">
-                <h4>⏱️ Time Savings Preview</h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 10px;">
-                    <div>Manual setup: <strong id="manualTime">-</strong></div>
-                    <div>Cluster manager: <strong>3 minutes</strong></div>
-                    <div>Time saved: <strong id="timeSaved">-</strong></div>
-                    <div>Efficiency gain: <strong id="efficiencyGain">-</strong></div>
-                </div>
-            </div>
-            
-            <div id="deploymentSummary" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin: 20px 0;">
-                <h4>📄 Deployment Summary</h4>
-                <div id="summaryContent"></div>
-            </div>
-            
-            <div class="navigation">
-                <button onclick="goToStep(3)" class="btn btn-secondary">← Previous</button>
-                <button onclick="deployCluster()" class="btn" id="deployBtn">🚀 Deploy Cluster</button>
-                <button onclick="openDappManager()" class="btn btn-secondary">💻 Open dApp Manager</button>
-            </div>
-        </div>
 
-        <!-- Results -->
-        <div id="deploymentResult"></div>
+            <button type="submit" class="btn">Create Cluster</button>
+        </form>
     </div>
 
-    <script src="/widgets/live-pricing.js"></script>
     <script>
-        let currentStep = 1;
-        let clusterConfig = {};
-        let selectedHosts = [];
-        let licenseVerified = false;
-
-        // Step navigation
-        function goToStep(step) {
-            if (step === 0) {
-                window.location.href = '/cluster/';
-                return;
-            }
-            
-            // Validate current step before proceeding
-            if (!validateStep(currentStep)) return;
-            
-            // Update step indicators
-            document.querySelectorAll('.step').forEach((el, index) => {
-                el.classList.remove('active');
-                if (index < step - 1) {
-                    el.classList.add('completed');
-                } else if (index === step - 1) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('completed');
-                }
-            });
-            
-            // Hide all sections
-            document.querySelectorAll('.form-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show target section
-            document.getElementById(`step${step}`).classList.add('active');
-            currentStep = step;
-            
-            // Update step-specific content
-            if (step === 3) {
-                discoverHosts();
-            } else if (step === 4) {
-                updateReviewSummary();
-            }
-        }
-
-        function validateStep(step) {
-            switch(step) {
-                case 1:
-                    return licenseVerified;
-                case 2:
-                    const name = document.getElementById('clusterName').value.trim();
-                    const path = document.getElementById('contractPath').value.trim();
-                    const instances = document.getElementById('instanceCount').value;
-                    const duration = document.getElementById('duration').value;
-                    
-                    if (!name || !path || !instances || !duration) {
-                        showAlert('Please fill in all required fields', 'error');
-                        return false;
-                    }
-                    
-                    clusterConfig = { name, path, instances: parseInt(instances), duration: parseInt(duration) };
-                    return true;
-                case 3:
-                    if (selectedHosts.length < clusterConfig.instances) {
-                        showAlert(`Please select at least ${clusterConfig.instances} hosts for your cluster`, 'error');
-                        return false;
-                    }
-                    return true;
-                default:
-                    return true;
-            }
-        }
-
-        // License verification
-        async function verifyLicense() {
-            const xahauAddress = document.getElementById('xahauAddress').value.trim();
-            
-            if (!xahauAddress || !xahauAddress.startsWith('r')) {
-                showAlert('Please enter a valid Xahau address', 'error');
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/xahau-nft-licenses.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'verify_cluster_license',
-                        xahau_address: xahauAddress
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success && result.has_license) {
-                    localStorage.setItem('cluster_xahau_address', xahauAddress);
-                    showAlert('✅ License verified! You can create clusters.', 'success');
-                    licenseVerified = true;
-                    document.getElementById('nextStep1').disabled = false;
-                } else {
-                    showAlert('❌ No valid cluster license found. Please purchase a license first.', 'error');
-                    licenseVerified = false;
-                }
-            } catch (error) {
-                showAlert('Connection error during verification', 'error');
-            }
-        }
-
-        // Host discovery
-        async function discoverHosts() {
-            document.getElementById('hostGrid').innerHTML = `
-                <div style="text-align: center; grid-column: 1 / -1; padding: 20px;">
-                    <div class="loading-spinner"></div>
-                    <p>Discovering enhanced hosts...</p>
-                </div>
-            `;
-            
-            try {
-                const response = await fetch('/api/auto-discovery.php');
-                const hosts = await response.json();
-                
-                if (hosts && hosts.length > 0) {
-                    displayAvailableHosts(hosts);
-                } else {
-                    document.getElementById('hostGrid').innerHTML = `
-                        <div style="text-align: center; grid-column: 1 / -1; padding: 20px;">
-                            <p>No enhanced hosts found. Please try refreshing or contact support.</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                document.getElementById('hostGrid').innerHTML = `
-                    <div style="text-align: center; grid-column: 1 / -1; padding: 20px;">
-                        <p>Error discovering hosts. Please try again.</p>
-                    </div>
-                `;
-            }
-        }
-
-        function displayAvailableHosts(hosts) {
-            const html = hosts.map(host => `
-                <div class="host-card" onclick="toggleHost('${host.address}', '${host.domain}', ${host.available_slots})" 
-                     data-address="${host.address}">
-                    <div style="font-weight: bold;">${host.domain || host.address.substring(0, 12) + '...'}</div>
-                    <div style="font-size: 0.9em; opacity: 0.8;">${host.address}</div>
-                    <div class="host-availability ${host.status}">
-                        ${host.available_slots} slots available
-                    </div>
-                    <div style="font-size: 0.8em; margin-top: 5px;">
-                        Enhanced: ✅ | Response: ${host.response_time}ms
-                    </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('hostGrid').innerHTML = html;
-        }
-
-        function toggleHost(address, domain, availableSlots) {
-            const hostCard = document.querySelector(`[data-address="${address}"]`);
-            
-            if (hostCard.classList.contains('selected')) {
-                // Deselect
-                hostCard.classList.remove('selected');
-                selectedHosts = selectedHosts.filter(h => h.address !== address);
-            } else {
-                // Select
-                if (selectedHosts.length < clusterConfig.instances) {
-                    hostCard.classList.add('selected');
-                    selectedHosts.push({ address, domain, availableSlots });
-                } else {
-                    showAlert(`You can only select ${clusterConfig.instances} hosts for this cluster configuration`, 'info');
-                    return;
-                }
-            }
-            
-            updateSelectedHostsDisplay();
-        }
-
-        function updateSelectedHostsDisplay() {
-            document.getElementById('selectedCount').textContent = selectedHosts.length;
-            
-            const html = selectedHosts.map((host, index) => `
-                <div style="background: rgba(76, 175, 80, 0.2); padding: 10px; border-radius: 8px; margin: 5px 0;">
-                    ${index + 1}. ${host.domain || host.address.substring(0, 20) + '...'}
-                    <button onclick="removeHost('${host.address}')" style="float: right; background: none; border: none; color: #ff6b6b; cursor: pointer;">✕</button>
-                </div>
-            `).join('');
-            
-            document.getElementById('selectedHostsList').innerHTML = html;
-            
-            // Enable/disable next button
-            document.getElementById('nextStep3').disabled = selectedHosts.length < clusterConfig.instances;
-        }
-
-        function removeHost(address) {
-            selectedHosts = selectedHosts.filter(h => h.address !== address);
-            document.querySelector(`[data-address="${address}"]`).classList.remove('selected');
-            updateSelectedHostsDisplay();
-        }
-
-        // Cost estimation
+        // Update cost estimate when form changes
         function updateCostEstimate() {
-            const instances = parseInt(document.getElementById('instanceCount').value) || 0;
-            const duration = parseInt(document.getElementById('duration').value) || 0;
+            const instances = document.getElementById('instances').value;
+            const duration = document.getElementById('duration').value;
+            const cost = instances * duration * 0.25;
             
-            if (instances && duration) {
-                document.getElementById('nextStep2').disabled = false;
-            }
+            document.getElementById('totalInstances').textContent = instances;
+            document.getElementById('totalDuration').textContent = duration + ' hours';
+            document.getElementById('estimatedCost').textContent = '$' + cost.toFixed(2);
         }
 
-        async function updateReviewSummary() {
-            // Update cost estimates
-            document.getElementById('totalInstances').textContent = clusterConfig.instances;
-            document.getElementById('totalDuration').textContent = `${clusterConfig.duration} hours`;
-            
-            // Get live pricing
-            if (window.livePricing) {
-                const rates = await window.livePricing.getClusterRates();
-                if (rates) {
-                    const totalCost = clusterConfig.instances * clusterConfig.duration * 0.25;
-                    document.getElementById('estimatedCostUSD').textContent = `$${totalCost.toFixed(2)}`;
-                    
-                    if (rates.currencies.xrp?.available) {
-                        const xrpCost = totalCost / rates.currencies.xrp.rate;
-                        document.getElementById('estimatedCostCrypto').textContent = `~${xrpCost.toFixed(1)} XRP`;
-                    }
-                }
-            }
-            
-            // Time savings
-            const manualTimeHours = clusterConfig.instances * 0.5; // 30 min per instance
-            document.getElementById('manualTime').textContent = `${manualTimeHours} hours`;
-            document.getElementById('timeSaved').textContent = `${(manualTimeHours - 0.05).toFixed(1)} hours`;
-            document.getElementById('efficiencyGain').textContent = `${Math.round((manualTimeHours / 0.05) * 100)}% faster`;
-            
-            // Summary
-            const summaryHtml = `
-                <div><strong>Cluster Name:</strong> ${clusterConfig.name}</div>
-                <div><strong>Contract Path:</strong> ${clusterConfig.path}</div>
-                <div><strong>Instances:</strong> ${clusterConfig.instances}</div>
-                <div><strong>Duration:</strong> ${clusterConfig.duration} hours</div>
-                <div><strong>Selected Hosts:</strong> ${selectedHosts.length}</div>
-            `;
-            document.getElementById('summaryContent').innerHTML = summaryHtml;
-        }
+        // Add event listeners
+        document.getElementById('instances').addEventListener('change', updateCostEstimate);
+        document.getElementById('duration').addEventListener('change', updateCostEstimate);
 
-        // Deployment
-        async function deployCluster() {
-            const xahauAddress = localStorage.getItem('cluster_xahau_address');
+        // Handle form submission
+        document.getElementById('clusterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            try {
-                document.getElementById('deployBtn').disabled = true;
-                document.getElementById('deployBtn').textContent = 'Deploying...';
-                
-                const deploymentData = {
-                    xahau_address: xahauAddress,
-                    cluster_name: clusterConfig.name,
-                    contract_path: clusterConfig.path,
-                    instances: clusterConfig.instances,
-                    duration: clusterConfig.duration,
-                    selected_hosts: selectedHosts
-                };
-                
-                const response = await fetch('/api/cluster-manager.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'create_cluster',
-                        ...deploymentData
-                    })
-                });
+            const formData = new FormData(e.target);
+            const clusterData = {
+                name: formData.get('clusterName'),
+                hosts: formData.get('targetHosts').split('\n').filter(h => h.trim()),
+                contractPath: formData.get('contractPath') || '/tmp/default-contract',
+                instances: parseInt(formData.get('instances')),
+                duration: parseInt(formData.get('duration'))
+            };
 
-                const result = await response.json();
-                
-                if (result.success) {
-                    showAlert(`✅ Cluster "${clusterConfig.name}" deployed successfully! Cluster ID: ${result.cluster_id}`, 'success');
-                    
-                    setTimeout(() => {
-                        openDappManager();
-                    }, 2000);
-                } else {
-                    showAlert(`❌ Deployment failed: ${result.error}`, 'error');
-                }
-            } catch (error) {
-                showAlert('❌ Deployment error. Please try again.', 'error');
-            } finally {
-                document.getElementById('deployBtn').disabled = false;
-                document.getElementById('deployBtn').textContent = '🚀 Deploy Cluster';
-            }
-        }
-
-        function openDappManager() {
-            window.location.href = '/cluster/dapp-manager.html';
-        }
-
-        // Utility functions
-        function showAlert(message, type) {
-            const alertHtml = `<div class="alert ${type}">${message}</div>`;
-            
-            // Add to current step
-            const currentSection = document.querySelector('.form-section.active');
-            const existingAlert = currentSection.querySelector('.alert');
-            if (existingAlert) {
-                existingAlert.remove();
-            }
-            
-            currentSection.insertAdjacentHTML('afterbegin', alertHtml);
-            
-            // Auto-remove success alerts
-            if (type === 'success') {
-                setTimeout(() => {
-                    const alert = currentSection.querySelector('.alert.success');
-                    if (alert) alert.remove();
-                }, 5000);
-            }
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if license is already verified
-            const savedAddress = localStorage.getItem('cluster_xahau_address');
-            if (savedAddress) {
-                document.getElementById('xahauAddress').value = savedAddress;
-            }
+            // Here you would normally send to your API
+            alert('Cluster creation would be implemented here!\n\nCluster: ' + clusterData.name + '\nHosts: ' + clusterData.hosts.length + '\nInstances: ' + clusterData.instances);
         });
+
+        // Initialize cost estimate
+        updateCostEstimate();
     </script>
 </body>
 </html>
+EOF
+
+# Set proper permissions
+chmod 644 /var/www/html/cluster/create.html
+chown www-data:www-data /var/www/html/cluster/create.html
