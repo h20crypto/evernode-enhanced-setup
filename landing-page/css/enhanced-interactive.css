@@ -577,3 +577,288 @@
 .pricing-feature {
     grid-column: 1 / -1; /* Full width if in feature grid */
 }
+
+/* Autonomous Recommendations Container */
+.autonomous-recommendations {
+    background: rgba(33, 150, 243, 0.2);
+    border-left: 4px solid #2196F3;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    display: none;
+    animation: slideUp 0.4s ease-out;
+}
+
+.autonomous-recommendations.visible {
+    display: block;
+}
+
+/* Discovered Host Items */
+.discovered-host-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.discovered-host-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+}
+
+/* Host Quality Indicators */
+.host-quality-indicator {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+.quality-premium {
+    background: #FFD700;
+    color: #000;
+}
+
+.quality-professional {
+    background: #4CAF50;
+    color: white;
+}
+
+.quality-enhanced {
+    background: #2196F3;
+    color: white;
+}
+
+/* Network Discovery Info */
+.network-discovery-info {
+    background: rgba(33, 150, 243, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+/* Autonomous Discovery Status */
+.discovery-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    background: rgba(76, 175, 80, 0.2);
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+}
+
+.discovery-status.discovering {
+    background: rgba(255, 193, 7, 0.2);
+    animation: pulse-warning 2s infinite;
+}
+
+.discovery-status::before {
+    content: '🤖';
+    font-size: 12px;
+}
+
+/* Smart Recommendations Header */
+.smart-recommendations-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.discovery-timestamp {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* Network Stats Display */
+.network-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.network-stat-item {
+    text-align: center;
+    padding: 10px;
+}
+
+.network-stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00ff88;
+    display: block;
+}
+
+.network-stat-label {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+/* Deploy to Discovered Host Button */
+.deploy-to-host-btn {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.deploy-to-host-btn:hover {
+    background: linear-gradient(135deg, #1976D2, #1565C0);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.deploy-to-host-btn.copied {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+/* Mobile Responsive for Discovery */
+@media (max-width: 768px) {
+    .discovered-host-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .smart-recommendations-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .network-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ==========================================
+   SMART URL DISPLAY ADDITIONS
+   ========================================== */
+
+/* Deployed Apps Dashboard */
+.deployed-apps-dashboard {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.deployed-app-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.deployed-app-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.app-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.app-type-badge {
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    color: #1a1a1a;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.app-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+}
+
+.app-status.running {
+    color: #4CAF50;
+}
+
+.app-status.stopped {
+    color: #f44336;
+}
+
+.app-status::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* URL Links Styling */
+.url-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.url-item:last-child {
+    border-bottom: none;
+}
+
+.url-link {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.url-link:hover {
+    color: #45a049;
+}
+
+.copy-url-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.copy-url-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.copy-url-btn.copied {
+    background: rgba(76, 175, 80, 0.6);
+}
