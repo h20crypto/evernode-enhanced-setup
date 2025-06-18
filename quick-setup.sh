@@ -174,11 +174,12 @@ download_enhanced_files() {
     
     # Download landing page files
     print_info "📄 Downloading landing page..."
-    sudo curl -fsSL "$github_base/landing-page/index.html" -o /var/www/html/index.html
+   sudo curl -fsSL "$github_base/landing-page/index.html" -o /var/www/html/index.html
     sudo curl -fsSL "$github_base/landing-page/monitoring-dashboard.html" -o /var/www/html/monitoring-dashboard.html
     sudo curl -fsSL "$github_base/landing-page/my-earnings.html" -o /var/www/html/my-earnings.html
     sudo curl -fsSL "$github_base/landing-page/leaderboard.html" -o /var/www/html/leaderboard.html
     sudo curl -fsSL "$github_base/landing-page/host-discovery.html" -o /var/www/html/host-discovery.html
+    sudo curl -fsSL "$github_base/landing-page/premium-dapp-manager.html" -o /var/www/html/premium-dapp-manager.html
     
     # Download API files
     print_info "🔧 Downloading API files..."
