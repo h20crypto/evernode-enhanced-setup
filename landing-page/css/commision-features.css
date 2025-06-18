@@ -1,0 +1,85 @@
+/* Commission and Upgrade Features */
+.upgrade-notice {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 7, 0.1));
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    display: none;
+    animation: slideInGently 0.5s ease;
+}
+
+.upgrade-notice.show {
+    display: block;
+}
+
+.upgrade-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.upgrade-icon {
+    font-size: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.upgrade-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.upgrade-btn {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #1a1a1a;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+.upgrade-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.commission-badge {
+    position: absolute;
+    top: 45px;
+    right: 15px;
+    background: linear-gradient(135deg, #00cc66, #00ff88);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes slideInGently {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sparkle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+}
+
+@media (max-width: 768px) {
+    .upgrade-content {
+        grid-template-columns: 1fr;
+    }
+}
