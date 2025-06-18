@@ -158,6 +158,8 @@ download_enhanced_files() {
     sudo curl -fsSL "$github_base/landing-page/api/deployment-status.php" -o /var/www/html/api/deployment-status.php 2>/dev/null || print_warning "Deployment Status API not found"
     sudo curl -fsSL "$github_base/landing-page/api/host-discovery.php" -o /var/www/html/api/host-discovery.php 2>/dev/null || print_warning "Host Discovery API not found"
     sudo curl -fsSL "$github_base/landing-page/api/smart-recommendations.php" -o /var/www/html/api/smart-recommendations.php 2>/dev/null || print_warning "Smart Recommendations API not found"
+    sudo curl -fsSL "$github_base/landing-page/css/commission-features.css" -o /var/www/html/css/commission-features.css
+    sudo curl -fsSL "$github_base/landing-page/js/commission-features.js" -o /var/www/html/js/commission-features.js
     
     # Download management tools
     print_info "🔧 Downloading discovery management tools..."
