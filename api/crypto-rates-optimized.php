@@ -1,248 +1,198 @@
 <?php
-// api/crypto-rates-optimized.php - Updated with correct CoinGecko endpoints
-
+// api/crypto-rates-simple.php - Simple CoinGecko implementation
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET');
 
-class OptimizedCoinGeckoRates {
+class SimpleCoinGeckoRates {
+    private $cache_file = 'cache/rates.json';
+    private $cache_duration = 300; // 5 minutes
     private $license_usd = 49.99;
-    private $cache_dir = 'rates_cache/';
     
-    // Correct CoinGecko endpoints
-    private $coingecko_endpoints = [
-        'xrp' => 'https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd',
-        'xah' => 'https://api.coingecko.com/api/v3/simple/price?ids=xahau&vs_currencies=usd', 
-        'evr' => 'https://api.coingecko.com/api/v3/simple/price?ids=evernode&vs_currencies=usd'
-    ];
-    
-    private $coin_ids = [
+    // CoinGecko coin IDs - all are available!
+    private $coins = [
         'xrp' => 'ripple',
-        'xah' => 'xahau',
+        'xah' => 'xahau', 
         'evr' => 'evernode'
     ];
     
+    // Fallback rates only if CoinGecko is completely down
+    private $fallback_rates = [
+        'xrp' => 2.45,
+        'xah' => 0.04,
+        'evr' => 0.22
+    ];
+    
     public function __construct() {
-        if (!is_dir($this->cache_dir)) {
-            mkdir($this->cache_dir, 0755, true);
+        // Create cache directory
+        if (!is_dir('cache')) {
+            mkdir('cache', 0755, true);
         }
     }
     
-    public function getRates($mode = 'balanced') {
-        $cache_duration = $this->getCacheDuration($mode);
-        
-        // Try to get rates from cache first
-        $cached_rates = $this->getCachedRates($cache_duration);
-        if ($cached_rates) {
-            return $cached_rates;
+    public function getRates() {
+        // Check cache first
+        if ($this->isCacheValid()) {
+            return $this->loadFromCache();
         }
         
-        // Fetch fresh rates from CoinGecko
-        $fresh_rates = $this->fetchFreshRates();
-        
-        if ($fresh_rates['success']) {
-            $this->cacheRates($fresh_rates['data']);
-            return $fresh_rates['data'];
+        // Fetch fresh rates
+        return $this->fetchFreshRates();
+    }
+    
+    private function isCacheValid() {
+        if (!file_exists($this->cache_file)) {
+            return false;
         }
         
-        // All failed, try extended cache
-        $extended_cache = $this->getCachedRates(3600); // 1 hour
-        if ($extended_cache) {
-            $extended_cache['source'] = 'extended_cache';
-            $extended_cache['warning'] = 'Using older cached rates';
-            return $extended_cache;
-        }
-        
-        // Everything failed
-        return $this->getFailureResponse();
+        $cache_time = filemtime($this->cache_file);
+        return (time() - $cache_time) < $this->cache_duration;
+    }
+    
+    private function loadFromCache() {
+        $data = json_decode(file_get_contents($this->cache_file), true);
+        $data['source'] = 'cache';
+        $data['cache_age'] = time() - filemtime($this->cache_file);
+        return $data;
     }
     
     private function fetchFreshRates() {
+        try {
+            // Build CoinGecko API URL for all three coins
+            $coin_ids = implode(',', $this->coins); // ripple,xahau,evernode
+            $url = "https://api.coingecko.com/api/v3/simple/price?ids={$coin_ids}&vs_currencies=usd";
+            
+            // Fetch with timeout
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 10,
+                    'user_agent' => 'Evernode-Host-Pricing/1.0'
+                ]
+            ]);
+            
+            $response = file_get_contents($url, false, $context);
+            
+            if (!$response) {
+                return $this->getFallbackRates('CoinGecko API request failed');
+            }
+            
+            $coingecko_data = json_decode($response, true);
+            
+            if (!$coingecko_data) {
+                return $this->getFallbackRates('Invalid CoinGecko API response');
+            }
+            
+            // Build our response
+            $rates = $this->buildRateResponse($coingecko_data);
+            
+            // Cache the successful response
+            file_put_contents($this->cache_file, json_encode($rates, JSON_PRETTY_PRINT));
+            
+            return $rates;
+            
+        } catch (Exception $e) {
+            error_log("CoinGecko fetch failed: " . $e->getMessage());
+            return $this->getFallbackRates('Exception: ' . $e->getMessage());
+        }
+    }
+    
+    private function buildRateResponse($coingecko_data) {
         $rates = [];
-        $successful_fetches = 0;
-        $errors = [];
         
-        foreach ($this->coingecko_endpoints as $token => $url) {
-            try {
-                $context = stream_context_create([
-                    'http' => [
-                        'timeout' => 8,
-                        'user_agent' => 'Enhanced-Evernode-Host/1.0'
-                    ]
-                ]);
-                
-                $response = file_get_contents($url, false, $context);
-                
-                if ($response) {
-                    $data = json_decode($response, true);
-                    $coin_id = $this->coin_ids[$token];
-                    
-                    if (isset($data[$coin_id]['usd'])) {
-                        $rate = floatval($data[$coin_id]['usd']);
-                        
-                        if ($this->isValidRate($token, $rate)) {
-                            $rates[$token] = $rate;
-                            $successful_fetches++;
-                        } else {
-                            $errors[$token] = "Invalid rate: $rate";
-                        }
-                    } else {
-                        $errors[$token] = "No USD price in response";
-                    }
-                } else {
-                    $errors[$token] = "No response from CoinGecko";
-                }
-                
-                // Be nice to CoinGecko - small delay between requests
-                usleep(200000); // 0.2 seconds
-                
-            } catch (Exception $e) {
-                $errors[$token] = $e->getMessage();
-            }
+        // XRP from CoinGecko
+        if (isset($coingecko_data['ripple']['usd'])) {
+            $xrp_rate = floatval($coingecko_data['ripple']['usd']);
+            $rates['xrp'] = [
+                'rate' => $xrp_rate,
+                'amount_for_license' => round($this->license_usd / $xrp_rate, 2),
+                'display' => '~' . round($this->license_usd / $xrp_rate) . ' XRP',
+                'source' => 'coingecko_live'
+            ];
+        } else {
+            $rates['xrp'] = $this->getFallbackRate('xrp');
         }
         
-        // Need at least 2 out of 3 tokens
-        if ($successful_fetches >= 2) {
-            // Fill missing rates with estimates
-            $rates = $this->fillMissingRates($rates);
-            
-            $response_data = $this->buildRateResponse($rates, 'coingecko', 'high');
-            $response_data['tokens_fetched'] = $successful_fetches;
-            $response_data['errors'] = $errors;
-            
-            return ['success' => true, 'data' => $response_data];
+        // XAH from CoinGecko (now available!)
+        if (isset($coingecko_data['xahau']['usd'])) {
+            $xah_rate = floatval($coingecko_data['xahau']['usd']);
+            $rates['xah'] = [
+                'rate' => $xah_rate,
+                'amount_for_license' => round($this->license_usd / $xah_rate, 2),
+                'display' => '~' . round($this->license_usd / $xah_rate) . ' XAH',
+                'source' => 'coingecko_live'
+            ];
+        } else {
+            $rates['xah'] = $this->getFallbackRate('xah');
+        }
+        
+        // EVR from CoinGecko (now available!)
+        if (isset($coingecko_data['evernode']['usd'])) {
+            $evr_rate = floatval($coingecko_data['evernode']['usd']);
+            $rates['evr'] = [
+                'rate' => $evr_rate,
+                'amount_for_license' => round($this->license_usd / $evr_rate, 2),
+                'display' => '~' . round($this->license_usd / $evr_rate) . ' EVR',
+                'source' => 'coingecko_live'
+            ];
+        } else {
+            $rates['evr'] = $this->getFallbackRate('evr');
         }
         
         return [
-            'success' => false, 
-            'error' => "Only {$successful_fetches}/3 rates fetched",
-            'errors' => $errors
-        ];
-    }
-    
-    private function fillMissingRates($rates) {
-        // Fallback rates (update these periodically)
-        $fallbacks = [
-            'xrp' => 2.45,
-            'xah' => 0.04,
-            'evr' => 0.22
-        ];
-        
-        // If we have XRP, estimate others based on typical ratios
-        if (isset($rates['xrp'])) {
-            $xrp_rate = $rates['xrp'];
-            
-            if (!isset($rates['xah'])) {
-                $estimated_xah = $xrp_rate * 0.016; // ~1.6% of XRP
-                $rates['xah'] = $this->isValidRate('xah', $estimated_xah) ? $estimated_xah : $fallbacks['xah'];
-            }
-            
-            if (!isset($rates['evr'])) {
-                $estimated_evr = $xrp_rate * 0.09; // ~9% of XRP
-                $rates['evr'] = $this->isValidRate('evr', $estimated_evr) ? $estimated_evr : $fallbacks['evr'];
-            }
-        }
-        
-        // Fill any remaining missing rates with fallbacks
-        foreach ($fallbacks as $token => $fallback) {
-            if (!isset($rates[$token])) {
-                $rates[$token] = $fallback;
-            }
-        }
-        
-        return $rates;
-    }
-    
-    private function buildRateResponse($rates, $source, $confidence) {
-        return [
-            'xah' => [
-                'rate' => $rates['xah'],
-                'amount_for_license' => round($this->license_usd / $rates['xah'], 2),
-                'display' => '~' . number_format(round($this->license_usd / $rates['xah'], 0)) . ' XAH',
-                'source' => $source
-            ],
-            'xrp' => [
-                'rate' => $rates['xrp'],
-                'amount_for_license' => round($this->license_usd / $rates['xrp'], 2),
-                'display' => '~' . round($this->license_usd / $rates['xrp'], 1) . ' XRP',
-                'source' => $source
-            ],
-            'evr' => [
-                'rate' => $rates['evr'],
-                'amount_for_license' => round($this->license_usd / $rates['evr'], 2),
-                'display' => '~' . number_format(round($this->license_usd / $rates['evr'], 0)) . ' EVR',
-                'source' => $source
-            ],
+            'success' => true,
             'license_usd' => $this->license_usd,
-            'mode' => 'balanced',
+            'xrp' => $rates['xrp'],
+            'xah' => $rates['xah'],
+            'evr' => $rates['evr'],
             'timestamp' => time(),
             'last_updated' => date('Y-m-d H:i:s'),
-            'confidence' => $confidence,
-            'success' => true
+            'api_source' => 'coingecko',
+            'cache_duration' => $this->cache_duration,
+            'confidence' => 'high'
         ];
     }
     
-    private function isValidRate($token, $rate) {
-        $ranges = [
-            'xrp' => ['min' => 0.10, 'max' => 50.00],
-            'xah' => ['min' => 0.001, 'max' => 5.00],
-            'evr' => ['min' => 0.001, 'max' => 10.00]
+    private function getFallbackRate($currency) {
+        $rate = $this->fallback_rates[$currency];
+        return [
+            'rate' => $rate,
+            'amount_for_license' => round($this->license_usd / $rate, 2),
+            'display' => '~' . round($this->license_usd / $rate) . ' ' . strtoupper($currency),
+            'source' => 'fallback_estimate'
         ];
-        
-        if (!isset($ranges[$token])) return false;
-        
-        $range = $ranges[$token];
-        return $rate >= $range['min'] && $rate <= $range['max'];
     }
     
-    private function getCacheDuration($mode) {
-        $durations = [
-            'realtime' => 30,
-            'accurate' => 60,
-            'balanced' => 120,
-            'cheap' => 300
-        ];
-        
-        return $durations[$mode] ?? 120;
-    }
-    
-    private function getCachedRates($max_age) {
-        $cache_file = $this->cache_dir . 'coingecko_rates.json';
-        
-        if (file_exists($cache_file)) {
-            $cache_age = time() - filemtime($cache_file);
-            
-            if ($cache_age < $max_age) {
-                $cached_data = json_decode(file_get_contents($cache_file), true);
-                
-                if ($cached_data && $cached_data['success']) {
-                    $cached_data['source'] = 'cache';
-                    $cached_data['cache_age'] = $cache_age;
-                    return $cached_data;
-                }
-            }
-        }
-        
-        return null;
-    }
-    
-    private function cacheRates($data) {
-        $cache_file = $this->cache_dir . 'coingecko_rates.json';
-        file_put_contents($cache_file, json_encode($data, JSON_PRETTY_PRINT));
-    }
-    
-    private function getFailureResponse() {
+    private function getFallbackRates($error_reason) {
+        // Return hardcoded fallback rates if CoinGecko is completely down
         return [
             'success' => false,
-            'error' => 'All rate sources failed',
-            'message' => 'Cryptocurrency pricing temporarily unavailable',
-            'recommendation' => 'Please try again in a few minutes',
-            'timestamp' => time()
+            'error' => $error_reason,
+            'message' => 'CoinGecko temporarily unavailable - using estimated rates',
+            'license_usd' => $this->license_usd,
+            'xrp' => $this->getFallbackRate('xrp'),
+            'xah' => $this->getFallbackRate('xah'),
+            'evr' => $this->getFallbackRate('evr'),
+            'timestamp' => time(),
+            'last_updated' => date('Y-m-d H:i:s'),
+            'api_source' => 'fallback_emergency',
+            'confidence' => 'low'
         ];
     }
 }
 
-// API endpoint
-$mode = $_GET['mode'] ?? 'balanced';
-$rates = new OptimizedCoinGeckoRates();
-echo json_encode($rates->getRates($mode));
+// Handle the request
+$rates_api = new SimpleCoinGeckoRates();
+$result = $rates_api->getRates();
+
+// Add debug info if requested
+if (isset($_GET['debug'])) {
+    $result['debug'] = [
+        'cache_file_exists' => file_exists('cache/rates.json'),
+        'cache_permissions' => is_writable('cache/'),
+        'php_version' => PHP_VERSION,
+        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
+    ];
+}
+
+echo json_encode($result, JSON_PRETTY_PRINT);
 ?>
