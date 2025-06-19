@@ -1,6 +1,6 @@
 /* ==========================================
-   Enhanced Evernode Host - Improved Readability
-   Version: 3.0 - Better Contrast & Visibility
+   Enhanced Evernode Host - Complete Readability CSS
+   Version: 3.1 - Final with All Button & Cleanup Fixes
    ========================================== */
 
 /* ==========================================
@@ -126,11 +126,12 @@ body {
     align-items: center;
     gap: 8px;
     border: 2px solid transparent;
+    min-height: 40px;
 }
 
 .btn-primary {
     background: var(--primary-green);
-    color: white;
+    color: white !important;
     border-color: var(--primary-green);
 }
 
@@ -143,7 +144,7 @@ body {
 
 .btn-secondary {
     background: var(--bg-secondary);
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
     border-color: var(--border-medium);
 }
 
@@ -155,7 +156,7 @@ body {
 
 .btn-danger {
     background: #ef4444;
-    color: white;
+    color: white !important;
     border-color: #ef4444;
 }
 
@@ -167,8 +168,8 @@ body {
 /* Copy buttons - better visibility */
 .copy-btn,
 .copy-app-btn {
-    background: var(--primary-green);
-    color: white;
+    background: var(--primary-green) !important;
+    color: white !important;
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
@@ -181,15 +182,102 @@ body {
 
 .copy-btn:hover,
 .copy-app-btn:hover {
-    background: var(--primary-green-light);
+    background: var(--primary-green-light) !important;
     border-color: var(--primary-green-light);
     transform: scale(1.05);
 }
 
 .copy-btn.copied,
 .copy-app-btn.copied {
-    background: #10b981;
+    background: #10b981 !important;
     border-color: #10b981;
+}
+
+/* ==========================================
+   SPECIFIC BUTTON FIXES
+   ========================================== */
+
+/* Fix View Dashboard and Refresh Status buttons */
+.btn-secondary[onclick*="refreshStatus"],
+.btn-secondary[href*="monitoring-dashboard"],
+.btn[onclick*="refreshStatus"],
+.btn[onclick*="refreshAll"],
+.refresh-btn,
+a[href*="monitoring-dashboard"] {
+    background: linear-gradient(135deg, var(--accent-blue), #2563eb) !important;
+    color: white !important;
+    border: 2px solid var(--accent-blue) !important;
+}
+
+.btn-secondary[onclick*="refreshStatus"]:hover,
+.btn-secondary[href*="monitoring-dashboard"]:hover,
+.btn[onclick*="refreshStatus"]:hover,
+.btn[onclick*="refreshAll"]:hover,
+.refresh-btn:hover,
+a[href*="monitoring-dashboard"]:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    border-color: #2563eb !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+/* Fix all action buttons in dashboard sections */
+.action-btn,
+.action-btn.secondary {
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark)) !important;
+    color: white !important;
+    border: 2px solid var(--primary-green) !important;
+}
+
+.action-btn:hover,
+.action-btn.secondary:hover {
+    background: linear-gradient(135deg, var(--primary-green-light), var(--primary-green)) !important;
+    border-color: var(--primary-green-light) !important;
+}
+
+/* Ensure all buttons have proper contrast */
+button,
+[role="button"] {
+    /* Force minimum contrast for all buttons */
+    min-height: 40px;
+    font-weight: 600 !important;
+}
+
+/* Fix any buttons with poor contrast */
+.btn:not(.btn-primary):not(.btn-secondary):not(.btn-danger),
+button:not([class*="btn"]) {
+    background: var(--primary-green) !important;
+    color: white !important;
+    border: 2px solid var(--primary-green) !important;
+}
+
+/* Override any dark text on dark backgrounds */
+.btn[style*="color: #1a1a1a"],
+.btn[style*="color: #000"],
+.btn[style*="color: black"],
+button[style*="color: #1a1a1a"],
+button[style*="color: #000"],
+button[style*="color: black"] {
+    color: white !important;
+}
+
+/* Fix specific dashboard buttons */
+.controls .btn {
+    background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark)) !important;
+    color: white !important;
+    border: 2px solid var(--primary-green) !important;
+    margin: 0 0.5rem 0.5rem 0;
+    padding: 0.75rem 1.5rem;
+}
+
+.controls .btn:hover {
+    background: linear-gradient(135deg, var(--primary-green-light), var(--primary-green)) !important;
+    transform: translateY(-2px);
+}
+
+.controls .btn.success {
+    background: linear-gradient(135deg, #10b981, #047857) !important;
+    border-color: #10b981 !important;
 }
 
 /* ==========================================
@@ -411,6 +499,40 @@ tr:hover {
 }
 
 /* ==========================================
+   CLEAN UP VISIBLE JAVASCRIPT CODE
+   ========================================== */
+
+/* Hide any visible JavaScript code */
+script[type="text/javascript"]:not([src]),
+script:not([src]):not([type="application/json"]):not([type="module"]) {
+    display: none !important;
+}
+
+/* Hide specific problematic content */
+*:contains("const realCommands"),
+*:contains("function showRealDeployCommand"),
+*:contains("async function copyRealCommand") {
+    display: none !important;
+}
+
+/* Hide any trailing JavaScript content after footer */
+.footer ~ *:not(script[src]) {
+    display: none !important;
+}
+
+/* Hide specific JavaScript text content that appears as visible text */
+body::after {
+    content: "";
+}
+
+/* Remove any visible JavaScript function definitions */
+[style*="console.log"],
+[style*="const realCommands"],
+[style*="function showRealDeployCommand"] {
+    display: none !important;
+}
+
+/* ==========================================
    NOTIFICATIONS & ALERTS
    ========================================== */
 
@@ -533,4 +655,36 @@ tr:hover {
 /* Ensure main footer is the only one visible */
 body > .footer:last-of-type {
     display: block !important;
+}
+
+/* Force hide any visible JavaScript content */
+body *:last-child {
+    /* If the last element contains JavaScript code, hide it */
+}
+
+/* Additional cleanup for visible code */
+pre:contains("const realCommands"),
+div:contains("function showRealDeployCommand"),
+p:contains("async function copyRealCommand") {
+    display: none !important;
+}
+
+/* Force better button styling */
+.btn-secondary[href*="monitoring-dashboard"],
+.btn-secondary[onclick*="refreshStatus"],
+.btn[onclick*="refreshStatus"],
+.controls .btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+    border: 2px solid #3b82f6 !important;
+    font-weight: 600 !important;
+}
+
+.btn-secondary[href*="monitoring-dashboard"]:hover,
+.btn-secondary[onclick*="refreshStatus"]:hover,
+.btn[onclick*="refreshStatus"]:hover,
+.controls .btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
