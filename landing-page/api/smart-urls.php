@@ -169,6 +169,34 @@ class SmartURLGenerator {
         
         return 'custom';
     }
+
+    private function parseEvernodeCommand($command) {
+    // Parse real evdevkit commands for better URL generation
+    $parsed = [
+        'image' => '',
+        'ports' => [],
+        'env_vars' => []
+    ];
+    
+    // Extract image name
+    if (preg_match('/-i ([^-]+)/', $command, $matches)) {
+        $parsed['image'] = $matches[1];
+    }
+    
+    // Extract port mappings (--gptcp1--PORT format)
+    if (preg_match_all('/--gptcp1--(\d+)/', $command, $matches)) {
+        $parsed['ports'] = $matches[1];
+    }
+    
+    // Extract environment variables (--env1--KEY-value format)
+    if (preg_match_all('/--env\d+--([^-]+)-([^-\s]+)/', $command, $matches)) {
+        for ($i = 0; $i < count($matches[1]); $i++) {
+            $parsed['env_vars'][$matches[1][$i]] = $matches[2][$i];
+        }
+    }
+    
+    return $parsed;
+}
     
     private function generateAppUrls($appType, $accessUrls) {
         $enhancedUrls = [];
