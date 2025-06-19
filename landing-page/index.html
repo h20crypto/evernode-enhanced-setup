@@ -921,6 +921,130 @@ evdevkit upload contract.zip http://host-ip/</pre>
             </div>
         </section>
 
+         <section id="real-deployments" class="deploy-section" style="margin-bottom: 60px;">
+            <h2 class="section-title">🚀 Popular Apps - Real Commands</h2>
+            <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px;">Copy-paste ready commands that actually work on Evernode</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+                
+                <!-- n8n Card -->
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">n8n Automation</h3>
+                    <p style="opacity: 0.9; margin-bottom: 15px;">Workflow automation with 400+ integrations</p>
+                    <div style="color: #4CAF50; font-weight: bold; margin-bottom: 15px;">~$0.18/day (24 hours)</div>
+                    
+                    <div class="deploy-command" style="display: none; margin: 15px 0;">
+                        <div class="deploy-code">
+                            <button class="copy-btn" onclick="copyRealCommand('n8n')">📋 Copy</button>
+                            <pre id="n8n-command">evdevkit acquire -i n8nio/n8n:latest--gptcp1--5678--env1--N8N_HOST-yourdomain.com--env2--N8N_PROTOCOL-http--env3--N8N_SECURE_COOKIE-false rYourHostAddress -m 24</pre>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showRealDeployCommand('n8n')" style="width: 100%;">
+                        🚀 Show Deploy Command
+                    </button>
+                </div>
+
+                <!-- WordPress Card -->
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-title">WordPress</h3>
+                    <p style="opacity: 0.9; margin-bottom: 15px;">Complete website platform</p>
+                    <div style="color: #4CAF50; font-weight: bold; margin-bottom: 15px;">~$0.18/day (24 hours)</div>
+                    
+                    <div class="deploy-command" style="display: none; margin: 15px 0;">
+                        <div class="deploy-code">
+                            <button class="copy-btn" onclick="copyRealCommand('wordpress')">📋 Copy</button>
+                            <pre id="wordpress-command">evdevkit acquire -i wordpress:latest--gptcp1--80--env1--WORDPRESS_DB_HOST-db--env2--WORDPRESS_DB_NAME-wordpress rYourHostAddress -m 24</pre>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showRealDeployCommand('wordpress')" style="width: 100%;">
+                        🚀 Show Deploy Command
+                    </button>
+                </div>
+
+                <!-- Nextcloud Card -->
+                <div class="feature-card">
+                    <div class="feature-icon">☁️</div>
+                    <h3 class="feature-title">Nextcloud</h3>
+                    <p style="opacity: 0.9; margin-bottom: 15px;">Personal cloud storage</p>
+                    <div style="color: #4CAF50; font-weight: bold; margin-bottom: 15px;">~$0.18/day (24 hours)</div>
+                    
+                    <div class="deploy-command" style="display: none; margin: 15px 0;">
+                        <div class="deploy-code">
+                            <button class="copy-btn" onclick="copyRealCommand('nextcloud')">📋 Copy</button>
+                            <pre id="nextcloud-command">evdevkit acquire -i nextcloud:latest--gptcp1--80 rYourHostAddress -m 24</pre>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showRealDeployCommand('nextcloud')" style="width: 100%;">
+                        🚀 Show Deploy Command
+                    </button>
+                </div>
+
+                <!-- Ghost Card -->
+                <div class="feature-card">
+                    <div class="feature-icon">👻</div>
+                    <h3 class="feature-title">Ghost Blog</h3>
+                    <p style="opacity: 0.9; margin-bottom: 15px;">Modern publishing platform</p>
+                    <div style="color: #4CAF50; font-weight: bold; margin-bottom: 15px;">~$0.18/day (24 hours)</div>
+                    
+                    <div class="deploy-command" style="display: none; margin: 15px 0;">
+                        <div class="deploy-code">
+                            <button class="copy-btn" onclick="copyRealCommand('ghost')">📋 Copy</button>
+                            <pre id="ghost-command">evdevkit acquire -i ghost:latest--gptcp1--2368--env1--url-http://yourdomain.com:36525 rYourHostAddress -m 24</pre>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showRealDeployCommand('ghost')" style="width: 100%;">
+                        🚀 Show Deploy Command
+                    </button>
+                </div>
+
+                <!-- Grafana Card -->
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Grafana</h3>
+                    <p style="opacity: 0.9; margin-bottom: 15px;">Analytics dashboard</p>
+                    <div style="color: #4CAF50; font-weight: bold; margin-bottom: 15px;">~$0.18/day (24 hours)</div>
+                    
+                    <div class="deploy-command" style="display: none; margin: 15px 0;">
+                        <div class="deploy-code">
+                            <button class="copy-btn" onclick="copyRealCommand('grafana')">📋 Copy</button>
+                            <pre id="grafana-command">evdevkit acquire -i grafana/grafana:latest--gptcp1--3000--env1--GF_SECURITY_ADMIN_PASSWORD-admin123 rYourHostAddress -m 24</pre>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showRealDeployCommand('grafana')" style="width: 100%;">
+                        🚀 Show Deploy Command
+                    </button>
+                </div>
+
+                <!-- Jupyter Card -->
+                <div class="feature-card">
+                    <div class="feature-icon">📓</div>
+                    <h3 class="feature-title">Jupyter</h3>
+                    <p style="opacity: 0.9; margin-bottom: 15px;">Data science notebooks</p>
+                    <div style="color: #4CAF50; font-weight: bold; margin-bottom: 15px;">~$0.18/day (24 hours)</div>
+                    
+                    <div class="deploy-command" style="display: none; margin: 15px 0;">
+                        <div class="deploy-code">
+                            <button class="copy-btn" onclick="copyRealCommand('jupyter')">📋 Copy</button>
+                            <pre id="jupyter-command">evdevkit acquire -i jupyter/base-notebook:latest--gptcp1--8888--env1--JUPYTER_ENABLE_LAB-yes rYourHostAddress -m 24</pre>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showRealDeployCommand('jupyter')" style="width: 100%;">
+                        🚀 Show Deploy Command
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+
         <!-- Quick Deploy Section -->
         <section id="deploy" class="deploy-section">
             <h2 class="section-title">🚀 Quick Deploy</h2>
@@ -1849,5 +1973,63 @@ evdevkit upload contract.zip http://host-ip/</pre>
         `;
         document.head.appendChild(style);
     </script>
+    
+const realCommands = {
+    'n8n': 'evdevkit acquire -i n8nio/n8n:latest--gptcp1--5678--env1--N8N_HOST-{DOMAIN}--env2--N8N_PROTOCOL-http--env3--N8N_SECURE_COOKIE-false {HOST_ADDRESS} -m 24',
+    'wordpress': 'evdevkit acquire -i wordpress:latest--gptcp1--80--env1--WORDPRESS_DB_HOST-db--env2--WORDPRESS_DB_NAME-wordpress {HOST_ADDRESS} -m 24',
+    'nextcloud': 'evdevkit acquire -i nextcloud:latest--gptcp1--80 {HOST_ADDRESS} -m 24',
+    'ghost': 'evdevkit acquire -i ghost:latest--gptcp1--2368--env1--url-http://{DOMAIN}:36525 {HOST_ADDRESS} -m 24',
+    'grafana': 'evdevkit acquire -i grafana/grafana:latest--gptcp1--3000--env1--GF_SECURITY_ADMIN_PASSWORD-admin123 {HOST_ADDRESS} -m 24',
+    'jupyter': 'evdevkit acquire -i jupyter/base-notebook:latest--gptcp1--8888--env1--JUPYTER_ENABLE_LAB-yes {HOST_ADDRESS} -m 24'
+};
+
+function showRealDeployCommand(appType) {
+    const button = event.target;
+    const card = button.closest('.feature-card');
+    const commandDiv = card.querySelector('.deploy-command');
+    
+    if (commandDiv.style.display === 'none' || !commandDiv.style.display) {
+        commandDiv.style.display = 'block';
+        button.textContent = '📋 Copy Command';
+        button.onclick = () => copyRealCommand(appType);
+    } else {
+        commandDiv.style.display = 'none';
+        button.textContent = '🚀 Show Deploy Command';
+        button.onclick = () => showRealDeployCommand(appType);
+    }
+}
+
+async function copyRealCommand(appType) {
+    try {
+        // Get real host data
+        const response = await fetch('/api/host-info.php');
+        const hostInfo = await response.json();
+        
+        const hostAddress = hostInfo.xahau_address || 'rYourHostAddress123';
+        const hostDomain = hostInfo.domain || window.location.hostname;
+        
+        let command = realCommands[appType];
+        command = command.replace(/{HOST_ADDRESS}/g, hostAddress);
+        command = command.replace(/{DOMAIN}/g, hostDomain);
+        
+        await navigator.clipboard.writeText(command);
+        
+        const button = event.target;
+        button.textContent = '✅ Copied!';
+        button.style.background = '#4CAF50';
+        
+        alert(`✅ Real Evernode command copied!\n\nPaste in terminal:\n${command}\n\nAfter deployment, check this page for automatic Smart URLs!`);
+        
+        setTimeout(() => {
+            button.textContent = '📋 Copy Command';
+            button.style.background = '';
+        }, 3000);
+        
+    } catch (error) {
+        alert('Copy failed. Please copy the command manually.');
+    }
+}
+</script>
+    
 </body>
 </html>
