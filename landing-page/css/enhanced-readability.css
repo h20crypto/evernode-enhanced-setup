@@ -1,0 +1,536 @@
+/* ==========================================
+   Enhanced Evernode Host - Improved Readability
+   Version: 3.0 - Better Contrast & Visibility
+   ========================================== */
+
+/* ==========================================
+   BASE STYLING - IMPROVED READABILITY
+   ========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Softer dark background - better for eyes */
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f172a 100%);
+    color: #f1f5f9; /* Better contrast white */
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ==========================================
+   IMPROVED COLOR VARIABLES
+   ========================================== */
+
+:root {
+    /* Primary colors - softer but professional */
+    --primary-green: #10b981; /* More readable green */
+    --primary-green-light: #34d399;
+    --primary-green-dark: #047857;
+    
+    /* Accent colors */
+    --accent-blue: #3b82f6; /* Better blue */
+    --accent-purple: #8b5cf6;
+    --accent-orange: #f59e0b;
+    
+    /* Text colors */
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    
+    /* Background colors */
+    --bg-primary: rgba(30, 41, 59, 0.95);
+    --bg-secondary: rgba(51, 65, 85, 0.8);
+    --bg-tertiary: rgba(71, 85, 105, 0.6);
+    
+    /* Border colors */
+    --border-light: rgba(148, 163, 184, 0.2);
+    --border-medium: rgba(148, 163, 184, 0.4);
+    --border-accent: rgba(16, 185, 129, 0.4);
+}
+
+/* ==========================================
+   NAVIGATION - IMPROVED VISIBILITY
+   ========================================== */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: var(--bg-primary);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-light);
+    z-index: 1000;
+    padding: 1rem 0;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-green);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    border-color: var(--border-accent);
+}
+
+/* ==========================================
+   BUTTONS - BETTER CONTRAST & VISIBILITY
+   ========================================== */
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+}
+
+.btn-primary:hover {
+    background: var(--primary-green-light);
+    border-color: var(--primary-green-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Copy buttons - better visibility */
+.copy-btn,
+.copy-app-btn {
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid var(--primary-green);
+}
+
+.copy-btn:hover,
+.copy-app-btn:hover {
+    background: var(--primary-green-light);
+    border-color: var(--primary-green-light);
+    transform: scale(1.05);
+}
+
+.copy-btn.copied,
+.copy-app-btn.copied {
+    background: #10b981;
+    border-color: #10b981;
+}
+
+/* ==========================================
+   CARDS AND CONTAINERS - BETTER READABILITY
+   ========================================== */
+
+.feature-card,
+.status-card,
+.app-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover,
+.status-card:hover,
+.app-card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card h3,
+.status-card h3,
+.app-card h3 {
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+}
+
+.feature-card p,
+.status-card p,
+.app-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* ==========================================
+   HERO SECTION - IMPROVED CONTRAST
+   ========================================== */
+
+.hero {
+    padding: 8rem 0 4rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    margin-top: 4rem;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ==========================================
+   CODE BLOCKS - BETTER VISIBILITY
+   ========================================== */
+
+.deploy-code,
+.app-command {
+    background: #0f172a;
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    position: relative;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+}
+
+.deploy-code code,
+.app-command code {
+    color: var(--primary-green-light);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* ==========================================
+   STATUS INDICATORS - CLEAR VISIBILITY
+   ========================================== */
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-indicator.online {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--primary-green-light);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-indicator.offline {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-indicator.warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* ==========================================
+   TABLES - IMPROVED READABILITY
+   ========================================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-light);
+}
+
+th {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+td {
+    color: var(--text-secondary);
+}
+
+tr:hover {
+    background: var(--bg-tertiary);
+}
+
+/* ==========================================
+   FORMS - BETTER VISIBILITY
+   ========================================== */
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* ==========================================
+   FOOTER - CLEANED UP
+   ========================================== */
+
+.footer {
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-light);
+    padding: 2rem 0;
+    margin-top: 4rem;
+    text-align: center;
+}
+
+.footer p {
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.footer a {
+    color: var(--primary-green);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: var(--primary-green-light);
+    text-decoration: underline;
+}
+
+/* Remove any duplicate footer content */
+.footer + .footer {
+    display: none;
+}
+
+/* ==========================================
+   NOTIFICATIONS & ALERTS
+   ========================================== */
+
+.notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-accent);
+    border-radius: 8px;
+    padding: 1rem;
+    color: var(--text-primary);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    max-width: 300px;
+}
+
+.notification.success {
+    border-color: var(--primary-green);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.notification.error {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.notification.warning {
+    border-color: var(--accent-orange);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.875rem;
+    }
+}
+
+/* ==========================================
+   ACCESSIBILITY IMPROVEMENTS
+   ========================================== */
+
+/* Focus indicators */
+*:focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --text-primary: #ffffff;
+        --text-secondary: #e2e8f0;
+        --border-light: rgba(255, 255, 255, 0.3);
+        --border-medium: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================
+   UTILITY CLASSES
+   ========================================== */
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-success { color: var(--primary-green); }
+.text-error { color: #ef4444; }
+.text-warning { color: var(--accent-orange); }
+
+.bg-primary { background: var(--bg-primary); }
+.bg-secondary { background: var(--bg-secondary); }
+.bg-tertiary { background: var(--bg-tertiary); }
+
+.border-light { border-color: var(--border-light); }
+.border-medium { border-color: var(--border-medium); }
+.border-accent { border-color: var(--border-accent); }
+
+.hidden { display: none; }
+.visible { display: block; }
+
+/* Clean up any JavaScript-added content */
+.extra-footer-content,
+.duplicate-footer,
+[class*="footer"]:not(.footer):last-child {
+    display: none !important;
+}
+
+/* Ensure main footer is the only one visible */
+body > .footer:last-of-type {
+    display: block !important;
+}
