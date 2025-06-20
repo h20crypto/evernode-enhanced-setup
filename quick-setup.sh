@@ -104,7 +104,7 @@ install_dependencies() {
     # Update package list
     if command -v apt-get >/dev/null 2>&1; then
         sudo apt-get update -qq
-        sudo apt-get install -y curl wget nginx php-fpm php-curl php-json jq
+        sudo apt-get install -y curl wget nginx php-fpm php-curl php-json php-sqlite3 sqlite3 jq
     elif command -v yum >/dev/null 2>&1; then
         sudo yum update -y
         sudo yum install -y curl wget nginx php-fpm php-curl php-json jq
