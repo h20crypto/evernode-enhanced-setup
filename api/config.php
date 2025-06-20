@@ -333,6 +333,21 @@ if (rand(1, 100) === 1) { // 1% chance
             unlink($file);
         }
     }
+ define('CACHE_DURATION', 30); // seconds - your current setting
+define('CRYPTO_CACHE_DURATION', 300); // 5 minutes for crypto prices (more stable)
+
+// Then update your getCachedData function to optionally use the longer duration:
+function getCachedData($key, $max_age = null) {
+    $max_age = $max_age ?? CACHE_DURATION;
+    $file = CACHE_DIR . md5($key) . '.cache';
+    
+    if (file_exists($file) && (time() - filemtime($file)) < $max_age) {
+        $data = file_get_contents($file);
+        return json_decode($data, true);
+    }
+    
+    return null;
+}                        
 }
 
 ?>
