@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Enhanced dApp Manager - Real-Time Host Management</title>
+    <title>🚀 Enhanced Evernode Host - Professional Deployment Platform</title>
     <style>
         * {
             margin: 0;
@@ -13,24 +13,30 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #ffffff;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .title {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
             margin-bottom: 10px;
             background: linear-gradient(45deg, #ffffff, #e0e7ff);
@@ -40,192 +46,57 @@
         }
 
         .subtitle {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             opacity: 0.9;
+            margin-bottom: 20px;
         }
 
-        .tabs-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .tabs {
-            display: flex;
-            background: rgba(255, 255, 255, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .tab {
-            padding: 16px 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-            text-align: center;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tab:last-child {
-            border-right: none;
-        }
-
-        .tab:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .tab.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-bottom: 2px solid #00ff88;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 30px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .overview-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        /* Admin Detection Banner */
+        .admin-banner {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
             border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
+            padding: 16px 24px;
+            margin-bottom: 30px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.5s ease-out;
         }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .stat-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
+        .admin-banner.show {
+            display: flex;
         }
 
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
+        .admin-banner .icon {
+            font-size: 1.5rem;
         }
 
-        .stat-label {
+        .admin-banner .content {
+            flex: 1;
+        }
+
+        .admin-banner .title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #10b981;
+        }
+
+        .admin-banner .description {
             font-size: 0.9rem;
             opacity: 0.8;
         }
 
-        .monitoring-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .panel {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .panel-title {
+        .admin-actions {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            font-weight: 600;
+            gap: 12px;
         }
-
-        .instance-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        .instance-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        .instance-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .instance-name {
-            font-weight: 600;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .status-healthy { background: #00ff88; }
-        .status-warning { background: #ffd700; }
-        .status-critical { background: #ff4444; }
-
-        .metrics-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .metric-item {
-            text-align: center;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
-        }
-
-        .metric-value {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .metric-label {
-            font-size: 0.75rem;
-            opacity: 0.7;
-        }
-
-        .logs-container {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 16px;
-            height: 200px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        .log-line {
-            margin: 4px 0;
-            padding: 2px 0;
-        }
-
-        .log-info { color: #87ceeb; }
-        .log-success { color: #90ee90; }
-        .log-warning { color: #ffd700; }
-        .log-error { color: #ff6b6b; }
 
         .btn {
             padding: 12px 24px;
@@ -233,148 +104,182 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-primary {
-            background: linear-gradient(45deg, #00ff88, #00cc70);
-            color: #000;
+        .btn-admin {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
         }
 
-        .btn-primary:hover {
+        .btn-admin:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .deployment-form {
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Status Cards */
+        .status-grid {
             display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .status-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .status-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .status-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .status-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .status-detail {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        /* Deployment Section */
+        .deployment-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .deployment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .deployment-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
         }
 
-        .form-label {
+        .deployment-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .deployment-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .deployment-title {
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
-        .form-input, .form-select {
-            padding: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            font-size: 1rem;
+        .deployment-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 16px;
+            line-height: 1.4;
         }
 
-        .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #00ff88;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .alert {
-            padding: 16px;
-            border-radius: 8px;
-            margin: 16px 0;
-            border: 1px solid;
-        }
-
-        .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
-        }
-
-        .alert-success {
-            background: rgba(34, 197, 94, 0.1);
-            border-color: rgba(34, 197, 94, 0.3);
-            color: #4ade80;
-        }
-
-        .alert-warning {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: rgba(245, 158, 11, 0.3);
-            color: #fbbf24;
-        }
-
-        .progress-bar {
+        .btn-deploy {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
             width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 8px 0;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00cc70);
-            border-radius: 4px;
-            transition: width 0.5s ease;
+        .btn-deploy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
 
-        .live-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
             opacity: 0.8;
         }
 
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background: #00ff88;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
+        .admin-access {
+            margin-top: 20px;
+            opacity: 0.4;
+            font-size: 0.8rem;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        .admin-link {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            cursor: pointer;
         }
 
+        .admin-link:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .monitoring-section {
-                grid-template-columns: 1fr;
+            .title {
+                font-size: 2rem;
             }
             
-            .overview-grid {
+            .status-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            .tabs {
-                flex-wrap: wrap;
+            .deployment-grid {
+                grid-template-columns: 1fr;
             }
             
-            .tab {
-                min-width: 50%;
+            .admin-actions {
+                flex-direction: column;
             }
         }
     </style>
@@ -383,765 +288,308 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1 class="title">🚀 Enhanced dApp Manager</h1>
-            <p class="subtitle">Professional Evernode Host Management Platform</p>
-            <div class="live-indicator">
-                <div class="pulse-dot"></div>
-                <span id="last-update">Live monitoring • Updated: --:--</span>
+            <h1 class="title">🚀 Enhanced Evernode Host</h1>
+            <p class="subtitle">Professional Deployment Platform with Real-Time Monitoring</p>
+        </div>
+
+        <!-- Admin Detection Banner -->
+        <div class="admin-banner" id="admin-banner">
+            <div class="icon">👑</div>
+            <div class="content">
+                <div class="title">Host Owner Detected</div>
+                <div class="description">Welcome back! Access your admin panel or continue as public view.</div>
+            </div>
+            <div class="admin-actions">
+                <a href="/cluster/dapp-manager.html" class="btn btn-admin">
+                    🔧 Admin Panel
+                </a>
+                <button class="btn btn-secondary" onclick="dismissAdminBanner()">
+                    👁️ Public View
+                </button>
             </div>
         </div>
 
-        <!-- Main Interface -->
-        <div class="tabs-container">
-            <!-- Tabs -->
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('overview')">
-                    📊 Overview
-                </div>
-                <div class="tab" onclick="switchTab('monitor')">
-                    📈 Monitor
-                </div>
-                <div class="tab" onclick="switchTab('deploy')">
-                    🚀 Deploy
-                </div>
-                <div class="tab" onclick="switchTab('analytics')">
-                    📊 Analytics
-                </div>
-                <div class="tab" onclick="switchTab('settings')">
-                    ⚙️ Settings
-                </div>
+        <!-- Real-Time Status -->
+        <div class="status-grid">
+            <div class="status-card">
+                <div class="status-icon">✅</div>
+                <div class="status-value" id="host-status">Available</div>
+                <div class="status-label">Host Status</div>
+                <div class="status-detail">Ready for deployments</div>
             </div>
 
-            <!-- Overview Tab -->
-            <div id="overview" class="tab-content active">
-                <!-- Real-time Stats Grid -->
-                <div class="overview-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">🖥️</div>
-                        <div class="stat-value" id="cpu-usage">--</div>
-                        <div class="stat-label">CPU Usage</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="cpu-progress" style="width: 0%;"></div>
-                        </div>
+            <div class="status-card">
+                <div class="status-icon">🧠</div>
+                <div class="status-value" id="available-memory">--</div>
+                <div class="status-label">Available Memory</div>
+                <div class="status-detail" id="memory-detail">Real-time monitoring</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-icon">💾</div>
+                <div class="status-value" id="available-storage">--</div>
+                <div class="status-label">Available Storage</div>
+                <div class="status-detail" id="storage-detail">Free space for apps</div>
+            </div>
+
+            <div class="status-card">
+                <div class="status-icon">🐳</div>
+                <div class="status-value" id="deployment-slots">--</div>
+                <div class="status-label">Deployment Slots</div>
+                <div class="status-detail" id="slots-detail">Available instances</div>
+            </div>
+        </div>
+
+        <!-- Quick Deployment -->
+        <div class="deployment-section">
+            <h2 class="section-title">🚀 Quick Deployment Templates</h2>
+            <div class="deployment-grid">
+                <div class="deployment-card">
+                    <div class="deployment-icon">💰</div>
+                    <div class="deployment-title">DeFi Exchange</div>
+                    <div class="deployment-description">
+                        Deploy a decentralized exchange with automated market making, liquidity pools, and yield farming capabilities.
                     </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">🧠</div>
-                        <div class="stat-value" id="memory-usage">--</div>
-                        <div class="stat-label">Memory Usage</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="memory-progress" style="width: 0%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">💾</div>
-                        <div class="stat-value" id="disk-usage">--</div>
-                        <div class="stat-label">Disk Usage</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="disk-progress" style="width: 0%;"></div>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">🐳</div>
-                        <div class="stat-value" id="container-count">--</div>
-                        <div class="stat-label">Active Containers</div>
-                        <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 8px;">
-                            <span id="tenant-count">--</span> tenants
-                        </div>
-                    </div>
-                </div>
-
-                <!-- System Status Alert -->
-                <div id="system-alert" class="alert alert-info" style="display: none;">
-                    <strong>ℹ️ System Status:</strong> <span id="alert-message">All systems operational</span>
-                </div>
-
-                <!-- Monitoring Section -->
-                <div class="monitoring-section">
-                    <!-- Left Panel: Container Instances -->
-                    <div class="panel">
-                        <div class="panel-title">
-                            <span>🐳</span>
-                            <span>Container Instances</span>
-                            <div style="margin-left: auto;">
-                                <span id="instance-count-display">--</span> running
-                            </div>
-                        </div>
-                        
-                        <div class="instance-grid" id="container-instances">
-                            <!-- Container instances will be populated here -->
-                        </div>
-                    </div>
-
-                    <!-- Right Panel: Real-time Logs -->
-                    <div class="panel">
-                        <div class="panel-title">
-                            <span>📝</span>
-                            <span>System Logs</span>
-                            <div style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;">Live</div>
-                        </div>
-                        
-                        <div class="logs-container" id="system-logs">
-                            <!-- Real logs will be populated here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="refreshData()">
-                        🔄 Refresh Data
+                    <button class="btn btn-deploy" onclick="deployApp('defi')">
+                        Deploy DeFi Exchange
                     </button>
-                    <button class="btn btn-secondary" onclick="exportData()">
-                        📊 Export Metrics
+                </div>
+
+                <div class="deployment-card">
+                    <div class="deployment-icon">🎨</div>
+                    <div class="deployment-title">NFT Marketplace</div>
+                    <div class="deployment-description">
+                        Launch an NFT marketplace with minting, trading, royalties, and collection management features.
+                    </div>
+                    <button class="btn btn-deploy" onclick="deployApp('nft')">
+                        Deploy NFT Platform
                     </button>
-                    <button class="btn btn-secondary" onclick="viewDetailed()">
-                        📈 Detailed View
+                </div>
+
+                <div class="deployment-card">
+                    <div class="deployment-icon">🏛️</div>
+                    <div class="deployment-title">DAO Platform</div>
+                    <div class="deployment-description">
+                        Create a decentralized autonomous organization with governance, voting, and treasury management.
+                    </div>
+                    <button class="btn btn-deploy" onclick="deployApp('dao')">
+                        Deploy DAO Platform
+                    </button>
+                </div>
+
+                <div class="deployment-card">
+                    <div class="deployment-icon">🛠️</div>
+                    <div class="deployment-title">Custom Application</div>
+                    <div class="deployment-description">
+                        Deploy your own Docker container with custom configuration and resource allocation.
+                    </div>
+                    <button class="btn btn-deploy" onclick="deployApp('custom')">
+                        Custom Deployment
                     </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Monitor Tab -->
-            <div id="monitor" class="tab-content">
-                <div class="panel">
-                    <div class="panel-title">
-                        <span>📈</span>
-                        <span>Real-Time Monitoring Dashboard</span>
-                    </div>
-
-                    <!-- Resource Usage Charts -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
-                            <h4 style="margin-bottom: 16px; color: #00ff88;">🖥️ CPU Performance</h4>
-                            <div style="text-align: center; padding: 40px;">
-                                <div style="font-size: 3rem; margin-bottom: 16px;" id="cpu-chart-value">--</div>
-                                <p style="opacity: 0.8;">Current CPU utilization</p>
-                                <div style="margin-top: 16px;">
-                                    <div style="font-size: 0.9rem; opacity: 0.7;">
-                                        Load Average: <span id="load-average">--</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
-                            <h4 style="margin-bottom: 16px; color: #3b82f6;">🧠 Memory Usage</h4>
-                            <div style="text-align: center; padding: 40px;">
-                                <div style="font-size: 3rem; margin-bottom: 16px;" id="memory-chart-value">--</div>
-                                <p style="opacity: 0.8;">Current memory utilization</p>
-                                <div style="margin-top: 16px;">
-                                    <div style="font-size: 0.9rem; opacity: 0.7;">
-                                        Available: <span id="available-memory">--</span> GB
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
-                            <h4 style="margin-bottom: 16px; color: #8b5cf6;">💾 Storage</h4>
-                            <div style="text-align: center; padding: 40px;">
-                                <div style="font-size: 3rem; margin-bottom: 16px;" id="disk-chart-value">--</div>
-                                <p style="opacity: 0.8;">Disk space utilization</p>
-                                <div style="margin-top: 16px;">
-                                    <div style="font-size: 0.9rem; opacity: 0.7;">
-                                        Free: <span id="free-space">--</span> GB
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Network and Container Stats -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
-                            <h4 style="margin-bottom: 16px; color: #fbbf24;">🌐 Network Activity</h4>
-                            <div id="network-stats">
-                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
-                                    <span>Inbound:</span>
-                                    <span id="network-in">-- MB/s</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
-                                    <span>Outbound:</span>
-                                    <span id="network-out">-- MB/s</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
-                                    <span>Connections:</span>
-                                    <span id="active-connections">--</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
-                            <h4 style="margin-bottom: 16px; color: #10b981;">🏠 Tenant Overview</h4>
-                            <div id="tenant-stats">
-                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
-                                    <span>Active Tenants:</span>
-                                    <span id="active-tenants">--</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
-                                    <span>Available Slots:</span>
-                                    <span id="available-slots">--</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
-                                    <span>Total Capacity:</span>
-                                    <span id="total-capacity">--</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Deploy Tab -->
-            <div id="deploy" class="tab-content">
-                <div class="panel">
-                    <div class="panel-title">
-                        <span>🚀</span>
-                        <span>Deploy Applications</span>
-                    </div>
-
-                    <!-- Deployment Status -->
-                    <div class="alert alert-info">
-                        <strong>✅ Ready for Deployment</strong> - Host has available capacity for new applications
-                    </div>
-
-                    <!-- Quick Deploy Templates -->
-                    <div style="margin-bottom: 30px;">
-                        <h4 style="margin-bottom: 16px;">⚡ Quick Deploy Templates</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
-                            <div class="stat-card" style="cursor: pointer;" onclick="deployTemplate('defi')">
-                                <div class="stat-icon">💰</div>
-                                <div style="font-weight: 600; margin-bottom: 8px;">DeFi Exchange</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">Decentralized trading platform</div>
-                                <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Deploy</button>
-                            </div>
-
-                            <div class="stat-card" style="cursor: pointer;" onclick="deployTemplate('nft')">
-                                <div class="stat-icon">🎨</div>
-                                <div style="font-weight: 600; margin-bottom: 8px;">NFT Marketplace</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">Buy, sell, and trade NFTs</div>
-                                <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Deploy</button>
-                            </div>
-
-                            <div class="stat-card" style="cursor: pointer;" onclick="deployTemplate('dao')">
-                                <div class="stat-icon">🏛️</div>
-                                <div style="font-weight: 600; margin-bottom: 8px;">DAO Platform</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">Governance and voting system</div>
-                                <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Deploy</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Custom Deployment Form -->
-                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px;">
-                        <h4 style="margin-bottom: 20px;">🛠️ Custom Deployment</h4>
-                        <div class="deployment-form">
-                            <div class="form-group">
-                                <label class="form-label">Application Name</label>
-                                <input type="text" class="form-input" placeholder="My DeFi App" id="app-name">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Container Image</label>
-                                <input type="text" class="form-input" placeholder="docker.io/myapp:latest" id="container-image">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Resource Allocation</label>
-                                <select class="form-select" id="resource-tier">
-                                    <option value="small">Small (1 CPU, 1GB RAM)</option>
-                                    <option value="medium" selected>Medium (2 CPU, 2GB RAM)</option>
-                                    <option value="large">Large (4 CPU, 4GB RAM)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Environment Variables</label>
-                                <textarea class="form-input" placeholder="KEY1=value1&#10;KEY2=value2" id="env-vars" rows="3"></textarea>
-                            </div>
-
-                            <button class="btn btn-primary" onclick="deployCustom()" style="width: 100%;">
-                                🚀 Deploy Application
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Analytics Tab -->
-            <div id="analytics" class="tab-content">
-                <div class="panel">
-                    <div class="panel-title">
-                        <span>📊</span>
-                        <span>Analytics Dashboard</span>
-                    </div>
-
-                    <!-- Key Metrics -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 30px;">
-                        <div class="stat-card">
-                            <div class="stat-icon">💰</div>
-                            <div class="stat-value" id="total-earnings">$--</div>
-                            <div class="stat-label">Total Earnings</div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon">📈</div>
-                            <div class="stat-value" id="monthly-revenue">$--</div>
-                            <div class="stat-label">Monthly Revenue</div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon">👥</div>
-                            <div class="stat-value" id="total-deployments">--</div>
-                            <div class="stat-label">Total Deployments</div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon">⏱️</div>
-                            <div class="stat-value" id="avg-uptime">--%</div>
-                            <div class="stat-label">Average Uptime</div>
-                        </div>
-                    </div>
-
-                    <!-- Performance Trends -->
-                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 16px;">📈 Performance Trends (Last 7 Days)</h4>
-                        <div style="text-align: center; padding: 40px;">
-                            <div style="font-size: 2rem; margin-bottom: 20px;">📊</div>
-                            <p style="opacity: 0.8;">Real-time performance charts and analytics</p>
-                            <button class="btn btn-primary" onclick="loadAnalytics()" style="margin-top: 20px;">
-                                📈 Load Analytics Dashboard
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Export Options -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <button class="btn btn-secondary" onclick="exportAnalytics()">
-                            📊 Export Data
-                        </button>
-                        <button class="btn btn-secondary" onclick="generateReport()">
-                            📄 Generate Report
-                        </button>
-                        <button class="btn btn-secondary" onclick="scheduleReport()">
-                            📅 Schedule Reports
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Settings Tab -->
-            <div id="settings" class="tab-content">
-                <div class="panel">
-                    <div class="panel-title">
-                        <span>⚙️</span>
-                        <span>Host Configuration</span>
-                    </div>
-
-                    <!-- Host Information -->
-                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 16px;">🖥️ Host Information</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                            <div>
-                                <div style="font-weight: 600; margin-bottom: 4px;">Host Name</div>
-                                <div style="opacity: 0.8;" id="host-name">Loading...</div>
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; margin-bottom: 4px;">IP Address</div>
-                                <div style="opacity: 0.8;" id="host-ip">Loading...</div>
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; margin-bottom: 4px;">EVR Address</div>
-                                <div style="opacity: 0.8; font-family: monospace; font-size: 0.85rem;" id="evr-address">Loading...</div>
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; margin-bottom: 4px;">Host Status</div>
-                                <div style="opacity: 0.8;" id="host-status">
-                                    <span class="status-dot status-healthy" style="display: inline-block; margin-right: 8px;"></span>
-                                    Online
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Configuration Options -->
-                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px;">
-                        <h4 style="margin-bottom: 16px;">🔧 Configuration</h4>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Maximum Tenants</label>
-                            <select class="form-select" id="max-tenants">
-                                <option value="1">1 Tenant</option>
-                                <option value="2">2 Tenants</option>
-                                <option value="3" selected>3 Tenants</option>
-                                <option value="5">5 Tenants</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Auto-scaling</label>
-                            <select class="form-select" id="auto-scaling">
-                                <option value="enabled" selected>Enabled</option>
-                                <option value="disabled">Disabled</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Monitoring Interval</label>
-                            <select class="form-select" id="monitoring-interval">
-                                <option value="10">10 seconds</option>
-                                <option value="30" selected>30 seconds</option>
-                                <option value="60">60 seconds</option>
-                            </select>
-                        </div>
-
-                        <button class="btn btn-primary" onclick="saveSettings()" style="width: 100%; margin-top: 20px;">
-                            💾 Save Configuration
-                        </button>
-                    </div>
-                </div>
+        <!-- Footer -->
+        <div class="footer">
+            <p>Enhanced Evernode Host • Real-Time Monitoring • Professional Support</p>
+            <div class="admin-access">
+                <a href="#" class="admin-link" onclick="showAdminLogin()">Admin Access</a>
             </div>
         </div>
     </div>
 
     <script>
         // Global state
-        let lastUpdateTime = new Date();
-        let monitoringInterval;
-        let currentData = {};
+        let isAdminDetected = false;
+        let systemData = {};
 
-        // Tab switching
-        function switchTab(tabName) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab content
-            document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked tab
-            event.target.classList.add('active');
+        // Admin detection logic
+        function detectAdminAccess() {
+            // Method 1: URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin')) {
+                return true;
+            }
+
+            // Method 2: Local storage flag (set by admin)
+            if (localStorage.getItem('host_admin') === 'true') {
+                return true;
+            }
+
+            // Method 3: Check for admin cookie
+            if (document.cookie.includes('host_admin=true')) {
+                return true;
+            }
+
+            // Method 4: IP-based detection (requires backend)
+            // This would be checked via API call
+
+            return false;
         }
 
-        // Real-time data fetching
-        async function fetchRealTimeData() {
+        // Show admin banner if detected
+        function showAdminInterface() {
+            if (detectAdminAccess()) {
+                isAdminDetected = true;
+                document.getElementById('admin-banner').classList.add('show');
+                
+                // Set admin flag for future visits
+                localStorage.setItem('host_admin', 'true');
+                
+                // Set admin cookie for 30 days
+                const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
+                document.cookie = `host_admin=true; expires=${expires}; path=/`;
+            }
+        }
+
+        // Dismiss admin banner
+        function dismissAdminBanner() {
+            document.getElementById('admin-banner').classList.remove('show');
+            localStorage.setItem('admin_dismissed', 'true');
+        }
+
+        // Admin login prompt
+        function showAdminLogin() {
+            const password = prompt('Enter admin password:');
+            
+            // In a real implementation, verify this against a secure hash
+            if (password === 'admin123') { // Change this!
+                localStorage.setItem('host_admin', 'true');
+                showAdminInterface();
+                alert('Admin access granted!');
+            } else if (password !== null) {
+                alert('Invalid password');
+            }
+        }
+
+        // Fetch real-time data
+        async function fetchSystemData() {
             try {
-                // Fetch system stats from your real-time monitoring API
                 const response = await fetch('/api/realtime-monitor.php?action=system');
                 const data = await response.json();
                 
                 if (data.success) {
-                    currentData = data.data;
-                    updateDashboard(data.data);
+                    systemData = data.data;
+                    updateStatus(data.data);
                 } else {
-                    console.error('API Error:', data.error);
                     showFallbackData();
                 }
             } catch (error) {
-                console.error('Failed to fetch real-time data:', error);
+                console.log('API not available, showing fallback data');
                 showFallbackData();
             }
         }
 
-        // Update dashboard with real data
-        function updateDashboard(data) {
-            // Update overview stats
-            document.getElementById('cpu-usage').textContent = data.cpu?.percentage || '--';
-            document.getElementById('memory-usage').textContent = data.memory?.percentage || '--';
-            document.getElementById('disk-usage').textContent = data.disk?.percent || '--';
-            document.getElementById('container-count').textContent = data.instances?.count || '--';
-            document.getElementById('tenant-count').textContent = data.instances?.tenants || '--';
+        // Update status cards with real data
+        function updateStatus(data) {
+            // Calculate available resources
+            const totalMemory = data.memory?.total_gb || 8;
+            const usedMemory = data.memory?.used_gb || 3.2;
+            const availableMemory = totalMemory - usedMemory;
 
-            // Update progress bars
-            updateProgressBar('cpu-progress', data.cpu?.percentage);
-            updateProgressBar('memory-progress', data.memory?.percentage);
-            updateProgressBar('disk-progress', data.disk?.percent);
+            const totalDisk = data.disk?.total_gb || 20;
+            const usedDisk = data.disk?.used_gb || 13.6;
+            const availableDisk = totalDisk - usedDisk;
 
-            // Update detailed monitoring
-            document.getElementById('cpu-chart-value').textContent = (data.cpu?.percentage || '--') + '%';
-            document.getElementById('memory-chart-value').textContent = (data.memory?.percentage || '--') + '%';
-            document.getElementById('disk-chart-value').textContent = (data.disk?.percent || '--') + '%';
-            
-            document.getElementById('load-average').textContent = data.cpu?.load_average || '--';
-            document.getElementById('available-memory').textContent = 
-                data.memory?.available_gb ? data.memory.available_gb.toFixed(1) : '--';
-            document.getElementById('free-space').textContent = 
-                data.disk?.free_gb ? data.disk.free_gb.toFixed(1) : '--';
+            const maxSlots = data.instances?.max_instances || 3;
+            const usedSlots = data.instances?.count || 2;
+            const availableSlots = maxSlots - usedSlots;
 
-            // Update tenant stats
-            document.getElementById('active-tenants').textContent = data.instances?.tenants || '--';
-            document.getElementById('available-slots').textContent = 
-                data.instances?.max_instances ? (data.instances.max_instances - (data.instances.count || 0)) : '--';
-            document.getElementById('total-capacity').textContent = data.instances?.max_instances || '--';
+            // Update UI
+            document.getElementById('available-memory').textContent = `${availableMemory.toFixed(1)} GB`;
+            document.getElementById('memory-detail').textContent = `${usedMemory.toFixed(1)} GB used of ${totalMemory} GB`;
 
-            // Update system alerts
-            updateSystemAlerts(data);
+            document.getElementById('available-storage').textContent = `${availableDisk.toFixed(1)} GB`;
+            document.getElementById('storage-detail').textContent = `${usedDisk.toFixed(1)} GB used of ${totalDisk} GB`;
 
-            // Update container instances
-            updateContainerInstances(data.containers || []);
+            document.getElementById('deployment-slots').textContent = availableSlots;
+            document.getElementById('slots-detail').textContent = `${usedSlots} of ${maxSlots} slots used`;
 
-            // Update last update time
-            lastUpdateTime = new Date();
-            document.getElementById('last-update').textContent = 
-                `Live monitoring • Updated: ${lastUpdateTime.toLocaleTimeString()}`;
+            // Update host status
+            const isAvailable = availableSlots > 0 && availableMemory > 0.5 && availableDisk > 1;
+            document.getElementById('host-status').textContent = isAvailable ? 'Available' : 'At Capacity';
         }
 
-        // Update progress bars
-        function updateProgressBar(elementId, percentage) {
-            const element = document.getElementById(elementId);
-            if (element && percentage !== undefined) {
-                element.style.width = percentage + '%';
-                
-                // Color coding based on usage
-                if (percentage > 80) {
-                    element.style.background = 'linear-gradient(90deg, #ff4444, #cc0000)';
-                } else if (percentage > 60) {
-                    element.style.background = 'linear-gradient(90deg, #ffd700, #ffb000)';
-                } else {
-                    element.style.background = 'linear-gradient(90deg, #00ff88, #00cc70)';
-                }
-            }
-        }
-
-        // Update system alerts
-        function updateSystemAlerts(data) {
-            const alertElement = document.getElementById('system-alert');
-            const messageElement = document.getElementById('alert-message');
-            
-            let hasAlert = false;
-            let alertMessage = 'All systems operational';
-            let alertClass = 'alert-info';
-
-            // Check for high resource usage
-            if (data.cpu?.percentage > 80) {
-                hasAlert = true;
-                alertMessage = '⚠️ High CPU usage detected';
-                alertClass = 'alert-warning';
-            } else if (data.memory?.percentage > 85) {
-                hasAlert = true;
-                alertMessage = '⚠️ High memory usage detected';
-                alertClass = 'alert-warning';
-            } else if (data.disk?.percent > 90) {
-                hasAlert = true;
-                alertMessage = '🚨 Critical disk space - cleanup required';
-                alertClass = 'alert-warning';
-            }
-
-            if (hasAlert) {
-                alertElement.style.display = 'block';
-                alertElement.className = `alert ${alertClass}`;
-                messageElement.textContent = alertMessage;
-            } else {
-                alertElement.style.display = 'none';
-            }
-        }
-
-        // Update container instances
-        function updateContainerInstances(containers) {
-            const container = document.getElementById('container-instances');
-            const countDisplay = document.getElementById('instance-count-display');
-            
-            countDisplay.textContent = containers.length;
-            
-            container.innerHTML = '';
-            
-            if (containers.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; opacity: 0.6;">
-                        <div style="font-size: 2rem; margin-bottom: 16px;">📦</div>
-                        <p>No active containers</p>
-                    </div>
-                `;
-                return;
-            }
-
-            containers.forEach((cont, index) => {
-                const instanceCard = document.createElement('div');
-                instanceCard.className = 'instance-card';
-                
-                const status = cont.cpu_percent > 80 ? 'critical' : 
-                             cont.cpu_percent > 60 ? 'warning' : 'healthy';
-                
-                instanceCard.innerHTML = `
-                    <div class="instance-header">
-                        <div class="instance-name">${cont.name || `Container ${index + 1}`}</div>
-                        <div class="status-dot status-${status}"></div>
-                    </div>
-                    <div class="metrics-row">
-                        <div class="metric-item">
-                            <div class="metric-value">${cont.cpu_percent || '--'}%</div>
-                            <div class="metric-label">CPU</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-value">${cont.memory_percent || '--'}%</div>
-                            <div class="metric-label">Memory</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-value">${cont.status || 'Unknown'}</div>
-                            <div class="metric-label">Status</div>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(instanceCard);
-            });
-        }
-
-        // Fallback data for demo purposes
+        // Fallback data when API is not available
         function showFallbackData() {
-            const fallbackData = {
-                cpu: { percentage: 45, load_average: '0.8, 0.7, 0.6' },
-                memory: { percentage: 62, available_gb: 1.8 },
-                disk: { percent: 67, free_gb: 6.4 },
-                instances: { count: 2, tenants: 2, max_instances: 3 },
-                containers: [
-                    { name: 'DeFi Exchange', cpu_percent: 45, memory_percent: 38, status: 'Running' },
-                    { name: 'NFT Marketplace', cpu_percent: 32, memory_percent: 24, status: 'Running' }
-                ]
-            };
-            
-            updateDashboard(fallbackData);
+            document.getElementById('available-memory').textContent = '2.3 GB';
+            document.getElementById('memory-detail').textContent = '3.2 GB used of 8 GB';
+            document.getElementById('available-storage').textContent = '6.4 GB';
+            document.getElementById('storage-detail').textContent = '13.6 GB used of 20 GB';
+            document.getElementById('deployment-slots').textContent = '1';
+            document.getElementById('slots-detail').textContent = '2 of 3 slots used';
         }
 
         // Deployment functions
-        function deployTemplate(template) {
-            const templates = {
-                defi: { name: 'DeFi Exchange', image: 'defi-exchange:latest' },
-                nft: { name: 'NFT Marketplace', image: 'nft-marketplace:latest' },
-                dao: { name: 'DAO Platform', image: 'dao-platform:latest' }
+        function deployApp(type) {
+            const deploymentInfo = {
+                defi: {
+                    name: 'DeFi Exchange',
+                    command: 'evernode deploy defi-exchange:latest --memory 2GB',
+                    estimated_time: '2-3 minutes'
+                },
+                nft: {
+                    name: 'NFT Marketplace',
+                    command: 'evernode deploy nft-marketplace:latest --memory 1.5GB',
+                    estimated_time: '2-4 minutes'
+                },
+                dao: {
+                    name: 'DAO Platform',
+                    command: 'evernode deploy dao-platform:latest --memory 1GB',
+                    estimated_time: '1-2 minutes'
+                },
+                custom: {
+                    name: 'Custom Application',
+                    command: 'Contact host owner for custom deployment',
+                    estimated_time: 'Varies'
+                }
             };
+
+            const info = deploymentInfo[type];
             
-            const templateData = templates[template];
-            if (templateData) {
-                showNotification(`🚀 Deploying ${templateData.name}...`, 'info');
+            if (type === 'custom') {
+                alert(`${info.name}\n\nFor custom deployments, please contact the host owner with your requirements.\n\nEstimated deployment time: ${info.estimated_time}`);
+            } else {
+                const userConfirm = confirm(`Deploy ${info.name}?\n\nCommand: ${info.command}\nEstimated time: ${info.estimated_time}\n\nProceed with deployment?`);
                 
-                // Simulate deployment
-                setTimeout(() => {
-                    showNotification(`✅ ${templateData.name} deployed successfully!`, 'success');
-                    fetchRealTimeData(); // Refresh data
-                }, 3000);
+                if (userConfirm) {
+                    // Show deployment command
+                    prompt(`Copy this deployment command:`, info.command);
+                    
+                    // If admin is detected, offer direct deployment
+                    if (isAdminDetected) {
+                        const directDeploy = confirm('Deploy directly through admin panel?');
+                        if (directDeploy) {
+                            window.open('/cluster/dapp-manager.html?deploy=' + type, '_blank');
+                        }
+                    }
+                }
             }
-        }
-
-        function deployCustom() {
-            const appName = document.getElementById('app-name').value;
-            const containerImage = document.getElementById('container-image').value;
-            
-            if (!appName || !containerImage) {
-                showNotification('⚠️ Please fill in all required fields', 'warning');
-                return;
-            }
-            
-            showNotification(`🚀 Deploying ${appName}...`, 'info');
-            
-            // Simulate deployment
-            setTimeout(() => {
-                showNotification(`✅ ${appName} deployed successfully!`, 'success');
-                fetchRealTimeData(); // Refresh data
-            }, 5000);
-        }
-
-        // Utility functions
-        function refreshData() {
-            showNotification('🔄 Refreshing data...', 'info');
-            fetchRealTimeData();
-        }
-
-        function exportData() {
-            showNotification('📊 Exporting metrics data...', 'info');
-            // Implementation would export current monitoring data
-        }
-
-        function viewDetailed() {
-            window.open('/monitoring-dashboard.html', '_blank');
-        }
-
-        function loadAnalytics() {
-            showNotification('📈 Loading analytics dashboard...', 'info');
-            // Implementation would load detailed analytics
-        }
-
-        function saveSettings() {
-            showNotification('💾 Settings saved successfully!', 'success');
-            // Implementation would save configuration
-        }
-
-        // Notification system
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 1000;
-                background: ${type === 'success' ? 'rgba(34, 197, 94, 0.2)' : 
-                           type === 'warning' ? 'rgba(245, 158, 11, 0.2)' : 
-                           'rgba(59, 130, 246, 0.2)'};
-                color: ${type === 'success' ? '#4ade80' : 
-                        type === 'warning' ? '#fbbf24' : '#60a5fa'};
-                border: 1px solid ${type === 'success' ? 'rgba(34, 197, 94, 0.3)' : 
-                                   type === 'warning' ? 'rgba(245, 158, 11, 0.3)' : 
-                                   'rgba(59, 130, 246, 0.3)'};
-                border-radius: 8px;
-                padding: 16px 24px;
-                backdrop-filter: blur(10px);
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            `;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Load initial data
-            fetchRealTimeData();
+            // Check for admin access
+            showAdminInterface();
             
-            // Set up real-time updates
-            monitoringInterval = setInterval(fetchRealTimeData, 30000); // Update every 30 seconds
+            // Load real-time data
+            fetchSystemData();
             
-            // Load host info
-            loadHostInfo();
+            // Set up periodic updates
+            setInterval(fetchSystemData, 30000); // Update every 30 seconds
         });
 
-        // Load host information
-        async function loadHostInfo() {
-            try {
-                const response = await fetch('/api/host-info.php');
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('host-name').textContent = data.hostname || 'Unknown';
-                    document.getElementById('host-ip').textContent = data.ip || 'Unknown';
-                    document.getElementById('evr-address').textContent = data.evr_address || 'Not configured';
-                }
-            } catch (error) {
-                console.error('Failed to load host info:', error);
+        // Check for special admin access methods
+        document.addEventListener('keydown', function(e) {
+            // Konami code for admin access (up, up, down, down, left, right, left, right, b, a)
+            // Simplified version: Ctrl+Shift+A
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                localStorage.setItem('host_admin', 'true');
+                showAdminInterface();
+                e.preventDefault();
             }
-        }
+        });
     </script>
 </body>
 </html>
