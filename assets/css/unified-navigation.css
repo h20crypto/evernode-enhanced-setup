@@ -1,0 +1,194 @@
+/**
+ * Enhanced Evernode Unified Navigation
+ * Consistent navigation across all pages
+ */
+
+* {
+    box-sizing: border-box;
+}
+
+/* Unified Navigation */
+.enhanced-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 1000;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.nav-brand {
+    color: #00ff88;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+    transform: translateY(-1px);
+}
+
+.nav-link.admin-only {
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    display: none; /* Hidden by default */
+}
+
+.nav-link.admin-only:hover {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+.nav-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.nav-btn:hover {
+    background: rgba(0, 255, 136, 0.2);
+    border-color: #00ff88;
+    transform: translateY(-1px);
+}
+
+/* Admin Mode Styles */
+body.admin-mode .admin-only {
+    display: block !important;
+}
+
+body.admin-mode .enhanced-nav {
+    border-bottom-color: rgba(255, 215, 0, 0.3);
+}
+
+body.admin-mode .nav-brand::after {
+    content: " 👑";
+    color: #ffd700;
+}
+
+/* Role Banner */
+.role-banner {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    padding: 12px 20px;
+    text-align: center;
+    z-index: 999;
+    font-weight: 600;
+    animation: slideDown 0.3s ease-out;
+}
+
+.role-banner.host-owner {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.role-banner.tenant {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+}
+
+/* Page Content Adjustment */
+body {
+    margin-top: 70px;
+}
+
+body.admin-mode {
+    margin-top: 70px;
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px 15px;
+    }
+    
+    .nav-links {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    body {
+        margin-top: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-links {
+        gap: 10px;
+    }
+    
+    .nav-link {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .nav-brand {
+        font-size: 1rem;
+    }
+}
