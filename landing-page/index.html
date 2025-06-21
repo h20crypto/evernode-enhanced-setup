@@ -1094,6 +1094,7 @@
                     // Store real domain and address for use throughout the page
                     realDomain = hostData.domain;
                     realAddress = hostData.address;
+                    realEmail = hostData.email;
                     realIpAddress = hostData.ip || await resolveHostIp(hostData.domain);
                     
                     // Update with REAL data from Evernode network
