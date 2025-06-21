@@ -1420,7 +1420,108 @@ Thank you!
                 });
             });
         });
+
+        // Smart Host Owner Detection
+        class HostOwnerDetection {
+            constructor() {
+                this.checkForAdmin();
+            }
+            
+            checkForAdmin() {
+                // Method 1: URL parameter (?admin=true)
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('admin') === 'true') {
+                    this.showAdminAccess();
+                    return;
+                }
+                
+                // Method 2: Stored preference (remembers you're admin)
+                if (localStorage.getItem('host_admin') === 'true') {
+                    this.showAdminAccess();
+                    return;
+                }
+                
+                // Method 3: Keyboard shortcut (Ctrl+Shift+A)
+                document.addEventListener('keydown', (e) => {
+                    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                        this.showAdminAccess();
+                        e.preventDefault();
+                    }
+                });
+                
+                // Method 4: Hidden admin link (add to footer)
+                this.addHiddenAdminLink();
+            }
+            
+            showAdminAccess() {
+                // Remove existing banner if present
+                const existing = document.getElementById('admin-banner');
+                if (existing) existing.remove();
+                
+                // Create admin banner
+                const banner = document.createElement('div');
+                banner.id = 'admin-banner';
+                banner.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    color: white; padding: 12px 20px; text-align: center;
+                    z-index: 1000; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                `;
+                banner.innerHTML = `
+                    👑 Host Owner Mode Active
+                    <a href="/cluster/dapp-manager.html" style="color: white; margin-left: 20px; padding: 6px 12px; background: rgba(255,255,255,0.2); border-radius: 4px; text-decoration: none;">
+                        🔧 Admin Panel
+                    </a>
+                    <a href="/api-test.html" style="color: white; margin-left: 10px; padding: 6px 12px; background: rgba(255,255,255,0.2); border-radius: 4px; text-decoration: none;">
+                        🧪 API Test
+                    </a>
+                    <button onclick="this.parentElement.style.display='none'" style="float: right; background: none; border: none; color: white; cursor: pointer; font-size: 16px;">×</button>
+                `;
+                
+                document.body.insertBefore(banner, document.body.firstChild);
+                document.body.style.paddingTop = '60px';
+                
+                // Remember admin status
+                localStorage.setItem('host_admin', 'true');
+                
+                console.log('👑 Host Owner Mode Activated');
+            }
+            
+            addHiddenAdminLink() {
+                // Add subtle admin link to footer
+                const footer = document.querySelector('footer') || document.body;
+                const adminLink = document.createElement('div');
+                adminLink.style.cssText = `
+                    position: fixed; bottom: 10px; right: 10px;
+                    opacity: 0.3; font-size: 0.8rem; cursor: pointer;
+                    transition: opacity 0.3s; z-index: 999;
+                `;
+                adminLink.innerHTML = '<a href="#" onclick="hostOwnerAccess(); return false;" style="color: rgba(255,255,255,0.6);">Admin</a>';
+                adminLink.onmouseover = () => adminLink.style.opacity = '1';
+                adminLink.onmouseout = () => adminLink.style.opacity = '0.3';
+                
+                footer.appendChild(adminLink);
+                
+                // Add global admin access function
+                window.hostOwnerAccess = () => {
+                    const password = prompt('Host Owner Password:');
+                    if (password === 'enhanced2024') { // 🔐 Change this password!
+                        this.showAdminAccess();
+                        alert('👑 Host Owner access granted!');
+                    } else if (password !== null) {
+                        alert('❌ Access denied');
+                    }
+                };
+            }
+        }
+        
+        // Initialize Host Owner Detection
+        new HostOwnerDetection();
+        console.log('🧠 Smart role detection initialized');
+
+    });
     </script>
+    
 <nav style="background: rgba(0,0,0,0.8); padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; backdrop-filter: blur(10px);">
     <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
         <a href="/" style="color: #00ff88; text-decoration: none; font-weight: bold;">🏠 Enhanced Evernode</a>
