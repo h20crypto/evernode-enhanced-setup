@@ -1,0 +1,12 @@
+<!-- Links TO paywall -->
+<a href="/cluster/paywall.html" class="btn">
+    💳 Upgrade Now - $49.99
+</a>
+
+<!-- Links TO limited dApp manager -->
+<a href="/cluster/dapp-manager.html?mode=demo" class="btn">
+    🎮 Launch Demo Interface
+</a>
+
+<!-- Links BACK to home -->
+<a href="/">← Back to Home</a>
