@@ -1232,7 +1232,7 @@
             // Update support email with real domain
             const supportEmailElement = document.getElementById('support-email');
             if (supportEmailElement) {
-                supportEmailElement.textContent = `domains@${domain}`;
+                supportEmailElement.textContent = hostData.email || `domains@${realDomain}`;
             }
         }
 
@@ -1255,7 +1255,7 @@
             // Update support email with real domain
             const supportEmailElement = document.getElementById('support-email');
             if (supportEmailElement) {
-                supportEmailElement.textContent = `domains@${realDomain}`;
+                supportEmailElement.textContent = hostData.email || `domains@${realDomain}`;
             }
             
             // Update any alert messages that reference the domain
