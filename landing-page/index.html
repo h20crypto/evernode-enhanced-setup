@@ -1132,8 +1132,12 @@
                     const tutorialCostEl = document.getElementById('tutorial-cost');
                     if (tutorialCostEl) tutorialCostEl.textContent = `${evrRate} EVR/hour (~$${realMonthlyCost}/month)`;
                     
+                    // ADD THESE TWO LINES HERE:
+                    realEmail = hostData.email; // Store real email
+                    window.realHostEmail = hostData.email; // Store globally for domain modal
+                    
                     // Update domain modal with real IP for DNS setup
-                    updateDomainModal(realIpAddress, hostData.domain);
+                    updateDomainModal(realIpAddress, hostData.domain, hostData.email);
                     
                     // Update domain examples throughout the page with REAL domain
                     updateDomainExamples(hostData.domain);
@@ -1142,6 +1146,7 @@
                         address: hostData.address,
                         domain: hostData.domain,
                         ip: realIpAddress,
+                        email: hostData.email,
                         leaseAmount: hostData.leaseAmount,
                         maxInstances: hostData.maxInstances,
                         activeInstances: hostData.activeInstances,
