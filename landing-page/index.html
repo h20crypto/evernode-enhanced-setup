@@ -1078,9 +1078,10 @@
         // Update real-time data from Evernode Network API
         async function updateHostStatus() {
             const currentDomain = window.location.hostname;
-            let realDomain = currentDomain; // fallback
-            let realAddress = 'rEnhancedHost...'; // fallback
-            let realIpAddress = '0.0.0.0'; // fallback for DNS
+            let realDomain = hostData.domain;
+            let realAddress = hostData.address;
+            let realEmail = domains@' + currentDomain;
+            let realIpAddress = hostData.ip || await resolveHostIp(hostData.domain);
             
             try {
                 // Get REAL host data from Evernode Network Registry
