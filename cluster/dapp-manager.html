@@ -1347,13 +1347,45 @@
             'error-notifications': true
         };
 
+        // Check URL parameter for product type
+    const urlParams = new URLSearchParams(window.location.search);
+    const product = urlParams.get('product');
+    
+    // Product configuration
+    const productConfig = {
+        cluster: {
+            price: '$49.99',
+            title: 'Cluster Manager License',
+            description: 'One-time purchase • Lifetime updates',
+            type: 'one-time',
+            features: ['Multi-host deployment', 'Auto-scaling', 'Load balancing', 'Template marketplace']
+        },
+        domain: {
+            price: '$1.00',
+            title: 'Custom Domain Service', 
+            description: 'Monthly subscription • SSL included',
+            type: 'subscription',
+            features: ['Custom domain mapping', 'Free SSL certificate', 'Automatic renewal', 'Email support']
+        }
+    };
+    
+    // Set current product
+    const currentProduct = product === 'domain' ? 'domain' : 'cluster';
+    const config = productConfig[currentProduct];
+        
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
+            updateProductDisplay(config, currentProduct);
             setupNavigation();
             startRealTimeUpdates();
             showNotification('🚀 Premium dApp Manager Ready!', 'success');
         });
 
+        // 🎯 COMPLETE updateProductDisplay FUNCTION:
+    function updateProductDisplay(config, productType) {
+        // Update page title
+        document.title = `Enhanced Evernode - ${config.title}`;
+        
         // Navigation
         function setupNavigation() {
             document.querySelectorAll('.nav-link').forEach(link => {
