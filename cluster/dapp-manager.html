@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium dApp Manager - Enhanced Evernode</title>
+    <title>🚀 Enhanced dApp Manager - Real-Time Host Management</title>
     <style>
         * {
             margin: 0;
@@ -12,602 +12,315 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
+            color: #ffffff;
         }
 
         .container {
-            max-width: 1800px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* Enhanced Navigation Bar - V3 Style */
-        .navbar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(0, 255, 136, 0.4);
-            border-radius: 20px;
-            padding: 20px 30px;
+        .header {
+            text-align: center;
             margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            box-sizing: border-box;
         }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #00ff88, #00cc66);
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffffff, #e0e7ff);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 250px;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 15px;
-            flex: 1;
-            justify-content: center;
-            flex-wrap: wrap;
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
 
-        .nav-link {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px 25px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            text-align: center;
-            min-width: 120px;
-        }
-
-        .nav-link:hover {
-            background: rgba(0, 255, 136, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
-            border-color: rgba(0, 255, 136, 0.5);
-        }
-        
-        .nav-link.active {
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-            color: #1a1a1a;
-            font-weight: bold;
-            border-color: #00ff88;
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-weight: 500;
-            min-width: 250px;
-            justify-content: flex-end;
-        }
-
-        .balance {
-            background: rgba(0, 255, 136, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
-        }
-
-        .premium-badge {
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #1a1a1a;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            animation: premiumGlow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes premiumGlow {
-            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
-            100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
-        }
-
-        /* Main Interface */
-        .main-interface {
-            display: grid;
-            grid-template-columns: 350px 1fr 400px;
-            gap: 30px;
-            min-height: 80vh;
-        }
-
-        .panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            position: relative;
+        .tabs-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
             overflow: hidden;
         }
 
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00ff88, transparent);
-        }
-
-        .panel-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 25px;
+        .tabs {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #00ff88;
-        }
-
-        /* Cluster Cards */
-        .cluster-item {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 18px;
-            padding: 25px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: all 0.4s ease;
-        }
-
-        .cluster-item:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.2);
-        }
-
-        .cluster-item.active {
-            border: 2px solid #00ff88;
-            background: rgba(0, 255, 136, 0.1);
-        }
-
-        .cluster-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            animation: statusPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes statusPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        .status-healthy { background: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
-        .status-warning { background: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-
-        .env-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .env-production {
-            background: rgba(0, 255, 136, 0.2);
-            color: #00ff88;
-            border: 1px solid rgba(0, 255, 136, 0.3);
-        }
-
-        .env-staging {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-        }
-
-        .cluster-metrics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 15px 0;
-        }
-
-        .metric-small {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .metric-value-small {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #00ff88;
-        }
-
-        /* Code Editor */
-        .editor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .file-tabs {
-            display: flex;
-            gap: 8px;
-        }
-
-        .file-tab {
             background: rgba(255, 255, 255, 0.1);
-            padding: 8px 20px;
-            border-radius: 10px 10px 0 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tab {
+            padding: 16px 24px;
             cursor: pointer;
-            font-size: 0.9rem;
             transition: all 0.3s ease;
-        }
-
-        .file-tab.active {
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-            color: #1a1a1a;
-            font-weight: bold;
-        }
-
-        .code-editor {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            border-radius: 15px;
-            padding: 25px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            min-height: 300px;
-            position: relative;
-        }
-
-        .code-editor::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #00ff88, transparent);
-        }
-
-        /* Monitoring Cards */
-        .instance-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .instance-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
+            flex: 1;
             text-align: center;
-            transition: all 0.3s ease;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .instance-card:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-3px);
+        .tab:last-child {
+            border-right: none;
         }
 
-        .metric-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #00ff88;
-            margin-bottom: 8px;
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        /* Buttons */
-        .btn {
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-            color: #1a1a1a;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        .tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid #00ff88;
         }
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d, #495057);
-            color: white;
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-        }
-
-        .btn-premium {
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #1a1a1a;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        }
-
-        /* Logs */
-        .logs-container {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            border-radius: 15px;
-            padding: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 0.9rem;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .log-line {
-            margin-bottom: 8px;
-            padding: 6px;
-            border-left: 3px solid #00ff88;
-            background: rgba(0, 255, 136, 0.05);
-            border-radius: 3px;
-            color: #00ff88;
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 255, 136, 0.9);
-            color: #1a1a1a;
-            padding: 15px 25px;
-            border-radius: 12px;
-            font-weight: bold;
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Advanced Tools */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .tool-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .tool-btn:hover {
-            background: rgba(0, 255, 136, 0.1);
-            border-color: rgba(0, 255, 136, 0.3);
-            transform: translateY(-3px);
-        }
-
-        /* Tab Content */
         .tab-content {
             display: none;
+            padding: 30px;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        /* Modal Styles */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
+        .stat-card {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        /* Deploy Tab Styles */
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .template-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            border-radius: 12px;
             padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
             text-align: center;
+            transition: transform 0.3s ease;
         }
 
-        .template-card:hover {
-            background: rgba(0, 255, 136, 0.1);
-            border-color: rgba(0, 255, 136, 0.3);
-            transform: translateY(-3px);
+        .stat-card:hover {
+            transform: translateY(-4px);
         }
 
-        .template-card.active {
-            border-color: #00ff88;
-            background: rgba(0, 255, 136, 0.15);
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
         }
 
-        .template-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        /* Settings Styles */
-        .setting-group {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
 
-        .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .setting-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-switch.active {
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-        }
-
-        .toggle-switch::before {
-            content: '';
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-switch.active::before {
-            transform: translateX(30px);
-        }
-
-        /* Analytics Styles */
-        .analytics-grid {
+        .monitoring-section {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
             margin-bottom: 30px;
         }
 
-        .metric-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 25px;
-            text-align: center;
-        }
-
-        .chart-container {
+        .panel {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px;
-            height: 300px;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .panel-title {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
 
-        /* Monitor Styles */
-        .monitor-grid {
+        .instance-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 15px;
         }
 
-        .monitor-card {
-            background: rgba(255, 255, 255, 0.08);
+        .instance-card {
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .instance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .instance-name {
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-healthy { background: #00ff88; }
+        .status-warning { background: #ffd700; }
+        .status-critical { background: #ff4444; }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+        }
+
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .logs-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .log-line {
+            margin: 4px 0;
+            padding: 2px 0;
+        }
+
+        .log-info { color: #87ceeb; }
+        .log-success { color: #90ee90; }
+        .log-warning { color: #ffd700; }
+        .log-error { color: #ff6b6b; }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00ff88, #00cc70);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .deployment-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .form-input, .form-select {
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ff88;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            border: 1px solid;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #fbbf24;
         }
 
         .progress-bar {
@@ -616,312 +329,267 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             overflow: hidden;
-            margin: 10px 0;
+            margin: 8px 0;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00cc66);
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, #00ff88, #00cc70);
+            border-radius: 4px;
+            transition: width 0.5s ease;
         }
 
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .main-interface {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .panel {
-                margin-bottom: 20px;
-            }
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px;
+            .monitoring-section {
+                grid-template-columns: 1fr;
             }
             
-            .nav-links {
+            .overview-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tabs {
                 flex-wrap: wrap;
-                justify-content: center;
-                gap: 10px;
             }
             
-            .nav-link {
-                padding: 10px 16px;
-                font-size: 0.9rem;
+            .tab {
+                min-width: 50%;
             }
-            
-            .template-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .analytics-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .monitor-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Ensure tabs are always visible */
-        .tab-content {
-            width: 100%;
-        }
-
-        .main-interface {
-            width: 100%;
         }
     </style>
 </head>
 <body>
-<div style="background: rgba(255,255,255,0.05); padding: 15px 20px; margin-bottom: 20px;">
-        <div style="max-width: 1800px; margin: 0 auto;">
-            <a href="/" style="color: #00ff88; text-decoration: none;">🏠 Home</a> → 
-            <a href="/cluster/demo.html" style="color: #00ff88; text-decoration: none;">Demo</a> → 
-            <span style="opacity: 0.7;">dApp Manager</span>
-        </div>
-    </div>
-    
     <div class="container">
-        <!-- Enhanced Navigation Bar - V3 Style with V13 Functionality -->
-        <div class="navbar">
-            <div class="logo">
-                <span>🚀</span>
-                <span>Premium dApp Manager</span>
-            </div>
-            <div class="nav-links">
-                <div class="nav-link active" data-tab="dashboard">📊 Dashboard</div>
-                <div class="nav-link" data-tab="deploy">🚀 Deploy</div>
-                <div class="nav-link" data-tab="monitor">📈 Monitor</div>
-                <div class="nav-link" data-tab="analytics">📊 Analytics</div>
-                <div class="nav-link" data-tab="settings">⚙️ Settings</div>
-            </div>
-            <div class="user-info">
-                <div class="balance">💰 2,847.3 EVR</div>
-                <div class="premium-badge">💎 Premium Active</div>
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">🚀 Enhanced dApp Manager</h1>
+            <p class="subtitle">Professional Evernode Host Management Platform</p>
+            <div class="live-indicator">
+                <div class="pulse-dot"></div>
+                <span id="last-update">Live monitoring • Updated: --:--</span>
             </div>
         </div>
 
-        <!-- Tab Content Container -->
-        <div class="tab-container">
-            <!-- Dashboard Tab -->
-            <div id="dashboard" class="tab-content active">
-                <!-- Main Interface -->
-                <div class="main-interface">
-                    <!-- Left Panel: Cluster Management -->
-                    <div class="panel">
-                        <div class="panel-title">
-                            <span>🏗️</span>
-                            <span>My Clusters</span>
-                            <div style="margin-left: auto; font-size: 0.9rem; opacity: 0.7;">3 Active</div>
-                        </div>
+        <!-- Main Interface -->
+        <div class="tabs-container">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('overview')">
+                    📊 Overview
+                </div>
+                <div class="tab" onclick="switchTab('monitor')">
+                    📈 Monitor
+                </div>
+                <div class="tab" onclick="switchTab('deploy')">
+                    🚀 Deploy
+                </div>
+                <div class="tab" onclick="switchTab('analytics')">
+                    📊 Analytics
+                </div>
+                <div class="tab" onclick="switchTab('settings')">
+                    ⚙️ Settings
+                </div>
+            </div>
 
-                        <div class="cluster-item active" onclick="selectCluster('defi-protocol')">
-                            <div class="cluster-header">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div class="status-dot status-healthy"></div>
-                                    <strong>DeFi Protocol v1.2</strong>
-                                </div>
-                                <div class="env-badge env-production">Production</div>
-                            </div>
-                            <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 15px;">
-                                7 instances • $127/month • 99.2% uptime
-                            </div>
-                            <div class="cluster-metrics">
-                                <div class="metric-small">
-                                    <div class="metric-value-small">1,247</div>
-                                    <div style="font-size: 0.8rem;">Users</div>
-                                </div>
-                                <div class="metric-small">
-                                    <div class="metric-value-small">$4.2K</div>
-                                    <div style="font-size: 0.8rem;">TVL</div>
-                                </div>
-                                <div class="metric-small">
-                                    <div class="metric-value-small">156ms</div>
-                                    <div style="font-size: 0.8rem;">Response</div>
-                                </div>
-                                <div class="metric-small">
-                                    <div class="metric-value-small">99.8%</div>
-                                    <div style="font-size: 0.8rem;">Uptime</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="cluster-item" onclick="selectCluster('api-gateway')">
-                            <div class="cluster-header">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div class="status-dot status-warning"></div>
-                                    <strong>API Gateway</strong>
-                                </div>
-                                <div class="env-badge env-staging">Staging</div>
-                            </div>
-                            <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 15px;">
-                                3 instances • $45/month • 97.8% uptime
-                            </div>
-                            <div class="cluster-metrics">
-                                <div class="metric-small">
-                                    <div class="metric-value-small">534</div>
-                                    <div style="font-size: 0.8rem;">Requests</div>
-                                </div>
-                                <div class="metric-small">
-                                    <div class="metric-value-small">89ms</div>
-                                    <div style="font-size: 0.8rem;">Latency</div>
-                                </div>
-                                <div class="metric-small">
-                                    <div class="metric-value-small">3</div>
-                                    <div style="font-size: 0.8rem;">Errors</div>
-                                </div>
-                                <div class="metric-small">
-                                    <div class="metric-value-small">97%</div>
-                                    <div style="font-size: 0.8rem;">Success</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-premium" style="width: 100%; margin-top: 20px;" onclick="deployNew()">
-                            ➕ Deploy New dApp
-                        </button>
-
-                        <div style="margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px;">
-                            <div style="font-weight: bold; margin-bottom: 8px;">💡 Pro Tip</div>
-                            <div style="font-size: 0.9rem; opacity: 0.9;">Use auto-scaling to save 40% on hosting costs during low traffic.</div>
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <!-- Real-time Stats Grid -->
+                <div class="overview-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🖥️</div>
+                        <div class="stat-value" id="cpu-usage">--</div>
+                        <div class="stat-label">CPU Usage</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="cpu-progress" style="width: 0%;"></div>
                         </div>
                     </div>
 
-                    <!-- Center Panel: Development -->
+                    <div class="stat-card">
+                        <div class="stat-icon">🧠</div>
+                        <div class="stat-value" id="memory-usage">--</div>
+                        <div class="stat-label">Memory Usage</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="memory-progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">💾</div>
+                        <div class="stat-value" id="disk-usage">--</div>
+                        <div class="stat-label">Disk Usage</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="disk-progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🐳</div>
+                        <div class="stat-value" id="container-count">--</div>
+                        <div class="stat-label">Active Containers</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 8px;">
+                            <span id="tenant-count">--</span> tenants
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status Alert -->
+                <div id="system-alert" class="alert alert-info" style="display: none;">
+                    <strong>ℹ️ System Status:</strong> <span id="alert-message">All systems operational</span>
+                </div>
+
+                <!-- Monitoring Section -->
+                <div class="monitoring-section">
+                    <!-- Left Panel: Container Instances -->
                     <div class="panel">
                         <div class="panel-title">
-                            <span>💻</span>
-                            <span>Live Development</span>
+                            <span>🐳</span>
+                            <span>Container Instances</span>
                             <div style="margin-left: auto;">
-                                <span class="env-badge env-production">Connected</span>
-                            </div>
-                        </div>
-
-                        <div style="background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <div class="status-dot status-healthy"></div>
-                                <span><strong>Live Connected</strong> to enhanced-host-1.com:26201</span>
-                                <button class="btn btn-secondary" style="margin-left: auto; padding: 8px 15px; font-size: 0.8rem;" onclick="switchInstance()">🔄 Switch</button>
-                            </div>
-                        </div>
-
-                        <div class="editor-header">
-                            <div class="file-tabs">
-                                <div class="file-tab active" onclick="switchFile('index.js')">📄 index.js</div>
-                                <div class="file-tab" onclick="switchFile('config.json')">⚙️ config.json</div>
-                                <div class="file-tab" onclick="switchFile('package.json')">📦 package.json</div>
-                            </div>
-                            <div style="display: flex; gap: 10px;">
-                                <button class="btn" style="padding: 8px 15px; font-size: 0.9rem;" onclick="saveCode()">💾 Save</button>
-                                <button class="btn btn-premium" style="padding: 8px 15px; font-size: 0.9rem;" onclick="hotDeploy()">⚡ Deploy</button>
-                            </div>
-                        </div>
-
-                        <div class="code-editor" id="codeEditor">
-                            <div style="color: #98fb98;">// DeFi Protocol Smart Contract - HotPocket Enhanced</div>
-                            <div style="color: #ffd700;">const HotPocket = require('hotpocket-nodejs-contract');</div>
-                            <div style="color: #ffd700;">const crypto = require('crypto');</div>
-                            <div style="color: #87ceeb;"><br></div>
-                            <div style="color: #ffd700;">class <span style="color: #87ceeb;">DeFiProtocol</span> {</div>
-                            <div style="color: #87ceeb;">&nbsp;&nbsp;constructor() {</div>
-                            <div style="color: #87ceeb;">&nbsp;&nbsp;&nbsp;&nbsp;this.liquidity = new Map();</div>
-                            <div style="color: #87ceeb;">&nbsp;&nbsp;&nbsp;&nbsp;this.users = new Map();</div>
-                            <div style="color: #87ceeb;">&nbsp;&nbsp;}</div>
-                            <div style="color: #87ceeb;"><br></div>
-                            <div style="color: #87ceeb;">&nbsp;&nbsp;async handleTransaction(tx) {</div>
-                            <div style="color: #98fb98;">&nbsp;&nbsp;&nbsp;&nbsp;// Enhanced transaction processing</div>
-                            <div style="color: #87ceeb;">&nbsp;&nbsp;&nbsp;&nbsp;return await this.processSwap(tx);</div>
-                            <div style="color: #87ceeb;">&nbsp;&nbsp;}</div>
-                            <div style="color: #87ceeb;">}</div>
-                        </div>
-
-                        <div class="tools-grid">
-                            <div class="tool-btn" onclick="runAudit()">
-                                <div style="font-size: 1.5rem; margin-bottom: 8px;">🛡️</div>
-                                <strong>Security Audit</strong>
-                            </div>
-                            <div class="tool-btn" onclick="runProfiler()">
-                                <div style="font-size: 1.5rem; margin-bottom: 8px;">⚡</div>
-                                <strong>Performance</strong>
-                            </div>
-                            <div class="tool-btn" onclick="runTests()">
-                                <div style="font-size: 1.5rem; margin-bottom: 8px;">🔥</div>
-                                <strong>Load Test</strong>
-                            </div>
-                            <div class="tool-btn" onclick="showAnalytics()">
-                                <div style="font-size: 1.5rem; margin-bottom: 8px;">📊</div>
-                                <strong>Analytics</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Panel: Monitoring -->
-                    <div class="panel">
-                        <div class="panel-title">
-                            <span>📊</span>
-                            <span>Live Monitoring</span>
-                            <div style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;">Real-time</div>
-                        </div>
-
-                        <div class="instance-grid">
-                            <div class="instance-card">
-                                <div style="font-weight: bold; margin-bottom: 10px; color: #00ff88;">US-East-1</div>
-                                <div class="metric-value" id="usEastCpu">98%</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">CPU Usage</div>
-                                <div class="status-dot status-healthy" style="margin: 8px auto;"></div>
-                            </div>
-                            <div class="instance-card">
-                                <div style="font-weight: bold; margin-bottom: 10px; color: #ffd700;">EU-Central</div>
-                                <div class="metric-value" style="color: #ffd700;" id="euCentralCpu">89%</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">CPU Usage</div>
-                                <div class="status-dot status-warning" style="margin: 8px auto;"></div>
-                            </div>
-                        </div>
-
-                        <div class="instance-grid">
-                            <div class="instance-card">
-                                <div class="metric-value" id="activeUsers">1,247</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">Active Users</div>
-                            </div>
-                            <div class="instance-card">
-                                <div class="metric-value" id="responseTime">156ms</div>
-                                <div style="font-size: 0.9rem; opacity: 0.8;">Response Time</div>
-                            </div>
-                        </div>
-
-                        <h4 style="color: #00ff88; margin: 20px 0 10px;">📜 Live System Logs</h4>
-                        <div class="logs-container" id="logsContainer">
-                            <div class="log-line">[14:32:01] Contract initialized successfully</div>
-                            <div class="log-line">[14:32:15] New user connected: 0x742d35Cc...</div>
-                            <div class="log-line">[14:32:28] Swap executed: 100 USDC → 0.034 ETH</div>
-                            <div class="log-line">[14:32:45] High CPU usage on eu-central (89%)</div>
-                            <div class="log-line">[14:33:02] Consensus round completed</div>
-                        </div>
-
-                         <div style="background: rgba(255,255,255,0.05); padding: 20px; margin: 20px 0; border-radius: 15px;">
-                            <h4 style="color: #00ff88; margin-bottom: 15px;">🔧 Quick Tools</h4>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                                <a href="/cluster/roi-calculator.html" style="color: #00ff88; text-decoration: none; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: center; font-size: 0.9rem;">💰 ROI Calc</a>
-                                <a href="/landing-page/host-discovery.html" style="color: #00ff88; text-decoration: none; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: center; font-size: 0.9rem;">🔍 Find Hosts</a>
-                                <a href="/landing-page/leaderboard.html" style="color: #00ff88; text-decoration: none; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: center; font-size: 0.9rem;">🏆 Leaderboard</a>
-                                <a href="/" style="color: #00ff88; text-decoration: none; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: center; font-size: 0.9rem;">🏠 Home</a>
+                                <span id="instance-count-display">--</span> running
                             </div>
                         </div>
                         
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px;">
-                            <button class="btn" onclick="scaleUp()">⚡ Scale EU</button>
-                            <button class="btn btn-secondary" onclick="extendLeases()">🔄 Extend</button>
+                        <div class="instance-grid" id="container-instances">
+                            <!-- Container instances will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Real-time Logs -->
+                    <div class="panel">
+                        <div class="panel-title">
+                            <span>📝</span>
+                            <span>System Logs</span>
+                            <div style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;">Live</div>
+                        </div>
+                        
+                        <div class="logs-container" id="system-logs">
+                            <!-- Real logs will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        🔄 Refresh Data
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        📊 Export Metrics
+                    </button>
+                    <button class="btn btn-secondary" onclick="viewDetailed()">
+                        📈 Detailed View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Monitor Tab -->
+            <div id="monitor" class="tab-content">
+                <div class="panel">
+                    <div class="panel-title">
+                        <span>📈</span>
+                        <span>Real-Time Monitoring Dashboard</span>
+                    </div>
+
+                    <!-- Resource Usage Charts -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 16px; color: #00ff88;">🖥️ CPU Performance</h4>
+                            <div style="text-align: center; padding: 40px;">
+                                <div style="font-size: 3rem; margin-bottom: 16px;" id="cpu-chart-value">--</div>
+                                <p style="opacity: 0.8;">Current CPU utilization</p>
+                                <div style="margin-top: 16px;">
+                                    <div style="font-size: 0.9rem; opacity: 0.7;">
+                                        Load Average: <span id="load-average">--</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <button class="btn btn-premium" style="width: 100%; margin-top: 15px;" onclick="showAnalytics()">
-                            📈 Full Analytics
-                        </button>
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 16px; color: #3b82f6;">🧠 Memory Usage</h4>
+                            <div style="text-align: center; padding: 40px;">
+                                <div style="font-size: 3rem; margin-bottom: 16px;" id="memory-chart-value">--</div>
+                                <p style="opacity: 0.8;">Current memory utilization</p>
+                                <div style="margin-top: 16px;">
+                                    <div style="font-size: 0.9rem; opacity: 0.7;">
+                                        Available: <span id="available-memory">--</span> GB
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 16px; color: #8b5cf6;">💾 Storage</h4>
+                            <div style="text-align: center; padding: 40px;">
+                                <div style="font-size: 3rem; margin-bottom: 16px;" id="disk-chart-value">--</div>
+                                <p style="opacity: 0.8;">Disk space utilization</p>
+                                <div style="margin-top: 16px;">
+                                    <div style="font-size: 0.9rem; opacity: 0.7;">
+                                        Free: <span id="free-space">--</span> GB
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Network and Container Stats -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 16px; color: #fbbf24;">🌐 Network Activity</h4>
+                            <div id="network-stats">
+                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                                    <span>Inbound:</span>
+                                    <span id="network-in">-- MB/s</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                                    <span>Outbound:</span>
+                                    <span id="network-out">-- MB/s</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                                    <span>Connections:</span>
+                                    <span id="active-connections">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 16px; color: #10b981;">🏠 Tenant Overview</h4>
+                            <div id="tenant-stats">
+                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                                    <span>Active Tenants:</span>
+                                    <span id="active-tenants">--</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                                    <span>Available Slots:</span>
+                                    <span id="available-slots">--</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                                    <span>Total Capacity:</span>
+                                    <span id="total-capacity">--</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -931,157 +599,73 @@
                 <div class="panel">
                     <div class="panel-title">
                         <span>🚀</span>
-                        <span>Deploy New dApp</span>
+                        <span>Deploy Applications</span>
                     </div>
 
-                    <h3 style="color: #00ff88; margin-bottom: 20px;">📋 dApp Templates</h3>
-                    <div class="template-grid">
-                        <div class="template-card" onclick="selectTemplate('defi')">
-                            <div class="template-icon">💰</div>
-                            <h4>DeFi Protocol</h4>
-                            <p style="opacity: 0.8; font-size: 0.9rem;">Automated market maker with liquidity pools</p>
-                            <div style="margin-top: 15px;">
-                                <span style="background: rgba(0, 255, 136, 0.2); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem;">Advanced</span>
+                    <!-- Deployment Status -->
+                    <div class="alert alert-info">
+                        <strong>✅ Ready for Deployment</strong> - Host has available capacity for new applications
+                    </div>
+
+                    <!-- Quick Deploy Templates -->
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="margin-bottom: 16px;">⚡ Quick Deploy Templates</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                            <div class="stat-card" style="cursor: pointer;" onclick="deployTemplate('defi')">
+                                <div class="stat-icon">💰</div>
+                                <div style="font-weight: 600; margin-bottom: 8px;">DeFi Exchange</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Decentralized trading platform</div>
+                                <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Deploy</button>
                             </div>
-                        </div>
-                        
-                        <div class="template-card" onclick="selectTemplate('nft')">
-                            <div class="template-icon">🎨</div>
-                            <h4>NFT Marketplace</h4>
-                            <p style="opacity: 0.8; font-size: 0.9rem;">Complete marketplace for digital assets</p>
-                            <div style="margin-top: 15px;">
-                                <span style="background: rgba(255, 215, 0, 0.2); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem;">Popular</span>
+
+                            <div class="stat-card" style="cursor: pointer;" onclick="deployTemplate('nft')">
+                                <div class="stat-icon">🎨</div>
+                                <div style="font-weight: 600; margin-bottom: 8px;">NFT Marketplace</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Buy, sell, and trade NFTs</div>
+                                <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Deploy</button>
                             </div>
-                        </div>
-                        
-                        <div class="template-card" onclick="selectTemplate('gaming')">
-                            <div class="template-icon">🎮</div>
-                            <h4>Gaming Platform</h4>
-                            <p style="opacity: 0.8; font-size: 0.9rem;">Real-time multiplayer gaming with rewards</p>
-                            <div style="margin-top: 15px;">
-                                <span style="background: rgba(0, 191, 255, 0.2); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem;">New</span>
-                            </div>
-                        </div>
-                        
-                        <div class="template-card" onclick="selectTemplate('dao')">
-                            <div class="template-icon">🏛️</div>
-                            <h4>DAO Governance</h4>
-                            <p style="opacity: 0.8; font-size: 0.9rem;">Decentralized governance and voting system</p>
-                            <div style="margin-top: 15px;">
-                                <span style="background: rgba(139, 69, 19, 0.2); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem;">Premium</span>
+
+                            <div class="stat-card" style="cursor: pointer;" onclick="deployTemplate('dao')">
+                                <div class="stat-icon">🏛️</div>
+                                <div style="font-weight: 600; margin-bottom: 8px;">DAO Platform</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Governance and voting system</div>
+                                <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">Deploy</button>
                             </div>
                         </div>
                     </div>
 
-                    <div style="margin-top: 30px; background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 25px;">
-                        <h3 style="color: #00ff88; margin-bottom: 20px;">⚙️ Configuration</h3>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">dApp Name</label>
-                            <input type="text" id="dappName" placeholder="Enter dApp name..." style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white;">
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Instance Count</label>
-                            <select id="instanceCount" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white;">
-                                <option>3 instances (Recommended)</option>
-                                <option>5 instances (High Availability)</option>
-                                <option>7 instances (Maximum Performance)</option>
-                            </select>
-                        </div>
-                        
-                        <button class="btn btn-premium" style="width: 100%; padding: 15px; font-size: 1.1rem;" onclick="confirmDeploy()">
-                            🚀 Deploy dApp (Cost: 147 EVR)
-                        </button>
-                    </div>
-                </div>
-            </div>
+                    <!-- Custom Deployment Form -->
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px;">
+                        <h4 style="margin-bottom: 20px;">🛠️ Custom Deployment</h4>
+                        <div class="deployment-form">
+                            <div class="form-group">
+                                <label class="form-label">Application Name</label>
+                                <input type="text" class="form-input" placeholder="My DeFi App" id="app-name">
+                            </div>
 
-            <!-- Monitor Tab -->
-            <div id="monitor" class="tab-content">
-                <div class="panel">
-                    <div class="panel-title">
-                        <span>📈</span>
-                        <span>System Monitoring</span>
-                        <button class="btn btn-secondary" style="margin-left: auto; padding: 8px 15px; font-size: 0.9rem;" onclick="refreshMonitoring()">🔄 Refresh</button>
-                    </div>
+                            <div class="form-group">
+                                <label class="form-label">Container Image</label>
+                                <input type="text" class="form-input" placeholder="docker.io/myapp:latest" id="container-image">
+                            </div>
 
-                    <div class="monitor-grid">
-                        <div class="monitor-card">
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                                <div class="status-dot status-healthy"></div>
-                                <h4>System Health</h4>
+                            <div class="form-group">
+                                <label class="form-label">Resource Allocation</label>
+                                <select class="form-select" id="resource-tier">
+                                    <option value="small">Small (1 CPU, 1GB RAM)</option>
+                                    <option value="medium" selected>Medium (2 CPU, 2GB RAM)</option>
+                                    <option value="large">Large (4 CPU, 4GB RAM)</option>
+                                </select>
                             </div>
-                            <div style="margin-bottom: 15px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                    <span>CPU Usage</span>
-                                    <span id="monitorCpu">76%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" id="cpuProgress" style="width: 76%;"></div>
-                                </div>
-                            </div>
-                            <div style="margin-bottom: 15px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                    <span>Memory</span>
-                                    <span id="monitorMemory">84%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" id="memoryProgress" style="width: 84%;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                    <span>Disk Usage</span>
-                                    <span>45%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 45%;"></div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="monitor-card">
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                                <div class="status-dot status-healthy"></div>
-                                <h4>Network Status</h4>
+                            <div class="form-group">
+                                <label class="form-label">Environment Variables</label>
+                                <textarea class="form-input" placeholder="KEY1=value1&#10;KEY2=value2" id="env-vars" rows="3"></textarea>
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                                <div style="text-align: center;">
-                                    <div style="font-size: 1.5rem; font-weight: bold; color: #00ff88;">342MB</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.8;">Upload</div>
-                                </div>
-                                <div style="text-align: center;">
-                                    <div style="font-size: 1.5rem; font-weight: bold; color: #00ff88;">1.2GB</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.8;">Download</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <h3 style="color: #00ff88; margin: 30px 0 15px;">📊 Instance Performance</h3>
-                    <div class="monitor-grid">
-                        <div class="monitor-card">
-                            <h4 style="color: #00ff88;">US-East-1</h4>
-                            <div style="margin: 15px 0;">Status: <span style="color: #00ff88;">Healthy (98%)</span></div>
-                            <button class="btn btn-secondary" style="width: 100%;" onclick="manageInstance('us-east')">⚙️ Manage</button>
+                            <button class="btn btn-primary" onclick="deployCustom()" style="width: 100%;">
+                                🚀 Deploy Application
+                            </button>
                         </div>
-                        
-                        <div class="monitor-card">
-                            <h4 style="color: #ffd700;">EU-Central</h4>
-                            <div style="margin: 15px 0;">Status: <span style="color: #ffd700;">Warning (89%)</span></div>
-                            <button class="btn btn-premium" style="width: 100%;" onclick="scaleInstance('eu-central')">⚡ Scale Up</button>
-                        </div>
-                    </div>
-
-                    <h3 style="color: #00ff88; margin: 30px 0 15px;">📜 System Logs</h3>
-                    <div class="logs-container" style="height: 300px;" id="monitorLogs">
-                        <div class="log-line">[14:32:01] INFO: Contract initialized successfully</div>
-                        <div class="log-line">[14:32:15] INFO: New user connected: 0x742d35Cc6aF42C...</div>
-                        <div class="log-line">[14:32:28] INFO: Swap executed: 100 USDC → 0.034 ETH</div>
-                        <div class="log-line">[14:32:45] WARN: High CPU usage on eu-central (89.1%)</div>
-                        <div class="log-line">[14:33:02] INFO: Consensus round completed</div>
-                        <div class="log-line">[14:33:15] INFO: Auto-scaling triggered for EU region</div>
                     </div>
                 </div>
             </div>
@@ -1092,82 +676,58 @@
                     <div class="panel-title">
                         <span>📊</span>
                         <span>Analytics Dashboard</span>
-                        <div style="margin-left: auto; display: flex; gap: 10px;">
-                            <select id="timeRange" style="padding: 8px 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white; font-size: 0.9rem;">
-                                <option>Last 24 Hours</option>
-                                <option>Last 7 Days</option>
-                                <option>Last 30 Days</option>
-                            </select>
-                            <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;" onclick="exportAnalytics()">📊 Export</button>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 30px;">
+                        <div class="stat-card">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-value" id="total-earnings">$--</div>
+                            <div class="stat-label">Total Earnings</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-value" id="monthly-revenue">$--</div>
+                            <div class="stat-label">Monthly Revenue</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-value" id="total-deployments">--</div>
+                            <div class="stat-label">Total Deployments</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-value" id="avg-uptime">--%</div>
+                            <div class="stat-label">Average Uptime</div>
                         </div>
                     </div>
 
-                    <div class="analytics-grid">
-                        <div class="metric-card">
-                            <div class="metric-value" style="color: #00ff88;">$47,239</div>
-                            <div style="font-size: 1.1rem; margin-bottom: 10px;">Total Revenue</div>
-                            <div style="color: #00ff88; font-size: 0.9rem;">+12.5% ↗</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-value" style="color: #ffd700;">8,492</div>
-                            <div style="font-size: 1.1rem; margin-bottom: 10px;">Total Transactions</div>
-                            <div style="color: #00ff88; font-size: 0.9rem;">+8.3% ↗</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-value" style="color: #00bfff;">3,247</div>
-                            <div style="font-size: 1.1rem; margin-bottom: 10px;">Active Users</div>
-                            <div style="color: #ff6b6b; font-size: 0.9rem;">-2.1% ↘</div>
+                    <!-- Performance Trends -->
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 16px;">📈 Performance Trends (Last 7 Days)</h4>
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 2rem; margin-bottom: 20px;">📊</div>
+                            <p style="opacity: 0.8;">Real-time performance charts and analytics</p>
+                            <button class="btn btn-primary" onclick="loadAnalytics()" style="margin-top: 20px;">
+                                📈 Load Analytics Dashboard
+                            </button>
                         </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 30px;">
-                        <div>
-                            <h3 style="color: #00ff88; margin-bottom: 20px;">📈 Performance Trends</h3>
-                            <div class="chart-container">
-                                <div style="text-align: center; opacity: 0.7;">
-                                    <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
-                                    <h4>Interactive Charts</h4>
-                                    <p>Real-time performance metrics and trends visualization</p>
-                                    <button class="btn btn-premium" style="margin-top: 20px;" onclick="loadCharts()">🔄 Load Charts</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 style="color: #00ff88; margin-bottom: 20px;">🎯 Key Insights</h3>
-                            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 25px;">
-                                <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                        <span style="color: #00ff88;">🚀</span>
-                                        <strong>Peak Performance</strong>
-                                    </div>
-                                    <p style="font-size: 0.9rem; opacity: 0.8;">Your DeFi protocol hit record transaction volume today</p>
-                                </div>
-                                
-                                <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                        <span style="color: #ffd700;">⚡</span>
-                                        <strong>Optimization</strong>
-                                    </div>
-                                    <p style="font-size: 0.9rem; opacity: 0.8;">EU instance could benefit from scaling up</p>
-                                </div>
-                                
-                                <div>
-                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                        <span style="color: #00ff88;">💰</span>
-                                        <strong>Revenue Growth</strong>
-                                    </div>
-                                    <p style="font-size: 0.9rem; opacity: 0.8;">12.5% increase in revenue this week</p>
-                                </div>
-                            </div>
-
-                            <div style="margin-top: 25px;">
-                                <h4 style="color: #00ff88; margin-bottom: 15px;">📋 Quick Actions</h4>
-                                <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="generateReport()">📊 Generate Report</button>
-                                <button class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;" onclick="emailReport()">📧 Email Analytics</button>
-                                <button class="btn btn-premium" style="width: 100%;" onclick="setupAlerts()">🔄 Setup Alerts</button>
-                            </div>
-                        </div>
+                    <!-- Export Options -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <button class="btn btn-secondary" onclick="exportAnalytics()">
+                            📊 Export Data
+                        </button>
+                        <button class="btn btn-secondary" onclick="generateReport()">
+                            📄 Generate Report
+                        </button>
+                        <button class="btn btn-secondary" onclick="scheduleReport()">
+                            📅 Schedule Reports
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1177,172 +737,69 @@
                 <div class="panel">
                     <div class="panel-title">
                         <span>⚙️</span>
-                        <span>Settings & Configuration</span>
+                        <span>Host Configuration</span>
                     </div>
 
-                    <div class="setting-group">
-                        <h3 style="color: #00ff88; margin-bottom: 20px;">🔒 Security Settings</h3>
-                        
-                        <div class="setting-item">
+                    <!-- Host Information -->
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 16px;">🖥️ Host Information</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                             <div>
-                                <strong>Two-Factor Authentication</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Enhanced security for your account</div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">Host Name</div>
+                                <div style="opacity: 0.8;" id="host-name">Loading...</div>
                             </div>
-                            <div class="toggle-switch active" onclick="toggleSetting(this, '2fa')"></div>
-                        </div>
-                        
-                        <div class="setting-item">
                             <div>
-                                <strong>API Access Logging</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Log all API requests and responses</div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">IP Address</div>
+                                <div style="opacity: 0.8;" id="host-ip">Loading...</div>
                             </div>
-                            <div class="toggle-switch active" onclick="toggleSetting(this, 'api-logging')"></div>
-                        </div>
-                        
-                        <div class="setting-item">
                             <div>
-                                <strong>Automatic Backups</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Daily backups of contract state</div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">EVR Address</div>
+                                <div style="opacity: 0.8; font-family: monospace; font-size: 0.85rem;" id="evr-address">Loading...</div>
                             </div>
-                            <div class="toggle-switch active" onclick="toggleSetting(this, 'backups')"></div>
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">Host Status</div>
+                                <div style="opacity: 0.8;" id="host-status">
+                                    <span class="status-dot status-healthy" style="display: inline-block; margin-right: 8px;"></span>
+                                    Online
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="setting-group">
-                        <h3 style="color: #00ff88; margin-bottom: 20px;">🚀 Performance Settings</h3>
+                    <!-- Configuration Options -->
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px;">
+                        <h4 style="margin-bottom: 16px;">🔧 Configuration</h4>
                         
-                        <div class="setting-item">
-                            <div>
-                                <strong>Auto-Scaling</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Automatically scale instances based on demand</div>
-                            </div>
-                            <div class="toggle-switch active" onclick="toggleSetting(this, 'auto-scaling')"></div>
+                        <div class="form-group">
+                            <label class="form-label">Maximum Tenants</label>
+                            <select class="form-select" id="max-tenants">
+                                <option value="1">1 Tenant</option>
+                                <option value="2">2 Tenants</option>
+                                <option value="3" selected>3 Tenants</option>
+                                <option value="5">5 Tenants</option>
+                            </select>
                         </div>
-                        
-                        <div class="setting-item">
-                            <div>
-                                <strong>Load Balancing</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Distribute traffic across instances</div>
-                            </div>
-                            <div class="toggle-switch" onclick="toggleSetting(this, 'load-balancing')"></div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div>
-                                <strong>Caching Layer</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Redis caching for improved performance</div>
-                            </div>
-                            <div class="toggle-switch active" onclick="toggleSetting(this, 'caching')"></div>
-                        </div>
-                    </div>
 
-                    <div class="setting-group">
-                        <h3 style="color: #00ff88; margin-bottom: 20px;">🔔 Notification Settings</h3>
-                        
-                        <div class="setting-item">
-                            <div>
-                                <strong>Real-time Alerts</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Get notified of system events instantly</div>
-                            </div>
-                            <div class="toggle-switch active" onclick="toggleSetting(this, 'alerts')"></div>
+                        <div class="form-group">
+                            <label class="form-label">Auto-scaling</label>
+                            <select class="form-select" id="auto-scaling">
+                                <option value="enabled" selected>Enabled</option>
+                                <option value="disabled">Disabled</option>
+                            </select>
                         </div>
-                        
-                        <div class="setting-item">
-                            <div>
-                                <strong>Daily Reports</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Receive daily performance summaries</div>
-                            </div>
-                            <div class="toggle-switch active" onclick="toggleSetting(this, 'daily-reports')"></div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div>
-                                <strong>Error Notifications</strong>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Immediate alerts for critical errors</div>
-                            </div>
-                            <div class="toggle-switch active" onclick="toggleSetting(this, 'error-notifications')"></div>
-                        </div>
-                    </div>
 
-                    <div class="setting-group">
-                        <h3 style="color: #00ff88; margin-bottom: 20px;">💎 Premium Features</h3>
-                        
-                        <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                                <span style="font-size: 1.5rem;">💎</span>
-                                <strong>Premium License Active</strong>
-                            </div>
-                            <p style="opacity: 0.9; margin-bottom: 15px;">Unlimited clusters • Priority support • Advanced analytics</p>
-                            <div style="display: flex; gap: 10px;">
-                                <button class="btn btn-premium" style="flex: 1;" onclick="viewBenefits()">📊 View Benefits</button>
-                                <button class="btn btn-secondary" style="flex: 1;" onclick="manageLicense()">🔄 Manage License</button>
-                            </div>
+                        <div class="form-group">
+                            <label class="form-label">Monitoring Interval</label>
+                            <select class="form-select" id="monitoring-interval">
+                                <option value="10">10 seconds</option>
+                                <option value="30" selected>30 seconds</option>
+                                <option value="60">60 seconds</option>
+                            </select>
                         </div>
-                        
-                        <div style="display: flex; gap: 15px;">
-                            <button class="btn" style="flex: 1;" onclick="saveSettings()">💾 Save Settings</button>
-                            <button class="btn btn-secondary" style="flex: 1;" onclick="resetSettings()">🔄 Reset Default</button>
-                            <button class="btn btn-danger" style="flex: 1;" onclick="factoryReset()">⚠️ Factory Reset</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Modals -->
-            <div id="deployModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 style="color: #00ff88;">🚀 Deploy Confirmation</h2>
-                        <button class="close-btn" onclick="closeModal('deployModal')">&times;</button>
-                    </div>
-                    <div>
-                        <p style="margin-bottom: 20px; opacity: 0.9;">Ready to deploy your dApp to the Evernode network?</p>
-                        <div style="background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px;">
-                            <strong>Deployment Summary:</strong><br>
-                            • <span id="deployInstances">3 instances</span> across multiple regions<br>
-                            • Auto-scaling enabled<br>
-                            • Real-time monitoring included<br>
-                            • Estimated cost: <span id="deployCost">147 EVR/month</span>
-                        </div>
-                        <div style="display: flex; gap: 15px;">
-                            <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('deployModal')">Cancel</button>
-                            <button class="btn btn-premium" style="flex: 1;" onclick="executeDeploy()">✅ Confirm Deploy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="auditModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 style="color: #00ff88;">🛡️ Security Audit Results</h2>
-                        <button class="close-btn" onclick="closeModal('auditModal')">&times;</button>
-                    </div>
-                    <div>
-                        <div style="background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: center;">
-                            <h3>🎯 Security Score: 94/100</h3>
-                            <p>Your smart contract is production-ready with minor optimizations available.</p>
-                        </div>
-                        
-                        <div style="margin-bottom: 20px;">
-                            <div style="display: flex; align-items: center; gap: 15px; padding: 12px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border-left: 3px solid #00ff88;">
-                                <span style="font-size: 1.2rem;">✅</span>
-                                <span>No critical vulnerabilities found</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px; padding: 12px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border-left: 3px solid #ffd700;">
-                                <span style="font-size: 1.2rem;">⚠️</span>
-                                <span>Consider adding rate limiting to prevent spam</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px; padding: 12px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border-left: 3px solid #00ff88;">
-                                <span style="font-size: 1.2rem;">✅</span>
-                                <span>Access controls properly implemented</span>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 15px;">
-                            <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal('auditModal')">Close</button>
-                            <button class="btn btn-premium" style="flex: 1;" onclick="downloadAuditReport()">📊 Download Report</button>
-                        </div>
+                        <button class="btn btn-primary" onclick="saveSettings()" style="width: 100%; margin-top: 20px;">
+                            💾 Save Configuration
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1351,599 +808,340 @@
 
     <script>
         // Global state
-        let currentCluster = 'defi-protocol';
-        let selectedTemplate = null;
-        let settings = {
-            '2fa': true,
-            'api-logging': true,
-            'backups': true,
-            'auto-scaling': true,
-            'load-balancing': false,
-            'caching': true,
-            'alerts': true,
-            'daily-reports': true,
-            'error-notifications': true
-        };
+        let lastUpdateTime = new Date();
+        let monitoringInterval;
+        let currentData = {};
 
-        // Check URL parameter for product type
-    const urlParams = new URLSearchParams(window.location.search);
-    const product = urlParams.get('product');
-    
-    // Product configuration
-    const productConfig = {
-        cluster: {
-            price: '$49.99',
-            title: 'Cluster Manager License',
-            description: 'One-time purchase • Lifetime updates',
-            type: 'one-time',
-            features: ['Multi-host deployment', 'Auto-scaling', 'Load balancing', 'Template marketplace']
-        },
-        domain: {
-            price: '$1.00',
-            title: 'Custom Domain Service', 
-            description: 'Monthly subscription • SSL included',
-            type: 'subscription',
-            features: ['Custom domain mapping', 'Free SSL certificate', 'Automatic renewal', 'Email support']
-        }
-    };
-    
-    // Set current product
-    const currentProduct = product === 'domain' ? 'domain' : 'cluster';
-    const config = productConfig[currentProduct];
-        
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            updateProductDisplay(config, currentProduct);
-            setupNavigation();
-            startRealTimeUpdates();
-            showNotification('🚀 Premium dApp Manager Ready!', 'success');
-        });
-
-       // 🎯 COMPLETE updateProductDisplay FUNCTION:
-function updateProductDisplay(config, productType) {
-    // Update page title
-    document.title = `Enhanced Evernode - ${config.title}`;
-    
-    // Update logo to reflect product type
-    const logoElement = document.querySelector('.logo span:last-child');
-    if (logoElement) {
-        logoElement.textContent = config.title;
-    }
-    
-    // Update any price displays in the interface
-    const priceElements = document.querySelectorAll('.price, .cost, .product-price');
-    priceElements.forEach(el => el.textContent = config.price);
-    
-    // Update main title if it exists
-    const titleElements = document.querySelectorAll('h1, .main-title');
-    titleElements.forEach(el => {
-        if (el.textContent.includes('Premium dApp Manager')) {
-            el.textContent = config.title;
-        }
-    });
-    
-    // Add product-specific styling
-    if (productType === 'domain') {
-        document.body.style.setProperty('--primary-color', '#00bfff');
-        // Update premium badge to reflect domain service
-        const premiumBadge = document.querySelector('.premium-badge');
-        if (premiumBadge) {
-            premiumBadge.innerHTML = '🌐 Domain Service';
-            premiumBadge.style.background = 'linear-gradient(135deg, #00bfff, #0099cc)';
-        }
-    }
-    
-    // Add purchase button to navbar if needed
-    addPurchaseButton(config, productType);
-    
-    console.log(`🎯 Loaded product: ${productType}`, config);
-}
-
-// Add purchase button functionality
-function addPurchaseButton(config, productType) {
-    const userInfo = document.querySelector('.user-info');
-    if (userInfo && !document.querySelector('.purchase-btn')) {
-        const purchaseBtn = document.createElement('button');
-        purchaseBtn.className = 'btn btn-premium purchase-btn';
-        purchaseBtn.style.marginLeft = '15px';
-        purchaseBtn.style.padding = '8px 16px';
-        purchaseBtn.style.fontSize = '0.9rem';
-        
-        if (productType === 'domain') {
-            purchaseBtn.innerHTML = '🌐 Subscribe ($1/mo)';
-            purchaseBtn.onclick = () => initiateDomainPayment();
-        } else {
-            purchaseBtn.innerHTML = '💳 Buy License ($49.99)';
-            purchaseBtn.onclick = () => initiateClusterPayment();
-        }
-        
-        userInfo.appendChild(purchaseBtn);
-    }
-}
-
-// Payment functions
-function initiateDomainPayment() {
-    showNotification('💳 Processing domain subscription...', 'info');
-    setTimeout(() => {
-        showNotification('✅ Domain service activated! Check email for setup instructions.', 'success');
-    }, 3000);
-    // Add your real payment gateway integration here
-}
-
-function initiateClusterPayment() {
-    showNotification('💳 Processing cluster license...', 'info');
-    setTimeout(() => {
-        showNotification('✅ Cluster license activated! All features unlocked.', 'success');
-    }, 3000);
-    // Add your real payment gateway integration here
-}
-
-        // Navigation
-        function setupNavigation() {
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                    
-                    const tab = link.dataset.tab;
-                    showTab(tab);
-                });
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
             });
-        }
-
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            const targetTab = document.getElementById(tabName);
-            if (targetTab) {
-                targetTab.classList.add('active');
-                showNotification(`Switched to ${tabName} tab`, 'info');
-            }
-        }
-
-        // Notifications
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
             
-            if (type === 'warning') {
-                notification.style.background = 'rgba(255, 215, 0, 0.9)';
-            } else if (type === 'error') {
-                notification.style.background = 'rgba(255, 107, 107, 0.9)';
-            } else if (type === 'info') {
-                notification.style.background = 'rgba(0, 191, 255, 0.9)';
-            }
-            
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-        // Cluster Management
-        function selectCluster(clusterName) {
-            document.querySelectorAll('.cluster-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            event.target.closest('.cluster-item').classList.add('active');
-            currentCluster = clusterName;
-            showNotification(`Switched to ${clusterName}`, 'success');
-        }
-
-        // Development Functions
-        function switchFile(fileName) {
-            document.querySelectorAll('.file-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
+            // Add active class to clicked tab
             event.target.classList.add('active');
+        }
+
+        // Real-time data fetching
+        async function fetchRealTimeData() {
+            try {
+                // Fetch system stats from your real-time monitoring API
+                const response = await fetch('/api/realtime-monitor.php?action=system');
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentData = data.data;
+                    updateDashboard(data.data);
+                } else {
+                    console.error('API Error:', data.error);
+                    showFallbackData();
+                }
+            } catch (error) {
+                console.error('Failed to fetch real-time data:', error);
+                showFallbackData();
+            }
+        }
+
+        // Update dashboard with real data
+        function updateDashboard(data) {
+            // Update overview stats
+            document.getElementById('cpu-usage').textContent = data.cpu?.percentage || '--';
+            document.getElementById('memory-usage').textContent = data.memory?.percentage || '--';
+            document.getElementById('disk-usage').textContent = data.disk?.percent || '--';
+            document.getElementById('container-count').textContent = data.instances?.count || '--';
+            document.getElementById('tenant-count').textContent = data.instances?.tenants || '--';
+
+            // Update progress bars
+            updateProgressBar('cpu-progress', data.cpu?.percentage);
+            updateProgressBar('memory-progress', data.memory?.percentage);
+            updateProgressBar('disk-progress', data.disk?.percent);
+
+            // Update detailed monitoring
+            document.getElementById('cpu-chart-value').textContent = (data.cpu?.percentage || '--') + '%';
+            document.getElementById('memory-chart-value').textContent = (data.memory?.percentage || '--') + '%';
+            document.getElementById('disk-chart-value').textContent = (data.disk?.percent || '--') + '%';
             
-            const codeFiles = {
-                'index.js': `// DeFi Protocol Smart Contract - HotPocket Enhanced
-const HotPocket = require('hotpocket-nodejs-contract');
-const crypto = require('crypto');
+            document.getElementById('load-average').textContent = data.cpu?.load_average || '--';
+            document.getElementById('available-memory').textContent = 
+                data.memory?.available_gb ? data.memory.available_gb.toFixed(1) : '--';
+            document.getElementById('free-space').textContent = 
+                data.disk?.free_gb ? data.disk.free_gb.toFixed(1) : '--';
 
-class DeFiProtocol {
-  constructor() {
-    this.liquidity = new Map();
-    this.users = new Map();
-  }
+            // Update tenant stats
+            document.getElementById('active-tenants').textContent = data.instances?.tenants || '--';
+            document.getElementById('available-slots').textContent = 
+                data.instances?.max_instances ? (data.instances.max_instances - (data.instances.count || 0)) : '--';
+            document.getElementById('total-capacity').textContent = data.instances?.max_instances || '--';
 
-  async handleTransaction(tx) {
-    // Enhanced transaction processing
-    return await this.processSwap(tx);
-  }
-}`,
-                'config.json': `{
-  "name": "DeFi Protocol",
-  "version": "1.2.0",
-  "consensus": {
-    "roundtime": 6000,
-    "stage_slice": 2000
-  },
-  "contract": {
-    "bin": "index.js",
-    "args": []
-  }
-}`,
-                'package.json': `{
-  "name": "defi-protocol",
-  "version": "1.2.0",
-  "description": "DeFi Protocol on HotPocket",
-  "dependencies": {
-    "hotpocket-nodejs-contract": "^0.6.2",
-    "crypto": "^1.0.1"
-  }
-}`
-            };
+            // Update system alerts
+            updateSystemAlerts(data);
+
+            // Update container instances
+            updateContainerInstances(data.containers || []);
+
+            // Update last update time
+            lastUpdateTime = new Date();
+            document.getElementById('last-update').textContent = 
+                `Live monitoring • Updated: ${lastUpdateTime.toLocaleTimeString()}`;
+        }
+
+        // Update progress bars
+        function updateProgressBar(elementId, percentage) {
+            const element = document.getElementById(elementId);
+            if (element && percentage !== undefined) {
+                element.style.width = percentage + '%';
+                
+                // Color coding based on usage
+                if (percentage > 80) {
+                    element.style.background = 'linear-gradient(90deg, #ff4444, #cc0000)';
+                } else if (percentage > 60) {
+                    element.style.background = 'linear-gradient(90deg, #ffd700, #ffb000)';
+                } else {
+                    element.style.background = 'linear-gradient(90deg, #00ff88, #00cc70)';
+                }
+            }
+        }
+
+        // Update system alerts
+        function updateSystemAlerts(data) {
+            const alertElement = document.getElementById('system-alert');
+            const messageElement = document.getElementById('alert-message');
             
-            document.getElementById('codeEditor').innerHTML = `<pre style="color: #87ceeb;">${codeFiles[fileName] || 'File content...'}</pre>`;
-            showNotification(`Loaded ${fileName}`, 'info');
+            let hasAlert = false;
+            let alertMessage = 'All systems operational';
+            let alertClass = 'alert-info';
+
+            // Check for high resource usage
+            if (data.cpu?.percentage > 80) {
+                hasAlert = true;
+                alertMessage = '⚠️ High CPU usage detected';
+                alertClass = 'alert-warning';
+            } else if (data.memory?.percentage > 85) {
+                hasAlert = true;
+                alertMessage = '⚠️ High memory usage detected';
+                alertClass = 'alert-warning';
+            } else if (data.disk?.percent > 90) {
+                hasAlert = true;
+                alertMessage = '🚨 Critical disk space - cleanup required';
+                alertClass = 'alert-warning';
+            }
+
+            if (hasAlert) {
+                alertElement.style.display = 'block';
+                alertElement.className = `alert ${alertClass}`;
+                messageElement.textContent = alertMessage;
+            } else {
+                alertElement.style.display = 'none';
+            }
         }
 
-        function saveCode() {
-            showNotification('💾 Code saved successfully!', 'success');
-        }
-
-        function hotDeploy() {
-            showNotification('⚡ Hot deployment initiated!', 'success');
-            setTimeout(() => {
-                showNotification('✅ Deployment completed across all instances', 'success');
-            }, 3000);
-        }
-
-        function switchInstance() {
-            showNotification('🔄 Switching to backup instance...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Connected to backup instance', 'success');
-            }, 2000);
-        }
-
-        // Premium Tools
-        function runAudit() {
-            showNotification('🛡️ Security audit started...', 'info');
-            setTimeout(() => {
-                document.getElementById('auditModal').classList.add('active');
-            }, 3000);
-        }
-
-        function runProfiler() {
-            showNotification('⚡ Performance analysis running...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Optimizations available - 34% improvement possible', 'success');
-            }, 4000);
-        }
-
-        function runTests() {
-            showNotification('🔥 Load test started for 1,000 users...', 'info');
-            setTimeout(() => {
-                showNotification('🎯 Load test passed - Ready for production!', 'success');
-            }, 5000);
-        }
-
-        function showAnalytics() {
-            showTab('analytics');
-        }
-
-        // Monitoring Functions
-        function scaleUp() {
-            showNotification('⚡ Scaling EU instance from 3 to 5 nodes...', 'info');
-            setTimeout(() => {
-                showNotification('✅ EU region scaled successfully', 'success');
-                document.getElementById('euCentralCpu').textContent = '67%';
-            }, 3000);
-        }
-
-        function extendLeases() {
-            showNotification('🔄 Extending all leases for 24 hours...', 'info');
-            setTimeout(() => {
-                showNotification('✅ All leases extended successfully', 'success');
-            }, 2000);
-        }
-
-        function refreshMonitoring() {
-            showNotification('🔄 Refreshing monitoring data...', 'info');
-            // Update random values
-            const cpuValue = Math.floor(Math.random() * 30) + 60;
-            const memoryValue = Math.floor(Math.random() * 20) + 70;
+        // Update container instances
+        function updateContainerInstances(containers) {
+            const container = document.getElementById('container-instances');
+            const countDisplay = document.getElementById('instance-count-display');
             
-            document.getElementById('monitorCpu').textContent = cpuValue + '%';
-            document.getElementById('cpuProgress').style.width = cpuValue + '%';
-            document.getElementById('monitorMemory').textContent = memoryValue + '%';
-            document.getElementById('memoryProgress').style.width = memoryValue + '%';
+            countDisplay.textContent = containers.length;
             
-            setTimeout(() => {
-                showNotification('✅ Monitoring data updated', 'success');
-            }, 1500);
-        }
+            container.innerHTML = '';
+            
+            if (containers.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; opacity: 0.6;">
+                        <div style="font-size: 2rem; margin-bottom: 16px;">📦</div>
+                        <p>No active containers</p>
+                    </div>
+                `;
+                return;
+            }
 
-        function manageInstance(instance) {
-            showNotification(`⚙️ Opening management panel for ${instance}...`, 'info');
-        }
-
-        function scaleInstance(instance) {
-            showNotification(`⚡ Scaling ${instance} instance...`, 'info');
-            setTimeout(() => {
-                showNotification(`✅ ${instance} scaled successfully`, 'success');
-            }, 3000);
-        }
-
-        // Deploy Functions
-        function deployNew() {
-            showTab('deploy');
-        }
-
-        function selectTemplate(template) {
-            document.querySelectorAll('.template-card').forEach(card => {
-                card.classList.remove('active');
+            containers.forEach((cont, index) => {
+                const instanceCard = document.createElement('div');
+                instanceCard.className = 'instance-card';
+                
+                const status = cont.cpu_percent > 80 ? 'critical' : 
+                             cont.cpu_percent > 60 ? 'warning' : 'healthy';
+                
+                instanceCard.innerHTML = `
+                    <div class="instance-header">
+                        <div class="instance-name">${cont.name || `Container ${index + 1}`}</div>
+                        <div class="status-dot status-${status}"></div>
+                    </div>
+                    <div class="metrics-row">
+                        <div class="metric-item">
+                            <div class="metric-value">${cont.cpu_percent || '--'}%</div>
+                            <div class="metric-label">CPU</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${cont.memory_percent || '--'}%</div>
+                            <div class="metric-label">Memory</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${cont.status || 'Unknown'}</div>
+                            <div class="metric-label">Status</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(instanceCard);
             });
+        }
+
+        // Fallback data for demo purposes
+        function showFallbackData() {
+            const fallbackData = {
+                cpu: { percentage: 45, load_average: '0.8, 0.7, 0.6' },
+                memory: { percentage: 62, available_gb: 1.8 },
+                disk: { percent: 67, free_gb: 6.4 },
+                instances: { count: 2, tenants: 2, max_instances: 3 },
+                containers: [
+                    { name: 'DeFi Exchange', cpu_percent: 45, memory_percent: 38, status: 'Running' },
+                    { name: 'NFT Marketplace', cpu_percent: 32, memory_percent: 24, status: 'Running' }
+                ]
+            };
             
-            event.target.closest('.template-card').classList.add('active');
-            selectedTemplate = template;
-            
+            updateDashboard(fallbackData);
+        }
+
+        // Deployment functions
+        function deployTemplate(template) {
             const templates = {
-                'defi': 'DeFi Protocol',
-                'nft': 'NFT Marketplace',
-                'gaming': 'Gaming Platform',
-                'dao': 'DAO Governance'
+                defi: { name: 'DeFi Exchange', image: 'defi-exchange:latest' },
+                nft: { name: 'NFT Marketplace', image: 'nft-marketplace:latest' },
+                dao: { name: 'DAO Platform', image: 'dao-platform:latest' }
             };
             
-            showNotification(`Selected ${templates[template]} template`, 'success');
-        }
-
-        function confirmDeploy() {
-            const dappName = document.getElementById('dappName').value || 'New dApp';
-            const instanceCount = document.getElementById('instanceCount').value;
-            
-            document.getElementById('deployInstances').textContent = instanceCount;
-            document.getElementById('deployCost').textContent = instanceCount.includes('7') ? '245 EVR/month' : instanceCount.includes('5') ? '184 EVR/month' : '147 EVR/month';
-            
-            document.getElementById('deployModal').classList.add('active');
-        }
-
-        function executeDeploy() {
-            closeModal('deployModal');
-            showNotification('🚀 Deployment initiated!', 'success');
-            
-            setTimeout(() => {
-                showNotification('✅ dApp deployed successfully!', 'success');
-            }, 5000);
-        }
-
-        // Analytics Functions
-        function exportAnalytics() {
-            showNotification('📊 Exporting analytics data...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Analytics data exported successfully', 'success');
-            }, 2000);
-        }
-
-        function loadCharts() {
-            showNotification('📊 Loading interactive charts...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Charts loaded successfully', 'success');
-            }, 3000);
-        }
-
-        function generateReport() {
-            showNotification('📊 Generating comprehensive report...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Report generated and downloaded', 'success');
-            }, 3000);
-        }
-
-        function emailReport() {
-            showNotification('📧 Sending analytics report via email...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Report sent successfully', 'success');
-            }, 2000);
-        }
-
-        function setupAlerts() {
-            showNotification('🔔 Configuring alert settings...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Alert settings updated', 'success');
-            }, 2000);
-        }
-
-        // Settings Functions
-        function toggleSetting(element, settingKey) {
-            element.classList.toggle('active');
-            settings[settingKey] = element.classList.contains('active');
-            
-            const settingNames = {
-                '2fa': 'Two-Factor Authentication',
-                'api-logging': 'API Access Logging',
-                'backups': 'Automatic Backups',
-                'auto-scaling': 'Auto-Scaling',
-                'load-balancing': 'Load Balancing',
-                'caching': 'Caching Layer',
-                'alerts': 'Real-time Alerts',
-                'daily-reports': 'Daily Reports',
-                'error-notifications': 'Error Notifications'
-            };
-            
-            const status = settings[settingKey] ? 'enabled' : 'disabled';
-            showNotification(`${settingNames[settingKey]} ${status}`, 'info');
-        }
-
-        function saveSettings() {
-            showNotification('💾 Saving settings...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Settings saved successfully', 'success');
-            }, 1500);
-        }
-
-        function resetSettings() {
-            showNotification('🔄 Resetting to default settings...', 'info');
-            setTimeout(() => {
-                showNotification('✅ Settings reset to defaults', 'success');
-                location.reload();
-            }, 2000);
-        }
-
-        function factoryReset() {
-            if (confirm('⚠️ This will reset ALL settings and data. Are you sure?')) {
-                showNotification('⚠️ Performing factory reset...', 'warning');
+            const templateData = templates[template];
+            if (templateData) {
+                showNotification(`🚀 Deploying ${templateData.name}...`, 'info');
+                
+                // Simulate deployment
                 setTimeout(() => {
-                    showNotification('✅ Factory reset completed', 'success');
+                    showNotification(`✅ ${templateData.name} deployed successfully!`, 'success');
+                    fetchRealTimeData(); // Refresh data
                 }, 3000);
             }
         }
 
-        function viewBenefits() {
-            showNotification('📊 Opening premium benefits overview...', 'info');
-        }
-
-        function manageLicense() {
-            showNotification('🔄 Opening license management...', 'info');
-        }
-
-        function downloadAuditReport() {
-            showNotification('📊 Downloading security audit report...', 'info');
-            closeModal('auditModal');
+        function deployCustom() {
+            const appName = document.getElementById('app-name').value;
+            const containerImage = document.getElementById('container-image').value;
+            
+            if (!appName || !containerImage) {
+                showNotification('⚠️ Please fill in all required fields', 'warning');
+                return;
+            }
+            
+            showNotification(`🚀 Deploying ${appName}...`, 'info');
+            
+            // Simulate deployment
             setTimeout(() => {
-                showNotification('✅ Audit report downloaded', 'success');
-            }, 2000);
-        }
-
-        // Modal Functions
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Real-time Updates
-        function startRealTimeUpdates() {
-            setInterval(() => {
-                // Update metrics silently
-                const users = document.getElementById('activeUsers');
-                if (users) {
-                    const currentUsers = parseInt(users.textContent.replace(',', ''));
-                    const newUsers = currentUsers + Math.floor(Math.random() * 10 - 5);
-                    users.textContent = newUsers.toLocaleString();
-                }
-                
-                const responseTime = document.getElementById('responseTime');
-                if (responseTime) {
-                    const newTime = Math.floor(Math.random() * 50) + 140;
-                    responseTime.textContent = newTime + 'ms';
-                }
-                
-                // Add new log entry occasionally
-                if (Math.random() < 0.3) {
-                    addLogEntry();
-                }
+                showNotification(`✅ ${appName} deployed successfully!`, 'success');
+                fetchRealTimeData(); // Refresh data
             }, 5000);
         }
 
-        function addLogEntry() {
-            const logs = [
-                'New user connected: 0x' + Math.random().toString(16).substr(2, 8) + '...',
-                'Transaction processed successfully',
-                'Consensus round completed',
-                'Auto-scaling triggered',
-                'Health check passed',
-                'Contract state updated'
-            ];
-            
-            const randomLog = logs[Math.floor(Math.random() * logs.length)];
-            const timestamp = new Date().toLocaleTimeString();
-            
-            const logContainers = [document.getElementById('logsContainer'), document.getElementById('monitorLogs')];
-            
-            logContainers.forEach(container => {
-                if (container) {
-                    const newLog = document.createElement('div');
-                    newLog.className = 'log-line';
-                    newLog.textContent = `[${timestamp}] INFO: ${randomLog}`;
-                    
-                    container.appendChild(newLog);
-                    
-                    // Keep only last 10 logs
-                    while (container.children.length > 10) {
-                        container.removeChild(container.firstChild);
-                    }
-                    
-                    // Scroll to bottom
-                    container.scrollTop = container.scrollHeight;
-                }
-            });
+        // Utility functions
+        function refreshData() {
+            showNotification('🔄 Refreshing data...', 'info');
+            fetchRealTimeData();
         }
 
-        // Handle clicks outside modals
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal')) {
-                e.target.classList.remove('active');
-            }
+        function exportData() {
+            showNotification('📊 Exporting metrics data...', 'info');
+            // Implementation would export current monitoring data
+        }
+
+        function viewDetailed() {
+            window.open('/monitoring-dashboard.html', '_blank');
+        }
+
+        function loadAnalytics() {
+            showNotification('📈 Loading analytics dashboard...', 'info');
+            // Implementation would load detailed analytics
+        }
+
+        function saveSettings() {
+            showNotification('💾 Settings saved successfully!', 'success');
+            // Implementation would save configuration
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+                background: ${type === 'success' ? 'rgba(34, 197, 94, 0.2)' : 
+                           type === 'warning' ? 'rgba(245, 158, 11, 0.2)' : 
+                           'rgba(59, 130, 246, 0.2)'};
+                color: ${type === 'success' ? '#4ade80' : 
+                        type === 'warning' ? '#fbbf24' : '#60a5fa'};
+                border: 1px solid ${type === 'success' ? 'rgba(34, 197, 94, 0.3)' : 
+                                   type === 'warning' ? 'rgba(245, 158, 11, 0.3)' : 
+                                   'rgba(59, 130, 246, 0.3)'};
+                border-radius: 8px;
+                padding: 16px 24px;
+                backdrop-filter: blur(10px);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial data
+            fetchRealTimeData();
+            
+            // Set up real-time updates
+            monitoringInterval = setInterval(fetchRealTimeData, 30000); // Update every 30 seconds
+            
+            // Load host info
+            loadHostInfo();
         });
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                saveCode();
+        // Load host information
+        async function loadHostInfo() {
+            try {
+                const response = await fetch('/api/host-info.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('host-name').textContent = data.hostname || 'Unknown';
+                    document.getElementById('host-ip').textContent = data.ip || 'Unknown';
+                    document.getElementById('evr-address').textContent = data.evr_address || 'Not configured';
+                }
+            } catch (error) {
+                console.error('Failed to load host info:', error);
             }
-            
-            if (e.ctrlKey && e.key === 'd') {
-                e.preventDefault();
-                hotDeploy();
-            }
-            
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                e.preventDefault();
-                runAudit();
-            }
-        });
-
-        console.log('🎮 Premium dApp Manager v13 Enhanced - fully loaded with V3 navigation!');
+        }
     </script>
-<nav style="background: rgba(0,0,0,0.8); padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; backdrop-filter: blur(10px);">
-    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
-        <a href="/" style="color: #00ff88; text-decoration: none; font-weight: bold;">🏠 Enhanced Evernode</a>
-        <div style="display: flex; gap: 20px;">
-            <a href="/" style="color: white; text-decoration: none;">Home</a>
-            <a href="/cluster/demo.html" style="color: white; text-decoration: none;">Demo</a>
-            <a href="/cluster/dapp-manager.html" style="color: white; text-decoration: none;">Manager</a>
-            <a href="/cluster/paywall.html" style="color: white; text-decoration: none;">Upgrade</a>
-        </div>
-    </div>
-</nav>
-<footer style="background: rgba(0,0,0,0.8); padding: 40px 20px; margin-top: 60px;">
-    <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px;">
-            <div>
-                <h4 style="color: #00ff88; margin-bottom: 15px;">🚀 Cluster Tools</h4>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/cluster/demo.html" style="color: white; text-decoration: none; opacity: 0.8;">Try Demo</a>
-                    <a href="/cluster/dapp-manager.html" style="color: white; text-decoration: none; opacity: 0.8;">dApp Manager</a>
-                    <a href="/cluster/dashboard.html" style="color: white; text-decoration: none; opacity: 0.8;">Dashboard</a>
-                    <a href="/cluster/roi-calculator.html" style="color: white; text-decoration: none; opacity: 0.8;">ROI Calculator</a>
-                </div>
-            </div>
-            <div>
-                <h4 style="color: #00ff88; margin-bottom: 15px;">📊 Analytics</h4>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/landing-page/monitoring-dashboard.html" style="color: white; text-decoration: none; opacity: 0.8;">Monitoring</a>
-                    <a href="/landing-page/my-earnings.html" style="color: white; text-decoration: none; opacity: 0.8;">My Earnings</a>
-                    <a href="/landing-page/leaderboard.html" style="color: white; text-decoration: none; opacity: 0.8;">Leaderboard</a>
-                    <a href="/landing-page/host-discovery.html" style="color: white; text-decoration: none; opacity: 0.8;">Host Discovery</a>
-                </div>
-            </div>
-            <div>
-                <h4 style="color: #00ff88; margin-bottom: 15px;">💬 Support</h4>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/landing-page/tenant-guide.html" style="color: white; text-decoration: none; opacity: 0.8;">Tenant Guide</a>
-                    <a href="mailto:h20crypto18@gmail.com" style="color: white; text-decoration: none; opacity: 0.8;">Contact Support</a>
-                    <a href="/" style="color: white; text-decoration: none; opacity: 0.8;">Enhanced Host Home</a>
-                </div>
-            </div>
-        </div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; opacity: 0.6;">
-            <p>© 2025 Enhanced Evernode Host • Professional dApp Deployment Platform</p>
-        </div>
-    </div>
-</footer>
 </body>
 </html>
