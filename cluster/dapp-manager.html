@@ -1381,11 +1381,85 @@
             showNotification('🚀 Premium dApp Manager Ready!', 'success');
         });
 
-        // 🎯 COMPLETE updateProductDisplay FUNCTION:
-    function updateProductDisplay(config, productType) {
-        // Update page title
-        document.title = `Enhanced Evernode - ${config.title}`;
+       // 🎯 COMPLETE updateProductDisplay FUNCTION:
+function updateProductDisplay(config, productType) {
+    // Update page title
+    document.title = `Enhanced Evernode - ${config.title}`;
+    
+    // Update logo to reflect product type
+    const logoElement = document.querySelector('.logo span:last-child');
+    if (logoElement) {
+        logoElement.textContent = config.title;
+    }
+    
+    // Update any price displays in the interface
+    const priceElements = document.querySelectorAll('.price, .cost, .product-price');
+    priceElements.forEach(el => el.textContent = config.price);
+    
+    // Update main title if it exists
+    const titleElements = document.querySelectorAll('h1, .main-title');
+    titleElements.forEach(el => {
+        if (el.textContent.includes('Premium dApp Manager')) {
+            el.textContent = config.title;
+        }
+    });
+    
+    // Add product-specific styling
+    if (productType === 'domain') {
+        document.body.style.setProperty('--primary-color', '#00bfff');
+        // Update premium badge to reflect domain service
+        const premiumBadge = document.querySelector('.premium-badge');
+        if (premiumBadge) {
+            premiumBadge.innerHTML = '🌐 Domain Service';
+            premiumBadge.style.background = 'linear-gradient(135deg, #00bfff, #0099cc)';
+        }
+    }
+    
+    // Add purchase button to navbar if needed
+    addPurchaseButton(config, productType);
+    
+    console.log(`🎯 Loaded product: ${productType}`, config);
+}
+
+// Add purchase button functionality
+function addPurchaseButton(config, productType) {
+    const userInfo = document.querySelector('.user-info');
+    if (userInfo && !document.querySelector('.purchase-btn')) {
+        const purchaseBtn = document.createElement('button');
+        purchaseBtn.className = 'btn btn-premium purchase-btn';
+        purchaseBtn.style.marginLeft = '15px';
+        purchaseBtn.style.padding = '8px 16px';
+        purchaseBtn.style.fontSize = '0.9rem';
         
+        if (productType === 'domain') {
+            purchaseBtn.innerHTML = '🌐 Subscribe ($1/mo)';
+            purchaseBtn.onclick = () => initiateDomainPayment();
+        } else {
+            purchaseBtn.innerHTML = '💳 Buy License ($49.99)';
+            purchaseBtn.onclick = () => initiateClusterPayment();
+        }
+        
+        userInfo.appendChild(purchaseBtn);
+    }
+}
+
+// Payment functions
+function initiateDomainPayment() {
+    showNotification('💳 Processing domain subscription...', 'info');
+    setTimeout(() => {
+        showNotification('✅ Domain service activated! Check email for setup instructions.', 'success');
+    }, 3000);
+    // Add your real payment gateway integration here
+}
+
+function initiateClusterPayment() {
+    showNotification('💳 Processing cluster license...', 'info');
+    setTimeout(() => {
+        showNotification('✅ Cluster license activated! All features unlocked.', 'success');
+    }, 3000);
+    // Add your real payment gateway integration here
+}
+
         // Navigation
         function setupNavigation() {
             document.querySelectorAll('.nav-link').forEach(link => {
