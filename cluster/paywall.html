@@ -389,29 +389,8 @@
             startPaymentMonitoring();
         }
         
-        function startPaymentMonitoring() {
-            // Start 60-minute countdown
-            let timeLeft = 3600; // 60 minutes
-            const countdown = document.getElementById('countdown');
-            
-            paymentTimer = setInterval(() => {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                countdown.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                timeLeft--;
-                
-                if (timeLeft < 0) {
-                    clearInterval(paymentTimer);
-                    countdown.textContent = 'EXPIRED';
-                }
-            }, 1000);
-            
-            // Monitor for payment (simulate for demo)
-            setTimeout(() => {
-                alert('🎉 Payment received! NFT license minted successfully!\n\nRedirecting to cluster manager...');
-                window.location.href = '/cluster/dapp-manager.html?access=paid&welcome=true';
-            }, 30000); // Demo: auto-success after 30 seconds
-        }
+        // ✅ Real-time monitoring now handled by WebSocket in proceedWithPayment()
+// This function is no longer needed!
         
         function copyAddress() {
             const address = document.getElementById('payment-address').textContent;
