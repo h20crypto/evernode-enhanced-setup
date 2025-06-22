@@ -13,6 +13,18 @@ echo -e "${BLUE}🌐 Fixing Domain and Nginx Configuration${NC}"
 echo "=========================================="
 echo ""
 
+# Add to your existing nginx configuration
+location /api/payment/ {
+    proxy_pass http://localhost:3000/api/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+
+# Keep all your existing PHP API routes
+location /api/ {
+    try_files $uri $uri/ /api/index.php?$query_string;
+}
+
 # Check current PHP-FPM version
 echo -e "${YELLOW}🔍 Detecting PHP-FPM version...${NC}"
 PHP_VERSION=$(php -v | head -n 1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)
