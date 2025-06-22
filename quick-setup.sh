@@ -97,6 +97,18 @@ check_permissions() {
     fi
 }
 
+# Add this function anywhere in your existing script
+install_payment_api() {
+    print_info "🚀 Installing professional payment API..."
+    
+    # Install Node.js
+    if ! command -v node >/dev/null 2>&1; then
+        print_info "📦 Installing Node.js..."
+        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+    fi
+    
+
 # Install dependencies
 install_dependencies() {
     print_info "Installing dependencies..."
@@ -219,13 +231,32 @@ install_nodejs_payment_api() {
     # Set up payment API
     sudo mkdir -p /var/www/html/payment-api
     cd /var/www/html/payment-api
+    sudo mkdir -p /var/www/html/payment-api/{src,scripts}
     
     # Download payment API files from your repo
     sudo curl -fsSL "$github_base/payment-api/package.json" -o package.json
     sudo curl -fsSL "$github_base/payment-api/src/index.ts" -o src/index.ts
+     # Download files from GitHub
+    
+    print_info "📥 Downloading payment API..."
+    sudo curl -fsSL "$github_base/payment-api/package.json" -o /var/www/html/payment-api/package.json
+    sudo curl -fsSL "$github_base/payment-api/src/index.ts" -o /var/www/html/payment-api/src/index.ts
+    sudo curl -fsSL "$github_base/payment-api/scripts/install-and-start.sh" -o /var/www/html/payment-api/scripts/install-and-start.sh
+
+    # Set permissions and install
+    sudo chmod +x /var/www/html/payment-api/scripts/install-and-start.sh
+    sudo chown -R www-data:www-data /var/www/html/payment-api
     
     # Install dependencies
     sudo npm install
+
+    # Run the installation
+    cd /var/www/html/payment-api
+    sudo -u www-data /var/www/html/payment-api/scripts/install-and-start.sh
+    cd - >/dev/null
+    
+    print_status "Payment API installation complete"
+}
     
     # Build and start
     sudo npm run build
@@ -335,7 +366,39 @@ set_permissions() {
     sudo find /var/www/html -type f -name "*.css" -exec chmod 644 {} \;
     sudo find /var/www/html -type f -name "*.js" -exec chmod 644 {} \;
     sudo find /var/www/html -type d -exec chmod 755 {} \;
+
+    # Add nginx proxy configuration
+configure_nginx_payment_proxy() {
+    print_info "🌐 Adding payment API proxy to nginx..."
     
+    # Add payment proxy to your existing nginx config
+    # This assumes you have a working nginx setup already
+    
+    # Create a simple proxy config
+    sudo tee /etc/nginx/sites-available/payment-proxy << 'EOF'
+# Payment API proxy configuration
+location /api/payment/ {
+    proxy_pass http://localhost:3000/api/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    
+    # WebSocket support
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+EOF
+
+    # Include this in your main nginx config
+    if [ -f /etc/nginx/sites-available/evernode-enhanced ]; then
+        # Add to existing config
+        sudo sed -i '/location \/api\//i \ \ \ \ # Payment API proxy\n\ \ \ \ location /api/payment/ {\n\ \ \ \ \ \ \ \ proxy_pass http://localhost:3000/api/;\n\ \ \ \ \ \ \ \ proxy_set_header Host $host;\n\ \ \ \ \ \ \ \ proxy_set_header X-Real-IP $remote_addr;\n\ \ \ \ }\n' /etc/nginx/sites-available/evernode-enhanced
+        sudo systemctl reload nginx
+    fi
+    
+    print_status "Nginx payment proxy configured"
+}
     # Make PHP files executable
     sudo chmod +x /var/www/html/api/*.php 2>/dev/null || true
     
