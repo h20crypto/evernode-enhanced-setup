@@ -3,352 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Evernode Host - Professional dApp Deployment Platform</title>
+    <title>🚀 Enhanced Evernode Host - Professional dApp Deployment Platform</title>
+    <link rel="stylesheet" href="/assets/css/unified-navigation.css">
+    <script src="/assets/js/unified-state-manager.js"></script>
     <style>
-        * {
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            color: #ffffff;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            margin-top: 70px;
         }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Animated Background */
-        .bg-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 15s infinite linear;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-        }
-
-        /* Glassmorphism containers */
-        .glass-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Navigation */
-        .nav {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .nav-btn {
-            padding: 8px 16px;
-            background: transparent;
-            border: none;
-            color: white;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            text-decoration: none;
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* Main container */
-        .container {
-            max-width: 1200px;
+        
+        .landing-container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 100px 20px 20px;
-            position: relative;
-            z-index: 10;
+            padding: 20px;
         }
-
-        /* Hero Section */
-        .hero {
+        
+        .monitor-header {
             text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInUp 1s ease;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .hero h1 {
-            font-size: 3.5rem;
+        
+        .monitor-title {
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #00ff88, #00d4ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
+            margin-bottom: 10px;
+            color: #00ff88;
         }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
+        
+        .monitor-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .health-indicator {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .host-info-banner {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .banner-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-align: center;
+        }
+        
+        .host-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .host-metric {
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-family: monospace;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #ffffff;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .status-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .status-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+        
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        
+        .status-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #00ff88;
+        }
+        
+        .status-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .value-prop-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #00ff88;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
             opacity: 0.9;
             margin-bottom: 30px;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
-
-        /* Value Proposition Section */
-        .value-prop {
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 30px;
+        }
+        
+        .feature-card {
             text-align: center;
-            margin-bottom: 50px;
-            padding: 40px;
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
-            border-radius: 20px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .value-prop h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #00ff88;
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
         }
-
-        .value-prop p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
+        
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
         }
-
-        /* Comparison Section */
-        .comparison {
+        
+        .feature-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .comparison-section {
+            margin-bottom: 40px;
+        }
+        
+        .comparison-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            margin-bottom: 50px;
         }
-
+        
         .comparison-card {
-            padding: 30px;
-            border-radius: 20px;
-            position: relative;
-            backdrop-filter: blur(20px);
-        }
-
-        .comparison-card.basic {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 32px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
         }
-
-        .comparison-card.cluster {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 212, 255, 0.15));
-            border: 2px solid #00ff88;
+        
+        .comparison-card.premium {
+            border-color: rgba(0, 255, 136, 0.4);
+            background: rgba(0, 255, 136, 0.05);
         }
-
+        
+        .popular-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffd700, #f39c12);
+            color: #000;
+            padding: 6px 16px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
         .comparison-header {
             text-align: center;
             margin-bottom: 25px;
         }
-
+        
         .comparison-title {
-            font-size: 1.8rem;
-            font-weight: bold;
+            font-size: 1.5rem;
+            font-weight: 600;
             margin-bottom: 10px;
+            color: #00ff88;
         }
-
+        
         .comparison-price {
             font-size: 2.5rem;
-            font-weight: bold;
-            color: #00ff88;
+            font-weight: 700;
+            color: #ffd700;
             margin-bottom: 5px;
         }
-
+        
         .comparison-period {
             opacity: 0.7;
             font-size: 0.9rem;
         }
-
+        
         .feature-list {
             list-style: none;
             margin-bottom: 30px;
+            padding: 0;
         }
-
+        
         .feature-list li {
             padding: 8px 0;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-
+        
         .feature-list li::before {
             content: "✓";
             color: #00ff88;
             font-weight: bold;
             font-size: 1.1rem;
         }
-
+        
         .feature-list li.disabled::before {
             content: "✗";
-            color: #ff6b6b;
+            color: #ef4444;
         }
-
+        
         .feature-list li.disabled {
             opacity: 0.5;
         }
-
-        /* CTA Buttons */
+        
         .cta-button {
             display: block;
             width: 100%;
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-            color: #1a1a1a;
+            padding: 16px 32px;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000;
             text-decoration: none;
             border-radius: 12px;
-            font-weight: bold;
+            font-weight: 700;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
             border: none;
             cursor: pointer;
             font-size: 1.1rem;
         }
-
+        
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4);
         }
-
+        
         .cta-button.secondary {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
-
+        
         .cta-button.secondary:hover {
             background: rgba(255, 255, 255, 0.2);
         }
-
-        .popular-badge {
-            position: absolute;
-            top: -10px;
-            right: 20px;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #1a1a1a;
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        /* Host Status */
-        .host-status {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 50px;
-        }
-
-        .status-card {
-            padding: 25px;
-            text-align: center;
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        
+        .tutorial-section {
             background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
         }
-
-        .status-card:hover {
-            transform: translateY(-5px);
+        
+        .tutorial-steps {
+            margin-top: 30px;
         }
-
-        .status-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .status-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #00ff88;
-            margin-bottom: 5px;
-        }
-
-        .status-label {
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
-
-        /* Quick Start Section */
-        .quick-start {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 50px;
-        }
-
-        .quick-start h3 {
-            color: #00ff88;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .deployment-examples {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        
+        .step-item {
+            display: flex;
             gap: 20px;
+            margin-bottom: 30px;
+            align-items: flex-start;
         }
-
-        .example-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .example-title {
+        
+        .step-number {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #000;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
             color: #00ff88;
             margin-bottom: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
-
-        .example-code {
+        
+        .step-code {
             background: rgba(0, 0, 0, 0.5);
             padding: 15px;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            overflow-x: auto;
+            margin: 10px 0;
             position: relative;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            font-size: 0.9rem;
         }
-
+        
         .copy-btn {
             position: absolute;
             top: 5px;
@@ -361,954 +376,289 @@
             cursor: pointer;
             font-size: 0.8rem;
         }
-
-        /* Domain Modal */
-        .domain-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .domain-modal.active {
-            display: flex;
-        }
-
-        .domain-modal-content {
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
-            border: 2px solid rgba(0, 255, 136, 0.3);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            backdrop-filter: blur(20px);
-            position: relative;
-        }
-
-        .domain-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .domain-modal-header h3 {
-            color: #00ff88;
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .domain-modal-close {
-            background: none;
-            border: none;
-            font-size: 2rem;
-            color: #00ff88;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .domain-modal-close:hover {
-            background: rgba(0, 255, 136, 0.2);
-            transform: rotate(90deg);
-        }
-
-        .domain-step {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .domain-step h4 {
-            color: #00ff88;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-
-        .dns-record {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            margin: 10px 0;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #00ff88;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #00ff88;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-        }
-
-        .form-group small {
-            display: block;
-            opacity: 0.7;
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-
-        .pricing-note {
+        
+        .final-cta {
             background: rgba(0, 255, 136, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            margin: 20px 0;
+            border-radius: 16px;
+            padding: 40px;
             text-align: center;
+            border: 1px solid rgba(0, 255, 136, 0.3);
         }
-
-        /* Tutorial Steps */
-        .tutorial-steps {
-            margin-bottom: 30px;
-        }
-
-        .step-item {
+        
+        .cta-grid {
             display: flex;
             gap: 20px;
-            margin-bottom: 30px;
-            align-items: flex-start;
-        }
-
-        .step-number {
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-            color: #1a1a1a;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .step-content {
-            flex: 1;
-        }
-
-        .step-content h3 {
-            color: #00ff88;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-
-        .step-code {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            margin: 10px 0;
-            position: relative;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-
-        .tutorial-tips {
-            background: rgba(0, 255, 136, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            flex-wrap: wrap;
             margin-top: 30px;
         }
-
-        /* Mobile optimizations */
+        
+        .cta-grid .cta-button {
+            width: auto;
+            min-width: 200px;
+            padding: 16px 24px;
+        }
+        
+        /* Mobile responsiveness */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
+            .monitor-title {
+                font-size: 2rem;
             }
             
-            .comparison {
+            .comparison-grid {
                 grid-template-columns: 1fr;
             }
             
-            .container {
-                padding: 80px 15px 15px;
-            }
-            
-            .nav {
-                flex-wrap: wrap;
-                max-width: 90%;
-            }
-
-            .domain-modal-content {
-                margin: 10px;
-                padding: 20px;
-            }
-
-            .domain-step {
+            .landing-container {
                 padding: 15px;
             }
-
+            
             .step-item {
                 flex-direction: column;
                 gap: 10px;
             }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
+            
+            .cta-grid {
+                flex-direction: column;
+                align-items: center;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            
+            .cta-grid .cta-button {
+                width: 100%;
+                max-width: 300px;
             }
-        }
-
-        .fade-in {
-            animation: fadeInUp 0.6s ease-out forwards;
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bg-particles" id="particles"></div>
-
-    <!-- Navigation -->
-    <nav class="nav">
-        <a href="#hero" class="nav-btn active">🏠 Home</a>
-        <a href="#pricing" class="nav-btn">💰 Pricing</a>
-        <a href="#domains" class="nav-btn">🌐 Domains</a>
-        <a href="#tutorial" class="nav-btn">📚 Tutorial</a>
-        <a href="#demo" class="nav-btn">🚀 Demo</a>
-        <a href="/cluster/dapp-manager.html" class="nav-btn" target="_blank">⚡ Launch</a>
+    <!-- Unified Navigation -->
+    <nav class="enhanced-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">🚀 Enhanced Evernode</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">Dashboard</a>
+                <a href="/monitoring-dashboard.html" class="nav-link admin-only">Monitoring</a>
+                <a href="/my-earnings.html" class="nav-link admin-only">Earnings</a>
+                <a href="/host-discovery.html" class="nav-link">Discovery</a>
+                <a href="/leaderboard.html" class="nav-link admin-only">Leaderboard</a>
+                <a href="/commission.html" class="nav-link admin-only">Commission</a>
+                <a href="/cluster/dapp-manager.html" class="nav-link admin-only">dApp Manager</a>
+                <a href="/premium-cluster.html" class="nav-link">🚀 Premium Cluster</a>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="toggleAdminMode()">👑</button>
+            </div>
+        </div>
     </nav>
 
-    <div class="container">
-        <!-- Hero Section -->
-        <section id="hero" class="hero">
-            <h1>Scale Your dApps with<br>Cluster Management</h1>
-            <p class="hero-subtitle">
-                Deploy and manage multiple dApp instances across the Evernode network with professional tools, 
-                real-time monitoring, and automated scaling.
-            </p>
-        </section>
+    <div class="landing-container">
+        <!-- Header -->
+        <div class="monitor-header">
+            <h1 class="monitor-title">🚀 Enhanced Evernode Host</h1>
+            <p class="monitor-subtitle">Scale Your dApps with Cluster Management</p>
+            <div class="health-indicator">
+                ✅ Professional dApp Deployment Platform
+            </div>
+        </div>
 
         <!-- Host Info Banner -->
-        <section class="host-info-banner glass-container" style="margin-bottom: 40px; padding: 25px; text-align: center;">
-            <h3 style="color: #00ff88; margin-bottom: 15px;">🏠 This Enhanced Host</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                <div>
-                    <div style="font-weight: bold; color: #00ff88;">Host Address</div>
-                    <div id="host-address" style="font-family: monospace; font-size: 0.9rem;">Loading...</div>
+        <div class="host-info-banner">
+            <h2 class="banner-title">🏠 This Enhanced Host</h2>
+            <div class="host-grid">
+                <div class="host-metric">
+                    <div class="metric-label">Host Address</div>
+                    <div class="metric-value" id="host-address">Loading...</div>
                 </div>
-                <div>
-                    <div style="font-weight: bold; color: #00ff88;">Domain</div>
-                    <div id="host-domain" style="font-family: monospace; font-size: 0.9rem;">Loading...</div>
+                <div class="host-metric">
+                    <div class="metric-label">Domain</div>
+                    <div class="metric-value" id="host-domain">Loading...</div>
                 </div>
-                <div>
-                    <div style="font-weight: bold; color: #00ff88;">Lease Rate</div>
-                    <div id="host-lease-rate" style="font-family: monospace; font-size: 0.9rem;">Loading...</div>
+                <div class="host-metric">
+                    <div class="metric-label">Lease Rate</div>
+                    <div class="metric-value" id="host-lease-rate">Loading...</div>
                 </div>
             </div>
-        </section>
+        </div>
 
         <!-- Host Status -->
-        <section class="host-status">
-            <div class="status-card glass-container">
+        <div class="status-grid">
+            <div class="status-card">
                 <div class="status-icon">🟢</div>
-                <div class="status-value" id="available-instances">-</div>
+                <div class="status-value" id="available-instances">3</div>
                 <div class="status-label">Available Instances</div>
             </div>
-            <div class="status-card glass-container">
+            <div class="status-card">
                 <div class="status-icon">⚡</div>
-                <div class="status-value" id="response-time">-</div>
+                <div class="status-value" id="response-time">45ms</div>
                 <div class="status-label">Response Time</div>
             </div>
-            <div class="status-card glass-container">
+            <div class="status-card">
                 <div class="status-icon">🏆</div>
-                <div class="status-value" id="network-rank">-</div>
+                <div class="status-value" id="network-rank">#127</div>
                 <div class="status-label">Network Rank</div>
             </div>
-            <div class="status-card glass-container">
+            <div class="status-card">
                 <div class="status-icon">💎</div>
-                <div class="status-value">99.8%</div>
+                <div class="status-value" id="uptime">99.8%</div>
                 <div class="status-label">Uptime</div>
             </div>
-        </section>
+        </div>
 
         <!-- Value Proposition -->
-        <section class="value-prop glass-container">
-            <h2>Why Cluster Management?</h2>
-            <p>
+        <div class="value-prop-section">
+            <h2 class="section-title">Why Cluster Management?</h2>
+            <p class="section-subtitle">
                 Single instance deployments are limiting your potential. Our cluster management platform 
                 lets you deploy the same dApp across multiple hosts for better performance, redundancy, 
                 and geographic distribution.
             </p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px;">
-                <div style="text-align: center;">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">📈</div>
-                    <strong>5x Performance</strong>
-                    <div style="opacity: 0.8;">Load balancing across hosts</div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <div class="feature-title">5x Performance</div>
+                    <div class="feature-description">Load balancing across hosts</div>
                 </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">💰</div>
-                    <strong>Bulk Pricing</strong>
-                    <div style="opacity: 0.8;">Negotiate better rates at scale</div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <div class="feature-title">Bulk Pricing</div>
+                    <div class="feature-description">Negotiate better rates at scale</div>
                 </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🛡️</div>
-                    <strong>99.9% Uptime</strong>
-                    <div style="opacity: 0.8;">Automatic failover protection</div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-title">99.9% Uptime</div>
+                    <div class="feature-description">Automatic failover protection</div>
                 </div>
             </div>
-        </section>
+        </div>
 
         <!-- Pricing Comparison -->
-        <section id="pricing" class="comparison">
-            <div class="comparison-card basic glass-container">
-                <div class="comparison-header">
-                    <div class="comparison-title">Single Instance</div>
-                    <div class="comparison-price" id="single-price">$0.0004</div>
-                    <div class="comparison-period">per month (host dependent)</div>
-                </div>
-                <ul class="feature-list">
-                    <li>Single host deployment</li>
-                    <li>Basic monitoring</li>
-                    <li>Manual scaling</li>
-                    <li>Custom domains ($1/month extra)</li>
-                    <li class="disabled">Load balancing</li>
-                    <li class="disabled">Auto-failover</li>
-                    <li class="disabled">Host discovery</li>
-                    <li class="disabled">Advanced analytics</li>
-                    <li class="disabled">Template marketplace</li>
-                </ul>
-                <button class="cta-button secondary" onclick="scrollToTutorial()">
-                    📚 See Tutorial Below
-                </button>
-            </div>
-
-            <div class="comparison-card cluster glass-container">
-                <div class="popular-badge">🔥 Most Popular</div>
-                <div class="comparison-header">
-                    <div class="comparison-title">Cluster Manager</div>
-                    <div class="comparison-price" id="cluster-price">$49.99</div>
-                    <div class="comparison-period">one-time license + hosting costs</div>
-                </div>
-                <ul class="feature-list">
-                    <li>Multi-host deployment</li>
-                    <li>Real-time monitoring</li>
-                    <li>Auto-scaling</li>
-                    <li>Load balancing</li>
-                    <li>Auto-failover</li>
-                    <li>Smart host discovery</li>
-                    <li>Advanced analytics</li>
-                    <li>Template marketplace</li>
-                    <li>Custom domain automation</li>
-                </ul>
-                <a href="/cluster/dapp-manager.html" class="cta-button">
-                    🚀 Launch Cluster Manager
-                </a>
-            </div>
-        </section>
-
-        <!-- Domain Mapping Service -->
-        <section id="domains" class="domain-service" style="margin-bottom: 50px;">
-            <div class="glass-container" style="padding: 40px;">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <h2 style="color: #00ff88; font-size: 2rem; margin-bottom: 15px;">🌐 Professional Custom Domains</h2>
-                    <p style="font-size: 1.1rem; opacity: 0.9;">Transform your app from <code>host:8081</code> to <code>https://yourdomain.com</code></p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;">
-                    <!-- Before/After Comparison -->
-                    <div>
-                        <h3 style="color: #ff6b6b; margin-bottom: 20px;">❌ Without Custom Domain</h3>
-                        <div style="background: rgba(255, 107, 107, 0.1); padding: 20px; border-radius: 15px; border: 1px solid rgba(255, 107, 107, 0.3);">
-                            <div style="font-family: monospace; margin-bottom: 10px;" class="domain-comparison-before">http://loading:8081</div>
-                            <div style="opacity: 0.8; font-size: 0.9rem;">
-                                • Looks unprofessional<br>
-                                • Hard to remember<br>
-                                • No SSL by default<br>
-                                • Port numbers confuse users
-                            </div>
-                        </div>
+        <div class="comparison-section">
+            <h2 class="section-title">💰 Pricing Options</h2>
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <div class="comparison-header">
+                        <div class="comparison-title">Single Instance</div>
+                        <div class="comparison-price" id="single-price">$0.0004</div>
+                        <div class="comparison-period">per month (host dependent)</div>
                     </div>
-
-                    <div>
-                        <h3 style="color: #00ff88; margin-bottom: 20px;">✅ With Custom Domain ($1/month)</h3>
-                        <div style="background: rgba(0, 255, 136, 0.1); padding: 20px; border-radius: 15px; border: 1px solid rgba(0, 255, 136, 0.3);">
-                            <div style="font-family: monospace; margin-bottom: 10px;">https://yourdomain.com 🔒</div>
-                            <div style="opacity: 0.8; font-size: 0.9rem;">
-                                • Professional appearance<br>
-                                • Easy to share and remember<br>
-                                • Free SSL certificate<br>
-                                • Builds user trust
-                            </div>
-                        </div>
-                    </div>
+                    <ul class="feature-list">
+                        <li>Single host deployment</li>
+                        <li>Basic monitoring</li>
+                        <li>Manual scaling</li>
+                        <li>Custom domains ($1/month extra)</li>
+                        <li class="disabled">Load balancing</li>
+                        <li class="disabled">Auto-failover</li>
+                        <li class="disabled">Host discovery</li>
+                        <li class="disabled">Advanced analytics</li>
+                    </ul>
+                    <button class="cta-button secondary" onclick="scrollToTutorial()">
+                        📚 See Tutorial Below
+                    </button>
                 </div>
 
-                <!-- Pricing -->
-                <div style="text-align: center; margin: 40px 0;">
-                    <div style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1)); padding: 30px; border-radius: 20px; border: 2px solid #00ff88; max-width: 400px; margin: 0 auto;">
-                        <div style="font-size: 3rem; font-weight: bold; color: #00ff88; margin-bottom: 10px;">$1</div>
-                        <div style="font-size: 1.2rem; margin-bottom: 15px;">per month, per domain</div>
-                        <div style="opacity: 0.8; font-size: 0.9rem;">
-                            ✅ Free SSL certificate (Let's Encrypt)<br>
-                            ✅ Automatic nginx configuration<br>
-                            ✅ SSL renewal management<br>
-                            ✅ Email support
-                        </div>
+                <div class="comparison-card premium">
+                    <div class="popular-badge">🔥 Most Popular</div>
+                    <div class="comparison-header">
+                        <div class="comparison-title">Premium Cluster</div>
+                        <div class="comparison-price">$49.99</div>
+                        <div class="comparison-period">one-time license + hosting costs</div>
                     </div>
-                </div>
-
-                <!-- How It Works -->
-                <div style="margin-top: 40px;">
-                    <h3 style="color: #00ff88; text-align: center; margin-bottom: 25px;">🔧 How It Works</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="font-size: 2rem; margin-bottom: 10px;">1️⃣</div>
-                            <strong>Deploy Your App</strong>
-                            <div style="opacity: 0.8; margin-top: 5px; font-size: 0.9rem;">Use evdevkit as normal</div>
-                        </div>
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="font-size: 2rem; margin-bottom: 10px;">2️⃣</div>
-                            <strong>Point Your Domain</strong>
-                            <div style="opacity: 0.8; margin-top: 5px; font-size: 0.9rem;">DNS A record to our IP</div>
-                        </div>
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="font-size: 2rem; margin-bottom: 10px;">3️⃣</div>
-                            <strong>Purchase & Request Setup</strong>
-                            <div style="opacity: 0.8; margin-top: 5px; font-size: 0.9rem;">Secure checkout + setup form</div>
-                        </div>
-                        <div style="text-align: center; padding: 20px;">
-                            <div style="font-size: 2rem; margin-bottom: 10px;">4️⃣</div>
-                            <strong>Go Live</strong>
-                            <div style="opacity: 0.8; margin-top: 5px; font-size: 0.9rem;">https://yourdomain.com</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CTA -->
-                <div style="text-align: center; margin-top: 30px;">
-                    <a href="/cluster/dapp-manager.html?product=domain" class="cta-button" style="min-width: 250px; text-decoration: none;">
-                        🌐 Purchase Custom Domain ($1/mo)
+                    <ul class="feature-list">
+                        <li>Multi-host deployment</li>
+                        <li>Real-time monitoring</li>
+                        <li>Auto-scaling</li>
+                        <li>Load balancing</li>
+                        <li>Auto-failover</li>
+                        <li>Smart host discovery</li>
+                        <li>Advanced analytics</li>
+                        <li>Template marketplace</li>
+                    </ul>
+                    <a href="/premium-cluster.html" class="cta-button">
+                        🚀 Get Premium Cluster
                     </a>
-                    <div style="margin-top: 15px;">
-                        <button onclick="openDomainRequest()" class="cta-button secondary" style="min-width: 200px;">
-                            📋 Setup Instructions
-                        </button>
-                    </div>
-                    <div style="margin-top: 15px; opacity: 0.7; font-size: 0.9rem;">
-                        Secure payment • Same checkout as cluster license
-                    </div>
                 </div>
             </div>
-        </section>
+        </div>
 
         <!-- Tutorial Section -->
-        <section id="tutorial" class="tutorial-section" style="margin-bottom: 50px;">
-            <div class="glass-container" style="padding: 40px;">
-                <h2 style="text-align: center; color: #00ff88; margin-bottom: 30px;">📚 Single Instance Tutorial</h2>
-                <p style="text-align: center; margin-bottom: 40px; font-size: 1.1rem; opacity: 0.9;">
-                    Learn how to deploy your first dApp on this Enhanced Evernode host
-                </p>
+        <div class="tutorial-section">
+            <h2 class="section-title">📚 Quick Start Tutorial</h2>
+            <p class="section-subtitle">
+                Learn how to deploy your first dApp on this Enhanced Evernode host
+            </p>
 
-                <div class="tutorial-steps">
-                    <div class="step-item">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>Install Evernode DevKit</h3>
-                            <div class="step-code">
-                                npm install -g @evernode/devkit<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <p>The official Evernode development toolkit for deploying dApps</p>
+            <div class="tutorial-steps">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Install Evernode DevKit</h3>
+                        <div class="step-code">
+                            npm install -g @evernode/devkit<button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         </div>
-                    </div>
-
-                    <div class="step-item">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>Configure Your Wallet</h3>
-                            <div class="step-code">
-                                evdevkit wallet import<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <p>Import your Xahau wallet with EVR tokens for payment (starting at $0.0004/month)</p>
-                        </div>
-                    </div>
-
-                    <div class="step-item">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>Deploy to This Host</h3>
-                            <div class="step-code">
-                                evdevkit deploy my-app:latest --host <span id="tutorial-host-address">loading...</span><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <p>Deploy your Docker image directly to this Enhanced Evernode host</p>
-                        </div>
-                    </div>
-
-                    <div class="step-item">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <h3>Access Your dApp</h3>
-                            <div class="step-code">
-                                # Your app will be available at:
-                                https://<span id="tutorial-host-domain">loading...</span>/your-app<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                            </div>
-                            <p>Enhanced hosts provide automatic URL generation and SSL certificates</p>
-                        </div>
+                        <p>The official Evernode development toolkit for deploying dApps</p>
                     </div>
                 </div>
 
-                <div class="tutorial-tips">
-                    <h4 style="color: #00ff88; margin-bottom: 15px;">💡 Pro Tips for This Host</h4>
-                    <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 10px;">✅ <strong>Enhanced Features:</strong> Automatic URL generation, real-time monitoring</li>
-                        <li style="margin-bottom: 10px;">⚡ <strong>Fast Deployment:</strong> Usually ready in under 2 minutes</li>
-                        <li style="margin-bottom: 10px;">💰 <strong>Ultra-Low Cost:</strong> <span id="tutorial-cost">0.00001 EVR/hour (~$0.0004/month)</span></li>
-                        <li style="margin-bottom: 10px;">🔍 <strong>Debug Support:</strong> Enhanced logging and troubleshooting tools</li>
-                    </ul>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Configure Your Wallet</h3>
+                        <div class="step-code">
+                            evdevkit wallet import<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <p>Import your Xahau wallet with EVR tokens for payment</p>
+                    </div>
                 </div>
 
-                <div style="text-align: center; margin-top: 30px;">
-                    <div style="display: inline-flex; gap: 15px; flex-wrap: wrap;">
-                        <a href="https://docs.evernode.org/" target="_blank" class="cta-button secondary" style="min-width: 150px;">
-                            📖 Full Documentation
-                        </a>
-                        <button onclick="scrollToDemo()" class="cta-button secondary" style="min-width: 150px;">
-                            🎯 See Examples
-                        </button>
-                        <a href="/cluster/dapp-manager.html" class="cta-button" style="min-width: 150px;">
-                            🚀 Upgrade to Cluster
-                        </a>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Deploy to This Host</h3>
+                        <div class="step-code">
+                            evdevkit deploy my-app:latest --host <span id="tutorial-host-address">loading...</span><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <p>Deploy your Docker image directly to this Enhanced Evernode host</p>
+                    </div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Access Your dApp</h3>
+                        <div class="step-code">
+                            # Your app will be available at:
+                            https://<span id="tutorial-host-domain">loading...</span>/your-app<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <p>Enhanced hosts provide automatic URL generation and SSL certificates</p>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Demo Section -->
-        <section id="demo" class="quick-start">
-            <h3>🎯 Quick Deployment Examples</h3>
-            <div class="deployment-examples">
-                <div class="example-card">
-                    <div class="example-title">Single Instance (Basic)</div>
-                    <div class="example-code">
-                        evdevkit deploy my-dapp:latest<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <div style="margin-top: 10px; opacity: 0.8; font-size: 0.9rem;">
-                        ⏱️ ~2 minutes setup • 💰 <span id="demo-single-cost">$0.0004/month</span> • 🏠 1 host
-                    </div>
-                </div>
-
-                <div class="example-card" style="border: 2px solid #00ff88;">
-                    <div class="example-title">Cluster Deployment (Enhanced)</div>
-                    <div class="example-code">
-                        cluster deploy my-dapp:latest --hosts 5 --regions us,eu<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <div style="margin-top: 10px; opacity: 0.8; font-size: 0.9rem;">
-                        ⏱️ ~30 seconds setup • 💰 Hosting costs + $49.99 license • 🌐 5 hosts • 🛡️ Auto-failover
-                    </div>
-                </div>
-
-                <div class="example-card">
-                    <div class="example-title">DeFi Protocol Template</div>
-                    <div class="example-code">
-                        cluster template deploy defi-amm --scale auto<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <div style="margin-top: 10px; opacity: 0.8; font-size: 0.9rem;">
-                        ⏱️ ~45 seconds setup • 💰 Variable EVR costs • 📈 Auto-scaling • 🎨 Pre-built UI
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
 
         <!-- Final CTA -->
-        <section style="text-align: center; padding: 40px; background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1)); border-radius: 20px; border: 1px solid rgba(0, 255, 136, 0.3);">
+        <div class="final-cta">
             <h2 style="margin-bottom: 20px; color: #00ff88;">Ready to Scale Your dApps?</h2>
             <p style="margin-bottom: 20px; font-size: 1.1rem; opacity: 0.9;">
                 Join hundreds of developers already using our enhanced hosting platform
             </p>
             
-            <!-- EVR Economics Explanation -->
-            <div style="background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 20px; margin: 20px 0; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
-                <h4 style="color: #00ff88; margin-bottom: 10px; text-align: center;">💡 Total Cost Breakdown</h4>
-                <div style="font-size: 0.9rem; opacity: 0.9;">
-                    <strong>Ultra-affordable hosting + professional domains:</strong><br>
-                    • Hosting: <span id="economics-rate">0.00001</span> EVR/hour × $0.18 = ~<span id="economics-monthly">$0.0004</span>/month<br>
-                    • Custom domain: $1/month (optional)<br>
-                    • <strong>Total: ~$1/month for professional hosting</strong><br>
-                    • Compare to: Traditional hosting $15-30/month
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                <a href="/cluster/demo.html" class="cta-button">
-        🎮 Try Demo (Free)
-    </a>
-
-        <!-- ADD: Secondary button for direct purchase -->
-        <a href="/cluster/paywall.html" class="cta-button secondary">
-        💳 Buy Full Version ($49.99)
-    </a>
-                <a href="/cluster/dapp-manager.html?product=domain" class="cta-button secondary" style="min-width: 200px; text-decoration: none;">
-                    🌐 Custom Domain ($1/mo)
+            <div class="cta-grid">
+                <a href="/host-discovery.html" class="cta-button secondary">
+                    🔍 Explore Network
+                </a>
+                <a href="/premium-cluster.html" class="cta-button">
+                    🚀 Get Premium Cluster
                 </a>
             </div>
+            
             <div style="margin-top: 20px; opacity: 0.7; font-size: 0.9rem;">
                 ✨ Secure payment system • 💝 Instant activation • 🛡️ 30-day money-back guarantee
-            </div>
-        </section>
-
-        <!-- Domain Request Modal -->
-        <div id="domainModal" class="domain-modal">
-            <div class="domain-modal-content">
-                <div class="domain-modal-header">
-                    <h3>📋 Custom Domain Setup Instructions</h3>
-                    <button class="domain-modal-close" onclick="closeDomainRequest()">×</button>
-                </div>
-                
-                <div class="domain-modal-body">
-                    <div class="domain-step">
-                        <h4>Step 1: Point Your Domain</h4>
-                        <p>Add this A record to your domain's DNS:</p>
-                        <div class="dns-record">
-                            <strong>Type:</strong> A<br>
-                            <strong>Name:</strong> @ (or your subdomain)<br>
-                            <strong>Value:</strong> <span id="modal-host-ip">Loading...</span><br>
-                            <strong>TTL:</strong> 300 (5 minutes)
-                        </div>
-                    </div>
-                    
-                    <div class="domain-step">
-                        <h4>Step 2: Request Domain Mapping</h4>
-                        <form id="domainForm">
-                            <div class="form-group">
-                                <label for="domain">Your Domain:</label>
-                                <input type="text" id="domain" placeholder="yourdomain.com" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="containerName">Container/App Name:</label>
-                                <input type="text" id="containerName" placeholder="my-wordpress-app" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="tenantId">Your Tenant ID:</label>
-                                <input type="text" id="tenantId" placeholder="sashi001" required>
-                                <small>Your Evernode tenant identifier</small>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="targetPort">App Port:</label>
-                                <input type="number" id="targetPort" placeholder="8081" required>
-                                <small>The port your app is running on</small>
-                            </div>
-                            
-                            <div class="pricing-note">
-                                <strong>Note:</strong> Complete your domain purchase first, then submit this form<br>
-                                <small>Setup usually takes 2-4 hours after purchase confirmation</small>
-                            </div>
-                            
-                            <button type="submit" class="cta-button" style="width: 100%; margin-top: 20px;">
-                                📨 Submit Setup Request
-                            </button>
-                            
-                            <div style="text-align: center; margin-top: 15px;">
-                                <a href="/cluster/dapp-manager.html?product=domain" class="cta-button secondary" style="text-decoration: none;">
-                                    💳 Purchase Domain First ($1/mo)
-                                </a>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div class="domain-step">
-                        <h4>Contact Information</h4>
-                        <p>For domain setup assistance after purchase, email: <strong id="support-email">domains@loading...</strong></p>
-                        <p>Setup time: Usually 2-4 hours after purchase confirmation</p>
-                        <p style="margin-top: 10px; opacity: 0.8; font-size: 0.9rem;">
-                            💡 <strong>Tip:</strong> Purchase your domain through our secure checkout first, then use this form for technical setup
-                        </p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Create animated particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 50;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.width = Math.random() * 4 + 2 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-
-        // Update real-time data from Evernode Network API
-        async function updateHostStatus() {
-            const currentDomain = window.location.hostname;
-            let realDomain = hostData.domain;
-            let realAddress = hostData.address;
-            let realEmail = domains@' + currentDomain;
-            let realIpAddress = hostData.ip || await resolveHostIp(hostData.domain);
-            
-            try {
-                // Get REAL host data from Evernode Network Registry
-                const evernodeApiUrl = `https://api.evernode.network/registry/hosts/${currentDomain}?limit=100`;
-                const evernodeResponse = await fetch(evernodeApiUrl);
-                const evernodeData = await evernodeResponse.json();
-                
-                if (evernodeData.data && evernodeData.data.length > 0) {
-                    const hostData = evernodeData.data[0]; // Get the first (and likely only) result
-                    
-                    // Store real domain and address for use throughout the page
-                    realDomain = hostData.domain;
-                    realAddress = hostData.address;
-                    realEmail = hostData.email;
-                    realIpAddress = hostData.ip || await resolveHostIp(hostData.domain);
-                    
-                    // Update with REAL data from Evernode network
-                    document.getElementById('available-instances').textContent = hostData.maxInstances - hostData.activeInstances;
-                    document.getElementById('response-time').textContent = '<50ms';
-                    document.getElementById('network-rank').textContent = `#${hostData.hostReputation || 'N/A'}`;
-                    
-                    // Real host info - ALWAYS use API data
-                    document.getElementById('host-address').textContent = hostData.address;
-                    document.getElementById('host-domain').textContent = hostData.domain;
-                    
-                    // Calculate real lease rate costs
-                    const evrRate = parseFloat(hostData.leaseAmount); // e.g., 0.00001
-                    const evrPrice = 0.18; // $0.18 per EVR
-                    const monthlyUSD = (evrRate * evrPrice * 24 * 30).toFixed(4);
-                    
-                    document.getElementById('host-lease-rate').textContent = `${evrRate} EVR/hour (~$${monthlyUSD}/month)`;
-                    
-                    // Update tutorial with real host data
-                    document.getElementById('tutorial-host-address').textContent = hostData.address;
-                    document.getElementById('tutorial-host-domain').textContent = hostData.domain;
-                    
-                    // Update pricing comparison with real costs
-                    const realMonthlyCost = (evrRate * evrPrice * 24 * 30).toFixed(4);
-                    document.getElementById('single-price').textContent = `$${realMonthlyCost}`;
-                    document.getElementById('demo-single-cost').textContent = `$${realMonthlyCost}/month`;
-                    
-                    // Update economics explanation
-                    const economicsElements = document.querySelectorAll('#economics-rate');
-                    economicsElements.forEach(el => el.textContent = evrRate);
-                    const monthlyEl = document.getElementById('economics-monthly');
-                    if (monthlyEl) monthlyEl.textContent = `$${realMonthlyCost}`;
-                    
-                    // Update tutorial costs
-                    const tutorialCostEl = document.getElementById('tutorial-cost');
-                    if (tutorialCostEl) tutorialCostEl.textContent = `${evrRate} EVR/hour (~$${realMonthlyCost}/month)`;
-                    
-                    // ADD THESE TWO LINES HERE:
-                    realEmail = hostData.email; // Store real email
-                    window.realHostEmail = hostData.email; // Store globally for domain modal
-                    
-                    // Update domain modal with real IP for DNS setup
-                    updateDomainModal(realIpAddress, hostData.domain, hostData.email);
-                    
-                    // Update domain examples throughout the page with REAL domain
-                    updateDomainExamples(hostData.domain);
-                    
-                    console.log('✅ Loaded real host data from Evernode network:', {
-                        address: hostData.address,
-                        domain: hostData.domain,
-                        ip: realIpAddress,
-                        email: hostData.email,
-                        leaseAmount: hostData.leaseAmount,
-                        maxInstances: hostData.maxInstances,
-                        activeInstances: hostData.activeInstances,
-                        reputation: hostData.hostReputation,
-                        version: hostData.version
-                    });
-                    
-                } else {
-                    console.warn('No host data found in Evernode registry for domain:', currentDomain);
-                    await setFallbackHostInfo();
-                }
-                
-            } catch (error) {
-                console.warn('Failed to fetch from Evernode network API:', error);
-                
-                // Fallback: try local API
-                try {
-                    const hostResponse = await fetch('/api/instance-count.php');
-                    const hostData = await hostResponse.json();
-                    
-                    if (hostData.success || hostData.available !== undefined) {
-                        document.getElementById('available-instances').textContent = hostData.available || hostData.total - hostData.used;
-                        document.getElementById('response-time').textContent = '<50ms';
-                        document.getElementById('network-rank').textContent = '#7';
-                        
-                        // Try to parse lease amount from local API
-                        if (hostData.host_info && hostData.host_info.lease_amount) {
-                            const evrMatch = hostData.host_info.lease_amount.match(/([\d.]+)\s*EVR/i);
-                            if (evrMatch) {
-                                const evrRate = parseFloat(evrMatch[1]);
-                                const evrPrice = 0.18;
-                                const monthlyUSD = (evrRate * evrPrice * 24 * 30).toFixed(4);
-                                document.getElementById('host-lease-rate').textContent = `${evrRate} EVR/hour (~$${monthlyUSD}/month)`;
-                                document.getElementById('single-price').textContent = `$${(evrRate * evrPrice * 24 * 30).toFixed(4)}`;
-                                document.getElementById('demo-single-cost').textContent = `$${(evrRate * evrPrice * 24 * 30).toFixed(4)}/month`;
-                                
-                                const economicsElements = document.querySelectorAll('#economics-rate');
-                                economicsElements.forEach(el => el.textContent = evrRate);
-                                const monthlyEl = document.getElementById('economics-monthly');
-                                if (monthlyEl) monthlyEl.textContent = `$${(evrRate * evrPrice * 24 * 30).toFixed(4)}`;
-                                
-                                const tutorialCostEl = document.getElementById('tutorial-cost');
-                                if (tutorialCostEl) tutorialCostEl.textContent = `${evrRate} EVR/hour (~$${(evrRate * evrPrice * 24 * 30).toFixed(4)}/month)`;
-                            }
-                        }
-                    }
-                } catch (localError) {
-                    console.warn('Local API also failed:', localError);
-                    await setFallbackHostInfo();
-                }
-            }
-
-            // Get cluster pricing
-            try {
-                const response = await fetch('/api/crypto-rates.php');
-                const data = await response.json();
-                
-                if (data.success && data.data.license_pricing) {
-                    document.getElementById('cluster-price').textContent = data.data.license_pricing.usd.display;
-                }
-            } catch (error) {
-                console.warn('Failed to fetch pricing data');
-            }
-        }
-
-        // Helper function to resolve host IP address
-        async function resolveHostIp(domain) {
-            try {
-                // Try to get IP from a DNS resolution service
-                const response = await fetch(`https://dns.google/resolve?name=${domain}&type=A`);
-                const data = await response.json();
-                if (data.Answer && data.Answer.length > 0) {
-                    return data.Answer[0].data;
-                }
-            } catch (error) {
-                console.warn('Could not resolve IP for domain:', domain);
-            }
-            // Fallback: use current host's IP or domain itself
-            return domain;
-        }
-
-        // Update domain modal with real host data
-        function updateDomainModal(ipAddress, domain) {
-            const modalIpElement = document.getElementById('modal-host-ip');
-            if (modalIpElement) {
-                modalIpElement.textContent = ipAddress;
-            }
-            
-            // Update support email with real domain
-            const supportEmailElement = document.getElementById('support-email');
-            if (supportEmailElement) {
-                supportEmailElement.textContent = hostData.email || `domains@${realDomain}`;
-            }
-        }
-
-        // Update domain examples throughout the page
-        function updateDomainExamples(realDomain) {
-            // Update domain examples in the custom domain section
-            const domainExamples = document.querySelectorAll('.domain-example');
-            domainExamples.forEach(el => {
-                if (el.textContent.includes('h20cryptoxah.click')) {
-                    el.textContent = el.textContent.replace('h20cryptoxah.click', realDomain);
-                }
-            });
-            
-            // Update before/after comparison
-            const beforeExample = document.querySelector('.domain-comparison-before');
-            if (beforeExample) {
-                beforeExample.textContent = `http://${realDomain}:8081`;
-            }
-            
-            // Update support email with real domain
-            const supportEmailElement = document.getElementById('support-email');
-            if (supportEmailElement) {
-                supportEmailElement.textContent = hostData.email || `domains@${realDomain}`;
-            }
-            
-            // Update any alert messages that reference the domain
-            const originalAlert = window.alert;
-            window.alert = function(message) {
-                // Replace any hardcoded domain references in alert messages
-                const updatedMessage = message.replace('domains@h20cryptoxah.click', `domains@${realDomain}`);
-                originalAlert(updatedMessage);
-            };
-        }
-
-        async function setFallbackHostInfo() {
-            const currentDomain = window.location.hostname;
-            
-            document.getElementById('available-instances').textContent = '2';
-            document.getElementById('response-time').textContent = '<50ms';
-            document.getElementById('network-rank').textContent = '#214';
-            document.getElementById('host-address').textContent = 'rEnhancedHost...';
-            document.getElementById('host-domain').textContent = currentDomain; // Use REAL current domain
-            document.getElementById('host-lease-rate').textContent = '0.00001 EVR/hour (~$0.0004/month)';
-            
-            document.getElementById('single-price').textContent = '$0.0004';
-            document.getElementById('demo-single-cost').textContent = '$0.0004/month';
-            
-            const economicsElements = document.querySelectorAll('#economics-rate');
-            economicsElements.forEach(el => el.textContent = '0.00001');
-            const monthlyEl = document.getElementById('economics-monthly');
-            if (monthlyEl) monthlyEl.textContent = '$0.0004';
-            
-            const tutorialCostEl = document.getElementById('tutorial-cost');
-            if (tutorialCostEl) tutorialCostEl.textContent = '0.00001 EVR/hour (~$0.0004/month)';
-            
-            // Use REAL current domain in tutorial and examples
-            document.getElementById('tutorial-host-address').textContent = currentDomain;
-            document.getElementById('tutorial-host-domain').textContent = currentDomain;
-            
-            // Update domain modal and examples with real current domain
-            updateDomainModal(currentDomain, currentDomain);
-            updateDomainExamples(currentDomain);
-        }
-
         // Copy code to clipboard
         function copyCode(button) {
             const code = button.parentElement.textContent.replace('Copy', '').trim();
@@ -1320,253 +670,45 @@
             });
         }
 
-        // Smooth scrolling
-        function scrollToDemo() {
-            document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
-        }
-
+        // Smooth scrolling for tutorial
         function scrollToTutorial() {
-            document.getElementById('tutorial').scrollIntoView({ behavior: 'smooth' });
+            document.querySelector('.tutorial-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Navigation highlighting
-        function updateActiveNav() {
-            const sections = ['hero', 'pricing', 'domains', 'tutorial', 'demo'];
-            const navBtns = document.querySelectorAll('.nav-btn[href^="#"]');
-            
-            sections.forEach((sectionId, index) => {
-                const section = document.getElementById(sectionId);
-                if (section) {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top <= 100 && rect.bottom >= 100) {
-                        navBtns.forEach(btn => btn.classList.remove('active'));
-                        if (navBtns[index]) navBtns[index].classList.add('active');
-                    }
+        // Update real-time data
+        async function updateHostStatus() {
+            try {
+                // Try to get real host data
+                const response = await fetch('/api/router.php?endpoint=metrics');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('available-instances').textContent = data.metrics.available_instances || '3';
+                    document.getElementById('response-time').textContent = data.metrics.response_time || '45ms';
+                    document.getElementById('network-rank').textContent = data.metrics.network_rank || '#127';
+                    document.getElementById('uptime').textContent = data.metrics.uptime || '99.8%';
                 }
-            });
-        }
-
-        // Domain request modal functions
-        function openDomainRequest() {
-            document.getElementById('domainModal').classList.add('active');
-        }
-
-        function closeDomainRequest() {
-            document.getElementById('domainModal').classList.remove('active');
-        }
-
-        // Handle domain form submission
-        document.addEventListener('DOMContentLoaded', function() {
-            const domainForm = document.getElementById('domainForm');
-            if (domainForm) {
-                domainForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const formData = {
-                        domain: document.getElementById('domain').value,
-                        containerName: document.getElementById('containerName').value,
-                        tenantId: document.getElementById('tenantId').value,
-                        targetPort: document.getElementById('targetPort').value,
-                        hostDomain: document.getElementById('host-domain').textContent // Use REAL host domain
-                    };
-                    
-                    // In a real implementation, this would send the request to your API
-                    const supportEmail = document.getElementById('support-email').textContent;
-                    const subject = encodeURIComponent('Custom Domain Setup Request - After Purchase');
-                    const body = encodeURIComponent(`
-Hi,
-
-I have purchased a custom domain license and would like to set up the technical configuration with the following details:
-
-Domain: ${formData.domain}
-Container/App Name: ${formData.containerName}
-Tenant ID: ${formData.tenantId}
-Target Port: ${formData.targetPort}
-Host Domain: ${formData.hostDomain}
-
-I have completed payment through your secure checkout system. Please proceed with the technical setup.
-
-Thank you!
-                    `);
-                    
-                    window.open(`mailto:${supportEmail}?subject=${subject}&body=${body}`);
-                    
-                    alert(`Setup request submitted! Please complete your domain purchase first at /cluster/dapp-manager.html?product=domain then we'll process your setup within 2-4 hours.`);
-                    closeDomainRequest();
-                });
+            } catch (error) {
+                console.log('Using fallback data');
+                // Fallback data is already set in HTML
             }
-        });
+
+            // Update host info
+            const currentDomain = window.location.hostname;
+            document.getElementById('host-address').textContent = 'rEnhancedHost...';
+            document.getElementById('host-domain').textContent = currentDomain;
+            document.getElementById('host-lease-rate').textContent = '0.00001 EVR/hour (~$0.0004/month)';
+            document.getElementById('tutorial-host-address').textContent = currentDomain;
+            document.getElementById('tutorial-host-domain').textContent = currentDomain;
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            createParticles();
             updateHostStatus();
             
             // Update data periodically
-            setInterval(updateHostStatus, 30000);
-            
-            // Update active nav on scroll
-            window.addEventListener('scroll', updateActiveNav);
-            
-            // Smooth scroll for nav links
-            document.querySelectorAll('.nav-btn[href^="#"]').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    const target = document.getElementById(targetId);
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
+            setInterval(updateHostStatus, 60000); // Every minute
         });
-
-        // Smart Host Owner Detection
-        class HostOwnerDetection {
-            constructor() {
-                this.checkForAdmin();
-            }
-            
-            checkForAdmin() {
-                // Method 1: URL parameter (?admin=true)
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('admin') === 'true') {
-                    this.showAdminAccess();
-                    return;
-                }
-                
-                // Method 2: Stored preference (remembers you're admin)
-                if (localStorage.getItem('host_admin') === 'true') {
-                    this.showAdminAccess();
-                    return;
-                }
-                
-                // Method 3: Keyboard shortcut (Ctrl+Shift+A)
-                document.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                        this.showAdminAccess();
-                        e.preventDefault();
-                    }
-                });
-                
-                // Method 4: Hidden admin link (add to footer)
-                this.addHiddenAdminLink();
-            }
-            
-            showAdminAccess() {
-                // Remove existing banner if present
-                const existing = document.getElementById('admin-banner');
-                if (existing) existing.remove();
-                
-                // Create admin banner
-                const banner = document.createElement('div');
-                banner.id = 'admin-banner';
-                banner.style.cssText = `
-                    position: fixed; top: 0; left: 0; right: 0;
-                    background: linear-gradient(135deg, #10b981, #059669);
-                    color: white; padding: 12px 20px; text-align: center;
-                    z-index: 1000; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                `;
-                banner.innerHTML = `
-                    👑 Host Owner Mode Active
-                    <a href="/cluster/dapp-manager.html" style="color: white; margin-left: 20px; padding: 6px 12px; background: rgba(255,255,255,0.2); border-radius: 4px; text-decoration: none;">
-                        🔧 Admin Panel
-                    </a>
-                    <a href="/api-test.html" style="color: white; margin-left: 10px; padding: 6px 12px; background: rgba(255,255,255,0.2); border-radius: 4px; text-decoration: none;">
-                        🧪 API Test
-                    </a>
-                    <button onclick="this.parentElement.style.display='none'" style="float: right; background: none; border: none; color: white; cursor: pointer; font-size: 16px;">×</button>
-                `;
-                
-                document.body.insertBefore(banner, document.body.firstChild);
-                document.body.style.paddingTop = '60px';
-                
-                // Remember admin status
-                localStorage.setItem('host_admin', 'true');
-                
-                console.log('👑 Host Owner Mode Activated');
-            }
-            
-            addHiddenAdminLink() {
-                // Add subtle admin link to footer
-                const footer = document.querySelector('footer') || document.body;
-                const adminLink = document.createElement('div');
-                adminLink.style.cssText = `
-                    position: fixed; bottom: 10px; right: 10px;
-                    opacity: 0.3; font-size: 0.8rem; cursor: pointer;
-                    transition: opacity 0.3s; z-index: 999;
-                `;
-                adminLink.innerHTML = '<a href="#" onclick="hostOwnerAccess(); return false;" style="color: rgba(255,255,255,0.6);">Admin</a>';
-                adminLink.onmouseover = () => adminLink.style.opacity = '1';
-                adminLink.onmouseout = () => adminLink.style.opacity = '0.3';
-                
-                footer.appendChild(adminLink);
-                
-                // Add global admin access function
-                window.hostOwnerAccess = () => {
-                    const password = prompt('Host Owner Password:');
-                    if (password === 'enhanced2024') { // 🔐 Change this password!
-                        this.showAdminAccess();
-                        alert('👑 Host Owner access granted!');
-                    } else if (password !== null) {
-                        alert('❌ Access denied');
-                    }
-                };
-            }
-        }
-        
-        // Initialize Host Owner Detection
-        new HostOwnerDetection();
-        console.log('🧠 Smart role detection initialized');
-
-    });
     </script>
-    
-<nav style="background: rgba(0,0,0,0.8); padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; backdrop-filter: blur(10px);">
-    <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
-        <a href="/" style="color: #00ff88; text-decoration: none; font-weight: bold;">🏠 Enhanced Evernode</a>
-        <div style="display: flex; gap: 20px;">
-            <a href="/" style="color: white; text-decoration: none;">Home</a>
-            <a href="/cluster/demo.html" style="color: white; text-decoration: none;">Demo</a>
-            <a href="/cluster/dapp-manager.html" style="color: white; text-decoration: none;">Manager</a>
-            <a href="/cluster/paywall.html" style="color: white; text-decoration: none;">Upgrade</a>
-        </div>
-    </div>
-</nav>
-<footer style="background: rgba(0,0,0,0.8); padding: 40px 20px; margin-top: 60px;">
-    <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px;">
-            <div>
-                <h4 style="color: #00ff88; margin-bottom: 15px;">🚀 Cluster Tools</h4>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/cluster/demo.html" style="color: white; text-decoration: none; opacity: 0.8;">Try Demo</a>
-                    <a href="/cluster/dapp-manager.html" style="color: white; text-decoration: none; opacity: 0.8;">dApp Manager</a>
-                    <a href="/cluster/dashboard.html" style="color: white; text-decoration: none; opacity: 0.8;">Dashboard</a>
-                    <a href="/cluster/roi-calculator.html" style="color: white; text-decoration: none; opacity: 0.8;">ROI Calculator</a>
-                </div>
-            </div>
-            <div>
-                <h4 style="color: #00ff88; margin-bottom: 15px;">📊 Analytics</h4>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/landing-page/monitoring-dashboard.html" style="color: white; text-decoration: none; opacity: 0.8;">Monitoring</a>
-                    <a href="/landing-page/my-earnings.html" style="color: white; text-decoration: none; opacity: 0.8;">My Earnings</a>
-                    <a href="/landing-page/leaderboard.html" style="color: white; text-decoration: none; opacity: 0.8;">Leaderboard</a>
-                    <a href="/landing-page/host-discovery.html" style="color: white; text-decoration: none; opacity: 0.8;">Host Discovery</a>
-                </div>
-            </div>
-            <div>
-                <h4 style="color: #00ff88; margin-bottom: 15px;">💬 Support</h4>
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <a href="/landing-page/tenant-guide.html" style="color: white; text-decoration: none; opacity: 0.8;">Tenant Guide</a>
-                    <a href="mailto:h20crypto18@gmail.com" style="color: white; text-decoration: none; opacity: 0.8;">Contact Support</a>
-                    <a href="/" style="color: white; text-decoration: none; opacity: 0.8;">Enhanced Host Home</a>
-                </div>
-            </div>
-        </div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; opacity: 0.6;">
-            <p>© 2025 Enhanced Evernode Host • Professional dApp Deployment Platform</p>
-        </div>
-    </div>
-</footer>    
 </body>
 </html>
