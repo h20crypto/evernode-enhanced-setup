@@ -271,18 +271,18 @@
         let selectedCrypto = 'XAH';
         let paymentTimer = null;
         
-        function selectCrypto(crypto) {
-            selectedCrypto = crypto;
-            
-            // Update UI
-            document.querySelectorAll('.crypto-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            document.querySelector(`[data-crypto="${crypto}"]`).classList.add('selected');
-            
-            // Show QR section
-            showQRSection(crypto);
-        }
+      function selectCrypto(crypto) {
+    selectedCrypto = crypto;
+    
+    // Update UI
+    document.querySelectorAll('.crypto-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    document.querySelector(`[data-crypto="${crypto}"]`).classList.add('selected');
+    
+    // Show QR section with professional payment
+    proceedWithPayment();  // ← NEW PROFESSIONAL FUNCTION
+}  
         
        async function proceedWithPayment() {
     if (!selectedCrypto) {
