@@ -284,13 +284,63 @@
             showQRSection(crypto);
         }
         
-        function showQRSection(crypto) {
-            const qrSection = document.getElementById('qr-section');
-            const paymentTitle = document.getElementById('payment-title');
-            const qrCode = document.getElementById('qr-code');
-            const paymentAddress = document.getElementById('payment-address');
-            const paymentAmount = document.getElementById('payment-amount');
-            const destTag = document.getElementById('dest-tag');
+       async function proceedWithPayment() {
+    if (!selectedCrypto) {
+        alert('Please select a crypto payment method first');
+        return;
+    }
+
+    // Show payment container
+    const qrSection = document.getElementById('qr-section');
+    qrSection.classList.add('active');
+
+    try {
+        // ✅ ONE API CALL REPLACES YOUR ENTIRE COMPLEX SYSTEM
+        const response = await fetch('/api/payment/create-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                currency: selectedCrypto,
+                priceUsd: 49.99
+            })
+        });
+
+        const paymentData = await response.json();
+
+        if (paymentData.success) {
+            // ✅ DISPLAY PROFESSIONAL HOSTED QR CODE
+            document.getElementById('qr-code').innerHTML = 
+                `<img src="${paymentData.qr}" alt="Payment QR Code" style="max-width: 100%; height: auto;">`;
+
+            // Update payment details
+            document.getElementById('payment-amount').textContent = 
+                `${paymentData.amount} ${selectedCrypto.toUpperCase()}`;
+
+            // ✅ REAL-TIME WEBSOCKET (NO POLLING!)
+            const ws = new WebSocket(paymentData.websocket);
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data).data;
+                if ('signed' in data) {
+                    if (data.signed) {
+                        // Payment successful!
+                        checkPaymentSuccess(paymentData.uuid);
+                    } else {
+                        // Payment canceled
+                        showPaymentCanceled();
+                    }
+                }
+            };
+        } else {
+            throw new Error(paymentData.error);
+        }
+    } catch (error) {
+        console.error('Payment failed:', error);
+        document.getElementById('qr-code').innerHTML = `
+            <p style="color: #ff4757;">❌ Payment generation failed</p>
+            <button onclick="proceedWithPayment()" style="margin-top: 10px;">Try Again</button>
+        `;
+    }
+}
             
             // Update payment details based on crypto
             const paymentDetails = {
