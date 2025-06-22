@@ -204,6 +204,38 @@ download_enhanced_files() {
     print_status "Enhanced files downloaded"
 }
 
+# Add this section to your existing quick-setup.sh
+
+# Install Node.js for payment API
+install_nodejs_payment_api() {
+    print_info "🚀 Installing professional payment system..."
+    
+    # Install Node.js if not present
+    if ! command -v node &> /dev/null; then
+        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+    fi
+    
+    # Set up payment API
+    sudo mkdir -p /var/www/html/payment-api
+    cd /var/www/html/payment-api
+    
+    # Download payment API files from your repo
+    sudo curl -fsSL "$github_base/payment-api/package.json" -o package.json
+    sudo curl -fsSL "$github_base/payment-api/src/index.ts" -o src/index.ts
+    
+    # Install dependencies
+    sudo npm install
+    
+    # Build and start
+    sudo npm run build
+    sudo npm start &
+    
+    print_status "Professional payment API installed"
+}
+
+# Add to your main installation flow:
+install_nodejs_payment_api
 # Configure web server
 configure_webserver() {
     print_info "Configuring web server..."
