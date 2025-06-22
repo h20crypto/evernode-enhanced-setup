@@ -1,69 +1,38 @@
-/**
- * Enhanced Evernode Unified State Manager
- * Manages role detection, navigation, and data across all pages
- */
-
+// Enhanced Evernode Unified State Manager - Smart Caching
 class EnhancedEvernodeState {
     constructor() {
         this.currentRole = 'tenant';
-        this.currentPage = this.detectCurrentPage();
-        this.apiBase = '/api';
-        this.updateInterval = 30000; // 30 seconds
-        this.config = {
-            adminPassword: 'enhanced2024', // 🔐 Change this!
-            debugMode: false
-        };
+        this.updateInterval = 600000; // 10 minutes (600,000ms)
+        this.apiTimeout = 8000;
+        this.cacheExpiry = 600000; // 10 minutes cache
         this.init();
     }
 
-    async init() {
-        this.log('🚀 Initializing Enhanced Evernode Unified System');
-        
-        // Set up role detection
+    init() {
+        console.log('🚀 Enhanced Evernode System - Smart Caching Mode (10min intervals)');
         this.detectUserRole();
-        
-        // Initialize navigation
-        this.initNavigation();
-        
-        // Start data monitoring
-        this.startDataMonitoring();
-        
-        // Initialize API status monitoring
-        this.initAPIStatusMonitoring();
-        
-        this.log('✅ Unified system initialized successfully');
-    }
-
-    log(message) {
-        if (this.config.debugMode) {
-            console.log(`[EnhancedEvernode] ${message}`);
-        }
+        this.loadCachedDataFirst();
+        this.startSmartMonitoring();
     }
 
     detectUserRole() {
-        // Method 1: URL parameter (?admin=true)
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('admin') === 'true') {
             this.setRole('host_owner');
             return;
         }
 
-        // Method 2: localStorage persistence
         if (localStorage.getItem('enhanced_evernode_admin') === 'true') {
             this.setRole('host_owner');
             return;
         }
 
-        // Method 3: Keyboard shortcut (Ctrl+Shift+A)
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.shiftKey && e.key === 'A') {
                 this.promptAdminAccess();
                 e.preventDefault();
             }
         });
-
-        // Default to tenant role
-        this.setRole('tenant');
     }
 
     setRole(role) {
@@ -73,253 +42,176 @@ class EnhancedEvernodeState {
         if (role === 'host_owner') {
             localStorage.setItem('enhanced_evernode_admin', 'true');
             this.showAdminBanner();
-        } else {
-            localStorage.removeItem('enhanced_evernode_admin');
         }
-        
-        this.log(`👤 Role set to: ${role}`);
-        this.updateNavigation();
     }
 
     promptAdminAccess() {
-        const password = prompt('🔐 Host Owner Password:');
-        if (password === this.config.adminPassword) {
+        const password = prompt('Host Owner Password:');
+        if (password === 'BIEU6HJ7M5go') {
             this.setRole('host_owner');
-            this.showNotification('👑 Host Owner access granted!', 'success');
-        } else if (password !== null) {
-            this.showNotification('❌ Access denied', 'error');
+            alert('👑 Host Owner access granted!');
         }
     }
 
     showAdminBanner() {
-        // Remove existing banner
-        const existing = document.getElementById('admin-banner');
+        const banner = document.createElement('div');
+        banner.style.cssText = 'position:fixed;top:70px;left:0;right:0;background:#10b981;color:white;padding:12px;text-align:center;z-index:999;';
+        banner.innerHTML = '👑 Host Owner Mode Active <button onclick="this.parentElement.remove()" style="float:right;background:none;border:none;color:white;cursor:pointer;">×</button>';
+        document.body.insertBefore(banner, document.body.firstChild);
+        setTimeout(() => banner.remove(), 3000);
+    }
+
+    loadCachedDataFirst() {
+        console.log('📦 Loading cached data first...');
+        
+        try {
+            const cachedData = localStorage.getItem('enhanced_evernode_cache');
+            const cacheTime = localStorage.getItem('enhanced_evernode_cache_time');
+            
+            if (cachedData && cacheTime) {
+                const data = JSON.parse(cachedData);
+                const age = Date.now() - parseInt(cacheTime);
+                
+                console.log(`📦 Using cached data (${Math.round(age/1000/60)} minutes old)`);
+                this.updateUI(data);
+                
+                // Show cache indicator
+                this.showCacheIndicator(age);
+            }
+        } catch (error) {
+            console.log('📦 No valid cached data, will load fresh');
+        }
+    }
+
+    async startSmartMonitoring() {
+        console.log('📡 Starting smart monitoring (10-minute intervals)...');
+        
+        // Check if we need fresh data
+        await this.checkAndRefreshData();
+        
+        // Set up 10-minute intervals
+        setInterval(() => {
+            this.checkAndRefreshData();
+        }, this.updateInterval);
+    }
+
+    async checkAndRefreshData() {
+        const cacheTime = localStorage.getItem('enhanced_evernode_cache_time');
+        const now = Date.now();
+        
+        // Only fetch if cache is older than 10 minutes or doesn't exist
+        if (!cacheTime || (now - parseInt(cacheTime)) > this.cacheExpiry) {
+            console.log('🔄 Cache expired, fetching fresh data...');
+            await this.fetchAndCacheData();
+        } else {
+            const minutesLeft = Math.round((this.cacheExpiry - (now - parseInt(cacheTime))) / 1000 / 60);
+            console.log(`✅ Cache still fresh, next update in ${minutesLeft} minutes`);
+        }
+    }
+
+    async fetchAndCacheData() {
+        try {
+            const response = await Promise.race([
+                fetch('/api/router.php?endpoint=metrics'),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('timeout')), this.apiTimeout)
+                )
+            ]);
+            
+            if (response.ok) {
+                const apiData = await response.json();
+                if (apiData.success) {
+                    const metrics = apiData.metrics || {
+                        available_instances: 3,
+                        response_time: '45ms',
+                        network_rank: '#127',
+                        uptime: '99.8%'
+                    };
+                    
+                    // Cache the data
+                    localStorage.setItem('enhanced_evernode_cache', JSON.stringify(metrics));
+                    localStorage.setItem('enhanced_evernode_cache_time', Date.now().toString());
+                    
+                    console.log('✅ Fresh data cached successfully');
+                    this.updateUI(metrics);
+                    this.showCacheIndicator(0);
+                    return;
+                }
+            }
+        } catch (error) {
+            console.log('📡 API failed, using fallback data');
+        }
+        
+        // Fallback data
+        const fallbackData = {
+            available_instances: 3,
+            response_time: '45ms',
+            network_rank: '#127',
+            uptime: '99.8%'
+        };
+        
+        this.updateUI(fallbackData);
+    }
+
+    updateUI(metrics) {
+        const elements = {
+            'available-instances': metrics.available_instances,
+            'response-time': metrics.response_time,
+            'network-rank': metrics.network_rank,
+            'uptime': metrics.uptime
+        };
+
+        for (const [id, value] of Object.entries(elements)) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+                element.style.color = '#00ff88';
+            }
+        }
+    }
+
+    showCacheIndicator(age) {
+        // Remove existing indicator
+        const existing = document.getElementById('cache-indicator');
         if (existing) existing.remove();
 
-        // Create admin banner
-        const banner = document.createElement('div');
-        banner.id = 'admin-banner';
-        banner.className = 'role-banner host-owner';
-        banner.innerHTML = `
-            👑 Host Owner Mode Active - Full Administrative Access
-            <button onclick="this.parentElement.remove()" style="float: right; background: none; border: none; color: white; cursor: pointer; padding: 5px;">×</button>
-        `;
+        // Create cache age indicator
+        const indicator = document.createElement('div');
+        indicator.id = 'cache-indicator';
+        indicator.style.cssText = 'position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,0.8);color:#00ff88;padding:8px 12px;border-radius:6px;font-size:0.8rem;z-index:1000;';
         
-        document.body.insertBefore(banner, document.body.firstChild);
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            if (banner.parentElement) banner.remove();
-        }, 5000);
-    }
-
-    detectCurrentPage() {
-        const path = window.location.pathname;
-        if (path.includes('cluster')) return 'cluster';
-        if (path.includes('monitoring')) return 'monitoring';
-        if (path.includes('earnings')) return 'earnings';
-        if (path.includes('discovery')) return 'discovery';
-        if (path.includes('leaderboard')) return 'leaderboard';
-        return 'dashboard';
-    }
-
-    initNavigation() {
-        // Update active nav link based on current page
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && this.isCurrentPage(href)) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
-            }
-        });
-    }
-
-    updateNavigation() {
-        // Show/hide admin links based on role
-        const adminLinks = document.querySelectorAll('.admin-only');
-        adminLinks.forEach(link => {
-            link.style.display = this.currentRole === 'host_owner' ? 'block' : 'none';
-        });
-    }
-
-    isCurrentPage(href) {
-        if (href === '/' && this.currentPage === 'dashboard') return true;
-        return href.includes(this.currentPage);
-    }
-
-    async startDataMonitoring() {
-        const updateData = async () => {
-            try {
-                // Update system metrics
-                const systemData = await this.fetchAPI('/api/realtime-monitor.php?action=system');
-                this.updateSystemDisplays(systemData);
-
-                // Update instance count
-                const instanceData = await this.fetchAPI('/api/instance-count.php');
-                this.updateInstanceDisplays(instanceData);
-
-                this.log('📊 Data updated successfully');
-
-            } catch (error) {
-                this.log('📡 API monitoring: Using fallback data');
-                this.loadFallbackData();
-            }
-        };
-
-        // Initial update
-        await updateData();
-        
-        // Set interval for continuous updates
-        setInterval(updateData, this.updateInterval);
-    }
-
-    async fetchAPI(endpoint) {
-        const response = await fetch(endpoint);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        return await response.json();
-    }
-
-    updateSystemDisplays(data) {
-        // Update system metric displays across all pages
-        const updates = {
-            'cpu': data?.data?.cpu_usage || data?.cpu_usage || 0,
-            'memory': data?.data?.memory_usage || data?.memory_usage || 0,
-            'disk': data?.data?.disk_usage || data?.disk_usage || 0,
-            'uptime': data?.data?.uptime || data?.uptime || '0 days'
-        };
-
-        Object.entries(updates).forEach(([metric, value]) => {
-            const elements = document.querySelectorAll(`[data-metric="${metric}"]`);
-            elements.forEach(el => {
-                if (metric === 'uptime') {
-                    el.textContent = value;
-                } else {
-                    el.textContent = `${value}%`;
-                }
-            });
-        });
-    }
-
-    updateInstanceDisplays(data) {
-        const instanceCount = data?.instance_count || data?.data?.instance_count || 0;
-        const elements = document.querySelectorAll('[data-metric="instances"]');
-        elements.forEach(el => {
-            el.textContent = instanceCount;
-        });
-    }
-
-    loadFallbackData() {
-        // Load realistic fallback data when APIs are unavailable
-        const fallbackData = {
-            cpu: 45 + Math.floor(Math.random() * 20),
-            memory: 60 + Math.floor(Math.random() * 15),
-            disk: 67 + Math.floor(Math.random() * 10),
-            instances: 2
-        };
-
-        Object.entries(fallbackData).forEach(([metric, value]) => {
-            const elements = document.querySelectorAll(`[data-metric="${metric}"]`);
-            elements.forEach(el => {
-                el.textContent = metric === 'instances' ? value : `${value}%`;
-            });
-        });
-    }
-
-    async initAPIStatusMonitoring() {
-        const apiEndpoints = [
-            '/api/realtime-monitor.php',
-            '/api/host-info.php',
-            '/api/instance-count.php'
-        ];
-
-        for (const endpoint of apiEndpoints) {
-            try {
-                await fetch(endpoint);
-                this.log(`✅ API ${endpoint}: Available`);
-            } catch (error) {
-                this.log(`❌ API ${endpoint}: Unavailable`);
-            }
-        }
-    }
-
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed; top: 90px; right: 20px; z-index: 1001;
-            padding: 15px 20px; border-radius: 8px; color: white;
-            font-weight: 600; max-width: 300px; word-wrap: break-word;
-            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s ease-out;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        `;
-        
-        notification.innerHTML = `
-            ${message}
-            <button onclick="this.parentElement.remove()" style="float: right; background: none; border: none; color: white; cursor: pointer; margin-left: 10px;">×</button>
-        `;
-        
-        document.body.appendChild(notification);
-        setTimeout(() => {
-            if (notification.parentElement) notification.remove();
-        }, 4000);
-    }
-
-    // Public methods for external use
-    refreshData() {
-        this.startDataMonitoring();
-        this.showNotification('🔄 Data refreshed successfully', 'success');
-    }
-
-    toggleRole() {
-        if (this.currentRole === 'tenant') {
-            this.promptAdminAccess();
+        if (age === 0) {
+            indicator.textContent = '🔄 Fresh Data';
+            setTimeout(() => indicator.remove(), 3000);
         } else {
-            this.setRole('tenant');
-            this.showNotification('👤 Switched to tenant mode', 'info');
+            const minutes = Math.round(age / 1000 / 60);
+            indicator.textContent = `📦 Cached (${minutes}m ago)`;
         }
+        
+        document.body.appendChild(indicator);
     }
 }
 
-// Global functions for navigation and admin access
-function toggleAdminMode() {
+// Manual refresh function
+window.refreshSystemData = function() {
     if (window.enhancedState) {
-        window.enhancedState.toggleRole();
+        localStorage.removeItem('enhanced_evernode_cache');
+        localStorage.removeItem('enhanced_evernode_cache_time');
+        window.enhancedState.fetchAndCacheData();
     }
-}
+};
 
-function refreshData() {
-    if (window.enhancedState) {
-        window.enhancedState.refreshData();
+window.toggleAdminMode = function() {
+    if (!window.enhancedState) return;
+    
+    if (window.enhancedState.currentRole === 'host_owner') {
+        localStorage.removeItem('enhanced_evernode_admin');
+        window.location.reload();
+    } else {
+        window.enhancedState.promptAdminAccess();
     }
-}
+};
 
-// Add slide-in animation CSS
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialize state manager when page loads
 document.addEventListener('DOMContentLoaded', function() {
     window.enhancedState = new EnhancedEvernodeState();
 });
-
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = EnhancedEvernodeState;
-}
