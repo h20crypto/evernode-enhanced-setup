@@ -268,197 +268,188 @@
     </div>
 
     <script>
-        let selectedCrypto = 'XAH';
-        let paymentTimer = null;
-        
-      function selectCrypto(crypto) {
-    selectedCrypto = crypto;
+    let selectedCrypto = 'XAH';
+    let paymentTimer = null;
     
-    // Update UI
-    document.querySelectorAll('.crypto-option').forEach(opt => {
-        opt.classList.remove('selected');
-    });
-    document.querySelector(`[data-crypto="${crypto}"]`).classList.add('selected');
-    
-    // Show QR section with professional payment
-    proceedWithPayment();  // ← NEW PROFESSIONAL FUNCTION
-}  
+    function selectCrypto(crypto) {
+        selectedCrypto = crypto;
         
-       async function proceedWithPayment() {
-    if (!selectedCrypto) {
-        alert('Please select a crypto payment method first');
-        return;
+        // Update UI
+        document.querySelectorAll('.crypto-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        document.querySelector(`[data-crypto="${crypto}"]`).classList.add('selected');
+        
+        // Show QR section with professional payment
+        proceedWithPayment();
+    }
+    
+    // ✅ NEW PROFESSIONAL PAYMENT FUNCTION
+    async function proceedWithPayment() {
+        if (!selectedCrypto) {
+            alert('Please select a crypto payment method first');
+            return;
+        }
+
+        // Show payment container
+        const qrSection = document.getElementById('qr-section');
+        const paymentTitle = document.getElementById('payment-title');
+        qrSection.classList.add('active');
+
+        // Update title
+        paymentTitle.textContent = `Pay with ${selectedCrypto.toUpperCase()}`;
+
+        try {
+            // ✅ ONE API CALL REPLACES YOUR ENTIRE COMPLEX SYSTEM
+            const response = await fetch('/api/payment/create-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    currency: selectedCrypto,
+                    priceUsd: 49.99
+                })
+            });
+
+            const paymentData = await response.json();
+
+            if (paymentData.success) {
+                // ✅ DISPLAY PROFESSIONAL HOSTED QR CODE
+                document.getElementById('qr-code').innerHTML = 
+                    `<img src="${paymentData.qr}" alt="Payment QR Code" style="max-width: 100%; height: auto; border-radius: 10px;">`;
+
+                // Update payment details
+                document.getElementById('payment-address').textContent = paymentData.destinationTag || 'Loading...';
+                document.getElementById('payment-amount').textContent = 
+                    `${paymentData.amount} ${selectedCrypto.toUpperCase()}`;
+                document.getElementById('dest-tag').textContent = paymentData.uuid || Math.floor(Math.random() * 1000000);
+
+                // ✅ REAL-TIME WEBSOCKET (NO POLLING!)
+                const ws = new WebSocket(paymentData.websocket);
+                ws.onmessage = function(event) {
+                    const data = JSON.parse(event.data).data;
+                    if ('signed' in data) {
+                        if (data.signed) {
+                            // Payment successful!
+                            checkPaymentSuccess(paymentData.uuid);
+                        } else {
+                            // Payment canceled
+                            showPaymentCanceled();
+                        }
+                    }
+                };
+
+                // Start countdown timer
+                startCountdown();
+            } else {
+                throw new Error(paymentData.error);
+            }
+        } catch (error) {
+            console.error('Payment failed:', error);
+            document.getElementById('qr-code').innerHTML = `
+                <div style="color: #ff4757; text-align: center; padding: 20px;">
+                    <p>❌ Payment generation failed</p>
+                    <button onclick="proceedWithPayment()" style="margin-top: 10px; padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">Try Again</button>
+                </div>
+            `;
+        }
+    }
+    
+    // ✅ NEW RATE FETCHING FUNCTION
+    async function updateCryptoRates() {
+        try {
+            const response = await fetch('/api/payment/crypto-rates');
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update rate display in your UI
+                const xrpAmount = (49.99 / data.rates.XRP).toFixed(1);
+                const xahAmount = (49.99 / data.rates.XAH).toFixed(1);
+                
+                document.getElementById('xrp-amount').textContent = `~${xrpAmount} XRP`;
+                document.getElementById('xah-amount').textContent = `~${xahAmount} XAH`;
+                
+                // Flash rate indicator
+                const indicator = document.querySelector('.live-indicator');
+                indicator.style.background = '#FFD700';
+                setTimeout(() => indicator.style.background = '#4CAF50', 200);
+            }
+        } catch (error) {
+            console.error('Rate fetch failed:', error);
+            // Keep existing simulated rates as fallback
+        }
     }
 
-    // Show payment container
-    const qrSection = document.getElementById('qr-section');
-    qrSection.classList.add('active');
-
-    try {
-        // ✅ ONE API CALL REPLACES YOUR ENTIRE COMPLEX SYSTEM
-        const response = await fetch('/api/payment/create-payment', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                currency: selectedCrypto,
-                priceUsd: 49.99
-            })
-        });
-
-        const paymentData = await response.json();
-
-        if (paymentData.success) {
-            // ✅ DISPLAY PROFESSIONAL HOSTED QR CODE
-            document.getElementById('qr-code').innerHTML = 
-                `<img src="${paymentData.qr}" alt="Payment QR Code" style="max-width: 100%; height: auto;">`;
-
-            // Update payment details
-            document.getElementById('payment-amount').textContent = 
-                `${paymentData.amount} ${selectedCrypto.toUpperCase()}`;
-
-            // ✅ REAL-TIME WEBSOCKET (NO POLLING!)
-            const ws = new WebSocket(paymentData.websocket);
-            ws.onmessage = function(event) {
-                const data = JSON.parse(event.data).data;
-                if ('signed' in data) {
-                    if (data.signed) {
-                        // Payment successful!
-                        checkPaymentSuccess(paymentData.uuid);
-                    } else {
-                        // Payment canceled
-                        showPaymentCanceled();
-                    }
-                }
-            };
-        } else {
-            throw new Error(paymentData.error);
+    // ✅ NEW PAYMENT SUCCESS FUNCTION
+    async function checkPaymentSuccess(uuid) {
+        try {
+            const response = await fetch(`/api/payment/check-payment/${uuid}`);
+            const result = await response.json();
+            
+            if (result.success && result.paid) {
+                alert('🎉 Payment received! NFT license minted successfully!\n\nRedirecting to cluster manager...');
+                window.location.href = '/cluster/dapp-manager.html?access=paid&welcome=true';
+            }
+        } catch (error) {
+            console.error('Payment verification failed:', error);
         }
-    } catch (error) {
-        console.error('Payment failed:', error);
+    }
+
+    // ✅ NEW PAYMENT CANCELED FUNCTION
+    function showPaymentCanceled() {
         document.getElementById('qr-code').innerHTML = `
-            <p style="color: #ff4757;">❌ Payment generation failed</p>
-            <button onclick="proceedWithPayment()" style="margin-top: 10px;">Try Again</button>
+            <div style="text-align: center; padding: 20px;">
+                <h3 style="color: #ff6b6b;">❌ Payment Canceled</h3>
+                <p>Payment was canceled or expired.</p>
+                <button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer;">Try Again</button>
+            </div>
         `;
     }
-}
-            
-            // Update payment details based on crypto
-            const paymentDetails = {
-                'XAH': {
-                    title: 'Pay with XAH (Native Xahau)',
-                    address: 'rYourXahauAddress123...',
-                    amount: '247.5 XAH',
-                    qr: 'XAH QR Code'
-                },
-                'XRP': {
-                    title: 'Pay with XRP',
-                    address: 'rYourXRPAddress123...',
-                    amount: '119.0 XRP',
-                    qr: 'XRP QR Code'
-                },
-                'EVR': {
-                    title: 'Pay with EVR',
-                    address: 'rYourEVRAddress123...',
-                    amount: '3,124 EVR',
-                    qr: 'EVR QR Code'
-                },
-                'XUSD': {
-                    title: 'Pay with XUSD',
-                    address: 'rYourXUSDAddress123...',
-                    amount: '49.99 XUSD',
-                    qr: 'XUSD QR Code'
-                },
-                'RLUSD': {
-                    title: 'Pay with RLUSD',
-                    address: 'rYourRLUSDAddress123...',
-                    amount: '49.99 RLUSD',
-                    qr: 'RLUSD QR Code'
-                }
-            };
-            
-            const details = paymentDetails[crypto];
-            paymentTitle.textContent = details.title;
-            paymentAddress.textContent = details.address;
-            paymentAmount.textContent = details.amount;
-            qrCode.textContent = details.qr;
-            destTag.textContent = Math.floor(Math.random() * 1000000);
-            
-            qrSection.classList.add('active');
-            
-            // Start payment monitoring
-            startPaymentMonitoring();
-        }
-        
-        // ✅ Real-time monitoring now handled by WebSocket in proceedWithPayment()
-// This function is no longer needed!
-        
-        function copyAddress() {
-            const address = document.getElementById('payment-address').textContent;
-            navigator.clipboard.writeText(address);
-            alert('📋 Payment address copied!');
-        }
-        
-        function copyAmount() {
-            const amount = document.getElementById('payment-amount').textContent;
-            navigator.clipboard.writeText(amount.split(' ')[0]);
-            alert('📋 Payment amount copied!');
-        }
-        
-        function copyTag() {
-            const tag = document.getElementById('dest-tag').textContent;
-            navigator.clipboard.writeText(tag);
-            alert('📋 Destination tag copied!');
-        }
 
-        // 🆕 ADD THIS NEW FUNCTION:
-async function updateCryptoRates() {
-    try {
-        const response = await fetch('/api/payment/crypto-rates');
-        const data = await response.json();
-        
-        if (data.success) {
-            // Update rate display in your UI
-            document.getElementById('xrp-amount').textContent = `~${(49.99 / data.rates.XRP).toFixed(1)} XRP`;
-            document.getElementById('xah-amount').textContent = `~${(49.99 / data.rates.XAH).toFixed(1)} XAH`;
-        }
-    } catch (error) {
-        console.error('Rate fetch failed:', error);
+    // ✅ KEEP YOUR EXISTING COPY FUNCTIONS (they work fine)
+    function copyAddress() {
+        const address = document.getElementById('payment-address').textContent;
+        navigator.clipboard.writeText(address);
+        alert('📋 Payment address copied!');
     }
-}
-
-// 🆕 ADD THIS NEW FUNCTION:
-async function checkPaymentSuccess(uuid) {
-    try {
-        const response = await fetch(`/api/payment/check-payment/${uuid}`);
-        const result = await response.json();
-        
-        if (result.success && result.paid) {
-            alert('🎉 Payment received! NFT license minted successfully!\n\nRedirecting to cluster manager...');
-            window.location.href = '/cluster/dapp-manager.html?access=paid&welcome=true';
-        }
-    } catch (error) {
-        console.error('Payment verification failed:', error);
+    
+    function copyAmount() {
+        const amount = document.getElementById('payment-amount').textContent;
+        navigator.clipboard.writeText(amount.split(' ')[0]);
+        alert('📋 Payment amount copied!');
     }
-}
+    
+    function copyTag() {
+        const tag = document.getElementById('dest-tag').textContent;
+        navigator.clipboard.writeText(tag);
+        alert('📋 Destination tag copied!');
+    }
 
-// 🆕 ADD THIS NEW FUNCTION:
-function showPaymentCanceled() {
-    document.getElementById('qr-code').innerHTML = `
-        <div style="text-align: center; padding: 20px;">
-            <h3 style="color: #ff6b6b;">❌ Payment Canceled</h3>
-            <p>Payment was canceled or expired.</p>
-            <button onclick="location.reload()" style="margin-top: 10px;">Try Again</button>
-        </div>
-    `;
-}
-        // Update rates every 30 seconds with real data
-setInterval(() => {
+    // ✅ KEEP YOUR COUNTDOWN FUNCTION (modified slightly)
+    function startCountdown() {
+        let timeLeft = 3600; // 60 minutes
+        const countdown = document.getElementById('countdown');
+        
+        paymentTimer = setInterval(() => {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdown.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            timeLeft--;
+            
+            if (timeLeft < 0) {
+                clearInterval(paymentTimer);
+                countdown.textContent = 'EXPIRED';
+            }
+        }, 1000);
+    }
+    
+    // ✅ UPDATE RATE FETCHING TO USE REAL API
+    setInterval(() => {
+        updateCryptoRates();
+    }, 30000);
+
+    // Get initial rates when page loads
     updateCryptoRates();
-}, 30000);
-
-// Get initial rates
-updateCryptoRates();
-    </script>
+</script>
 <nav style="background: rgba(0,0,0,0.8); padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; backdrop-filter: blur(10px);">
     <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
         <a href="/" style="color: #00ff88; text-decoration: none; font-weight: bold;">🏠 Enhanced Evernode</a>
