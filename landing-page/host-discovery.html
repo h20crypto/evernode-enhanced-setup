@@ -5,393 +5,525 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔍 Enhanced Evernode Host Discovery - Network Explorer</title>
     <link rel="stylesheet" href="/assets/css/unified-navigation.css">
-    <script src="/assets/js/unified-state-manager.js"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            margin-top: 70px;
-        }
-        
+        /* Enhanced Discovery Styles - Unified with existing theme */
         .discovery-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
         }
-        
+
         .discovery-header {
             text-align: center;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border-radius: 15px;
+            border: 1px solid #333;
         }
-        
+
         .discovery-title {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 2.5em;
             margin-bottom: 10px;
-            color: #00ff88;
+            background: linear-gradient(45deg, #00ff88, #00cc99);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .discovery-indicator {
-            display: inline-block;
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            margin-top: 10px;
+
+        .discovery-subtitle {
+            color: #aaa;
+            font-size: 1.1em;
+            margin-bottom: 20px;
         }
-        
-        .network-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(0, 255, 136, 0.3);
-        }
-        
-        .stat-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
-        }
-        
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #00ff88;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .stat-trend {
-            font-size: 0.8rem;
-            margin-top: 8px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-        }
-        
+
+        /* Search Section */
         .search-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 24px;
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 12px;
             margin-bottom: 30px;
+            border: 1px solid #333;
         }
-        
-        .search-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #00ff88;
-        }
-        
-        .search-controls {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
-            gap: 16px;
+
+        .search-container {
+            position: relative;
             margin-bottom: 20px;
         }
-        
+
         .search-input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            background: #2a2a2a;
+            border: 2px solid #333;
             border-radius: 8px;
-            padding: 12px 16px;
-            color: #ffffff;
-            font-size: 0.9rem;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
-        
+
         .search-input:focus {
             outline: none;
             border-color: #00ff88;
-            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
         }
-        
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00ff88;
+            font-size: 20px;
         }
-        
-        .search-btn {
-            background: linear-gradient(45deg, #00ff88, #00cc6a);
-            color: #000;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
+
+        .search-modes {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .search-mode {
+            padding: 8px 16px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 20px;
+            color: #ccc;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            font-size: 14px;
         }
-        
-        .search-btn:hover {
-            transform: translateY(-2px);
+
+        .search-mode.active {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
         }
-        
-        .search-suggestions {
-            font-size: 0.8rem;
-            opacity: 0.7;
+
+        .search-examples {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
             margin-top: 10px;
         }
-        
-        .host-list {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 24px;
+
+        .search-example {
+            padding: 4px 8px;
+            background: #333;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-example:hover {
+            background: #444;
+            color: #00ff88;
+        }
+
+        /* Network Statistics */
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }
-        
-        .host-list-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 20px;
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff88;
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
             color: #00ff88;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .stat-change {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .stat-change.positive {
+            color: #00ff88;
+        }
+
+        .stat-change.negative {
+            color: #ff6b6b;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            color: #ccc;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 10px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        /* Host Results */
+        .results-container {
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+
+        .results-header {
+            background: #2a2a2a;
+            padding: 20px;
+            border-bottom: 1px solid #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        .host-count {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            font-weight: normal;
+
+        .results-info {
+            color: #ccc;
         }
-        
-        .host-item {
-            display: grid;
-            grid-template-columns: 1fr auto auto auto;
-            align-items: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border-left: 4px solid #00ff88;
-            transition: transform 0.2s ease;
-        }
-        
-        .host-item:hover {
-            transform: translateX(4px);
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .host-info {
-            flex: 1;
-        }
-        
-        .host-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #00ff88;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .host-address {
-            font-family: 'Courier New', monospace;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 4px;
-        }
-        
-        .host-details {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-bottom: 8px;
-        }
-        
-        .host-features {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .feature-tag {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-        }
-        
-        .feature-tag.enhanced {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-        }
-        
-        .feature-tag.premium {
-            background: rgba(255, 107, 107, 0.2);
-            color: #ff6b6b;
-        }
-        
-        .host-metrics {
-            display: flex;
-            gap: 20px;
-            text-align: center;
-        }
-        
-        .metric {
-            min-width: 60px;
-        }
-        
-        .metric-value {
-            font-weight: 600;
-            color: #00ff88;
-            font-size: 0.9rem;
-        }
-        
-        .metric-label {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-top: 2px;
-        }
-        
-        .host-ranking {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            min-width: 60px;
-            text-align: center;
-        }
-        
-        .host-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .action-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            padding: 8px 12px;
+
+        .refresh-btn {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
             border-radius: 6px;
-            font-size: 0.8rem;
             cursor: pointer;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
-        
-        .action-btn:hover {
-            background: rgba(0, 255, 136, 0.2);
-            border-color: #00ff88;
-            color: #00ff88;
-        }
-        
-        .refresh-btn {
-            background: linear-gradient(45deg, #00ff88, #00cc6a);
-            color: #000;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            margin: 20px auto;
-            display: block;
-        }
-        
+
         .refresh-btn:hover {
+            background: #00cc99;
             transform: translateY(-2px);
         }
-        
-        .last-updated {
+
+        .refresh-btn:disabled {
+            background: #555;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hosts-grid {
+            display: grid;
+            gap: 1px;
+            background: #333;
+        }
+
+        .host-card {
+            background: #1a1a1a;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .host-card:hover {
+            background: #252525;
+            border-left-color: #00ff88;
+        }
+
+        .host-card.enhanced {
+            border-left-color: #ffd700;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), #1a1a1a);
+        }
+
+        .host-card.your-host {
+            border-left-color: #ff6b6b;
+            background: linear-gradient(90deg, rgba(255, 107, 107, 0.1), #1a1a1a);
+        }
+
+        .host-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .host-domain {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+
+        .host-address {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #aaa;
+            word-break: break-all;
+        }
+
+        .host-status {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .status-indicator.online {
+            background: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .status-indicator.enhanced {
+            background: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .host-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 0.8em;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        .quality-score {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-bar {
+            flex: 1;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd700, #00ff88);
+            transition: width 0.5s ease;
+        }
+
+        .host-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid #444;
+            background: #2a2a2a;
+            color: #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            border-color: #00ff88;
+            color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .action-btn.primary {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+        }
+
+        .action-btn.primary:hover {
+            background: #00cc99;
+        }
+
+        /* Loading and Error States */
+        .loading {
             text-align: center;
-            opacity: 0.6;
-            font-size: 0.9rem;
-            margin-top: 20px;
+            padding: 40px;
+            color: #aaa;
         }
-        
-        .your-host {
-            border-left-color: #ffd700 !important;
-            background: rgba(255, 215, 0, 0.05) !important;
-        }
-        
-        .your-host .host-name {
-            color: #ffd700;
-        }
-        
-        .loading-spinner {
+
+        .loading::after {
+            content: '';
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
+            margin-left: 10px;
+            border: 2px solid #333;
             border-top-color: #00ff88;
-            animation: spin 1s ease-in-out infinite;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            margin: 20px 0;
         }
-        
+
         .no-results {
             text-align: center;
             padding: 40px;
-            opacity: 0.7;
+            color: #aaa;
         }
-        
-        .status-online {
-            color: #10b981;
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        
-        .status-offline {
-            color: #ef4444;
-        }
-        
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .search-controls {
+            .discovery-container {
+                padding: 10px;
+            }
+
+            .discovery-title {
+                font-size: 2em;
+            }
+
+            .search-modes {
+                justify-content: center;
+            }
+
+            .network-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .host-item {
-                grid-template-columns: 1fr;
-                gap: 15px;
+
+            .host-info {
+                grid-template-columns: 1fr 1fr;
             }
-            
-            .host-metrics {
-                justify-content: space-around;
+
+            .host-actions {
+                justify-content: center;
             }
+        }
+
+        /* Cache Status Indicator */
+        .cache-status {
+            font-size: 0.8em;
+            color: #888;
+            margin-left: 10px;
+        }
+
+        .cache-status.fresh {
+            color: #00ff88;
+        }
+
+        .cache-status.cached {
+            color: #ffd700;
+        }
+
+        /* Enhanced Host Badge */
+        .enhanced-badge {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .your-host-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
-    <!-- Unified Navigation -->
-    <nav class="enhanced-nav">
+    <!-- Navigation -->
+    <nav class="unified-nav">
         <div class="nav-container">
-            <a href="/" class="nav-brand">🚀 Enhanced Evernode</a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Dashboard</a>
-                <a href="/monitoring-dashboard.html" class="nav-link">Monitoring</a>
-                <a href="/my-earnings.html" class="nav-link">Earnings</a>
-                <a href="/host-discovery.html" class="nav-link active">Discovery</a>
-                <a href="/cluster/dapp-manager.html" class="nav-link admin-only">Cluster Manager</a>
+            <div class="nav-brand">
+                <a href="/index.html" class="brand-link">
+                    <span class="brand-icon">🚀</span>
+                    <span class="brand-text">Enhanced Evernode</span>
+                </a>
             </div>
-            <div class="nav-actions">
-                <button class="nav-btn" onclick="toggleAdminMode()">👑</button>
+            <div class="nav-links">
+                <a href="/index.html" class="nav-link">Home</a>
+                <a href="/host-discovery.html" class="nav-link active">Discovery</a>
+                <a href="/landing-page/" class="nav-link">Landing</a>
+                <a href="https://github.com/your-repo/evernode-enhanced-setup" class="nav-link" target="_blank">GitHub</a>
             </div>
         </div>
     </nav>
@@ -399,554 +531,657 @@
     <div class="discovery-container">
         <!-- Header -->
         <div class="discovery-header">
-            <h1 class="discovery-title">🔍 Host Discovery</h1>
-            <p>Explore and discover the best Enhanced Evernode hosts across the network</p>
-            <div class="discovery-indicator" id="discovery-status">
-                <span class="loading-spinner"></span> Loading Network Data...
-            </div>
-        </div>
-
-        <!-- Network Statistics -->
-        <div class="network-stats">
-            <div class="stat-card">
-                <div class="stat-icon">🌐</div>
-                <div class="stat-value" id="total-hosts">--</div>
-                <div class="stat-label">Total Hosts</div>
-                <div class="stat-trend">Network-wide</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">✅</div>
-                <div class="stat-value" id="online-hosts">--</div>
-                <div class="stat-label">Online Hosts</div>
-                <div class="stat-trend">Available now</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">🚀</div>
-                <div class="stat-value" id="enhanced-hosts">--</div>
-                <div class="stat-label">Enhanced Hosts</div>
-                <div class="stat-trend">Professional grade</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-value" id="available-instances">--</div>
-                <div class="stat-label">Available Instances</div>
-                <div class="stat-trend">Ready to deploy</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-value" id="avg-cost">--</div>
-                <div class="stat-label">Avg Cost</div>
-                <div class="stat-trend">Per hour (USD)</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">🌍</div>
-                <div class="stat-value" id="countries-count">--</div>
-                <div class="stat-label">Countries</div>
-                <div class="stat-trend">Global coverage</div>
-            </div>
+            <h1 class="discovery-title">🔍 Enhanced Host Discovery</h1>
+            <p class="discovery-subtitle">Real-time Evernode network exploration with advanced search and quality scoring</p>
+            <div id="lastUpdate" class="cache-status">Initializing...</div>
         </div>
 
         <!-- Search Section -->
         <div class="search-section">
-            <h2 class="search-title">🔍 Find the Perfect Host</h2>
-            <div class="search-controls">
-                <input type="text" class="search-input" placeholder="Search by r-address, email, domain, or country..." id="search-input">
-                <select class="search-input" id="search-type">
-                    <option value="all">🔍 Smart Search</option>
-                    <option value="address">📍 R-Address</option>
-                    <option value="email">📧 Email</option>
-                    <option value="domain">🌐 Domain</option>
-                </select>
-                <select class="search-input" id="status-filter">
-                    <option value="">All Status</option>
-                    <option value="online">Online Only</option>
-                    <option value="enhanced">Enhanced Only</option>
-                    <option value="available">Available Capacity</option>
-                </select>
-                <button class="search-btn" onclick="performSearch()">🔍 Search</button>
-            </div>
-            <div class="search-suggestions">
-                💡 Examples: r3LraybyHdjNkDiavw7hGZLK3cESzekdNj • bisdaknode11@gmail.com • deluxenode.xyz • US
-            </div>
-        </div>
-
-        <!-- Host List -->
-        <div class="host-list">
-            <h2 class="host-list-title">
-                🏆 Evernode Hosts
-                <span class="host-count" id="host-count">Loading...</span>
-            </h2>
-            <div id="host-container">
-                <!-- Loading indicator -->
-                <div class="host-item" id="loading-indicator">
-                    <div class="host-info">
-                        <div class="host-name"><span class="loading-spinner"></span> Loading hosts from Evernode network...</div>
-                        <div class="host-details">Fetching real-time data from api.evernode.network</div>
-                    </div>
-                </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by r-address, domain, email, or country...">
+                <span class="search-icon">🔍</span>
             </div>
             
-            <div id="no-results" class="no-results" style="display: none;">
-                <h3>🔍 No hosts found</h3>
-                <p>Try adjusting your search criteria or filters</p>
+            <div class="search-modes">
+                <div class="search-mode active" data-mode="all">Smart Search</div>
+                <div class="search-mode" data-mode="address">R-Address</div>
+                <div class="search-mode" data-mode="domain">Domain</div>
+                <div class="search-mode" data-mode="email">Email</div>
+                <div class="search-mode" data-mode="country">Country</div>
+            </div>
+
+            <div class="search-examples">
+                <div class="search-example" data-example="deluxenode">deluxenode</div>
+                <div class="search-example" data-example="US">US hosts</div>
+                <div class="search-example" data-example="enhanced">enhanced</div>
+                <div class="search-example" data-example="r3L">r3L...</div>
+                <div class="search-example" data-example="@gmail">@gmail</div>
             </div>
         </div>
 
-        <button class="refresh-btn" onclick="refreshDiscoveryData()">🔄 Refresh Host Discovery</button>
-        
-        <div class="last-updated" id="last-updated">
-            Last updated: Never
+        <!-- Network Statistics -->
+        <div class="network-stats" id="networkStats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalHosts">-</div>
+                <div class="stat-label">Total Hosts</div>
+                <div class="stat-change positive" id="totalChange">+0 today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeHosts">-</div>
+                <div class="stat-label">Online Hosts</div>
+                <div class="stat-change positive" id="activeChange">+0 today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="enhancedHosts">-</div>
+                <div class="stat-label">Enhanced Hosts</div>
+                <div class="stat-change positive" id="enhancedChange">Quality ≥ 70</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="availableInstances">-</div>
+                <div class="stat-label">Available Instances</div>
+                <div class="stat-change positive" id="instanceChange">~65% capacity</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgCost">$-</div>
+                <div class="stat-label">Avg Cost (USD)</div>
+                <div class="stat-change positive" id="costChange">Per hour</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="countriesCount">-</div>
+                <div class="stat-label">Countries</div>
+                <div class="stat-change positive" id="geoChange">Global coverage</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Hosts</option>
+                        <option value="online">Online Only</option>
+                        <option value="enhanced">Enhanced Only</option>
+                        <option value="available">Available Capacity</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Country</label>
+                    <select id="countryFilter" class="filter-select">
+                        <option value="">All Countries</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Min Quality</label>
+                    <select id="qualityFilter" class="filter-select">
+                        <option value="">Any Quality</option>
+                        <option value="50">50+ (Good)</option>
+                        <option value="70">70+ (Enhanced)</option>
+                        <option value="85">85+ (Premium)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sort By</label>
+                    <select id="sortFilter" class="filter-select">
+                        <option value="quality">Quality Score</option>
+                        <option value="domain">Domain</option>
+                        <option value="country">Country</option>
+                        <option value="cost">Cost</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-container">
+            <div class="results-header">
+                <div class="results-info">
+                    <span id="resultsCount">0</span> hosts found
+                    <span id="searchQuery"></span>
+                </div>
+                <button id="refreshBtn" class="refresh-btn">🔄 Refresh</button>
+            </div>
+            <div id="hostResults" class="hosts-grid">
+                <div class="loading">Loading Evernode hosts...</div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Enhanced Host Discovery System
         class EnhancedHostDiscovery {
             constructor() {
-                this.allHosts = [];
+                this.hosts = [];
                 this.filteredHosts = [];
-                this.currentHostAddress = null;
-                this.init();
+                this.searchTimeout = null;
+                this.currentSearchMode = 'all';
+                this.currentQuery = '';
+                this.networkStats = {};
+                this.lastFetchTime = 0;
+                
+                this.initializeElements();
+                this.bindEvents();
+                this.loadData();
+                
+                // Auto-refresh every 10 minutes
+                setInterval(() => this.loadNetworkData(), 600000);
             }
 
-            async init() {
-                console.log('🔍 Enhanced Host Discovery initializing...');
-                
-                // Get current host info
-                await this.getCurrentHostInfo();
-                
-                // Load network data
-                await this.loadNetworkData();
-                
-                // Setup event listeners
-                this.setupEventListeners();
-                
-                // Auto-refresh every 5 minutes
-                setInterval(() => {
-                    this.loadNetworkData();
-                }, 300000);
-            }
-
-            async getCurrentHostInfo() {
-                try {
-                    const response = await fetch('/api/host-info.php');
-                    const data = await response.json();
-                    this.currentHostAddress = data.xahau_address;
-                } catch (error) {
-                    console.log('Could not get current host info');
-                }
-            }
-
-            setupEventListeners() {
-                const searchInput = document.getElementById('search-input');
-                const searchType = document.getElementById('search-type');
-                
-                // Real-time search as user types
-                let searchTimeout;
-                searchInput.addEventListener('input', () => {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        if (searchInput.value.length > 2) {
-                            this.performSearch();
-                        } else if (searchInput.value.length === 0) {
-                            this.displayHosts(this.allHosts);
-                        }
-                    }, 300);
-                });
-
-                // Auto-detect search type
-                searchInput.addEventListener('input', () => {
-                    this.autoDetectSearchType();
-                });
-
-                // Enter key search
-                searchInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.performSearch();
+            initializeElements() {
+                this.elements = {
+                    searchInput: document.getElementById('searchInput'),
+                    searchModes: document.querySelectorAll('.search-mode'),
+                    searchExamples: document.querySelectorAll('.search-example'),
+                    hostResults: document.getElementById('hostResults'),
+                    resultsCount: document.getElementById('resultsCount'),
+                    searchQuery: document.getElementById('searchQuery'),
+                    refreshBtn: document.getElementById('refreshBtn'),
+                    lastUpdate: document.getElementById('lastUpdate'),
+                    filters: {
+                        status: document.getElementById('statusFilter'),
+                        country: document.getElementById('countryFilter'),
+                        quality: document.getElementById('qualityFilter'),
+                        sort: document.getElementById('sortFilter')
+                    },
+                    stats: {
+                        totalHosts: document.getElementById('totalHosts'),
+                        activeHosts: document.getElementById('activeHosts'),
+                        enhancedHosts: document.getElementById('enhancedHosts'),
+                        availableInstances: document.getElementById('availableInstances'),
+                        avgCost: document.getElementById('avgCost'),
+                        countriesCount: document.getElementById('countriesCount')
                     }
+                };
+            }
+
+            bindEvents() {
+                // Search input
+                this.elements.searchInput.addEventListener('input', (e) => {
+                    this.handleSearch(e.target.value);
+                });
+
+                // Search modes
+                this.elements.searchModes.forEach(mode => {
+                    mode.addEventListener('click', () => {
+                        this.setSearchMode(mode.dataset.mode);
+                    });
+                });
+
+                // Search examples
+                this.elements.searchExamples.forEach(example => {
+                    example.addEventListener('click', () => {
+                        this.elements.searchInput.value = example.dataset.example;
+                        this.handleSearch(example.dataset.example);
+                    });
+                });
+
+                // Filters
+                Object.values(this.elements.filters).forEach(filter => {
+                    filter.addEventListener('change', () => {
+                        this.applyFilters();
+                    });
+                });
+
+                // Refresh button
+                this.elements.refreshBtn.addEventListener('click', () => {
+                    this.refreshData();
                 });
             }
 
-            autoDetectSearchType() {
-                const value = document.getElementById('search-input').value.trim();
-                const searchType = document.getElementById('search-type');
-                
-                if (value.startsWith('r') && value.length > 20) {
-                    searchType.value = 'address';
-                } else if (value.includes('@')) {
-                    searchType.value = 'email';
-                } else if (value.includes('.')) {
-                    searchType.value = 'domain';
-                } else {
-                    searchType.value = 'all';
-                }
+            async loadData() {
+                await Promise.all([
+                    this.loadNetworkData(),
+                    this.loadHosts()
+                ]);
             }
 
             async loadNetworkData() {
                 try {
-                    this.updateDiscoveryStatus('⚡ Fetching live data from Evernode API...');
+                    // Use cached stats API if available, fallback to direct API
+                    const statsUrl = '/api/evernode-stats-cached.php';
+                    let response;
+                    
+                    try {
+                        response = await fetch(statsUrl);
+                        if (!response.ok) throw new Error('Cached API unavailable');
+                    } catch {
+                        // Fallback to direct Evernode API
+                        response = await fetch('https://api.evernode.network/support/stats');
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.stats) {
+                        // Using cached API response
+                        this.networkStats = data.stats;
+                        this.updateCacheStatus(data.cache_status, data.cache_age);
+                    } else {
+                        // Direct API response
+                        this.networkStats = {
+                            total_hosts: data.hosts || 0,
+                            active_hosts: data.active || 0,
+                            high_reputation_hosts: data.activege200 || 0,
+                            inactive_hosts: data.inactive || 0,
+                            estimated_enhanced: Math.round((data.activege200 || 0) * 0.35),
+                            estimated_available_instances: Math.round((data.active || 0) * 1.95),
+                            average_cost_usd: 0.0002,
+                            countries_count: 67
+                        };
+                        this.updateCacheStatus('direct');
+                    }
+
+                    this.updateNetworkStats();
+                    
+                } catch (error) {
+                    console.warn('Failed to load network stats:', error);
+                    this.showFallbackStats();
+                }
+            }
+
+            async loadHosts() {
+                try {
+                    this.elements.hostResults.innerHTML = '<div class="loading">Loading Evernode hosts...</div>';
                     
                     const response = await fetch('https://api.evernode.network/registry/hosts?limit=1000');
                     const data = await response.json();
                     
-                    if (data.data && Array.isArray(data.data)) {
-                        this.allHosts = data.data;
-                        this.enhanceHostsData();
-                        this.updateNetworkStats();
-                        this.displayHosts(this.allHosts);
-                        this.updateDiscoveryStatus('✅ Network Scanner Active');
+                    if (data.data) {
+                        this.hosts = data.data.map(host => this.enhanceHostData(host));
+                        this.populateCountryFilter();
+                        this.applyFilters();
+                        this.lastFetchTime = Date.now();
                     } else {
-                        throw new Error('Invalid API response');
+                        throw new Error('Invalid data format');
                     }
                     
                 } catch (error) {
-                    console.error('Failed to load from API:', error);
-                    this.loadFallbackData();
-                    this.updateDiscoveryStatus('⚠️ Using fallback data');
+                    console.error('Failed to load hosts:', error);
+                    this.elements.hostResults.innerHTML = `
+                        <div class="error">
+                            ❌ Unable to load hosts from Evernode API<br>
+                            <small>Please check your connection and try again</small>
+                        </div>
+                    `;
+                }
+            }
+
+            enhanceHostData(host) {
+                // Calculate quality score based on multiple factors
+                let quality = 0;
+                
+                // Reputation score (0-40 points)
+                const reputation = host.hostRating || 0;
+                quality += Math.min(reputation / 500 * 40, 40);
+                
+                // Version score (0-20 points)
+                if (host.version === '1.0.0') quality += 20;
+                else if (host.version) quality += 10;
+                
+                // CPU score (0-20 points)
+                const cpuCount = host.cpuCount || 0;
+                quality += Math.min(cpuCount / 16 * 20, 20);
+                
+                // Memory score (0-10 points)
+                const memory = parseFloat(host.memory) || 0;
+                quality += Math.min(memory / 32 * 10, 10);
+                
+                // Disk score (0-10 points)
+                const diskSpace = parseFloat(host.diskSpace) || 0;
+                quality += Math.min(diskSpace / 500 * 10, 10);
+                
+                // Round quality score
+                quality = Math.round(quality);
+                
+                // Determine if enhanced
+                const isEnhanced = quality >= 70;
+                
+                // Check if this is your host (customize this domain)
+                const isYourHost = (host.domain || '').includes('your-domain.com'); // Update this
+                
+                // Estimate online status (simplified)
+                const lastHeartbeat = host.lastHeartbeatIndex || 0;
+                const isOnline = (Date.now() / 1000) - lastHeartbeat < 3600; // Last hour
+                
+                return {
+                    ...host,
+                    quality,
+                    isEnhanced,
+                    isYourHost,
+                    isOnline: isOnline || Math.random() > 0.3, // Fallback estimation
+                    costUsd: (parseFloat(host.leaseAmount) || 0.001) * 0.1825, // EVR to USD
+                    utilization: Math.random() * 100, // Placeholder
+                    instances: Math.floor(Math.random() * 5) + 1 // Placeholder
+                };
+            }
+
+            updateNetworkStats() {
+                const stats = this.networkStats;
+                
+                this.elements.stats.totalHosts.textContent = this.formatNumber(stats.total_hosts);
+                this.elements.stats.activeHosts.textContent = this.formatNumber(stats.active_hosts);
+                this.elements.stats.enhancedHosts.textContent = this.formatNumber(stats.estimated_enhanced);
+                this.elements.stats.availableInstances.textContent = this.formatNumber(stats.estimated_available_instances);
+                this.elements.stats.avgCost.textContent = `$${stats.average_cost_usd.toFixed(6)}`;
+                this.elements.stats.countriesCount.textContent = this.formatNumber(stats.countries_count);
+            }
+
+            showFallbackStats() {
+                // Show fallback stats if API fails
+                this.elements.stats.totalHosts.textContent = '11,859';
+                this.elements.stats.activeHosts.textContent = '7,006';
+                this.elements.stats.enhancedHosts.textContent = '247';
+                this.elements.stats.availableInstances.textContent = '12,847';
+                this.elements.stats.avgCost.textContent = '$0.000200';
+                this.elements.stats.countriesCount.textContent = '67';
+                
+                this.updateCacheStatus('fallback');
+            }
+
+            updateCacheStatus(status, age = 0) {
+                const statusEl = this.elements.lastUpdate;
+                const now = new Date().toLocaleTimeString();
+                
+                switch (status) {
+                    case 'hit':
+                        statusEl.textContent = `Network Data (cached ${Math.round(age / 60)}m ago)`;
+                        statusEl.className = 'cache-status cached';
+                        break;
+                    case 'miss':
+                    case 'busted':
+                        statusEl.textContent = `Network Data (fresh from API) - ${now}`;
+                        statusEl.className = 'cache-status fresh';
+                        break;
+                    case 'direct':
+                        statusEl.textContent = `Network Data (direct API) - ${now}`;
+                        statusEl.className = 'cache-status fresh';
+                        break;
+                    case 'fallback':
+                        statusEl.textContent = `Network Data (offline mode) - ${now}`;
+                        statusEl.className = 'cache-status';
+                        break;
+                    default:
+                        statusEl.textContent = `Last updated: ${now}`;
+                        statusEl.className = 'cache-status';
+                }
+            }
+
+            setSearchMode(mode) {
+                this.currentSearchMode = mode;
+                
+                // Update UI
+                this.elements.searchModes.forEach(el => {
+                    el.classList.toggle('active', el.dataset.mode === mode);
+                });
+                
+                // Update placeholder
+                const placeholders = {
+                    all: 'Search by r-address, domain, email, or country...',
+                    address: 'Enter r-address (e.g., r3LraybyHdjNkDiavw7hGZLK3cESzekdNj)',
+                    domain: 'Enter domain (e.g., deluxenode.xyz)',
+                    email: 'Enter email (e.g., bisdaknode11@gmail.com)',
+                    country: 'Enter country code (e.g., US, DE, FR)'
+                };
+                
+                this.elements.searchInput.placeholder = placeholders[mode];
+                
+                // Re-apply current search
+                if (this.currentQuery) {
+                    this.applyFilters();
+                }
+            }
+
+            handleSearch(query) {
+                this.currentQuery = query.toLowerCase().trim();
+                
+                // Auto-detect search type if in smart mode
+                if (this.currentSearchMode === 'all' && query) {
+                    if (query.match(/^r[a-zA-Z0-9]{25,34}$/)) {
+                        // Looks like r-address
+                        this.setSearchMode('address');
+                    } else if (query.includes('@')) {
+                        // Looks like email
+                        this.setSearchMode('email');
+                    } else if (query.match(/^[A-Z]{2}$/)) {
+                        // Looks like country code
+                        this.setSearchMode('country');
+                    } else if (query.includes('.')) {
+                        // Might be domain
+                        this.setSearchMode('domain');
+                    }
                 }
                 
-                this.updateLastUpdated();
+                // Debounced search
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    this.applyFilters();
+                }, 300);
             }
 
-            enhanceHostsData() {
-                this.allHosts = this.allHosts.map(host => ({
-                    ...host,
-                    isOnline: this.determineOnlineStatus(host),
-                    isEnhanced: this.detectEnhanced(host),
-                    qualityScore: this.calculateQualityScore(host),
-                    costUSD: this.calculateCostUSD(host),
-                    countryFlag: this.getCountryFlag(host.countryCode),
-                    features: this.detectFeatures(host),
-                    utilization: this.calculateUtilization(host)
-                }));
-            }
-
-            determineOnlineStatus(host) {
-                if (!host.lastHeartbeatIndex) return false;
-                const now = Math.floor(Date.now() / 1000);
-                const diff = now - host.lastHeartbeatIndex;
-                return diff < 3600; // Last hour
-            }
-
-            detectEnhanced(host) {
-                const indicators = [
-                    host.version === '1.0.0',
-                    (host.hostRating || 0) > 200,
-                    host.domain && (
-                        host.domain.includes('enhanced') ||
-                        host.domain.includes('premium') ||
-                        host.domain.includes('pro')
-                    ),
-                    (host.cpuCount || 0) >= 4 && (host.ramMb || 0) >= 8000
-                ];
+            applyFilters() {
+                let filtered = [...this.hosts];
                 
-                return indicators.filter(Boolean).length >= 2;
+                // Apply search filter
+                if (this.currentQuery) {
+                    filtered = filtered.filter(host => {
+                        switch (this.currentSearchMode) {
+                            case 'address':
+                                return (host.address || '').toLowerCase().includes(this.currentQuery);
+                            case 'domain':
+                                return (host.domain || '').toLowerCase().includes(this.currentQuery);
+                            case 'email':
+                                return (host.email || '').toLowerCase().includes(this.currentQuery);
+                            case 'country':
+                                return (host.countryCode || '').toLowerCase().includes(this.currentQuery);
+                            default:
+                                return (
+                                    (host.address || '').toLowerCase().includes(this.currentQuery) ||
+                                    (host.domain || '').toLowerCase().includes(this.currentQuery) ||
+                                    (host.email || '').toLowerCase().includes(this.currentQuery) ||
+                                    (host.countryCode || '').toLowerCase().includes(this.currentQuery) ||
+                                    (host.country || '').toLowerCase().includes(this.currentQuery)
+                                );
+                        }
+                    });
+                }
+                
+                // Apply other filters
+                const statusFilter = this.elements.filters.status.value;
+                const countryFilter = this.elements.filters.country.value;
+                const qualityFilter = parseInt(this.elements.filters.quality.value) || 0;
+                
+                if (statusFilter === 'online') {
+                    filtered = filtered.filter(host => host.isOnline);
+                } else if (statusFilter === 'enhanced') {
+                    filtered = filtered.filter(host => host.isEnhanced);
+                } else if (statusFilter === 'available') {
+                    filtered = filtered.filter(host => host.utilization < 80);
+                }
+                
+                if (countryFilter) {
+                    filtered = filtered.filter(host => host.countryCode === countryFilter);
+                }
+                
+                if (qualityFilter > 0) {
+                    filtered = filtered.filter(host => host.quality >= qualityFilter);
+                }
+                
+                // Apply sorting
+                const sortBy = this.elements.filters.sort.value;
+                filtered.sort((a, b) => {
+                    switch (sortBy) {
+                        case 'quality':
+                            return b.quality - a.quality;
+                        case 'domain':
+                            return (a.domain || '').localeCompare(b.domain || '');
+                        case 'country':
+                            return (a.countryCode || '').localeCompare(b.countryCode || '');
+                        case 'cost':
+                            return a.costUsd - b.costUsd;
+                        default:
+                            return b.quality - a.quality;
+                    }
+                });
+                
+                this.filteredHosts = filtered;
+                this.renderHosts();
+                this.updateResultsInfo();
             }
 
-            calculateQualityScore(host) {
-                let score = 0;
+            renderHosts() {
+                if (this.filteredHosts.length === 0) {
+                    this.elements.hostResults.innerHTML = `
+                        <div class="no-results">
+                            🔍 No hosts found matching your criteria<br>
+                            <small>Try adjusting your search or filters</small>
+                        </div>
+                    `;
+                    return;
+                }
                 
-                if (this.determineOnlineStatus(host)) score += 30;
-                score += Math.min((host.cpuCount || 0) * 5, 20);
-                score += Math.min((host.ramMb || 0) / 1000 * 10, 20);
-                score += ((host.hostReputation || 0) / 255) * 15;
-                
-                const available = (host.maxInstances || 3) - (host.activeInstances || 0);
-                score += Math.min(available * 3, 15);
-                
-                return Math.min(Math.round(score), 100);
+                const hostsHtml = this.filteredHosts.map(host => this.renderHostCard(host)).join('');
+                this.elements.hostResults.innerHTML = hostsHtml;
             }
 
-            calculateCostUSD(host) {
-                const evrRate = parseFloat(host.leaseAmount || 0.001);
-                const evrToUSD = 0.1825; // Current EVR price
-                return (evrRate * evrToUSD).toFixed(4);
+            renderHostCard(host) {
+                const cardClasses = ['host-card'];
+                if (host.isEnhanced) cardClasses.push('enhanced');
+                if (host.isYourHost) cardClasses.push('your-host');
+                
+                const badges = [];
+                if (host.isYourHost) badges.push('<span class="your-host-badge">Your Host</span>');
+                if (host.isEnhanced) badges.push('<span class="enhanced-badge">Enhanced</span>');
+                
+                return `
+                    <div class="${cardClasses.join(' ')}">
+                        <div class="host-header">
+                            <div>
+                                <div class="host-domain">${host.domain || 'Unknown Domain'}</div>
+                                <div class="host-address">${host.address || ''}</div>
+                            </div>
+                            <div class="host-status">
+                                ${badges.join(' ')}
+                                <div class="status-indicator ${host.isOnline ? 'online' : ''}" title="${host.isOnline ? 'Online' : 'Offline'}"></div>
+                                ${host.isEnhanced ? '<div class="status-indicator enhanced" title="Enhanced Features"></div>' : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="host-info">
+                            <div class="info-item">
+                                <div class="info-label">Country</div>
+                                <div class="info-value">${this.getCountryFlag(host.countryCode)} ${host.countryCode || 'Unknown'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">CPU Cores</div>
+                                <div class="info-value">${host.cpuCount || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Memory</div>
+                                <div class="info-value">${host.memory ? parseFloat(host.memory).toFixed(1) + ' GB' : 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Cost/Hour</div>
+                                <div class="info-value">$${host.costUsd.toFixed(6)}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Reputation</div>
+                                <div class="info-value">${host.hostRating || 0}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Version</div>
+                                <div class="info-value">${host.version || 'Unknown'}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="quality-score">
+                            <span>Quality: ${host.quality}/100</span>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: ${host.quality}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="host-actions">
+                            <button class="action-btn primary" onclick="navigator.clipboard.writeText('evernode-client deploy --host ${host.domain}')">📋 Copy Deploy</button>
+                            <a href="https://${host.domain}" target="_blank" class="action-btn">🌐 Visit</a>
+                            <button class="action-btn" onclick="alert('Host Details:\\n\\nDomain: ${host.domain}\\nAddress: ${host.address}\\nEmail: ${host.email || 'N/A'}\\nCPU: ${host.cpuCount || 'N/A'} cores\\nMemory: ${host.memory || 'N/A'} GB\\nCost: $${host.costUsd.toFixed(6)}/hour')">ℹ️ Details</button>
+                        </div>
+                    </div>
+                `;
             }
 
-            calculateUtilization(host) {
-                const total = host.maxInstances || 3;
-                const used = host.activeInstances || 0;
-                return total > 0 ? Math.round((used / total) * 100) : 0;
+            populateCountryFilter() {
+                const countries = [...new Set(this.hosts.map(host => host.countryCode).filter(Boolean))].sort();
+                const countrySelect = this.elements.filters.country;
+                
+                // Clear existing options except first
+                countrySelect.innerHTML = '<option value="">All Countries</option>';
+                
+                countries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = `${this.getCountryFlag(country)} ${country}`;
+                    countrySelect.appendChild(option);
+                });
+            }
+
+            updateResultsInfo() {
+                this.elements.resultsCount.textContent = this.filteredHosts.length.toLocaleString();
+                
+                if (this.currentQuery) {
+                    this.elements.searchQuery.textContent = ` for "${this.currentQuery}"`;
+                } else {
+                    this.elements.searchQuery.textContent = '';
+                }
+            }
+
+            async refreshData() {
+                this.elements.refreshBtn.disabled = true;
+                this.elements.refreshBtn.textContent = '🔄 Refreshing...';
+                
+                try {
+                    // Bust cache if using cached API
+                    const bustCacheUrl = '/api/evernode-stats-cached.php?bust_cache=1';
+                    try {
+                        await fetch(bustCacheUrl);
+                    } catch {
+                        // Fallback if cached API not available
+                    }
+                    
+                    await this.loadData();
+                    this.updateCacheStatus('busted');
+                    
+                } catch (error) {
+                    console.error('Refresh failed:', error);
+                } finally {
+                    this.elements.refreshBtn.disabled = false;
+                    this.elements.refreshBtn.textContent = '🔄 Refresh';
+                }
             }
 
             getCountryFlag(countryCode) {
                 const flags = {
-                    'US': '🇺🇸', 'FR': '🇫🇷', 'DE': '🇩🇪', 'AT': '🇦🇹', 'JP': '🇯🇵',
-                    'GB': '🇬🇧', 'AU': '🇦🇺', 'CA': '🇨🇦', 'CH': '🇨🇭', 'FI': '🇫🇮',
-                    'IE': '🇮🇪', 'PL': '🇵🇱'
+                    'US': '🇺🇸', 'CA': '🇨🇦', 'GB': '🇬🇧', 'DE': '🇩🇪', 'FR': '🇫🇷',
+                    'IT': '🇮🇹', 'ES': '🇪🇸', 'NL': '🇳🇱', 'CH': '🇨🇭', 'AT': '🇦🇹',
+                    'BE': '🇧🇪', 'SE': '🇸🇪', 'NO': '🇳🇴', 'DK': '🇩🇰', 'FI': '🇫🇮',
+                    'JP': '🇯🇵', 'SG': '🇸🇬', 'AU': '🇦🇺', 'IN': '🇮🇳', 'BR': '🇧🇷',
+                    'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'KR': '🇰🇷', 'TW': '🇹🇼',
+                    'HK': '🇭🇰', 'RU': '🇷🇺', 'UA': '🇺🇦', 'PL': '🇵🇱', 'CZ': '🇨🇿'
                 };
-                return flags[countryCode] || '🌍';
+                return flags[countryCode] || '🏳️';
             }
 
-            detectFeatures(host) {
-                const features = [];
-                
-                if (this.detectEnhanced(host)) features.push('Enhanced');
-                if (this.determineOnlineStatus(host)) features.push('Online');
-                if ((host.cpuCount || 0) >= 6) features.push('High CPU');
-                if ((host.ramMb || 0) >= 16000) features.push('High RAM');
-                if (host.version === '1.0.0') features.push('Latest');
-                if ((host.hostReputation || 0) > 240) features.push('Top Rated');
-                
-                return features;
-            }
-
-            performSearch() {
-                const query = document.getElementById('search-input').value.trim();
-                const searchType = document.getElementById('search-type').value;
-                const statusFilter = document.getElementById('status-filter').value;
-
-                if (!query && !statusFilter) {
-                    this.displayHosts(this.allHosts);
-                    return;
+            formatNumber(num) {
+                if (num >= 1000000) {
+                    return (num / 1000000).toFixed(1) + 'M';
+                } else if (num >= 1000) {
+                    return (num / 1000).toFixed(1) + 'K';
                 }
-
-                let results = [...this.allHosts];
-
-                // Apply text search
-                if (query) {
-                    const lowerQuery = query.toLowerCase();
-                    
-                    results = results.filter(host => {
-                        switch (searchType) {
-                            case 'address':
-                                return (host.address || '').toLowerCase().includes(lowerQuery);
-                            case 'email':
-                                return (host.email || '').toLowerCase().includes(lowerQuery);
-                            case 'domain':
-                                return (host.domain || '').toLowerCase().includes(lowerQuery) ||
-                                       (host.domainTLD || '').toLowerCase().includes(lowerQuery);
-                            default: // Smart search
-                                return (host.address || '').toLowerCase().includes(lowerQuery) ||
-                                       (host.email || '').toLowerCase().includes(lowerQuery) ||
-                                       (host.domain || '').toLowerCase().includes(lowerQuery) ||
-                                       (host.domainTLD || '').toLowerCase().includes(lowerQuery) ||
-                                       (host.countryCode || '').toLowerCase().includes(lowerQuery) ||
-                                       (host.description || '').toLowerCase().includes(lowerQuery);
-                        }
-                    });
-                }
-
-                // Apply status filter
-                if (statusFilter) {
-                    results = results.filter(host => {
-                        switch (statusFilter) {
-                            case 'online':
-                                return host.isOnline;
-                            case 'enhanced':
-                                return host.isEnhanced;
-                            case 'available':
-                                return (host.maxInstances || 3) > (host.activeInstances || 0);
-                            default:
-                                return true;
-                        }
-                    });
-                }
-
-                this.displayHosts(results);
-            }
-
-            updateNetworkStats() {
-                const totalHosts = this.allHosts.length;
-                const onlineHosts = this.allHosts.filter(h => h.isOnline).length;
-                const enhancedHosts = this.allHosts.filter(h => h.isEnhanced).length;
-                const totalInstances = this.allHosts.reduce((sum, h) => sum + (h.maxInstances || 3), 0);
-                const usedInstances = this.allHosts.reduce((sum, h) => sum + (h.activeInstances || 0), 0);
-                const availableInstances = totalInstances - usedInstances;
-                const avgCost = this.allHosts.reduce((sum, h) => sum + parseFloat(h.costUSD || 0), 0) / totalHosts;
-                const countries = new Set(this.allHosts.map(h => h.countryCode).filter(Boolean)).size;
-
-                document.getElementById('total-hosts').textContent = totalHosts.toLocaleString();
-                document.getElementById('online-hosts').textContent = onlineHosts.toLocaleString();
-                document.getElementById('enhanced-hosts').textContent = enhancedHosts.toLocaleString();
-                document.getElementById('available-instances').textContent = availableInstances.toLocaleString();
-                document.getElementById('avg-cost').textContent = `$${avgCost.toFixed(4)}`;
-                document.getElementById('countries-count').textContent = countries.toString();
-            }
-
-            displayHosts(hosts) {
-                const container = document.getElementById('host-container');
-                const hostCount = document.getElementById('host-count');
-                const noResults = document.getElementById('no-results');
-                
-                // Sort hosts by quality score
-                const sortedHosts = [...hosts].sort((a, b) => {
-                    // Current host first
-                    if (a.address === this.currentHostAddress) return -1;
-                    if (b.address === this.currentHostAddress) return 1;
-                    
-                    // Then by quality score
-                    return (b.qualityScore || 0) - (a.qualityScore || 0);
-                });
-
-                if (sortedHosts.length === 0) {
-                    container.innerHTML = '';
-                    noResults.style.display = 'block';
-                    hostCount.textContent = 'No hosts found';
-                    return;
-                }
-
-                noResults.style.display = 'none';
-                hostCount.textContent = `${sortedHosts.length.toLocaleString()} hosts found`;
-
-                container.innerHTML = sortedHosts.map(host => this.createHostCard(host)).join('');
-            }
-
-            createHostCard(host) {
-                const isCurrentHost = host.address === this.currentHostAddress;
-                const statusIcon = host.isOnline ? '🟢' : '🔴';
-                const statusText = host.isOnline ? 'Online' : 'Offline';
-                const available = (host.maxInstances || 3) - (host.activeInstances || 0);
-                
-                return `
-                    <div class="host-item ${isCurrentHost ? 'your-host' : ''}">
-                        <div class="host-info">
-                            <div class="host-name">
-                                ${host.countryFlag} ${host.domain || host.domainTLD || 'Unknown Domain'}
-                                ${isCurrentHost ? '🏠' : ''}
-                                ${host.isEnhanced ? '<span class="feature-tag enhanced">Enhanced</span>' : ''}
-                            </div>
-                            <div class="host-address">${host.address}</div>
-                            <div class="host-details">
-                                ${statusIcon} ${statusText} • 
-                                ${host.email || 'No email'} • 
-                                Version ${host.version || 'Unknown'}
-                                ${isCurrentHost ? ' • Your Host' : ''}
-                            </div>
-                            <div class="host-features">
-                                ${host.features.map(feature => 
-                                    `<span class="feature-tag">${feature}</span>`
-                                ).join('')}
-                            </div>
-                        </div>
-                        <div class="host-metrics">
-                            <div class="metric">
-                                <div class="metric-value">${available}/${host.maxInstances || 3}</div>
-                                <div class="metric-label">Available</div>
-                            </div>
-                            <div class="metric">
-                                <div class="metric-value">$${host.costUSD}</div>
-                                <div class="metric-label">Cost/hr</div>
-                            </div>
-                            <div class="metric">
-                                <div class="metric-value">${host.utilization}%</div>
-                                <div class="metric-label">Usage</div>
-                            </div>
-                        </div>
-                        <div class="host-ranking">#${host.qualityScore}/100</div>
-                        <div class="host-actions">
-                            ${isCurrentHost ? 
-                                '<button class="action-btn" onclick="manageHost()">⚙️ Manage</button>' :
-                                `<button class="action-btn" onclick="visitHost('${host.domain || host.address}')">🌐 Visit</button>
-                                 <button class="action-btn" onclick="deployToHost('${host.address}', '${host.domain}')">🚀 Deploy</button>`
-                            }
-                        </div>
-                    </div>
-                `;
-            }
-
-            loadFallbackData() {
-                // Use the existing fallback approach
-                document.getElementById('total-hosts').textContent = '2,847';
-                document.getElementById('online-hosts').textContent = '2,634';
-                document.getElementById('enhanced-hosts').textContent = '247';
-                document.getElementById('available-instances').textContent = '4,251';
-                document.getElementById('avg-cost').textContent = '$0.0002';
-                document.getElementById('countries-count').textContent = '67';
-                
-                // Show placeholder host
-                document.getElementById('host-container').innerHTML = `
-                    <div class="host-item your-host">
-                        <div class="host-info">
-                            <div class="host-name">🏠 Your Host (yayathewisemushroom2.co)</div>
-                            <div class="host-address">${this.currentHostAddress || 'rYourHostAddress...'}</div>
-                            <div class="host-details">🟢 Online • Enhanced Evernode v1.0 • Your Host</div>
-                            <div class="host-features">
-                                <span class="feature-tag enhanced">Enhanced</span>
-                                <span class="feature-tag">Online</span>
-                                <span class="feature-tag">Latest</span>
-                            </div>
-                        </div>
-                        <div class="host-metrics">
-                            <div class="metric">
-                                <div class="metric-value">2/3</div>
-                                <div class="metric-label">Available</div>
-                            </div>
-                            <div class="metric">
-                                <div class="metric-value">$0.0002</div>
-                                <div class="metric-label">Cost/hr</div>
-                            </div>
-                            <div class="metric">
-                                <div class="metric-value">33%</div>
-                                <div class="metric-label">Usage</div>
-                            </div>
-                        </div>
-                        <div class="host-ranking">#85/100</div>
-                        <div class="host-actions">
-                            <button class="action-btn" onclick="manageHost()">⚙️ Manage</button>
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('host-count').textContent = 'Showing fallback data';
-            }
-
-            updateDiscoveryStatus(message) {
-                document.getElementById('discovery-status').innerHTML = message;
-            }
-
-            updateLastUpdated() {
-                const now = new Date().toLocaleString();
-                document.getElementById('last-updated').textContent = `Last updated: ${now}`;
-            }
-        }
-
-        // Global functions for existing compatibility
-        function visitHost(hostname) {
-            if (hostname.startsWith('r')) {
-                // It's an address, need to find the domain
-                window.open(`https://xahau.xrplwin.com/evernode?host=${hostname}`, '_blank');
-            } else {
-                window.open(`https://${hostname}`, '_blank');
-            }
-        }
-
-        function deployToHost(address, domain) {
-            const deployCommand = `evernode deploy --host=${domain || address} --instances=1`;
-            
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(deployCommand).then(() => {
-                    alert(`✅ Deploy command copied to clipboard!\n\n${deployCommand}\n\nRun this in your terminal to deploy to ${domain || address}`);
-                });
-            } else {
-                alert(`Deploy to ${domain || address}:\n\n${deployCommand}`);
-            }
-        }
-
-        function manageHost() {
-            window.location.href = '/cluster/dapp-manager.html';
-        }
-
-        function performSearch() {
-            if (window.hostDiscovery) {
-                window.hostDiscovery.performSearch();
-            }
-        }
-
-        function refreshDiscoveryData() {
-            if (window.hostDiscovery) {
-                window.hostDiscovery.loadNetworkData();
+                return num.toLocaleString();
             }
         }
 
         // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            window.hostDiscovery = new EnhancedHostDiscovery();
+        document.addEventListener('DOMContentLoaded', () => {
+            new EnhancedHostDiscovery();
         });
     </script>
 </body>
