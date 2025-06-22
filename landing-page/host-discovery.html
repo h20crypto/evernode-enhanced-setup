@@ -112,7 +112,7 @@
         
         .search-controls {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 2fr 1fr 1fr auto;
             gap: 16px;
             margin-bottom: 20px;
         }
@@ -132,6 +132,10 @@
             background: rgba(255, 255, 255, 0.15);
         }
         
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
         .search-btn {
             background: linear-gradient(45deg, #00ff88, #00cc6a);
             color: #000;
@@ -147,6 +151,12 @@
             transform: translateY(-2px);
         }
         
+        .search-suggestions {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+        
         .host-list {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 16px;
@@ -159,6 +169,15 @@
             font-weight: 600;
             margin-bottom: 20px;
             color: #00ff88;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .host-count {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            font-weight: normal;
         }
         
         .host-item {
@@ -186,6 +205,16 @@
             font-weight: 600;
             margin-bottom: 4px;
             color: #00ff88;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .host-address {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 4px;
         }
         
         .host-details {
@@ -206,6 +235,16 @@
             padding: 2px 8px;
             border-radius: 12px;
             font-size: 0.8rem;
+        }
+        
+        .feature-tag.enhanced {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+        
+        .feature-tag.premium {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
         }
         
         .host-metrics {
@@ -294,6 +333,49 @@
         .your-host .host-name {
             color: #ffd700;
         }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #00ff88;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.7;
+        }
+        
+        .status-online {
+            color: #10b981;
+        }
+        
+        .status-offline {
+            color: #ef4444;
+        }
+        
+        @media (max-width: 768px) {
+            .search-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .host-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .host-metrics {
+                justify-content: space-around;
+            }
+        }
     </style>
 </head>
 <body>
@@ -318,9 +400,9 @@
         <!-- Header -->
         <div class="discovery-header">
             <h1 class="discovery-title">🔍 Host Discovery</h1>
-            <p>Explore and discover the best Enhanced Evernode hosts</p>
+            <p>Explore and discover the best Enhanced Evernode hosts across the network</p>
             <div class="discovery-indicator" id="discovery-status">
-                ✅ Network Scanner Active
+                <span class="loading-spinner"></span> Loading Network Data...
             </div>
         </div>
 
@@ -349,23 +431,23 @@
 
             <div class="stat-card">
                 <div class="stat-icon">📊</div>
-                <div class="stat-value" id="avg-performance">--</div>
-                <div class="stat-label">Avg Performance</div>
-                <div class="stat-trend">Network average</div>
+                <div class="stat-value" id="available-instances">--</div>
+                <div class="stat-label">Available Instances</div>
+                <div class="stat-trend">Ready to deploy</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-icon">💰</div>
                 <div class="stat-value" id="avg-cost">--</div>
                 <div class="stat-label">Avg Cost</div>
-                <div class="stat-trend">Per deployment</div>
+                <div class="stat-trend">Per hour (USD)</div>
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon">⚡</div>
-                <div class="stat-value" id="avg-response">--</div>
-                <div class="stat-label">Avg Response</div>
-                <div class="stat-trend">Network latency</div>
+                <div class="stat-icon">🌍</div>
+                <div class="stat-value" id="countries-count">--</div>
+                <div class="stat-label">Countries</div>
+                <div class="stat-trend">Global coverage</div>
             </div>
         </div>
 
@@ -373,226 +455,449 @@
         <div class="search-section">
             <h2 class="search-title">🔍 Find the Perfect Host</h2>
             <div class="search-controls">
-                <input type="text" class="search-input" placeholder="Search by domain or location..." id="search-input">
-                <select class="search-input" id="location-filter">
-                    <option value="">All Locations</option>
-                    <option value="us">United States</option>
-                    <option value="eu">Europe</option>
-                    <option value="asia">Asia Pacific</option>
+                <input type="text" class="search-input" placeholder="Search by r-address, email, domain, or country..." id="search-input">
+                <select class="search-input" id="search-type">
+                    <option value="all">🔍 Smart Search</option>
+                    <option value="address">📍 R-Address</option>
+                    <option value="email">📧 Email</option>
+                    <option value="domain">🌐 Domain</option>
                 </select>
-                <select class="search-input" id="performance-filter">
-                    <option value="">All Performance</option>
-                    <option value="premium">Premium (99%+ uptime)</option>
-                    <option value="standard">Standard (95%+ uptime)</option>
+                <select class="search-input" id="status-filter">
+                    <option value="">All Status</option>
+                    <option value="online">Online Only</option>
+                    <option value="enhanced">Enhanced Only</option>
+                    <option value="available">Available Capacity</option>
                 </select>
-                <button class="search-btn" onclick="searchHosts()">🔍 Search Hosts</button>
+                <button class="search-btn" onclick="performSearch()">🔍 Search</button>
+            </div>
+            <div class="search-suggestions">
+                💡 Examples: r3LraybyHdjNkDiavw7hGZLK3cESzekdNj • bisdaknode11@gmail.com • deluxenode.xyz • US
             </div>
         </div>
 
         <!-- Host List -->
         <div class="host-list">
-            <h2 class="host-list-title">🏆 Top Enhanced Evernode Hosts</h2>
+            <h2 class="host-list-title">
+                🏆 Evernode Hosts
+                <span class="host-count" id="host-count">Loading...</span>
+            </h2>
             <div id="host-container">
-                <!-- Your Host (highlighted) -->
-                <div class="host-item your-host">
+                <!-- Loading indicator -->
+                <div class="host-item" id="loading-indicator">
                     <div class="host-info">
-                        <div class="host-name">🏠 Your Host (yayathewisemushroom2.co)</div>
-                        <div class="host-details">Enhanced Evernode v3.0 • Professional Grade • Optimized Performance</div>
-                        <div class="host-features">
-                            <span class="feature-tag">✅ Enhanced</span>
-                            <span class="feature-tag">🚀 Fast</span>
-                            <span class="feature-tag">🔒 Secure</span>
-                            <span class="feature-tag">📊 Monitored</span>
-                        </div>
-                    </div>
-                    <div class="host-metrics">
-                        <div class="metric">
-                            <div class="metric-value" id="your-uptime">99.8%</div>
-                            <div class="metric-label">Uptime</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value" id="your-response">45ms</div>
-                            <div class="metric-label">Response</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value" id="your-capacity">3/5</div>
-                            <div class="metric-label">Capacity</div>
-                        </div>
-                    </div>
-                    <div class="host-ranking">#127</div>
-                    <div class="host-actions">
-                        <button class="action-btn" onclick="manageHost()">⚙️ Manage</button>
+                        <div class="host-name"><span class="loading-spinner"></span> Loading hosts from Evernode network...</div>
+                        <div class="host-details">Fetching real-time data from api.evernode.network</div>
                     </div>
                 </div>
-
-                <!-- Other Top Hosts -->
-                <div class="host-item">
-                    <div class="host-info">
-                        <div class="host-name">🌟 premium-evernode.io</div>
-                        <div class="host-details">Enhanced Evernode v2.8 • Premium Tier • Europe</div>
-                        <div class="host-features">
-                            <span class="feature-tag">✅ Enhanced</span>
-                            <span class="feature-tag">⚡ Premium</span>
-                            <span class="feature-tag">🌍 EU</span>
-                        </div>
-                    </div>
-                    <div class="host-metrics">
-                        <div class="metric">
-                            <div class="metric-value">99.9%</div>
-                            <div class="metric-label">Uptime</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">32ms</div>
-                            <div class="metric-label">Response</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">4/5</div>
-                            <div class="metric-label">Capacity</div>
-                        </div>
-                    </div>
-                    <div class="host-ranking">#12</div>
-                    <div class="host-actions">
-                        <button class="action-btn" onclick="visitHost('premium-evernode.io')">🌐 Visit</button>
-                        <button class="action-btn" onclick="compareHost('premium-evernode.io')">📊 Compare</button>
-                    </div>
-                </div>
-
-                <div class="host-item">
-                    <div class="host-info">
-                        <div class="host-name">⚡ fast-deploy.evernode.net</div>
-                        <div class="host-details">Enhanced Evernode v3.1 • High Performance • United States</div>
-                        <div class="host-features">
-                            <span class="feature-tag">✅ Enhanced</span>
-                            <span class="feature-tag">🚀 Fast</span>
-                            <span class="feature-tag">🇺🇸 US</span>
-                        </div>
-                    </div>
-                    <div class="host-metrics">
-                        <div class="metric">
-                            <div class="metric-value">99.7%</div>
-                            <div class="metric-label">Uptime</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">28ms</div>
-                            <div class="metric-label">Response</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">2/5</div>
-                            <div class="metric-label">Capacity</div>
-                        </div>
-                    </div>
-                    <div class="host-ranking">#45</div>
-                    <div class="host-actions">
-                        <button class="action-btn" onclick="visitHost('fast-deploy.evernode.net')">🌐 Visit</button>
-                        <button class="action-btn" onclick="compareHost('fast-deploy.evernode.net')">📊 Compare</button>
-                    </div>
-                </div>
-
-                <div class="host-item">
-                    <div class="host-info">
-                        <div class="host-name">🔒 secure-hosting.xrpl.dev</div>
-                        <div class="host-details">Enhanced Evernode v2.9 • Security Focused • Asia Pacific</div>
-                        <div class="host-features">
-                            <span class="feature-tag">✅ Enhanced</span>
-                            <span class="feature-tag">🔒 Secure</span>
-                            <span class="feature-tag">🌏 APAC</span>
-                        </div>
-                    </div>
-                    <div class="host-metrics">
-                        <div class="metric">
-                            <div class="metric-value">99.6%</div>
-                            <div class="metric-label">Uptime</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">65ms</div>
-                            <div class="metric-label">Response</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-value">5/5</div>
-                            <div class="metric-label">Capacity</div>
-                        </div>
-                    </div>
-                    <div class="host-ranking">#89</div>
-                    <div class="host-actions">
-                        <button class="action-btn" onclick="visitHost('secure-hosting.xrpl.dev')">🌐 Visit</button>
-                        <button class="action-btn" onclick="compareHost('secure-hosting.xrpl.dev')">📊 Compare</button>
-                    </div>
-                </div>
+            </div>
+            
+            <div id="no-results" class="no-results" style="display: none;">
+                <h3>🔍 No hosts found</h3>
+                <p>Try adjusting your search criteria or filters</p>
             </div>
         </div>
 
         <button class="refresh-btn" onclick="refreshDiscoveryData()">🔄 Refresh Host Discovery</button>
         
         <div class="last-updated" id="last-updated">
-            Last updated: Loading...
+            Last updated: Never
         </div>
     </div>
 
     <script>
-        // Host discovery system
-        class HostDiscovery {
+        // Enhanced Host Discovery System
+        class EnhancedHostDiscovery {
             constructor() {
+                this.allHosts = [];
+                this.filteredHosts = [];
+                this.currentHostAddress = null;
                 this.init();
             }
 
             async init() {
-                console.log('🔍 Host Discovery initializing...');
+                console.log('🔍 Enhanced Host Discovery initializing...');
+                
+                // Get current host info
+                await this.getCurrentHostInfo();
+                
+                // Load network data
                 await this.loadNetworkData();
                 
-                // Auto-refresh every 3 minutes for discovery
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                // Auto-refresh every 5 minutes
                 setInterval(() => {
                     this.loadNetworkData();
-                }, 180000);
+                }, 300000);
+            }
+
+            async getCurrentHostInfo() {
+                try {
+                    const response = await fetch('/api/host-info.php');
+                    const data = await response.json();
+                    this.currentHostAddress = data.xahau_address;
+                } catch (error) {
+                    console.log('Could not get current host info');
+                }
+            }
+
+            setupEventListeners() {
+                const searchInput = document.getElementById('search-input');
+                const searchType = document.getElementById('search-type');
+                
+                // Real-time search as user types
+                let searchTimeout;
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        if (searchInput.value.length > 2) {
+                            this.performSearch();
+                        } else if (searchInput.value.length === 0) {
+                            this.displayHosts(this.allHosts);
+                        }
+                    }, 300);
+                });
+
+                // Auto-detect search type
+                searchInput.addEventListener('input', () => {
+                    this.autoDetectSearchType();
+                });
+
+                // Enter key search
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.performSearch();
+                    }
+                });
+            }
+
+            autoDetectSearchType() {
+                const value = document.getElementById('search-input').value.trim();
+                const searchType = document.getElementById('search-type');
+                
+                if (value.startsWith('r') && value.length > 20) {
+                    searchType.value = 'address';
+                } else if (value.includes('@')) {
+                    searchType.value = 'email';
+                } else if (value.includes('.')) {
+                    searchType.value = 'domain';
+                } else {
+                    searchType.value = 'all';
+                }
             }
 
             async loadNetworkData() {
                 try {
-                    // Try to load real network data from API
-                    const response = await this.fetchWithTimeout('/api/router.php?endpoint=network');
-                    this.updateNetworkStats(response);
+                    this.updateDiscoveryStatus('⚡ Fetching live data from Evernode API...');
+                    
+                    const response = await fetch('https://api.evernode.network/registry/hosts?limit=1000');
+                    const data = await response.json();
+                    
+                    if (data.data && Array.isArray(data.data)) {
+                        this.allHosts = data.data;
+                        this.enhanceHostsData();
+                        this.updateNetworkStats();
+                        this.displayHosts(this.allHosts);
+                        this.updateDiscoveryStatus('✅ Network Scanner Active');
+                    } else {
+                        throw new Error('Invalid API response');
+                    }
                     
                 } catch (error) {
-                    console.log('Using network discovery fallback data');
-                    this.loadNetworkFallback();
+                    console.error('Failed to load from API:', error);
+                    this.loadFallbackData();
+                    this.updateDiscoveryStatus('⚠️ Using fallback data');
                 }
                 
                 this.updateLastUpdated();
             }
 
-            async fetchWithTimeout(url, timeout = 5000) {
-                const response = await Promise.race([
-                    fetch(url),
-                    new Promise((_, reject) => 
-                        setTimeout(() => reject(new Error('timeout')), timeout)
-                    )
-                ]);
+            enhanceHostsData() {
+                this.allHosts = this.allHosts.map(host => ({
+                    ...host,
+                    isOnline: this.determineOnlineStatus(host),
+                    isEnhanced: this.detectEnhanced(host),
+                    qualityScore: this.calculateQualityScore(host),
+                    costUSD: this.calculateCostUSD(host),
+                    countryFlag: this.getCountryFlag(host.countryCode),
+                    features: this.detectFeatures(host),
+                    utilization: this.calculateUtilization(host)
+                }));
+            }
+
+            determineOnlineStatus(host) {
+                if (!host.lastHeartbeatIndex) return false;
+                const now = Math.floor(Date.now() / 1000);
+                const diff = now - host.lastHeartbeatIndex;
+                return diff < 3600; // Last hour
+            }
+
+            detectEnhanced(host) {
+                const indicators = [
+                    host.version === '1.0.0',
+                    (host.hostRating || 0) > 200,
+                    host.domain && (
+                        host.domain.includes('enhanced') ||
+                        host.domain.includes('premium') ||
+                        host.domain.includes('pro')
+                    ),
+                    (host.cpuCount || 0) >= 4 && (host.ramMb || 0) >= 8000
+                ];
                 
-                if (response.ok) {
-                    return await response.json();
+                return indicators.filter(Boolean).length >= 2;
+            }
+
+            calculateQualityScore(host) {
+                let score = 0;
+                
+                if (this.determineOnlineStatus(host)) score += 30;
+                score += Math.min((host.cpuCount || 0) * 5, 20);
+                score += Math.min((host.ramMb || 0) / 1000 * 10, 20);
+                score += ((host.hostReputation || 0) / 255) * 15;
+                
+                const available = (host.maxInstances || 3) - (host.activeInstances || 0);
+                score += Math.min(available * 3, 15);
+                
+                return Math.min(Math.round(score), 100);
+            }
+
+            calculateCostUSD(host) {
+                const evrRate = parseFloat(host.leaseAmount || 0.001);
+                const evrToUSD = 0.1825; // Current EVR price
+                return (evrRate * evrToUSD).toFixed(4);
+            }
+
+            calculateUtilization(host) {
+                const total = host.maxInstances || 3;
+                const used = host.activeInstances || 0;
+                return total > 0 ? Math.round((used / total) * 100) : 0;
+            }
+
+            getCountryFlag(countryCode) {
+                const flags = {
+                    'US': '🇺🇸', 'FR': '🇫🇷', 'DE': '🇩🇪', 'AT': '🇦🇹', 'JP': '🇯🇵',
+                    'GB': '🇬🇧', 'AU': '🇦🇺', 'CA': '🇨🇦', 'CH': '🇨🇭', 'FI': '🇫🇮',
+                    'IE': '🇮🇪', 'PL': '🇵🇱'
+                };
+                return flags[countryCode] || '🌍';
+            }
+
+            detectFeatures(host) {
+                const features = [];
+                
+                if (this.detectEnhanced(host)) features.push('Enhanced');
+                if (this.determineOnlineStatus(host)) features.push('Online');
+                if ((host.cpuCount || 0) >= 6) features.push('High CPU');
+                if ((host.ramMb || 0) >= 16000) features.push('High RAM');
+                if (host.version === '1.0.0') features.push('Latest');
+                if ((host.hostReputation || 0) > 240) features.push('Top Rated');
+                
+                return features;
+            }
+
+            performSearch() {
+                const query = document.getElementById('search-input').value.trim();
+                const searchType = document.getElementById('search-type').value;
+                const statusFilter = document.getElementById('status-filter').value;
+
+                if (!query && !statusFilter) {
+                    this.displayHosts(this.allHosts);
+                    return;
                 }
-                throw new Error('API error');
+
+                let results = [...this.allHosts];
+
+                // Apply text search
+                if (query) {
+                    const lowerQuery = query.toLowerCase();
+                    
+                    results = results.filter(host => {
+                        switch (searchType) {
+                            case 'address':
+                                return (host.address || '').toLowerCase().includes(lowerQuery);
+                            case 'email':
+                                return (host.email || '').toLowerCase().includes(lowerQuery);
+                            case 'domain':
+                                return (host.domain || '').toLowerCase().includes(lowerQuery) ||
+                                       (host.domainTLD || '').toLowerCase().includes(lowerQuery);
+                            default: // Smart search
+                                return (host.address || '').toLowerCase().includes(lowerQuery) ||
+                                       (host.email || '').toLowerCase().includes(lowerQuery) ||
+                                       (host.domain || '').toLowerCase().includes(lowerQuery) ||
+                                       (host.domainTLD || '').toLowerCase().includes(lowerQuery) ||
+                                       (host.countryCode || '').toLowerCase().includes(lowerQuery) ||
+                                       (host.description || '').toLowerCase().includes(lowerQuery);
+                        }
+                    });
+                }
+
+                // Apply status filter
+                if (statusFilter) {
+                    results = results.filter(host => {
+                        switch (statusFilter) {
+                            case 'online':
+                                return host.isOnline;
+                            case 'enhanced':
+                                return host.isEnhanced;
+                            case 'available':
+                                return (host.maxInstances || 3) > (host.activeInstances || 0);
+                            default:
+                                return true;
+                        }
+                    });
+                }
+
+                this.displayHosts(results);
             }
 
-            updateNetworkStats(data) {
-                const network = data.network || data;
+            updateNetworkStats() {
+                const totalHosts = this.allHosts.length;
+                const onlineHosts = this.allHosts.filter(h => h.isOnline).length;
+                const enhancedHosts = this.allHosts.filter(h => h.isEnhanced).length;
+                const totalInstances = this.allHosts.reduce((sum, h) => sum + (h.maxInstances || 3), 0);
+                const usedInstances = this.allHosts.reduce((sum, h) => sum + (h.activeInstances || 0), 0);
+                const availableInstances = totalInstances - usedInstances;
+                const avgCost = this.allHosts.reduce((sum, h) => sum + parseFloat(h.costUSD || 0), 0) / totalHosts;
+                const countries = new Set(this.allHosts.map(h => h.countryCode).filter(Boolean)).size;
+
+                document.getElementById('total-hosts').textContent = totalHosts.toLocaleString();
+                document.getElementById('online-hosts').textContent = onlineHosts.toLocaleString();
+                document.getElementById('enhanced-hosts').textContent = enhancedHosts.toLocaleString();
+                document.getElementById('available-instances').textContent = availableInstances.toLocaleString();
+                document.getElementById('avg-cost').textContent = `$${avgCost.toFixed(4)}`;
+                document.getElementById('countries-count').textContent = countries.toString();
+            }
+
+            displayHosts(hosts) {
+                const container = document.getElementById('host-container');
+                const hostCount = document.getElementById('host-count');
+                const noResults = document.getElementById('no-results');
                 
-                // Update network statistics
-                document.getElementById('total-hosts').textContent = network.total_hosts || '2,847';
-                document.getElementById('online-hosts').textContent = network.online_hosts || '2,634';
-                document.getElementById('enhanced-hosts').textContent = network.enhanced_hosts || '247';
-                document.getElementById('avg-performance').textContent = network.avg_performance || '96.2%';
-                document.getElementById('avg-cost').textContent = network.avg_cost || '18.5 EVR';
-                document.getElementById('avg-response').textContent = network.avg_response || '67ms';
+                // Sort hosts by quality score
+                const sortedHosts = [...hosts].sort((a, b) => {
+                    // Current host first
+                    if (a.address === this.currentHostAddress) return -1;
+                    if (b.address === this.currentHostAddress) return 1;
+                    
+                    // Then by quality score
+                    return (b.qualityScore || 0) - (a.qualityScore || 0);
+                });
+
+                if (sortedHosts.length === 0) {
+                    container.innerHTML = '';
+                    noResults.style.display = 'block';
+                    hostCount.textContent = 'No hosts found';
+                    return;
+                }
+
+                noResults.style.display = 'none';
+                hostCount.textContent = `${sortedHosts.length.toLocaleString()} hosts found`;
+
+                container.innerHTML = sortedHosts.map(host => this.createHostCard(host)).join('');
             }
 
-            loadNetworkFallback() {
-                // Healthy network fallback data
+            createHostCard(host) {
+                const isCurrentHost = host.address === this.currentHostAddress;
+                const statusIcon = host.isOnline ? '🟢' : '🔴';
+                const statusText = host.isOnline ? 'Online' : 'Offline';
+                const available = (host.maxInstances || 3) - (host.activeInstances || 0);
+                
+                return `
+                    <div class="host-item ${isCurrentHost ? 'your-host' : ''}">
+                        <div class="host-info">
+                            <div class="host-name">
+                                ${host.countryFlag} ${host.domain || host.domainTLD || 'Unknown Domain'}
+                                ${isCurrentHost ? '🏠' : ''}
+                                ${host.isEnhanced ? '<span class="feature-tag enhanced">Enhanced</span>' : ''}
+                            </div>
+                            <div class="host-address">${host.address}</div>
+                            <div class="host-details">
+                                ${statusIcon} ${statusText} • 
+                                ${host.email || 'No email'} • 
+                                Version ${host.version || 'Unknown'}
+                                ${isCurrentHost ? ' • Your Host' : ''}
+                            </div>
+                            <div class="host-features">
+                                ${host.features.map(feature => 
+                                    `<span class="feature-tag">${feature}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        <div class="host-metrics">
+                            <div class="metric">
+                                <div class="metric-value">${available}/${host.maxInstances || 3}</div>
+                                <div class="metric-label">Available</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$${host.costUSD}</div>
+                                <div class="metric-label">Cost/hr</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">${host.utilization}%</div>
+                                <div class="metric-label">Usage</div>
+                            </div>
+                        </div>
+                        <div class="host-ranking">#${host.qualityScore}/100</div>
+                        <div class="host-actions">
+                            ${isCurrentHost ? 
+                                '<button class="action-btn" onclick="manageHost()">⚙️ Manage</button>' :
+                                `<button class="action-btn" onclick="visitHost('${host.domain || host.address}')">🌐 Visit</button>
+                                 <button class="action-btn" onclick="deployToHost('${host.address}', '${host.domain}')">🚀 Deploy</button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }
+
+            loadFallbackData() {
+                // Use the existing fallback approach
                 document.getElementById('total-hosts').textContent = '2,847';
                 document.getElementById('online-hosts').textContent = '2,634';
                 document.getElementById('enhanced-hosts').textContent = '247';
-                document.getElementById('avg-performance').textContent = '96.2%';
-                document.getElementById('avg-cost').textContent = '18.5 EVR';
-                document.getElementById('avg-response').textContent = '67ms';
+                document.getElementById('available-instances').textContent = '4,251';
+                document.getElementById('avg-cost').textContent = '$0.0002';
+                document.getElementById('countries-count').textContent = '67';
+                
+                // Show placeholder host
+                document.getElementById('host-container').innerHTML = `
+                    <div class="host-item your-host">
+                        <div class="host-info">
+                            <div class="host-name">🏠 Your Host (yayathewisemushroom2.co)</div>
+                            <div class="host-address">${this.currentHostAddress || 'rYourHostAddress...'}</div>
+                            <div class="host-details">🟢 Online • Enhanced Evernode v1.0 • Your Host</div>
+                            <div class="host-features">
+                                <span class="feature-tag enhanced">Enhanced</span>
+                                <span class="feature-tag">Online</span>
+                                <span class="feature-tag">Latest</span>
+                            </div>
+                        </div>
+                        <div class="host-metrics">
+                            <div class="metric">
+                                <div class="metric-value">2/3</div>
+                                <div class="metric-label">Available</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">$0.0002</div>
+                                <div class="metric-label">Cost/hr</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">33%</div>
+                                <div class="metric-label">Usage</div>
+                            </div>
+                        </div>
+                        <div class="host-ranking">#85/100</div>
+                        <div class="host-actions">
+                            <button class="action-btn" onclick="manageHost()">⚙️ Manage</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('host-count').textContent = 'Showing fallback data';
+            }
+
+            updateDiscoveryStatus(message) {
+                document.getElementById('discovery-status').innerHTML = message;
             }
 
             updateLastUpdated() {
@@ -601,38 +906,47 @@
             }
         }
 
-        // Host discovery functions
-        function searchHosts() {
-            const searchTerm = document.getElementById('search-input').value;
-            const location = document.getElementById('location-filter').value;
-            const performance = document.getElementById('performance-filter').value;
-            
-            console.log('Searching hosts:', { searchTerm, location, performance });
-            alert(`🔍 Host Search\n\nSearching for:\n• Term: "${searchTerm || 'All hosts'}"\n• Location: ${location || 'All locations'}\n• Performance: ${performance || 'All levels'}\n\nThis would filter the host list based on your criteria.`);
-        }
-
+        // Global functions for existing compatibility
         function visitHost(hostname) {
-            alert(`🌐 Visit Host\n\nOpening ${hostname} in new tab.\n\nThis would navigate to the host's landing page where you can:\n• View their services\n• Check pricing\n• Deploy applications`);
+            if (hostname.startsWith('r')) {
+                // It's an address, need to find the domain
+                window.open(`https://xahau.xrplwin.com/evernode?host=${hostname}`, '_blank');
+            } else {
+                window.open(`https://${hostname}`, '_blank');
+            }
         }
 
-        function compareHost(hostname) {
-            alert(`📊 Compare Hosts\n\nComparing ${hostname} with your host.\n\nThis would show:\n• Performance comparison\n• Pricing differences\n• Feature comparison\n• Uptime statistics`);
+        function deployToHost(address, domain) {
+            const deployCommand = `evernode deploy --host=${domain || address} --instances=1`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(deployCommand).then(() => {
+                    alert(`✅ Deploy command copied to clipboard!\n\n${deployCommand}\n\nRun this in your terminal to deploy to ${domain || address}`);
+                });
+            } else {
+                alert(`Deploy to ${domain || address}:\n\n${deployCommand}`);
+            }
         }
 
         function manageHost() {
             window.location.href = '/cluster/dapp-manager.html';
         }
 
-        // Global refresh function
-        window.refreshDiscoveryData = function() {
+        function performSearch() {
+            if (window.hostDiscovery) {
+                window.hostDiscovery.performSearch();
+            }
+        }
+
+        function refreshDiscoveryData() {
             if (window.hostDiscovery) {
                 window.hostDiscovery.loadNetworkData();
             }
-        };
+        }
 
-        // Initialize host discovery when page loads
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            window.hostDiscovery = new HostDiscovery();
+            window.hostDiscovery = new EnhancedHostDiscovery();
         });
     </script>
 </body>
