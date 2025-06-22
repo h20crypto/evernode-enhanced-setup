@@ -1,15 +1,15 @@
-// Enhanced Evernode Unified State Manager - Smart Caching
+// Enhanced Evernode Unified State Manager - Simple Access Control
 class EnhancedEvernodeState {
     constructor() {
         this.currentRole = 'tenant';
-        this.updateInterval = 600000; // 10 minutes (600,000ms)
+        this.updateInterval = 600000; // 10 minutes
         this.apiTimeout = 8000;
         this.cacheExpiry = 600000; // 10 minutes cache
         this.init();
     }
 
     init() {
-        console.log('🚀 Enhanced Evernode System - Smart Caching Mode (10min intervals)');
+        console.log('🚀 Enhanced Evernode System - Simple Access Control');
         this.detectUserRole();
         this.loadCachedDataFirst();
         this.startSmartMonitoring();
@@ -18,7 +18,7 @@ class EnhancedEvernodeState {
     detectUserRole() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('admin') === 'true') {
-            this.setRole('host_owner');
+            this.promptAdminAccess();
             return;
         }
 
@@ -27,21 +27,14 @@ class EnhancedEvernodeState {
             return;
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                this.promptAdminAccess();
-                e.preventDefault();
-            }
-        });
-    }
-
-    setRole(role) {
-        this.currentRole = role;
-        document.body.className = role === 'host_owner' ? 'admin-mode' : 'tenant-mode';
-        
-        if (role === 'host_owner') {
-            localStorage.setItem('enhanced_evernode_admin', 'true');
-            this.showAdminBanner();
+        // Show admin shortcut on main page for hosts
+        if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                    this.promptAdminAccess();
+                    e.preventDefault();
+                }
+            });
         }
     }
 
@@ -49,16 +42,31 @@ class EnhancedEvernodeState {
         const password = prompt('Host Owner Password:');
         if (password === 'BIEU6HJ7M5go') {
             this.setRole('host_owner');
-            alert('👑 Host Owner access granted!');
+            alert('👑 Host Owner access granted!\n\nYou now have access to:\n• dApp Manager\n• Leaderboard\n• Commission Dashboard\n• Host Discovery');
+        } else if (password !== null) {
+            alert('❌ Access denied. Incorrect password.');
+        }
+    }
+
+    setRole(role) {
+        this.currentRole = role;
+        
+        if (role === 'host_owner') {
+            localStorage.setItem('enhanced_evernode_admin', 'true');
+            document.body.classList.add('admin-mode');
+            this.showAdminBanner();
+        } else {
+            localStorage.removeItem('enhanced_evernode_admin');
+            document.body.classList.remove('admin-mode');
         }
     }
 
     showAdminBanner() {
         const banner = document.createElement('div');
         banner.style.cssText = 'position:fixed;top:70px;left:0;right:0;background:#10b981;color:white;padding:12px;text-align:center;z-index:999;';
-        banner.innerHTML = '👑 Host Owner Mode Active <button onclick="this.parentElement.remove()" style="float:right;background:none;border:none;color:white;cursor:pointer;">×</button>';
+        banner.innerHTML = '👑 Host Owner Mode - Access to dApp Manager, Leaderboard & Commissions <button onclick="this.parentElement.remove()" style="float:right;background:none;border:none;color:white;cursor:pointer;">×</button>';
         document.body.insertBefore(banner, document.body.firstChild);
-        setTimeout(() => banner.remove(), 3000);
+        setTimeout(() => banner.remove(), 5000);
     }
 
     loadCachedDataFirst() {
@@ -74,8 +82,6 @@ class EnhancedEvernodeState {
                 
                 console.log(`📦 Using cached data (${Math.round(age/1000/60)} minutes old)`);
                 this.updateUI(data);
-                
-                // Show cache indicator
                 this.showCacheIndicator(age);
             }
         } catch (error) {
@@ -85,11 +91,7 @@ class EnhancedEvernodeState {
 
     async startSmartMonitoring() {
         console.log('📡 Starting smart monitoring (10-minute intervals)...');
-        
-        // Check if we need fresh data
         await this.checkAndRefreshData();
-        
-        // Set up 10-minute intervals
         setInterval(() => {
             this.checkAndRefreshData();
         }, this.updateInterval);
@@ -99,7 +101,6 @@ class EnhancedEvernodeState {
         const cacheTime = localStorage.getItem('enhanced_evernode_cache_time');
         const now = Date.now();
         
-        // Only fetch if cache is older than 10 minutes or doesn't exist
         if (!cacheTime || (now - parseInt(cacheTime)) > this.cacheExpiry) {
             console.log('🔄 Cache expired, fetching fresh data...');
             await this.fetchAndCacheData();
@@ -128,7 +129,6 @@ class EnhancedEvernodeState {
                         uptime: '99.8%'
                     };
                     
-                    // Cache the data
                     localStorage.setItem('enhanced_evernode_cache', JSON.stringify(metrics));
                     localStorage.setItem('enhanced_evernode_cache_time', Date.now().toString());
                     
@@ -142,7 +142,6 @@ class EnhancedEvernodeState {
             console.log('📡 API failed, using fallback data');
         }
         
-        // Fallback data
         const fallbackData = {
             available_instances: 3,
             response_time: '45ms',
@@ -171,11 +170,9 @@ class EnhancedEvernodeState {
     }
 
     showCacheIndicator(age) {
-        // Remove existing indicator
         const existing = document.getElementById('cache-indicator');
         if (existing) existing.remove();
 
-        // Create cache age indicator
         const indicator = document.createElement('div');
         indicator.id = 'cache-indicator';
         indicator.style.cssText = 'position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,0.8);color:#00ff88;padding:8px 12px;border-radius:6px;font-size:0.8rem;z-index:1000;';
@@ -192,15 +189,7 @@ class EnhancedEvernodeState {
     }
 }
 
-// Manual refresh function
-window.refreshSystemData = function() {
-    if (window.enhancedState) {
-        localStorage.removeItem('enhanced_evernode_cache');
-        localStorage.removeItem('enhanced_evernode_cache_time');
-        window.enhancedState.fetchAndCacheData();
-    }
-};
-
+// Global admin toggle function
 window.toggleAdminMode = function() {
     if (!window.enhancedState) return;
     
@@ -209,6 +198,15 @@ window.toggleAdminMode = function() {
         window.location.reload();
     } else {
         window.enhancedState.promptAdminAccess();
+    }
+};
+
+// Manual refresh function
+window.refreshSystemData = function() {
+    if (window.enhancedState) {
+        localStorage.removeItem('enhanced_evernode_cache');
+        localStorage.removeItem('enhanced_evernode_cache_time');
+        window.enhancedState.fetchAndCacheData();
     }
 };
 
