@@ -409,7 +409,48 @@
             navigator.clipboard.writeText(tag);
             alert('📋 Destination tag copied!');
         }
+
+        // 🆕 ADD THIS NEW FUNCTION:
+async function updateCryptoRates() {
+    try {
+        const response = await fetch('/api/payment/crypto-rates');
+        const data = await response.json();
         
+        if (data.success) {
+            // Update rate display in your UI
+            document.getElementById('xrp-amount').textContent = `~${(49.99 / data.rates.XRP).toFixed(1)} XRP`;
+            document.getElementById('xah-amount').textContent = `~${(49.99 / data.rates.XAH).toFixed(1)} XAH`;
+        }
+    } catch (error) {
+        console.error('Rate fetch failed:', error);
+    }
+}
+
+// 🆕 ADD THIS NEW FUNCTION:
+async function checkPaymentSuccess(uuid) {
+    try {
+        const response = await fetch(`/api/payment/check-payment/${uuid}`);
+        const result = await response.json();
+        
+        if (result.success && result.paid) {
+            alert('🎉 Payment received! NFT license minted successfully!\n\nRedirecting to cluster manager...');
+            window.location.href = '/cluster/dapp-manager.html?access=paid&welcome=true';
+        }
+    } catch (error) {
+        console.error('Payment verification failed:', error);
+    }
+}
+
+// 🆕 ADD THIS NEW FUNCTION:
+function showPaymentCanceled() {
+    document.getElementById('qr-code').innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <h3 style="color: #ff6b6b;">❌ Payment Canceled</h3>
+            <p>Payment was canceled or expired.</p>
+            <button onclick="location.reload()" style="margin-top: 10px;">Try Again</button>
+        </div>
+    `;
+}
         // Update rates every 10 seconds (simulate)
         setInterval(() => {
             // Simulate small price variations
