@@ -1,0 +1,26 @@
+{
+  "name": "evernode-xumm-payment-api",
+  "version": "1.0.0",
+  "description": "Professional Xumm SDK integration for Evernode Enhanced Setup",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "xumm-sdk": "^1.10.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "@types/express": "^4.17.17",
+    "@types/cors": "^2.8.13",
+    "ts-node": "^10.9.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
