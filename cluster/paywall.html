@@ -451,24 +451,13 @@ function showPaymentCanceled() {
         </div>
     `;
 }
-        // Update rates every 10 seconds (simulate)
-        setInterval(() => {
-            // Simulate small price variations
-            const xahBase = 247.5;
-            const xrpBase = 119.0;
-            const evrBase = 3124;
-            
-            const variation = (Math.random() - 0.5) * 0.1; // ±5% variation
-            
-            document.getElementById('xah-amount').textContent = `~${(xahBase * (1 + variation)).toFixed(1)} XAH`;
-            document.getElementById('xrp-amount').textContent = `~${(xrpBase * (1 + variation)).toFixed(1)} XRP`;
-            document.getElementById('evr-amount').textContent = `~${Math.round(evrBase * (1 + variation)).toLocaleString()} EVR`;
-            
-            // Flash rate indicator
-            const indicator = document.querySelector('.live-indicator');
-            indicator.style.background = '#FFD700';
-            setTimeout(() => indicator.style.background = '#4CAF50', 200);
-        }, 10000);
+        // Update rates every 30 seconds with real data
+setInterval(() => {
+    updateCryptoRates();
+}, 30000);
+
+// Get initial rates
+updateCryptoRates();
     </script>
 <nav style="background: rgba(0,0,0,0.8); padding: 15px 0; position: fixed; top: 0; width: 100%; z-index: 1000; backdrop-filter: blur(10px);">
     <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
