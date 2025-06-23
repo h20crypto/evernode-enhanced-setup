@@ -508,7 +508,9 @@ main() {
     
     print_info "🌟 Starting Enhanced Evernode installation..."
     echo ""
-    
+
+    install_payment_api
+    configure_nginx_payment_proxy
     install_dependencies
     setup_directories
     download_enhanced_files
