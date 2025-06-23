@@ -10,15 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // === PEER DISCOVERY FUNCTIONALITY ===
-// Handle peer announcements and discovery
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Handle announcement from peer
     $input = json_decode(file_get_contents('php://input'), true);
     
     if (isset($input['announce'])) {
-        // Store peer announcement
         $peer_info = $input['announce'];
-        
         echo json_encode([
             'success' => true,
             'message' => 'Announcement received',
@@ -31,11 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // === ORIGINAL FUNCTIONALITY (Enhanced) ===
-// Get actual host address from evernode config
 $xahau_address = trim(shell_exec('evernode config account | grep "Address:" | awk \'{print $2}\' 2>/dev/null'));
 
-// Get additional system information
-$domain = $_SERVER['HTTP_HOST'];
+// Get system information
+$domain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
 $cpu_cores = intval(trim(shell_exec('nproc') ?: '4'));
 $memory_mb = intval(trim(shell_exec("free -m | grep '^Mem:' | awk '{print \$2}'") ?: '8192'));
 $memory_gb = round($memory_mb / 1024, 1);
@@ -54,44 +49,45 @@ $enhanced_features = [
     'Live Data APIs'
 ];
 
-// Determine if this is one of the known enhanced hosts
+// Known enhanced hosts (add h20cryptonode5)
 $known_enhanced_hosts = [
     'h20cryptoxah.click',
     'yayathewisemushroom2.co',
-    'h20cryptonode3.dev'
+    'h20cryptonode3.dev',
+    'h20cryptonode5.dev'  // Add this new host
 ];
 
 $is_enhanced = in_array($domain, $known_enhanced_hosts) || 
                file_exists('/var/www/html/api/enhanced-search.php');
 
-// Build comprehensive response
+// Build response
 $host_data = [
-    // === ORIGINAL DATA ===
+    // Original data
     'xahau_address' => $xahau_address ?: 'rUnknownAddress',
     'domain' => $domain,
     'enhanced' => $is_enhanced,
     
-    // === ENHANCED DATA ===
+    // Enhanced data
     'uri' => "https://{$domain}",
     'features' => $is_enhanced ? $enhanced_features : ['Standard'],
     'quality_score' => $is_enhanced ? 95 : 75,
-    'reputation' => 252, // Enhanced hosts maintain max reputation
+    'reputation' => 252,
     
-    // === SYSTEM INFO ===
+    // System info
     'cpu_cores' => $cpu_cores,
     'memory_gb' => $memory_gb,
     'disk_gb' => $disk_gb,
-    'available_instances' => 45, // Estimate - could be made dynamic
+    'available_instances' => 45,
     'max_instances' => 50,
     'active_instances' => 5,
     
-    // === COST CALCULATION ===
-    'moments' => 0.00001, // EVR per moment
+    // Cost calculation
+    'moments' => 0.00001,
     'cost_per_hour_evr' => 0.00001,
-    'cost_per_hour_usd' => 0.000001825, // Based on current EVR price
+    'cost_per_hour_usd' => 0.000001825,
     'evr_rewards_eligible' => true,
     
-    // === API ENDPOINTS ===
+    // API endpoints
     'api_endpoints' => [
         'discovery' => "/api/enhanced-search.php",
         'host_info' => "/api/host-info.php", 
@@ -99,37 +95,12 @@ $host_data = [
         'stats' => "/api/evernode-stats-cached.php"
     ],
     
-    // === METADATA ===
+    // Metadata
     'version' => '3.0',
     'last_updated' => date('c'),
-    'country' => $domain === 'yayathewisemushroom2.co' ? 'Canada' : 'United States',
+    'country' => 'United States',
     'network_type' => 'enhanced'
 ];
 
-// === PEER ANNOUNCEMENT ===
-// Announce to other enhanced hosts (async, don't wait)
-if ($is_enhanced && $_GET['announce'] !== 'false') {
-    $peers = array_filter($known_enhanced_hosts, function($peer) use ($domain) {
-        return $peer !== $domain; // Don't announce to self
-    });
-    
-    foreach ($peers as $peer) {
-        // Fire and forget announcement
-        $announcement = json_encode(['announce' => $host_data]);
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'POST',
-                'header' => "Content-type: application/json\r\n",
-                'content' => $announcement,
-                'timeout' => 2 // Quick timeout
-            ]
-        ]);
-        
-        // Async call - don't wait for response
-        @file_get_contents("http://{$peer}/api/host-info.php", false, $context);
-    }
-}
-
-// Return the enhanced host information
 echo json_encode($host_data, JSON_PRETTY_PRINT);
 ?>
