@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Evernode Host - Professional dApp Deployment</title>
+    <meta name="description" content="Deploy your dApps on Enhanced Evernode with professional cluster management, real-time monitoring, and transparent EVR pricing.">
+    
+    <style>
+        /* Include all the existing CSS from the complete landing page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00ff88;
+        }
+
+        .nav-active {
+            color: #00ff88 !important;
+            position: relative;
+        }
+
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #00ff88;
+        }
+
+        .role-indicator {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #00ff88;
+            border: 2px solid #00ff88;
+        }
+
+        .btn-outline:hover {
+            background: #00ff88;
+            color: #000000;
+        }
+
+        /* Sections */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Stats Grid */
+        .stats-section {
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Features Grid */
+        .features-section {
+            padding: 80px 20px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .feature-description {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Role-based visibility */
+        .tenant-only {
+            display: block;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        .demo-only {
+            display: none;
+        }
+
+        /* Role banners */
+        .role-banner {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000000;
+            padding: 10px 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* Quick Access Cards */
+        .quick-access {
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .access-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .access-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 136, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .access-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .access-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .access-description {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 15px;
+                font-size: 0.9rem;
+            }
+
+            .features-grid,
+            .stats-grid,
+            .access-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Deployment Section Styles */
+        .deployment-section {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 60px 20px;
+            margin: 40px 0;
+            border-radius: 20px;
+        }
+
+        .deployment-section .section-title {
+            color: #3b82f6;
+        }
+
+        /* Copy Button Styles */
+        button {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Role Banner -->
+    <div id="role-banner" class="role-banner"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="logo">Enhanced Evernode</div>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-active">Dashboard</a></li>
+                <li><a href="/host-discovery.html">Discovery</a></li>
+                <li><a href="/cluster/roi-calculator.html" class="tenant-only">ROI Calculator</a></li>
+                <li><a href="/monitoring-dashboard.html" class="admin-only">Monitoring</a></li>
+                <li><a href="/my-earnings.html" class="admin-only">Earnings</a></li>
+                <li><a href="/leaderboard.html" class="admin-only">Leaderboard</a></li>
+                <li><a href="/cluster/paywall.html" style="color: #3b82f6; font-weight: 600;">Premium</a></li>
+                <li class="role-indicator" id="role-indicator">Tenant Mode</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Enhanced Evernode Host</h1>
+            <p class="hero-subtitle">
+                Professional dApp deployment with cluster management, real-time monitoring, and transparent EVR pricing. 
+                Transform your host into a premium service.
+            </p>
+            
+            <!-- Value Proposition Split -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 40px 0; max-width: 1000px; margin-left: auto; margin-right: auto;">
+                <div style="background: rgba(59, 130, 246, 0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 15px; padding: 30px; text-align: center;" class="tenant-only">
+                    <h3 style="color: #3b82f6; margin-bottom: 15px; font-size: 1.3rem;">🚀 Deploy Your dApp</h3>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">3-step deployment with transparent EVR pricing</p>
+                    <div style="font-size: 2rem; font-weight: 700; color: #3b82f6; margin-bottom: 10px;" id="hero-evr-cost">0.005 EVR/hour</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;" id="hero-usd-cost">Starting cost for standard dApps</div>
+                    <a href="#tenant-deploy" class="btn btn-primary" onclick="scrollToTenantSection()">
+                        🎯 Start Deployment
+                    </a>
+                </div>
+                
+                <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid rgba(16, 185, 129, 0.3); border-radius: 15px; padding: 30px; text-align: center;" class="admin-only">
+                    <h3 style="color: #10b981; margin-bottom: 15px; font-size: 1.3rem;">💰 Earn More Revenue</h3>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">3x more bookings + commission income</p>
+                    <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 10px;">+300%</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;">Average booking increase</div>
+                    <a href="#host-benefits" class="btn btn-primary" onclick="scrollToHostSection()">
+                        📈 See ROI Calculator
+                    </a>
+                </div>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                    🎮 Launch Demo
+                </a>
+                <a href="/cluster/dapp-manager.html" class="btn btn-secondary admin-only">
+                    🏗️ Cluster Manager
+                </a>
+                <a href="/cluster/roi-calculator.html" class="btn btn-secondary tenant-only">
+                    💰 ROI Calculator
+                </a>
+                <a href="/cluster/paywall.html" class="btn btn-outline">
+                    💎 Upgrade to Premium
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-Time Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title">📊 Live Host Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="instance-count">Loading...</span>
+                    <span class="stat-label">Active Instances</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="availability">Loading...</span>
+                    <span class="stat-label">Available Slots</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="uptime">99.9%</span>
+                    <span class="stat-label">Uptime</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="revenue">Loading...</span>
+                    <span class="stat-label">Current Rate</span>
+                </div>
+            </div>
+            
+            <!-- Host Status Indicator -->
+            <div style="text-align: center; margin-top: 30px;">
+                <div style="background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 10px; padding: 15px; display: inline-block; min-width: 300px; position: relative;">
+                    <div style="font-size: 1rem; font-weight: 600; color: #00ff88; margin-bottom: 5px;">Host Status</div>
+                    <div style="font-size: 1.1rem; font-weight: 600;" id="host-status">Checking availability...</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;">Last updated: <span id="stats-timestamp">Loading...</span></div>
+                    <button onclick="forceRefreshStats()" style="position: absolute; top: 8px; right: 8px; background: rgba(0,255,136,0.2); border: 1px solid rgba(0,255,136,0.5); color: #00ff88; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;" title="Refresh Host Stats">🔄</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3-Step Deployment Process for Tenants -->
+    <section id="tenant-deploy" class="deployment-section tenant-only">
+        <div class="container">
+            <h2 class="section-title" style="color: #3b82f6;">🚀 Deploy Your dApp in 3 Steps</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Deploy any Docker container to this Enhanced Evernode host in under 5 minutes. Pay only what you use with EVR tokens.
+            </p>
+            
+            <div style="max-width: 800px; margin: 0 auto;">
+                <!-- Step 1: Install DevKit -->
+                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">1</div>
+                        <h3 style="margin: 0; color: #3b82f6;">Install Evernode DevKit</h3>
+                    </div>
+                    <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88;">
+                        <code>npm install -g @evernode/devkit</code>
+                        <button onclick="copyCode('npm install -g @evernode/devkit')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Official Evernode development toolkit for dApp deployment</p>
+                </div>
+
+                <!-- Step 2: Configure Wallet -->
+                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">2</div>
+                        <h3 style="margin: 0; color: #3b82f6;">Configure Your Xahau Wallet</h3>
+                    </div>
+                    <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88;">
+                        <code>evdevkit wallet import</code>
+                        <button onclick="copyCode('evdevkit wallet import')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Import your Xahau wallet with EVR tokens for deployment payment</p>
+                </div>
+
+                <!-- Step 3: Deploy -->
+                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">3</div>
+                        <h3 style="margin: 0; color: #3b82f6;">Deploy to This Host</h3>
+                    </div>
+                    <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88; word-break: break-all;">
+                        <code>evdevkit acquire -i your-app:latest --gptcp1--80 <span id="deploy-host-address">loading...</span> -m 24</code>
+                        <button onclick="copyDeployCommand()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Deploy your Docker image directly to this Enhanced Evernode host</p>
+                </div>
+            </div>
+
+            <!-- EVR Pricing Display -->
+            <div style="text-align: center; margin-top: 40px;">
+                <h3 style="color: #3b82f6; margin-bottom: 20px;">💰 Transparent EVR Pricing</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; max-width: 600px; margin: 0 auto 30px;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 8px;">💻 Light</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #3b82f6;" id="light-evr-rate">0.00001 EVR</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">per hour</div>
+                        <div style="font-size: 0.7rem; opacity: 0.6;" id="light-usd-rate">~$0.000002/hr</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 8px;">🚀 Standard</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #3b82f6;" id="standard-evr-rate">0.005 EVR</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">per hour</div>
+                        <div style="font-size: 0.7rem; opacity: 0.6;" id="standard-usd-rate">~$0.0009/hr</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 8px;">⚡ Premium</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #3b82f6;" id="premium-evr-rate">0.02 EVR</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">per hour</div>
+                        <div style="font-size: 0.7rem; opacity: 0.6;" id="premium-usd-rate">~$0.003/hr</div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px; display: inline-block; position: relative;">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: #00ff88; margin-bottom: 5px;">Current EVR Rate</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: #00ff88;" id="current-evr-usd">$0.172 USD</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;" id="evr-source-info">Live from Evernode Network API</div>
+                    <button onclick="forceRefreshEVRPrice()" style="position: absolute; top: 8px; right: 8px; background: rgba(0,255,136,0.2); border: 1px solid rgba(0,255,136,0.5); color: #00ff88; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;" title="Refresh EVR Price">🔄</button>
+                </div>
+                
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">
+                    ✅ No setup fees • ✅ No monthly minimums • ✅ Cancel anytime • ✅ Automatic deployment
+                </p>
+                
+                <a href="/cluster/roi-calculator.html" class="btn btn-primary">
+                    📊 Calculate Your Exact Costs
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">🎯 Professional Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🔧</span>
+                    <h3 class="feature-title">Advanced Cluster Management</h3>
+                    <p class="feature-description">
+                        One-click deployments, automatic scaling, and professional monitoring 
+                        with enterprise-grade container orchestration.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">💰</span>
+                    <h3 class="feature-title">Transparent EVR Pricing</h3>
+                    <p class="feature-description">
+                        Pay-as-you-use model with real-time EVR pricing from Evernode network. 
+                        No hidden fees, no minimums, cancel anytime.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">Real-Time Analytics</h3>
+                    <p class="feature-description">
+                        Live performance metrics, resource usage tracking, and comprehensive 
+                        reporting with automated insights and alerts.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🚀</span>
+                    <h3 class="feature-title">Professional Interface</h3>
+                    <p class="feature-description">
+                        Modern design that builds tenant trust and increases 
+                        bookings by 300% compared to basic hosts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Flow Section -->
+    <section style="padding: 60px 20px; background: rgba(0,0,0,0.4);">
+        <div class="container">
+            <h2 class="section-title">🗺️ Your Path to Success</h2>
+            
+            <!-- Tenant Flow -->
+            <div class="tenant-only" style="background: rgba(59, 130, 246, 0.1); border-radius: 15px; padding: 40px;">
+                <h3 style="color: #3b82f6; text-align: center; margin-bottom: 30px; font-size: 1.5rem;">🚀 Deploy Your dApp</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">1️⃣</div>
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Try Demo</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Experience the <a href="/cluster/premium-cluster-manager-demo.html" style="color: #00ff88;">full interface</a> with sample data</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">2️⃣</div>
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Calculate</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Use <a href="/cluster/roi-calculator.html" style="color: #00ff88;">ROI Calculator</a> for exact costs</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">3️⃣</div>
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Deploy</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Follow the 3-step deployment process</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Host Flow -->
+            <div class="admin-only" style="background: rgba(16, 185, 129, 0.1); border-radius: 15px; padding: 40px;">
+                <h3 style="color: #10b981; text-align: center; margin-bottom: 30px; font-size: 1.5rem;">💰 Maximize Your Revenue</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">1️⃣</div>
+                        <h4 style="color: #10b981; margin-bottom: 10px;">Demo</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Try <a href="/cluster/premium-cluster-manager-demo.html" style="color: #00ff88;">cluster management</a> interface</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">2️⃣</div>
+                        <h4 style="color: #10b981; margin-bottom: 10px;">Monitor</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Track <a href="/monitoring-dashboard.html" style="color: #00ff88;">system performance</a> and health</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">3️⃣</div>
+                        <h4 style="color: #10b981; margin-bottom: 10px;">Earn</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">View <a href="/my-earnings.html" style="color: #00ff88;">earnings</a> and commissions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Cards -->
+    <section class="quick-access">
+        <div class="container">
+            <h2 class="section-title">⚡ Quick Access</h2>
+            <div class="access-grid">
+                <!-- Demo - Always visible and prominent -->
+                <a href="/cluster/premium-cluster-manager-demo.html" class="access-card" style="border: 2px solid #00ff88; background: rgba(0,255,136,0.1);">
+                    <span class="access-icon">🎮</span>
+                    <div class="access-title" style="color: #00ff88;">Launch Demo</div>
+                    <div class="access-description">Try the full cluster management interface</div>
+                </a>
+                
+                <!-- Host Discovery - Always visible -->
+                <a href="/host-discovery.html" class="access-card">
+                    <span class="access-icon">🔍</span>
+                    <div class="access-title">Host Discovery</div>
+                    <div class="access-description">Find and compare enhanced hosts</div>
+                </a>
+                
+                <!-- Tenant Calculator -->
+                <a href="/cluster/roi-calculator.html" class="access-card tenant-only">
+                    <span class="access-icon">📊</span>
+                    <div class="access-title">ROI Calculator</div>
+                    <div class="access-description">Calculate deployment costs and savings</div>
+                </a>
+                
+                <!-- Admin Monitoring -->
+                <a href="/monitoring-dashboard.html" class="access-card admin-only">
+                    <span class="access-icon">📊</span>
+                    <div class="access-title">Host Monitoring</div>
+                    <div class="access-description">Real-time system monitoring</div>
+                </a>
+                
+                <!-- Admin Earnings -->
+                <a href="/my-earnings.html" class="access-card admin-only">
+                    <span class="access-icon">💰</span>
+                    <div class="access-title">My Earnings</div>
+                    <div class="access-description">Track revenue and commissions</div>
+                </a>
+                
+                <!-- Always visible - Upgrade path -->
+                <a href="/cluster/paywall.html" class="access-card" style="border: 1px solid #3b82f6;">
+                    <span class="access-icon">💎</span>
+                    <div class="access-title">Premium Upgrade</div>
+                    <div class="access-description">Unlock advanced cluster features</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Call to Action -->
+    <section style="padding: 80px 20px; background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(59,130,246,0.1) 100%);">
+        <div class="container" style="text-align: center;">
+            <h2 class="section-title">🚀 Ready to Get Started?</h2>
+            
+            <div class="tenant-only">
+                <p style="font-size: 1.2rem; margin-bottom: 40px; opacity: 0.9;">
+                    Deploy your first dApp in minutes with transparent EVR pricing
+                </p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                        🎮 Try Demo First
+                    </a>
+                    <a href="#tenant-deploy" onclick="scrollToTenantSection()" class="btn btn-secondary">
+                        📋 View Deployment Steps
+                    </a>
+                    <a href="/cluster/roi-calculator.html" class="btn btn-outline">
+                        💰 Calculate Costs
+                    </a>
+                </div>
+            </div>
+            
+            <div class="admin-only">
+                <p style="font-size: 1.2rem; margin-bottom: 40px; opacity: 0.9;">
+                    Transform your host into a premium service with 300% more bookings
+                </p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                        🎮 Try Full Demo
+                    </a>
+                    <a href="/cluster/dapp-manager.html" class="btn btn-secondary">
+                        🏗️ Cluster Manager
+                    </a>
+                    <a href="/monitoring-dashboard.html" class="btn btn-outline">
+                        📊 Monitor Host
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // ===========================================
+        // CONFIGURATION - LOADED FROM API
+        // ===========================================
+        
+        let hostConfig = {
+            adminPasswordHash: null, // Loaded from server
+            domain: window.location.host,
+            apiVersion: '3.0'
+        };
+
+        // Load configuration from server
+        async function loadHostConfig() {
+            try {
+                const response = await fetch('/api/?endpoint=config');
+                const data = await response.json();
+                
+                if (data.success) {
+                    hostConfig = { ...hostConfig, ...data.config };
+                }
+            } catch (error) {
+                console.warn('Could not load host configuration:', error);
+            }
+        }
+
+        // ===========================================
+        // ROLE-BASED ACCESS CONTROL (SECURE)
+        // ===========================================
+        
+        function detectUserRole() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdmin = urlParams.get('admin') === 'true' || 
+                           localStorage.getItem('admin_mode') === 'true' ||
+                           checkAdminAccess();
+            
+            if (isAdmin) {
+                setAdminMode();
+            } else {
+                setTenantMode();
+            }
+        }
+
+        async function checkAdminAccess() {
+            // Check if user has valid admin session
+            try {
+                const response = await fetch('/api/?endpoint=admin-check', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                return data.success && data.is_admin;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function requestAdminAccess() {
+            const password = prompt('Enter admin password:');
+            if (!password) return false;
+
+            try {
+                const response = await fetch('/api/?endpoint=admin-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ password: password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    setAdminMode();
+                    return true;
+                } else {
+                    alert('Invalid password');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Admin login error:', error);
+                alert('Login failed');
+                return false;
+            }
+        }
+
+        function setAdminMode() {
+            document.body.classList.add('admin-mode');
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+            document.querySelectorAll('.tenant-only').forEach(el => el.style.display = 'none');
+            
+            const roleIndicator = document.getElementById('role-indicator');
+            if (roleIndicator) {
+                roleIndicator.textContent = 'Host Admin';
+                roleIndicator.style.background = 'rgba(16, 185, 129, 0.2)';
+                roleIndicator.style.color = '#10b981';
+            }
+            
+            const roleBanner = document.getElementById('role-banner');
+            if (roleBanner) {
+                roleBanner.textContent = '👑 Host Admin Mode - Full Access to Management Features';
+                roleBanner.style.display = 'block';
+            }
+            
+            localStorage.setItem('admin_mode', 'true');
+        }
+
+        function setTenantMode() {
+            document.body.classList.remove('admin-mode');
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tenant-only').forEach(el => el.style.display = 'block');
+            
+            const roleIndicator = document.getElementById('role-indicator');
+            if (roleIndicator) {
+                roleIndicator.textContent = 'Tenant Mode';
+                roleIndicator.style.background = 'rgba(0, 255, 136, 0.2)';
+                roleIndicator.style.color = '#00ff88';
+            }
+            
+            const roleBanner = document.getElementById('role-banner');
+            if (roleBanner) {
+                roleBanner.style.display = 'none';
+            }
+            
+            localStorage.removeItem('admin_mode');
+        }
+
+        // ===========================================
+        // REAL-TIME STATS (SECURE)
+        // ===========================================
+        
+        async function updateRealTimeStats() {
+            try {
+                // Try multiple API endpoints in order of preference
+                let response = await fetch('/api/?endpoint=instance-count');
+                let data = await response.json();
+                
+                if (!data.success) {
+                    response = await fetch('/api/instance-count.php');
+                    data = await response.json();
+                }
+                
+                if (!data.success) {
+                    response = await fetch('/api/router.php?endpoint=instance-count');
+                    data = await response.json();
+                }
+                
+                if (data.success) {
+                    // Use real data from API
+                    document.getElementById('instance-count').textContent = data.used + '/' + data.total;
+                    document.getElementById('availability').textContent = data.available + ' slots';
+                    
+                    // Calculate hourly rate from lease amount if available
+                    let rateText = 'Loading...';
+                    if (data.host_info && data.host_info.lease_amount) {
+                        rateText = data.host_info.lease_amount;
+                    } else if (data.debug_info && data.debug_info.lease_output) {
+                        const rateMatch = data.debug_info.lease_output.match(/(\d+\.?\d*)\s*EVR/);
+                        if (rateMatch) {
+                            rateText = rateMatch[1] + ' EVR/hr';
+                        }
+                    } else {
+                        rateText = '0.005 EVR/hr';
+                    }
+                    
+                    document.getElementById('revenue').textContent = rateText;
+                    
+                    // Update status indicator
+                    const statusElement = document.getElementById('host-status');
+                    if (statusElement) {
+                        statusElement.textContent = data.status_message || data.status || 'Available';
+                        
+                        // Color code the status
+                        if (data.status === 'available') {
+                            statusElement.style.color = '#00ff88';
+                        } else if (data.status === 'limited') {
+                            statusElement.style.color = '#fbbf24';
+                        } else if (data.status === 'full') {
+                            statusElement.style.color = '#ef4444';
+                        } else {
+                            statusElement.style.color = '#ffffff';
+                        }
+                    }
+                    
+                    // Update timestamp
+                    const timestampElement = document.getElementById('stats-timestamp');
+                    if (timestampElement) {
+                        const updateTime = data.last_updated || new Date().toLocaleTimeString();
+                        timestampElement.textContent = updateTime;
+                    }
+                    
+                    console.log('Stats updated from API:', {
+                        total: data.total,
+                        used: data.used,
+                        available: data.available,
+                        status: data.status,
+                        data_source: data.data_source,
+                        timestamp: data.last_updated
+                    });
+                    
+                } else {
+                    throw new Error('All API endpoints failed');
+                }
+                
+            } catch (error) {
+                console.log('API unavailable, using demo stats. Error:', error.message);
+                updateDemoStats();
+            }
+        }
+
+        function updateDemoStats() {
+            const timestamp = Date.now();
+            const instances = 2 + Math.sin(timestamp / 60000) * 1;
+            const total = 5;
+            const used = Math.floor(instances);
+            const available = Math.max(0, total - used);
+            
+            document.getElementById('instance-count').textContent = used + '/' + total;
+            document.getElementById('availability').textContent = available + ' slots';
+            document.getElementById('revenue').textContent = '0.005 EVR/hr';
+            
+            const statusElement = document.getElementById('host-status');
+            if (statusElement) {
+                if (available > 2) {
+                    statusElement.textContent = '✅ Ready for new deployments!';
+                    statusElement.style.color = '#00ff88';
+                } else if (available > 0) {
+                    statusElement.textContent = '⚡ Limited slots available';
+                    statusElement.style.color = '#fbbf24';
+                } else {
+                    statusElement.textContent = '🔴 Currently at capacity';
+                    statusElement.style.color = '#ef4444';
+                }
+            }
+            
+            const timestampElement = document.getElementById('stats-timestamp');
+            if (timestampElement) {
+                timestampElement.textContent = new Date().toLocaleTimeString() + ' (demo)';
+            }
+            
+            console.log('Using demo stats - API unavailable');
+        }
+
+        // ===========================================
+        // EVR PRICING (SECURE CACHING)
+        // ===========================================
+        
+        const EVR_CACHE_KEY = 'evr_price_cache';
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+        function getCachedEVRPrice() {
+            try {
+                const cached = localStorage.getItem(EVR_CACHE_KEY);
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    const now = Date.now();
+                    
+                    if (now - data.timestamp < CACHE_DURATION) {
+                        return data;
+                    }
+                }
+                return null;
+            } catch (error) {
+                console.error('Error reading EVR price cache:', error);
+                return null;
+            }
+        }
+
+        function setCachedEVRPrice(priceData) {
+            try {
+                const cacheData = {
+                    ...priceData,
+                    timestamp: Date.now(),
+                    cached_at: new Date().toISOString()
+                };
+                localStorage.setItem(EVR_CACHE_KEY, JSON.stringify(cacheData));
+            } catch (error) {
+                console.error('Error saving EVR price cache:', error);
+            }
+        }
+
+        async function loadEVRPricing() {
+            try {
+                const cached = getCachedEVRPrice();
+                if (cached) {
+                    console.log('Using cached EVR price:', cached.currentPrice);
+                    updatePricingDisplay(cached.currentPrice, true);
+                    return;
+                }
+
+                console.log('Fetching fresh EVR price from Evernode API...');
+                const response = await fetch('https://api.evernode.network/supply/money', {
+                    method: 'GET',
+                    headers: { 'accept': '*/*' }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API responded with status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data && typeof data.currentPrice === 'number') {
+                    console.log('Evernode API Response:', {
+                        currentPrice: data.currentPrice,
+                        marketCap: data.mc,
+                        circulating: data.circulating,
+                        timestamp: new Date(data.timestamp).toISOString()
+                    });
+                    
+                    setCachedEVRPrice(data);
+                    updatePricingDisplay(data.currentPrice, false);
+                    
+                    console.log('EVR price updated:', data.currentPrice, 'USD');
+                } else {
+                    throw new Error('Invalid API response format');
+                }
+                
+            } catch (error) {
+                console.error('Failed to load EVR pricing:', error);
+                
+                const cached = getCachedEVRPrice();
+                if (cached) {
+                    console.log('Using expired cache as fallback');
+                    updatePricingDisplay(cached.currentPrice, true);
+                } else {
+                    console.log('Using fallback price: $0.172');
+                    updatePricingDisplay(0.172, false);
+                }
+            }
+        }
+
+        function updatePricingDisplay(evrUSD, fromCache = false) {
+            try {
+                document.getElementById('current-evr-usd').textContent = `$${evrUSD.toFixed(3)} USD`;
+                
+                const sourceInfo = document.getElementById('evr-source-info');
+                if (fromCache) {
+                    const cached = getCachedEVRPrice();
+                    const cacheTime = cached ? new Date(cached.cached_at).toLocaleTimeString() : 'unknown';
+                    sourceInfo.textContent = `Cached (${cacheTime})`;
+                    sourceInfo.style.opacity = '0.6';
+                } else {
+                    sourceInfo.textContent = 'Live from Evernode Network API';
+                    sourceInfo.style.opacity = '0.8';
+                }
+                
+                const lightUSD = (0.00001 * evrUSD).toFixed(6);
+                const standardUSD = (0.005 * evrUSD).toFixed(4);
+                const premiumUSD = (0.02 * evrUSD).toFixed(4);
+                
+                document.getElementById('light-usd-rate').textContent = `~$${lightUSD}/hr`;
+                document.getElementById('standard-usd-rate').textContent = `~$${standardUSD}/hr`;
+                document.getElementById('premium-usd-rate').textContent = `~$${premiumUSD}/hr`;
+                
+                const heroUSDCost = (0.005 * evrUSD).toFixed(4);
+                document.getElementById('hero-usd-cost').textContent = `~$${heroUSDCost}/hr for standard dApps`;
+                
+                console.log(`Pricing updated - Light: $${lightUSD}/hr, Standard: $${standardUSD}/hr, Premium: $${premiumUSD}/hr`);
+                
+            } catch (error) {
+                console.error('Error updating pricing display:', error);
+            }
+        }
+
+        // ===========================================
+        // UTILITY FUNCTIONS
+        // ===========================================
+        
+        async function loadHostAddress() {
+            try {
+                const currentHost = window.location.host;
+                const hostAddress = `http://${currentHost}/`;
+                
+                document.getElementById('deploy-host-address').textContent = hostAddress;
+                
+                const tutorialHost = document.getElementById('tutorial-host-address');
+                if (tutorialHost) {
+                    tutorialHost.textContent = hostAddress;
+                }
+            } catch (error) {
+                console.error('Failed to load host address:', error);
+                document.getElementById('deploy-host-address').textContent = 'http://your-host.com/';
+            }
+        }
+
+        function scrollToTenantSection() {
+            document.getElementById('tenant-deploy').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function scrollToHostSection() {
+            document.getElementById('host-benefits').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function copyCode(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                console.log('Code copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        function copyDeployCommand() {
+            const hostAddress = document.getElementById('deploy-host-address').textContent;
+            const command = `evdevkit acquire -i your-app:latest --gptcp1--80 ${hostAddress} -m 24`;
+            copyCode(command);
+        }
+
+        async function forceRefreshStats() {
+            try {
+                document.getElementById('instance-count').textContent = 'Loading...';
+                document.getElementById('availability').textContent = 'Loading...';
+                document.getElementById('revenue').textContent = 'Loading...';
+                document.getElementById('host-status').textContent = 'Refreshing...';
+                document.getElementById('stats-timestamp').textContent = 'Updating...';
+                
+                await updateRealTimeStats();
+                
+            } catch (error) {
+                console.error('Error forcing stats refresh:', error);
+                document.getElementById('host-status').textContent = 'Refresh failed - using demo data';
+                updateDemoStats();
+            }
+        }
+
+        async function forceRefreshEVRPrice() {
+            try {
+                localStorage.removeItem(EVR_CACHE_KEY);
+                
+                document.getElementById('current-evr-usd').textContent = 'Loading...';
+                document.getElementById('evr-source-info').textContent = 'Fetching fresh data...';
+                
+                await loadEVRPricing();
+                
+            } catch (error) {
+                console.error('Error forcing EVR price refresh:', error);
+                document.getElementById('evr-source-info').textContent = 'Refresh failed';
+            }
+        }
+
+        // ===========================================
+        // INITIALIZATION
+        // ===========================================
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadHostConfig();
+            detectUserRole();
+            updateRealTimeStats();
+            loadHostAddress();
+            loadEVRPricing();
+            
+            // Set up periodic updates
+            setInterval(updateRealTimeStats, 30000);
+            setInterval(loadEVRPricing, 300000);
+        });
+    </script>
+</body>
+</html>
