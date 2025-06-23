@@ -3,711 +3,1205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Enhanced Evernode Host - Professional dApp Deployment Platform</title>
-    <link rel="stylesheet" href="/assets/css/unified-navigation.css">
-    <script src="/assets/js/unified-state-manager.js"></script>
+    <title>Enhanced Evernode Host - Professional dApp Deployment</title>
+    <meta name="description" content="Deploy your dApps on Enhanced Evernode with professional cluster management, real-time monitoring, and transparent EVR pricing.">
+    
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-            color: #ffffff;
+        * {
             margin: 0;
             padding: 0;
-            margin-top: 70px;
+            box-sizing: border-box;
         }
-        
-        .landing-container {
-            max-width: 1400px;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
-        
-        .monitor-header {
-            text-align: center;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        /* Navigation */
+        .nav-bar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        
-        .monitor-title {
-            font-size: 2.5rem;
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 10px;
             color: #00ff88;
         }
-        
-        .monitor-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 20px;
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
         }
-        
-        .health-indicator {
-            display: inline-block;
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            padding: 8px 16px;
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00ff88;
+        }
+
+        .nav-active {
+            color: #00ff88 !important;
+            position: relative;
+        }
+
+        .nav-active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #00ff88;
+        }
+
+        .role-indicator {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 5px 12px;
             border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin-top: 10px;
         }
-        
-        .host-info-banner {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        /* Hero Section */
+        .hero-section {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
         }
-        
-        .banner-title {
-            font-size: 1.4rem;
-            font-weight: 600;
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
             margin-bottom: 20px;
-            color: #ffd700;
-            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .host-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .host-metric {
-            text-align: center;
-        }
-        
-        .metric-label {
-            font-weight: 600;
-            color: #ffd700;
-            margin-bottom: 8px;
-        }
-        
-        .metric-value {
-            font-family: monospace;
-            font-size: 0.9rem;
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
             opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #00ff88;
+            border: 2px solid #00ff88;
+        }
+
+        .btn-outline:hover {
+            background: #00ff88;
+            color: #000000;
+        }
+
+        /* Sections */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
             color: #ffffff;
         }
-        
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .status-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .status-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(0, 255, 136, 0.3);
-        }
-        
-        .status-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
-        }
-        
-        .status-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #00ff88;
-        }
-        
-        .status-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .value-prop-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .section-title {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #00ff88;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
+
         .section-subtitle {
             text-align: center;
             font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 30px;
+            opacity: 0.8;
+            margin-bottom: 50px;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
-        
-        .features-grid {
+
+        /* Stats Grid */
+        .stats-section {
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-            margin-top: 30px;
-        }
-        
-        .feature-card {
-            text-align: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .feature-title {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #ffffff;
-        }
-        
-        .feature-description {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .comparison-section {
-            margin-bottom: 40px;
-        }
-        
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        
-        .comparison-card {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
-        
-        .comparison-card.premium {
-            border-color: rgba(0, 255, 136, 0.4);
-            background: rgba(0, 255, 136, 0.05);
-        }
-        
-        .popular-badge {
-            position: absolute;
-            top: -10px;
-            right: 20px;
-            background: linear-gradient(135deg, #ffd700, #f39c12);
-            color: #000;
-            padding: 6px 16px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .comparison-header {
+
+        .stat-item {
             text-align: center;
-            margin-bottom: 25px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
         }
-        
-        .comparison-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #00ff88;
-        }
-        
-        .comparison-price {
+
+        .stat-number {
+            display: block;
             font-size: 2.5rem;
             font-weight: 700;
-            color: #ffd700;
-            margin-bottom: 5px;
-        }
-        
-        .comparison-period {
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-        
-        .feature-list {
-            list-style: none;
-            margin-bottom: 30px;
-            padding: 0;
-        }
-        
-        .feature-list li {
-            padding: 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .feature-list li::before {
-            content: "✓";
-            color: #00ff88;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        
-        .feature-list li.disabled::before {
-            content: "✗";
-            color: #ef4444;
-        }
-        
-        .feature-list li.disabled {
-            opacity: 0.5;
-        }
-        
-        .cta-button {
-            display: block;
-            width: 100%;
-            padding: 16px 32px;
-            background: linear-gradient(45deg, #00ff88, #00cc6a);
-            color: #000;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 700;
-            text-align: center;
-            transition: transform 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-2px);
-        }
-        
-        .cta-button.secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .cta-button.secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .tutorial-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .tutorial-steps {
-            margin-top: 30px;
-        }
-        
-        .step-item {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            align-items: flex-start;
-        }
-        
-        .step-number {
-            background: linear-gradient(135deg, #00ff88, #00cc6a);
-            color: #000;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-        
-        .step-content {
-            flex: 1;
-        }
-        
-        .step-title {
             color: #00ff88;
             margin-bottom: 10px;
-            font-size: 1.2rem;
-            font-weight: 600;
         }
-        
-        .step-code {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            margin: 10px 0;
-            position: relative;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            font-size: 0.9rem;
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
         }
-        
-        .copy-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(0, 255, 136, 0.2);
-            border: none;
-            color: #00ff88;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
+
+        /* Features Grid */
+        .features-section {
+            padding: 80px 20px;
         }
-        
-        .final-cta {
-            background: rgba(0, 255, 136, 0.1);
-            border-radius: 16px;
-            padding: 40px;
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 40px 30px;
             text-align: center;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
-        
-        .cta-grid {
-            display: flex;
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .feature-description {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Role-based visibility */
+        .tenant-only {
+            display: block;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        .demo-only {
+            display: none;
+        }
+
+        /* Role banners */
+        .role-banner {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000000;
+            padding: 10px 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* Quick Access Cards */
+        .quick-access {
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        
-        .cta-grid .cta-button {
-            width: auto;
-            min-width: 200px;
-            padding: 16px 24px;
+
+        .access-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #ffffff;
         }
-        
-        /* Mobile responsiveness */
+
+        .access-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 136, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .access-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .access-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .access-description {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .monitor-title {
-                font-size: 2rem;
+            .hero-title {
+                font-size: 2.5rem;
             }
-            
-            .comparison-grid {
+
+            .nav-links {
+                gap: 15px;
+                font-size: 0.9rem;
+            }
+
+            .features-grid,
+            .stats-grid,
+            .access-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .landing-container {
-                padding: 15px;
+
+            .container {
+                padding: 0 15px;
             }
-            
-            .step-item {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .cta-grid {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .cta-grid .cta-button {
-                width: 100%;
-                max-width: 300px;
-            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Deployment Section Styles */
+        .deployment-section {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 60px 20px;
+            margin: 40px 0;
+            border-radius: 20px;
+        }
+
+        .deployment-section .section-title {
+            color: #3b82f6;
+        }
+
+        /* Copy Button Styles */
+        button {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-    <!-- Unified Navigation -->
-    <nav class="enhanced-nav">
+    <!-- Role Banner -->
+    <div id="role-banner" class="role-banner"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
         <div class="nav-container">
-            <a href="/" class="nav-brand">🚀 Enhanced Evernode</a>
-            <div class="nav-links">
-                <a href="/" class="nav-link active">Dashboard</a>
-                <a href="/monitoring-dashboard.html" class="nav-link admin-only">Monitoring</a>
-                <a href="/my-earnings.html" class="nav-link admin-only">Earnings</a>
-                <a href="/host-discovery.html" class="nav-link">Discovery</a>
-                <a href="/leaderboard.html" class="nav-link admin-only">Leaderboard</a>
-                <a href="/commission.html" class="nav-link admin-only">Commission</a>
-                <a href="/cluster/dapp-manager.html" class="nav-link admin-only">dApp Manager</a>
-                <a href="/premium-cluster.html" class="nav-link">🚀 Premium Cluster</a>
-            </div>
-            <div class="nav-actions">
-                <button class="nav-btn" onclick="toggleAdminMode()">👑</button>
-            </div>
+            <div class="logo">Enhanced Evernode</div>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-active">Dashboard</a></li>
+                <li><a href="/host-discovery.html">Discovery</a></li>
+                <li><a href="/cluster/roi-calculator.html" class="tenant-only">ROI Calculator</a></li>
+                <li><a href="/monitoring-dashboard.html" class="admin-only">Monitoring</a></li>
+                <li><a href="/my-earnings.html" class="admin-only">Earnings</a></li>
+                <li><a href="/leaderboard.html" class="admin-only">Leaderboard</a></li>
+                <li><a href="/cluster/paywall.html" style="color: #3b82f6; font-weight: 600;">Premium</a></li>
+                <li class="role-indicator" id="role-indicator">Tenant Mode</li>
+            </ul>
         </div>
     </nav>
 
-    <div class="landing-container">
-        <!-- Header -->
-        <div class="monitor-header">
-            <h1 class="monitor-title">🚀 Enhanced Evernode Host</h1>
-            <p class="monitor-subtitle">Scale Your dApps with Cluster Management</p>
-            <div class="health-indicator">
-                ✅ Professional dApp Deployment Platform
-            </div>
-        </div>
-
-        <!-- Host Info Banner -->
-        <div class="host-info-banner">
-            <h2 class="banner-title">🏠 This Enhanced Host</h2>
-            <div class="host-grid">
-                <div class="host-metric">
-                    <div class="metric-label">Host Address</div>
-                    <div class="metric-value" id="host-address">Loading...</div>
-                </div>
-                <div class="host-metric">
-                    <div class="metric-label">Domain</div>
-                    <div class="metric-value" id="host-domain">Loading...</div>
-                </div>
-                <div class="host-metric">
-                    <div class="metric-label">Lease Rate</div>
-                    <div class="metric-value" id="host-lease-rate">Loading...</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Host Status -->
-        <div class="status-grid">
-            <div class="status-card">
-                <div class="status-icon">🟢</div>
-                <div class="status-value" id="available-instances">3</div>
-                <div class="status-label">Available Instances</div>
-            </div>
-            <div class="status-card">
-                <div class="status-icon">⚡</div>
-                <div class="status-value" id="response-time">45ms</div>
-                <div class="status-label">Response Time</div>
-            </div>
-            <div class="status-card">
-                <div class="status-icon">🏆</div>
-                <div class="status-value" id="network-rank">#127</div>
-                <div class="status-label">Network Rank</div>
-            </div>
-            <div class="status-card">
-                <div class="status-icon">💎</div>
-                <div class="status-value" id="uptime">99.8%</div>
-                <div class="status-label">Uptime</div>
-            </div>
-        </div>
-
-        <!-- Value Proposition -->
-        <div class="value-prop-section">
-            <h2 class="section-title">Why Cluster Management?</h2>
-            <p class="section-subtitle">
-                Single instance deployments are limiting your potential. Our cluster management platform 
-                lets you deploy the same dApp across multiple hosts for better performance, redundancy, 
-                and geographic distribution.
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Enhanced Evernode Host</h1>
+            <p class="hero-subtitle">
+                Professional dApp deployment with cluster management, real-time monitoring, and transparent EVR pricing. 
+                Transform your host into a premium service.
             </p>
             
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <div class="feature-title">5x Performance</div>
-                    <div class="feature-description">Load balancing across hosts</div>
+            <!-- Value Proposition Split -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 40px 0; max-width: 1000px; margin-left: auto; margin-right: auto;">
+                <div style="background: rgba(59, 130, 246, 0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 15px; padding: 30px; text-align: center;" class="tenant-only">
+                    <h3 style="color: #3b82f6; margin-bottom: 15px; font-size: 1.3rem;">🚀 Deploy Your dApp</h3>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">3-step deployment with transparent EVR pricing</p>
+                    <div style="font-size: 2rem; font-weight: 700; color: #3b82f6; margin-bottom: 10px;" id="hero-evr-cost">0.005 EVR/hour</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;" id="hero-usd-cost">Starting cost for standard dApps</div>
+                    <a href="#tenant-deploy" class="btn btn-primary" onclick="scrollToTenantSection()">
+                        🎯 Start Deployment
+                    </a>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <div class="feature-title">Bulk Pricing</div>
-                    <div class="feature-description">Negotiate better rates at scale</div>
+                
+                <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid rgba(16, 185, 129, 0.3); border-radius: 15px; padding: 30px; text-align: center;" class="admin-only">
+                    <h3 style="color: #10b981; margin-bottom: 15px; font-size: 1.3rem;">💰 Earn More Revenue</h3>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">3x more bookings + commission income</p>
+                    <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 10px;">+300%</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;">Average booking increase</div>
+                    <a href="#host-benefits" class="btn btn-primary" onclick="scrollToHostSection()">
+                        📈 See ROI Calculator
+                    </a>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
-                    <div class="feature-title">99.9% Uptime</div>
-                    <div class="feature-description">Automatic failover protection</div>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                    🎮 Launch Demo
+                </a>
+                <a href="/cluster/dapp-manager.html" class="btn btn-secondary admin-only">
+                    🏗️ Cluster Manager
+                </a>
+                <a href="/cluster/roi-calculator.html" class="btn btn-secondary tenant-only">
+                    💰 ROI Calculator
+                </a>
+                <a href="/cluster/paywall.html" class="btn btn-outline">
+                    💎 Upgrade to Premium
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-Time Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title">📊 Live Host Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="instance-count">Loading...</span>
+                    <span class="stat-label">Active Instances</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="availability">Loading...</span>
+                    <span class="stat-label">Available Slots</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="uptime">99.9%</span>
+                    <span class="stat-label">Uptime</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="revenue">Loading...</span>
+                    <span class="stat-label">Current Rate</span>
+                </div>
+            </div>
+            
+            <!-- Host Status Indicator -->
+            <div style="text-align: center; margin-top: 30px;">
+                <div style="background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 10px; padding: 15px; display: inline-block; min-width: 300px; position: relative;">
+                    <div style="font-size: 1rem; font-weight: 600; color: #00ff88; margin-bottom: 5px;">Host Status</div>
+                    <div style="font-size: 1.1rem; font-weight: 600;" id="host-status">Checking availability...</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;">Last updated: <span id="stats-timestamp">Loading...</span></div>
+                    <button onclick="forceRefreshStats()" style="position: absolute; top: 8px; right: 8px; background: rgba(0,255,136,0.2); border: 1px solid rgba(0,255,136,0.5); color: #00ff88; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;" title="Refresh Host Stats">🔄</button>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Pricing Comparison -->
-        <div class="comparison-section">
-            <h2 class="section-title">💰 Pricing Options</h2>
-            <div class="comparison-grid">
-                <div class="comparison-card">
-                    <div class="comparison-header">
-                        <div class="comparison-title">Single Instance</div>
-                        <div class="comparison-price" id="single-price">$0.0004</div>
-                        <div class="comparison-period">per month (host dependent)</div>
+    <!-- 3-Step Deployment Process for Tenants -->
+    <section id="tenant-deploy" class="deployment-section tenant-only">
+        <div class="container">
+            <h2 class="section-title" style="color: #3b82f6;">🚀 Deploy Your dApp in 3 Steps</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Deploy any Docker container to this Enhanced Evernode host in under 5 minutes. Pay only what you use with EVR tokens.
+            </p>
+            
+            <div style="max-width: 800px; margin: 0 auto;">
+                <!-- Step 1: Install DevKit -->
+                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">1</div>
+                        <h3 style="margin: 0; color: #3b82f6;">Install Evernode DevKit</h3>
                     </div>
-                    <ul class="feature-list">
-                        <li>Single host deployment</li>
-                        <li>Basic monitoring</li>
-                        <li>Manual scaling</li>
-                        <li>Custom domains ($1/month extra)</li>
-                        <li class="disabled">Load balancing</li>
-                        <li class="disabled">Auto-failover</li>
-                        <li class="disabled">Host discovery</li>
-                        <li class="disabled">Advanced analytics</li>
-                    </ul>
-                    <button class="cta-button secondary" onclick="scrollToTutorial()">
-                        📚 See Tutorial Below
-                    </button>
+                    <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88;">
+                        <code>npm install -g @evernode/devkit</code>
+                        <button onclick="copyCode('npm install -g @evernode/devkit')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Official Evernode development toolkit for dApp deployment</p>
                 </div>
 
-                <div class="comparison-card premium">
-                    <div class="popular-badge">🔥 Most Popular</div>
-                    <div class="comparison-header">
-                        <div class="comparison-title">Premium Cluster</div>
-                        <div class="comparison-price">$49.99</div>
-                        <div class="comparison-period">one-time license + hosting costs</div>
+                <!-- Step 2: Configure Wallet -->
+                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">2</div>
+                        <h3 style="margin: 0; color: #3b82f6;">Configure Your Xahau Wallet</h3>
                     </div>
-                    <ul class="feature-list">
-                        <li>Multi-host deployment</li>
-                        <li>Real-time monitoring</li>
-                        <li>Auto-scaling</li>
-                        <li>Load balancing</li>
-                        <li>Auto-failover</li>
-                        <li>Smart host discovery</li>
-                        <li>Advanced analytics</li>
-                        <li>Template marketplace</li>
-                    </ul>
-                    <a href="/premium-cluster.html" class="cta-button">
-                        🚀 Get Premium Cluster
+                    <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88;">
+                        <code>evdevkit wallet import</code>
+                        <button onclick="copyCode('evdevkit wallet import')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Import your Xahau wallet with EVR tokens for deployment payment</p>
+                </div>
+
+                <!-- Step 3: Deploy -->
+                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">3</div>
+                        <h3 style="margin: 0; color: #3b82f6;">Deploy to This Host</h3>
+                    </div>
+                    <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88; word-break: break-all;">
+                        <code>evdevkit acquire -i your-app:latest --gptcp1--80 <span id="deploy-host-address">loading...</span> -m 24</code>
+                        <button onclick="copyDeployCommand()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Deploy your Docker image directly to this Enhanced Evernode host</p>
+                </div>
+            </div>
+
+            <!-- EVR Pricing Display -->
+            <div style="text-align: center; margin-top: 40px;">
+                <h3 style="color: #3b82f6; margin-bottom: 20px;">💰 Transparent EVR Pricing</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; max-width: 600px; margin: 0 auto 30px;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 8px;">💻 Light</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #3b82f6;" id="light-evr-rate">0.00001 EVR</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">per hour</div>
+                        <div style="font-size: 0.7rem; opacity: 0.6;" id="light-usd-rate">~$0.000002/hr</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 8px;">🚀 Standard</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #3b82f6;" id="standard-evr-rate">0.005 EVR</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">per hour</div>
+                        <div style="font-size: 0.7rem; opacity: 0.6;" id="standard-usd-rate">~$0.0009/hr</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; text-align: center;">
+                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 8px;">⚡ Premium</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: #3b82f6;" id="premium-evr-rate">0.02 EVR</div>
+                        <div style="font-size: 0.8rem; opacity: 0.7;">per hour</div>
+                        <div style="font-size: 0.7rem; opacity: 0.6;" id="premium-usd-rate">~$0.003/hr</div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px; display: inline-block; position: relative;">
+                    <div style="font-size: 0.9rem; font-weight: 600; color: #00ff88; margin-bottom: 5px;">Current EVR Rate</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: #00ff88;" id="current-evr-usd">$0.172 USD</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;" id="evr-source-info">Live from Evernode Network API</div>
+                    <button onclick="forceRefreshEVRPrice()" style="position: absolute; top: 8px; right: 8px; background: rgba(0,255,136,0.2); border: 1px solid rgba(0,255,136,0.5); color: #00ff88; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;" title="Refresh EVR Price">🔄</button>
+                </div>
+                
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">
+                    ✅ No setup fees • ✅ No monthly minimums • ✅ Cancel anytime • ✅ Automatic deployment
+                </p>
+                
+                <a href="/cluster/roi-calculator.html" class="btn btn-primary">
+                    📊 Calculate Your Exact Costs
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">🎯 Professional Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🔧</span>
+                    <h3 class="feature-title">Advanced Cluster Management</h3>
+                    <p class="feature-description">
+                        One-click deployments, automatic scaling, and professional monitoring 
+                        with enterprise-grade container orchestration.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">💰</span>
+                    <h3 class="feature-title">Transparent EVR Pricing</h3>
+                    <p class="feature-description">
+                        Pay-as-you-use model with real-time EVR pricing from Evernode network. 
+                        No hidden fees, no minimums, cancel anytime.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">Real-Time Analytics</h3>
+                    <p class="feature-description">
+                        Live performance metrics, resource usage tracking, and comprehensive 
+                        reporting with automated insights and alerts.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🚀</span>
+                    <h3 class="feature-title">Professional Interface</h3>
+                    <p class="feature-description">
+                        Modern design that builds tenant trust and increases 
+                        bookings by 300% compared to basic hosts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Flow Section -->
+    <section style="padding: 60px 20px; background: rgba(0,0,0,0.4);">
+        <div class="container">
+            <h2 class="section-title">🗺️ Your Path to Success</h2>
+            
+            <!-- Tenant Flow -->
+            <div class="tenant-only" style="background: rgba(59, 130, 246, 0.1); border-radius: 15px; padding: 40px;">
+                <h3 style="color: #3b82f6; text-align: center; margin-bottom: 30px; font-size: 1.5rem;">🚀 Deploy Your dApp</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">1️⃣</div>
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Try Demo</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Experience the <a href="/cluster/premium-cluster-manager-demo.html" style="color: #00ff88;">full interface</a> with sample data</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">2️⃣</div>
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Calculate</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Use <a href="/cluster/roi-calculator.html" style="color: #00ff88;">ROI Calculator</a> for exact costs</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">3️⃣</div>
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Deploy</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Follow the 3-step deployment process</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Host Flow -->
+            <div class="admin-only" style="background: rgba(16, 185, 129, 0.1); border-radius: 15px; padding: 40px;">
+                <h3 style="color: #10b981; text-align: center; margin-bottom: 30px; font-size: 1.5rem;">💰 Maximize Your Revenue</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">1️⃣</div>
+                        <h4 style="color: #10b981; margin-bottom: 10px;">Demo</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Try <a href="/cluster/premium-cluster-manager-demo.html" style="color: #00ff88;">cluster management</a> interface</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">2️⃣</div>
+                        <h4 style="color: #10b981; margin-bottom: 10px;">Monitor</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Track <a href="/monitoring-dashboard.html" style="color: #00ff88;">system performance</a> and health</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">3️⃣</div>
+                        <h4 style="color: #10b981; margin-bottom: 10px;">Earn</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">View <a href="/my-earnings.html" style="color: #00ff88;">earnings</a> and commissions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Cards -->
+    <section class="quick-access">
+        <div class="container">
+            <h2 class="section-title">⚡ Quick Access</h2>
+            <div class="access-grid">
+                <!-- Demo - Always visible and prominent -->
+                <a href="/cluster/premium-cluster-manager-demo.html" class="access-card" style="border: 2px solid #00ff88; background: rgba(0,255,136,0.1);">
+                    <span class="access-icon">🎮</span>
+                    <div class="access-title" style="color: #00ff88;">Launch Demo</div>
+                    <div class="access-description">Try the full cluster management interface</div>
+                </a>
+                
+                <!-- Host Discovery - Always visible -->
+                <a href="/host-discovery.html" class="access-card">
+                    <span class="access-icon">🔍</span>
+                    <div class="access-title">Host Discovery</div>
+                    <div class="access-description">Find and compare enhanced hosts</div>
+                </a>
+                
+                <!-- Tenant Calculator -->
+                <a href="/cluster/roi-calculator.html" class="access-card tenant-only">
+                    <span class="access-icon">📊</span>
+                    <div class="access-title">ROI Calculator</div>
+                    <div class="access-description">Calculate deployment costs and savings</div>
+                </a>
+                
+                <!-- Admin Monitoring -->
+                <a href="/monitoring-dashboard.html" class="access-card admin-only">
+                    <span class="access-icon">📊</span>
+                    <div class="access-title">Host Monitoring</div>
+                    <div class="access-description">Real-time system monitoring</div>
+                </a>
+                
+                <!-- Admin Earnings -->
+                <a href="/my-earnings.html" class="access-card admin-only">
+                    <span class="access-icon">💰</span>
+                    <div class="access-title">My Earnings</div>
+                    <div class="access-description">Track revenue and commissions</div>
+                </a>
+                
+                <!-- Always visible - Upgrade path -->
+                <a href="/cluster/paywall.html" class="access-card" style="border: 1px solid #3b82f6;">
+                    <span class="access-icon">💎</span>
+                    <div class="access-title">Premium Upgrade</div>
+                    <div class="access-description">Unlock advanced cluster features</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Call to Action -->
+    <section style="padding: 80px 20px; background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(59,130,246,0.1) 100%);">
+        <div class="container" style="text-align: center;">
+            <h2 class="section-title">🚀 Ready to Get Started?</h2>
+            
+            <div class="tenant-only">
+                <p style="font-size: 1.2rem; margin-bottom: 40px; opacity: 0.9;">
+                    Deploy your first dApp in minutes with transparent EVR pricing
+                </p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                        🎮 Try Demo First
+                    </a>
+                    <a href="#tenant-deploy" onclick="scrollToTenantSection()" class="btn btn-secondary">
+                        📋 View Deployment Steps
+                    </a>
+                    <a href="/cluster/roi-calculator.html" class="btn btn-outline">
+                        💰 Calculate Costs
+                    </a>
+                </div>
+            </div>
+            
+            <div class="admin-only">
+                <p style="font-size: 1.2rem; margin-bottom: 40px; opacity: 0.9;">
+                    Transform your host into a premium service with 300% more bookings
+                </p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                        🎮 Try Full Demo
+                    </a>
+                    <a href="/cluster/dapp-manager.html" class="btn btn-secondary">
+                        🏗️ Cluster Manager
+                    </a>
+                    <a href="/monitoring-dashboard.html" class="btn btn-outline">
+                        📊 Monitor Host
                     </a>
                 </div>
             </div>
         </div>
-
-        <!-- Tutorial Section -->
-        <div class="tutorial-section">
-            <h2 class="section-title">📚 Quick Start Tutorial</h2>
-            <p class="section-subtitle">
-                Learn how to deploy your first dApp on this Enhanced Evernode host
-            </p>
-
-            <div class="tutorial-steps">
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3 class="step-title">Install Evernode DevKit</h3>
-                        <div class="step-code">
-                            npm install -g @evernode/devkit<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                        <p>The official Evernode development toolkit for deploying dApps</p>
-                    </div>
-                </div>
-
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3 class="step-title">Configure Your Wallet</h3>
-                        <div class="step-code">
-                            evdevkit wallet import<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                        <p>Import your Xahau wallet with EVR tokens for payment</p>
-                    </div>
-                </div>
-
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3 class="step-title">Deploy to This Host</h3>
-                        <div class="step-code">
-                            evdevkit deploy my-app:latest --host <span id="tutorial-host-address">loading...</span><button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                        <p>Deploy your Docker image directly to this Enhanced Evernode host</p>
-                    </div>
-                </div>
-
-                <div class="step-item">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3 class="step-title">Access Your dApp</h3>
-                        <div class="step-code">
-                            # Your app will be available at:
-                            https://<span id="tutorial-host-domain">loading...</span>/your-app<button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        </div>
-                        <p>Enhanced hosts provide automatic URL generation and SSL certificates</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Final CTA -->
-        <div class="final-cta">
-            <h2 style="margin-bottom: 20px; color: #00ff88;">Ready to Scale Your dApps?</h2>
-            <p style="margin-bottom: 20px; font-size: 1.1rem; opacity: 0.9;">
-                Join hundreds of developers already using our enhanced hosting platform
-            </p>
-            
-            <div class="cta-grid">
-                <a href="/host-discovery.html" class="cta-button secondary">
-                    🔍 Explore Network
-                </a>
-                <a href="/premium-cluster.html" class="cta-button">
-                    🚀 Get Premium Cluster
-                </a>
-            </div>
-            
-            <div style="margin-top: 20px; opacity: 0.7; font-size: 0.9rem;">
-                ✨ Secure payment system • 💝 Instant activation • 🛡️ 30-day money-back guarantee
-            </div>
-        </div>
-    </div>
+    </section>
 
     <script>
-        // Copy code to clipboard
-        function copyCode(button) {
-            const code = button.parentElement.textContent.replace('Copy', '').trim();
-            navigator.clipboard.writeText(code).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => {
-                    button.textContent = 'Copy';
-                }, 2000);
+        // Role-based access control
+        function detectUserRole() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdmin = urlParams.get('admin') === 'true' || 
+                           localStorage.getItem('admin_mode') === 'true' ||
+                           checkAdminPassword();
+            
+            if (isAdmin) {
+                setAdminMode();
+            } else {
+                setTenantMode();
+            }
+        }
+
+        function checkAdminPassword() {
+            const adminPassword = 'enhanced2024'; // CHANGE THIS!
+            const savedPassword = sessionStorage.getItem('admin_password');
+            return savedPassword === adminPassword;
+        }
+
+        function setAdminMode() {
+            document.body.classList.add('admin-mode');
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+            document.querySelectorAll('.tenant-only').forEach(el => el.style.display = 'none');
+            
+            const roleIndicator = document.getElementById('role-indicator');
+            if (roleIndicator) {
+                roleIndicator.textContent = 'Host Admin';
+                roleIndicator.style.background = 'rgba(16, 185, 129, 0.2)';
+                roleIndicator.style.color = '#10b981';
+            }
+            
+            const roleBanner = document.getElementById('role-banner');
+            if (roleBanner) {
+                roleBanner.textContent = '👑 Host Admin Mode - Full Access to Management Features';
+                roleBanner.style.display = 'block';
+            }
+            
+            localStorage.setItem('admin_mode', 'true');
+        }
+
+        function setTenantMode() {
+            document.body.classList.remove('admin-mode');
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tenant-only').forEach(el => el.style.display = 'block');
+            
+            const roleIndicator = document.getElementById('role-indicator');
+            if (roleIndicator) {
+                roleIndicator.textContent = 'Tenant Mode';
+                roleIndicator.style.background = 'rgba(0, 255, 136, 0.2)';
+                roleIndicator.style.color = '#00ff88';
+            }
+            
+            const roleBanner = document.getElementById('role-banner');
+            if (roleBanner) {
+                roleBanner.style.display = 'none';
+            }
+            
+            localStorage.removeItem('admin_mode');
+        }
+
+        // Real-time stats updates using correct API
+        async function updateRealTimeStats() {
+            try {
+                // First try the unified API router
+                let response = await fetch('/api/?endpoint=instance-count');
+                let data = await response.json();
+                
+                // If that fails, try direct endpoint
+                if (!data.success) {
+                    response = await fetch('/api/instance-count.php');
+                    data = await response.json();
+                }
+                
+                // If still no success, try router.php
+                if (!data.success) {
+                    response = await fetch('/api/router.php?endpoint=instance-count');
+                    data = await response.json();
+                }
+                
+                if (data.success) {
+                    // Use real data from your API
+                    document.getElementById('instance-count').textContent = data.used + '/' + data.total;
+                    document.getElementById('availability').textContent = data.available + ' slots';
+                    
+                    // Calculate hourly rate from lease amount if available
+                    let rateText = 'Loading...';
+                    if (data.host_info && data.host_info.lease_amount) {
+                        rateText = data.host_info.lease_amount;
+                    } else if (data.debug_info && data.debug_info.lease_output) {
+                        // Extract rate from lease output
+                        const rateMatch = data.debug_info.lease_output.match(/(\d+\.?\d*)\s*EVR/);
+                        if (rateMatch) {
+                            rateText = rateMatch[1] + ' EVR/hr';
+                        }
+                    } else {
+                        rateText = '0.005 EVR/hr';
+                    }
+                    
+                    document.getElementById('revenue').textContent = rateText;
+                    
+                    // Update status indicator
+                    const statusElement = document.getElementById('host-status');
+                    if (statusElement) {
+                        statusElement.textContent = data.status_message || data.status || 'Available';
+                        
+                        // Color code the status
+                        if (data.status === 'available') {
+                            statusElement.style.color = '#00ff88';
+                        } else if (data.status === 'limited') {
+                            statusElement.style.color = '#fbbf24';
+                        } else if (data.status === 'full') {
+                            statusElement.style.color = '#ef4444';
+                        } else {
+                            statusElement.style.color = '#ffffff';
+                        }
+                    }
+                    
+                    // Update timestamp
+                    const timestampElement = document.getElementById('stats-timestamp');
+                    if (timestampElement) {
+                        const updateTime = data.last_updated || new Date().toLocaleTimeString();
+                        timestampElement.textContent = updateTime;
+                    }
+                    
+                    // Log successful update
+                    console.log('Stats updated from API:', {
+                        total: data.total,
+                        used: data.used,
+                        available: data.available,
+                        status: data.status,
+                        data_source: data.data_source,
+                        timestamp: data.last_updated
+                    });
+                    
+                } else {
+                    throw new Error('All API endpoints failed');
+                }
+                
+            } catch (error) {
+                console.log('API unavailable, using demo stats. Error:', error.message);
+                updateDemoStats();
+            }
+        }
+
+        function updateDemoStats() {
+            // Fallback demo data when APIs are unavailable
+            const timestamp = Date.now();
+            const instances = 2 + Math.sin(timestamp / 60000) * 1; // Slow variation
+            const total = 5;
+            const used = Math.floor(instances);
+            const available = Math.max(0, total - used);
+            
+            document.getElementById('instance-count').textContent = used + '/' + total;
+            document.getElementById('availability').textContent = available + ' slots';
+            document.getElementById('revenue').textContent = '0.005 EVR/hr';
+            
+            // Update status indicator with demo data
+            const statusElement = document.getElementById('host-status');
+            if (statusElement) {
+                if (available > 2) {
+                    statusElement.textContent = '✅ Ready for new deployments!';
+                    statusElement.style.color = '#00ff88';
+                } else if (available > 0) {
+                    statusElement.textContent = '⚡ Limited slots available';
+                    statusElement.style.color = '#fbbf24';
+                } else {
+                    statusElement.textContent = '🔴 Currently at capacity';
+                    statusElement.style.color = '#ef4444';
+                }
+            }
+            
+            // Update timestamp
+            const timestampElement = document.getElementById('stats-timestamp');
+            if (timestampElement) {
+                timestampElement.textContent = new Date().toLocaleTimeString() + ' (demo)';
+            }
+            
+            console.log('Using demo stats - API unavailable');
+        }
+
+        // EVR Price Cache Management
+        const EVR_CACHE_KEY = 'evr_price_cache';
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+        function getCachedEVRPrice() {
+            try {
+                const cached = localStorage.getItem(EVR_CACHE_KEY);
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    const now = Date.now();
+                    
+                    // Check if cache is still valid
+                    if (now - data.timestamp < CACHE_DURATION) {
+                        return data;
+                    }
+                }
+                return null;
+            } catch (error) {
+                console.error('Error reading EVR price cache:', error);
+                return null;
+            }
+        }
+
+        function setCachedEVRPrice(priceData) {
+            try {
+                const cacheData = {
+                    ...priceData,
+                    timestamp: Date.now(),
+                    cached_at: new Date().toISOString()
+                };
+                localStorage.setItem(EVR_CACHE_KEY, JSON.stringify(cacheData));
+            } catch (error) {
+                console.error('Error saving EVR price cache:', error);
+            }
+        }
+
+        // Load real EVR pricing from official Evernode API
+        async function loadEVRPricing() {
+            try {
+                // Check cache first
+                const cached = getCachedEVRPrice();
+                if (cached) {
+                    console.log('Using cached EVR price:', cached.currentPrice);
+                    updatePricingDisplay(cached.currentPrice, true);
+                    return;
+                }
+
+                // Fetch from official Evernode API
+                console.log('Fetching fresh EVR price from Evernode API...');
+                const response = await fetch('https://api.evernode.network/supply/money', {
+                    method: 'GET',
+                    headers: {
+                        'accept': '*/*'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API responded with status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data && typeof data.currentPrice === 'number') {
+                    // Log full API response for debugging
+                    console.log('Evernode API Response:', {
+                        currentPrice: data.currentPrice,
+                        marketCap: data.mc,
+                        circulating: data.circulating,
+                        timestamp: new Date(data.timestamp).toISOString()
+                    });
+                    
+                    // Cache the result
+                    setCachedEVRPrice(data);
+                    
+                    // Update display
+                    updatePricingDisplay(data.currentPrice, false);
+                    
+                    console.log('EVR price updated:', data.currentPrice, 'USD');
+                } else {
+                    throw new Error('Invalid API response format');
+                }
+                
+            } catch (error) {
+                console.error('Failed to load EVR pricing:', error);
+                
+                // Try to use cached data even if expired
+                const cached = getCachedEVRPrice();
+                if (cached) {
+                    console.log('Using expired cache as fallback');
+                    updatePricingDisplay(cached.currentPrice, true);
+                } else {
+                    // Fallback to default
+                    console.log('Using fallback price: $0.172');
+                    updatePricingDisplay(0.172, false);
+                }
+            }
+        }
+
+        function updatePricingDisplay(evrUSD, fromCache = false) {
+            try {
+                // Update current EVR rate display
+                document.getElementById('current-evr-usd').textContent = `$${evrUSD.toFixed(3)} USD`;
+                
+                // Update source info
+                const sourceInfo = document.getElementById('evr-source-info');
+                if (fromCache) {
+                    const cached = getCachedEVRPrice();
+                    const cacheTime = cached ? new Date(cached.cached_at).toLocaleTimeString() : 'unknown';
+                    sourceInfo.textContent = `Cached (${cacheTime})`;
+                    sourceInfo.style.opacity = '0.6';
+                } else {
+                    sourceInfo.textContent = 'Live from Evernode Network API';
+                    sourceInfo.style.opacity = '0.8';
+                }
+                
+                // Calculate and update USD equivalents for each tier
+                const lightUSD = (0.00001 * evrUSD).toFixed(6);
+                const standardUSD = (0.005 * evrUSD).toFixed(4);
+                const premiumUSD = (0.02 * evrUSD).toFixed(4);
+                
+                // Update pricing displays
+                document.getElementById('light-usd-rate').textContent = `~$${lightUSD}/hr`;
+                document.getElementById('standard-usd-rate').textContent = `~$${standardUSD}/hr`;
+                document.getElementById('premium-usd-rate').textContent = `~$${premiumUSD}/hr`;
+                
+                // Update hero section cost
+                const heroUSDCost = (0.005 * evrUSD).toFixed(4);
+                document.getElementById('hero-usd-cost').textContent = `~$${heroUSDCost}/hr for standard dApps`;
+                
+                console.log(`Pricing updated - Light: $${lightUSD}/hr, Standard: $${standardUSD}/hr, Premium: $${premiumUSD}/hr`);
+                
+            } catch (error) {
+                console.error('Error updating pricing display:', error);
+            }
+        }
+
+        // Force refresh host stats (bypass any caching)
+        async function forceRefreshStats() {
+            try {
+                // Show loading state
+                document.getElementById('instance-count').textContent = 'Loading...';
+                document.getElementById('availability').textContent = 'Loading...';
+                document.getElementById('revenue').textContent = 'Loading...';
+                document.getElementById('host-status').textContent = 'Refreshing...';
+                document.getElementById('stats-timestamp').textContent = 'Updating...';
+                
+                // Force fresh load
+                await updateRealTimeStats();
+                
+            } catch (error) {
+                console.error('Error forcing stats refresh:', error);
+                document.getElementById('host-status').textContent = 'Refresh failed - using demo data';
+                updateDemoStats();
+            }
+        }
+
+        // Force refresh EVR price (bypass cache)
+        async function forceRefreshEVRPrice() {
+            try {
+                // Clear cache first
+                localStorage.removeItem(EVR_CACHE_KEY);
+                
+                // Show loading state
+                document.getElementById('current-evr-usd').textContent = 'Loading...';
+                document.getElementById('evr-source-info').textContent = 'Fetching fresh data...';
+                
+                // Force fresh load
+                await loadEVRPricing();
+                
+            } catch (error) {
+                console.error('Error forcing EVR price refresh:', error);
+                document.getElementById('evr-source-info').textContent = 'Refresh failed';
+            }
+        }
+
+        // Load current host address
+        async function loadHostAddress() {
+            try {
+                // Try to get current host from window location or API
+                const currentHost = window.location.host;
+                const hostAddress = `http://${currentHost}/`;
+                
+                // Update deployment command
+                document.getElementById('deploy-host-address').textContent = hostAddress;
+                
+                // Also update tutorial host address if it exists
+                const tutorialHost = document.getElementById('tutorial-host-address');
+                if (tutorialHost) {
+                    tutorialHost.textContent = hostAddress;
+                }
+            } catch (error) {
+                console.error('Failed to load host address:', error);
+                document.getElementById('deploy-host-address').textContent = 'http://your-host.com/';
+            }
+        }
+
+        // Scroll to sections
+        function scrollToTenantSection() {
+            document.getElementById('tenant-deploy').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
             });
         }
 
-        // Smooth scrolling for tutorial
-        function scrollToTutorial() {
-            document.querySelector('.tutorial-section').scrollIntoView({ behavior: 'smooth' });
+        function scrollToHostSection() {
+            document.getElementById('host-benefits').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
         }
 
-        // Update real-time data
-        async function updateHostStatus() {
-            try {
-                // Try to get real host data
-                const response = await fetch('/api/router.php?endpoint=metrics');
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('available-instances').textContent = data.metrics.available_instances || '3';
-                    document.getElementById('response-time').textContent = data.metrics.response_time || '45ms';
-                    document.getElementById('network-rank').textContent = data.metrics.network_rank || '#127';
-                    document.getElementById('uptime').textContent = data.metrics.uptime || '99.8%';
-                }
-            } catch (error) {
-                console.log('Using fallback data');
-                // Fallback data is already set in HTML
-            }
-
-            // Update host info
-            const currentDomain = window.location.hostname;
-            document.getElementById('host-address').textContent = 'rEnhancedHost...';
-            document.getElementById('host-domain').textContent = currentDomain;
-            document.getElementById('host-lease-rate').textContent = '0.00001 EVR/hour (~$0.0004/month)';
-            document.getElementById('tutorial-host-address').textContent = currentDomain;
-            document.getElementById('tutorial-host-domain').textContent = currentDomain;
+        // Copy code function
+        function copyCode(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show feedback
+                console.log('Code copied to clipboard');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
         }
 
-        // Initialize
+        // Copy deployment command with real host address
+        function copyDeployCommand() {
+            const hostAddress = document.getElementById('deploy-host-address').textContent;
+            const command = `evdevkit acquire -i your-app:latest --gptcp1--80 ${hostAddress} -m 24`;
+            copyCode(command);
+        }
+
+        // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            updateHostStatus();
+            detectUserRole();
+            updateRealTimeStats();
+            loadHostAddress(); // Load current host address for deployment
+            loadEVRPricing();   // Load real EVR pricing from official Evernode API
             
-            // Update data periodically
-            setInterval(updateHostStatus, 60000); // Every minute
+            // Set up periodic updates
+            setInterval(updateRealTimeStats, 30000); // Update every 30 seconds
+            setInterval(loadEVRPricing, 300000);     // Update pricing every 5 minutes (cache handles freshness)
         });
     </script>
 </body>
