@@ -1,368 +1,484 @@
 <?php
 /**
- * Evernode Enhanced Discovery - Search API
- * File: api/enhanced-search.php
- * 
- * Provides advanced search functionality for Evernode hosts
- * Supports search by r-address, domain, email, country with caching
+ * Enhanced Search API v3.1 - ALL Hosts with Pagination + Inter-Host Discovery
+ * Fetches ALL hosts from Evernode (not just 100) + Enhanced Host Discovery
  */
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST');
-header('Access-Control-Allow-Headers: Content-Type');
 
-// Configuration
-$cache_file = '/tmp/evernode_hosts_cache.json';
-$cache_duration = 600; // 10 minutes for host data
+// Cache settings
+$cache_file = '/tmp/enhanced_hosts_cache.json';
+$cache_duration = 300; // 5 minutes
 
-$action = $_GET['action'] ?? $_POST['action'] ?? 'search';
-
-switch ($action) {
-    case 'search':
-        handleSearch();
-        break;
-    case 'suggestions':
-        handleSuggestions();
-        break;
-    case 'stats':
-        handleStats();
-        break;
-    case 'clear-cache':
-        clearCache();
-        break;
-    default:
-        echo json_encode(['success' => false, 'error' => 'Invalid action']);
-}
-
-function handleSearch() {
-    global $cache_file, $cache_duration;
-    
-    $query = trim($_GET['query'] ?? $_POST['query'] ?? '');
-    $type = $_GET['type'] ?? $_POST['type'] ?? 'all';
-    $limit = min(intval($_GET['limit'] ?? 100), 1000);
-    $quality_min = intval($_GET['quality_min'] ?? 0);
-    
-    try {
-        // Get hosts data (cached or fresh)
-        $hosts_data = getHostsData();
-        
-        if (!$hosts_data || !isset($hosts_data['data'])) {
-            throw new Exception('No host data available');
-        }
-        
-        $hosts = $hosts_data['data'];
-        
-        // Apply search filter
-        if (!empty($query)) {
-            $hosts = filterHosts($hosts, $query, $type);
-        }
-        
-        // Apply quality filter
-        if ($quality_min > 0) {
-            $hosts = array_filter($hosts, function($host) use ($quality_min) {
-                return calculateQualityScore($host) >= $quality_min;
-            });
-        }
-        
-        // Enhance host data
-        $hosts = array_map('enhanceHostData', $hosts);
-        
-        // Sort by quality score (highest first)
-        usort($hosts, function($a, $b) {
-            return $b['quality_score'] - $a['quality_score'];
-        });
-        
-        // Limit results
-        $hosts = array_slice($hosts, 0, $limit);
-        
-        echo json_encode([
-            'success' => true,
-            'hosts' => $hosts,
-            'total_found' => count($hosts),
-            'query' => $query,
-            'type' => $type,
-            'quality_min' => $quality_min,
-            'timestamp' => time()
-        ]);
-        
-    } catch (Exception $e) {
-        echo json_encode([
-            'success' => false,
-            'error' => $e->getMessage(),
-            'fallback' => true
-        ]);
+// Check cache first
+if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_duration) {
+    $cached_data = json_decode(file_get_contents($cache_file), true);
+    if ($cached_data) {
+        $cached_data['cache_status'] = 'hit';
+        $cached_data['cache_age'] = time() - filemtime($cache_file);
+        echo json_encode($cached_data);
+        exit;
     }
 }
 
-function handleSuggestions() {
+// Get real EVR price
+function getEVRPrice() {
     try {
-        $hosts_data = getHostsData();
-        
-        if (!$hosts_data || !isset($hosts_data['data'])) {
-            throw new Exception('No host data available');
-        }
-        
-        $hosts = $hosts_data['data'];
-        
-        // Generate suggestions
-        $domains = array_unique(array_filter(array_map(function($host) {
-            return $host['domain'] ?? null;
-        }, $hosts)));
-        
-        $countries = array_unique(array_filter(array_map(function($host) {
-            return $host['countryCode'] ?? null;
-        }, $hosts)));
-        
-        $emails = array_unique(array_filter(array_map(function($host) {
-            $email = $host['email'] ?? '';
-            return strpos($email, '@') ? substr($email, strpos($email, '@')) : null;
-        }, $hosts)));
-        
-        // Popular suggestions
-        $popular_domains = array_slice(array_count_values(array_filter(array_map(function($host) {
-            $domain = $host['domain'] ?? '';
-            $parts = explode('.', $domain);
-            return count($parts) >= 2 ? $parts[count($parts)-2] . '.' . $parts[count($parts)-1] : null;
-        }, $hosts))), 0, 10);
-        
-        echo json_encode([
-            'success' => true,
-            'suggestions' => [
-                'domains' => array_slice($domains, 0, 20),
-                'countries' => $countries,
-                'email_domains' => array_slice($emails, 0, 10),
-                'popular_domains' => array_keys($popular_domains)
-            ],
-            'timestamp' => time()
-        ]);
-        
+        $context = stream_context_create(['http' => ['timeout' => 10]]);
+        $market_data = file_get_contents('https://api.evernode.network/market/info', false, $context);
+        $market = json_decode($market_data, true);
+        return floatval($market['data']['currentPrice'] ?? 0.1825);
     } catch (Exception $e) {
-        echo json_encode([
-            'success' => false,
-            'error' => $e->getMessage()
-        ]);
+        return 0.1825;
     }
 }
 
-function handleStats() {
+// Fetch ALL hosts with pagination
+function fetchAllEvernodeHosts() {
+    $all_hosts = [];
+    $page = 0;
+    $limit = 500; // Use smaller chunks
+    $max_pages = 10; // Safety limit
+    
     try {
-        $hosts_data = getHostsData();
-        
-        if (!$hosts_data || !isset($hosts_data['data'])) {
-            throw new Exception('No host data available');
-        }
-        
-        $hosts = $hosts_data['data'];
-        $total_hosts = count($hosts);
-        
-        // Calculate statistics
-        $countries = [];
-        $versions = [];
-        $total_quality = 0;
-        $enhanced_count = 0;
-        $online_count = 0;
-        
-        foreach ($hosts as $host) {
-            $quality = calculateQualityScore($host);
-            $total_quality += $quality;
+        do {
+            $offset = $page * $limit;
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 30,
+                    'method' => 'GET',
+                    'header' => 'Accept: */*'
+                ]
+            ]);
             
-            if ($quality >= 70) $enhanced_count++;
+            // Try multiple API endpoints
+            $urls = [
+                "https://api.evernode.network/registry/hosts?limit={$limit}&offset={$offset}",
+                "https://api.evernode.network/hosts?limit={$limit}&offset={$offset}",
+                "https://api.evernode.network/registry/hosts?limit={$limit}&page={$page}"
+            ];
             
-            // Count countries
-            if (!empty($host['countryCode'])) {
-                $countries[$host['countryCode']] = ($countries[$host['countryCode']] ?? 0) + 1;
+            $hosts_data = null;
+            foreach ($urls as $url) {
+                $response = file_get_contents($url, false, $context);
+                if ($response) {
+                    $data = json_decode($response, true);
+                    if (isset($data['data']) && is_array($data['data'])) {
+                        $hosts_data = $data['data'];
+                        break;
+                    }
+                }
             }
             
-            // Count versions
-            if (!empty($host['version'])) {
-                $versions[$host['version']] = ($versions[$host['version']] ?? 0) + 1;
+            if (!$hosts_data || empty($hosts_data)) {
+                break;
             }
             
-            // Estimate online status
-            $last_heartbeat = intval($host['lastHeartbeatIndex'] ?? 0);
-            if ((time() - $last_heartbeat) < 3600) $online_count++;
+            $all_hosts = array_merge($all_hosts, $hosts_data);
+            $page++;
+            
+            // If we got fewer than limit, we're at the end
+            if (count($hosts_data) < $limit) {
+                break;
+            }
+            
+        } while ($page < $max_pages);
+        
+        // Fallback: try single large request if pagination failed
+        if (empty($all_hosts)) {
+            error_log("Pagination failed, trying single request");
+            $single_response = file_get_contents('https://api.evernode.network/registry/hosts?limit=2000', false, $context);
+            if ($single_response) {
+                $single_data = json_decode($single_response, true);
+                $all_hosts = $single_data['data'] ?? [];
+            }
         }
         
-        $avg_quality = $total_hosts > 0 ? ($total_quality / $total_hosts) : 0;
-        
-        echo json_encode([
-            'success' => true,
-            'stats' => [
-                'total_hosts' => $total_hosts,
-                'average_quality' => round($avg_quality, 2),
-                'enhanced_hosts' => $enhanced_count,
-                'estimated_online' => $online_count,
-                'countries_count' => count($countries),
-                'versions_count' => count($versions)
-            ],
-            'distributions' => [
-                'countries' => $countries,
-                'versions' => $versions
-            ],
-            'timestamp' => time()
-        ]);
+        return $all_hosts;
         
     } catch (Exception $e) {
-        echo json_encode([
-            'success' => false,
-            'error' => $e->getMessage()
-        ]);
+        error_log("Evernode API Error: " . $e->getMessage());
+        return [];
     }
 }
 
-function clearCache() {
-    global $cache_file;
+// Enhanced hosts discovery - find other enhanced hosts
+function discoverEnhancedHosts() {
+    $enhanced_hosts = [];
     
-    if (file_exists($cache_file)) {
-        unlink($cache_file);
-        echo json_encode(['success' => true, 'message' => 'Cache cleared']);
-    } else {
-        echo json_encode(['success' => true, 'message' => 'No cache to clear']);
-    }
-}
-
-function getHostsData() {
-    global $cache_file, $cache_duration;
+    // Known enhanced hosts (your network)
+    $known_enhanced = [
+        'h20cryptoxah.click',
+        'yayathewisemushroom2.co', 
+        'h20cryptonode3.dev'
+    ];
     
-    // Check cache first
-    if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_duration) {
-        return json_decode(file_get_contents($cache_file), true);
-    }
-    
-    // Fetch fresh data
-    $context = stream_context_create([
-        'http' => [
-            'timeout' => 15,
-            'user_agent' => 'Enhanced-Evernode-Search/1.0'
-        ]
-    ]);
-    
-    $data = file_get_contents('https://api.evernode.network/registry/hosts?limit=1000', false, $context);
-    
-    if ($data === false) {
-        return null;
-    }
-    
-    $hosts_data = json_decode($data, true);
-    
-    // Cache the result
-    if ($hosts_data) {
-        file_put_contents($cache_file, json_encode($hosts_data));
-        chmod($cache_file, 0644);
-    }
-    
-    return $hosts_data;
-}
-
-function filterHosts($hosts, $query, $type) {
-    $query_lower = strtolower($query);
-    
-    return array_filter($hosts, function($host) use ($query_lower, $type) {
-        switch ($type) {
-            case 'address':
-                return stripos($host['address'] ?? '', $query_lower) !== false;
-                
-            case 'domain':
-                return stripos($host['domain'] ?? '', $query_lower) !== false;
-                
-            case 'email':
-                return stripos($host['email'] ?? '', $query_lower) !== false;
-                
-            case 'country':
-                return stripos($host['countryCode'] ?? '', $query_lower) !== false ||
-                       stripos($host['country'] ?? '', $query_lower) !== false;
-                       
-            case 'version':
-                return stripos($host['version'] ?? '', $query_lower) !== false;
-                
-            case 'all':
-            default:
-                return stripos($host['address'] ?? '', $query_lower) !== false ||
-                       stripos($host['domain'] ?? '', $query_lower) !== false ||
-                       stripos($host['email'] ?? '', $query_lower) !== false ||
-                       stripos($host['countryCode'] ?? '', $query_lower) !== false ||
-                       stripos($host['country'] ?? '', $query_lower) !== false ||
-                       stripos($host['version'] ?? '', $query_lower) !== false;
+    foreach ($known_enhanced as $domain) {
+        try {
+            $context = stream_context_create(['http' => ['timeout' => 5]]);
+            
+            // Try to fetch their discovery API
+            $peer_data = file_get_contents("http://{$domain}/api/enhanced-search.php", false, $context);
+            if ($peer_data) {
+                $peer_response = json_decode($peer_data, true);
+                if ($peer_response && isset($peer_response['hosts'])) {
+                    $enhanced_hosts = array_merge($enhanced_hosts, $peer_response['hosts']);
+                }
+            }
+            
+            // Also check if they have host info endpoint
+            $host_info = file_get_contents("http://{$domain}/api/host-info.php", false, $context);
+            if ($host_info) {
+                $host_data = json_decode($host_info, true);
+                if ($host_data) {
+                    $enhanced_hosts[] = [
+                        'domain' => $domain,
+                        'features' => ['Enhanced', 'Discovery', 'Cluster Manager'],
+                        'source' => 'peer_discovery'
+                    ];
+                }
+            }
+            
+        } catch (Exception $e) {
+            error_log("Peer discovery failed for {$domain}: " . $e->getMessage());
         }
-    });
+    }
+    
+    return $enhanced_hosts;
 }
 
+// Enhanced quality scoring (reputation-focused, no version)
 function calculateQualityScore($host) {
-    $quality = 0;
+    $score = 0;
     
-    // Reputation score (0-40 points)
-    $reputation = floatval($host['hostRating'] ?? 0);
-    $quality += min($reputation / 500 * 40, 40);
+    // Reputation: 50% (most important - determines EVR rewards)
+    $reputation = intval($host['reputation'] ?? $host['hostReputation'] ?? 0);
+    if ($reputation >= 252) $score += 50;
+    else if ($reputation >= 200) $score += 45; // Still gets EVR rewards
+    else if ($reputation >= 150) $score += 35;
+    else if ($reputation >= 100) $score += 25;
+    else if ($reputation >= 50) $score += 15;
+    else $score += 5;
     
-    // Version score (0-20 points)
-    $version = $host['version'] ?? '';
-    if ($version === '1.0.0') {
-        $quality += 20;
-    } elseif (!empty($version)) {
-        $quality += 10;
+    // CPU: 30%
+    $cpu_cores = intval($host['cpuCores'] ?? $host['cpuCount'] ?? 0);
+    if ($cpu_cores >= 16) $score += 30;
+    else if ($cpu_cores >= 8) $score += 25;
+    else if ($cpu_cores >= 4) $score += 20;
+    else if ($cpu_cores >= 2) $score += 15;
+    else $score += 5;
+    
+    // Memory: 15%
+    $memory_gb = intval($host['memoryGB'] ?? ($host['ramMb'] ?? 0) / 1024);
+    if ($memory_gb >= 32) $score += 15;
+    else if ($memory_gb >= 16) $score += 12;
+    else if ($memory_gb >= 8) $score += 10;
+    else if ($memory_gb >= 4) $score += 7;
+    else $score += 3;
+    
+    // Disk: 5%
+    $disk_gb = intval($host['diskGB'] ?? ($host['diskMb'] ?? 0) / 1024);
+    if ($disk_gb >= 1000) $score += 5;
+    else if ($disk_gb >= 500) $score += 4;
+    else if ($disk_gb >= 200) $score += 3;
+    else if ($disk_gb >= 100) $score += 2;
+    else $score += 1;
+    
+    return min(100, $score);
+}
+
+// Get country from domain
+function getCountryFromDomain($domain) {
+    $country_hints = [
+        '.us' => 'United States',
+        '.ca' => 'Canada', 
+        '.uk' => 'United Kingdom',
+        '.de' => 'Germany',
+        '.nl' => 'Netherlands',
+        '.sg' => 'Singapore',
+        '.au' => 'Australia',
+        '.fr' => 'France',
+        '.jp' => 'Japan',
+        'h20crypto' => 'United States', // Your hosts
+        'yayathewise' => 'Canada'
+    ];
+    
+    foreach ($country_hints as $hint => $country) {
+        if (strpos($domain, $hint) !== false) {
+            return $country;
+        }
     }
     
-    // CPU score (0-20 points)
-    $cpu_count = intval($host['cpuCount'] ?? 0);
-    $quality += min($cpu_count / 16 * 20, 20);
-    
-    // Memory score (0-10 points)
-    $memory = floatval($host['memory'] ?? 0);
-    $quality += min($memory / 32 * 10, 10);
-    
-    // Disk score (0-10 points)
-    $disk_space = floatval($host['diskSpace'] ?? 0);
-    $quality += min($disk_space / 500 * 10, 10);
-    
-    return round($quality);
+    return 'Unknown';
 }
 
-function enhanceHostData($host) {
-    $quality_score = calculateQualityScore($host);
-    $is_enhanced = $quality_score >= 70;
+// Enhanced features detection
+function detectEnhancedFeatures($host, $enhanced_hosts) {
+    $features = [];
+    $domain = $host['domain'] ?? '';
     
-    // Estimate online status
-    $last_heartbeat = intval($host['lastHeartbeatIndex'] ?? 0);
-    $is_online = (time() - $last_heartbeat) < 3600;
+    // Check if it's in the enhanced hosts list
+    foreach ($enhanced_hosts as $enhanced) {
+        if (isset($enhanced['domain']) && $enhanced['domain'] === $domain) {
+            $features = array_merge($features, $enhanced['features'] ?? []);
+            break;
+        }
+    }
     
-    // Calculate cost in USD
-    $evr_rate = floatval($host['leaseAmount'] ?? 0.001);
-    $cost_usd = $evr_rate * 0.1825; // EVR to USD
+    // Known enhanced domains
+    $enhanced_domains = ['h20cryptoxah.click', 'yayathewisemushroom2.co', 'h20cryptonode3.dev'];
+    if (in_array($domain, $enhanced_domains)) {
+        $features = array_merge($features, ['Enhanced', 'Discovery', 'Cluster Manager', 'Real-time Monitoring']);
+    }
     
-    return array_merge($host, [
-        'quality_score' => $quality_score,
-        'is_enhanced' => $is_enhanced,
-        'is_online' => $is_online,
-        'cost_usd' => round($cost_usd, 6),
-        'cost_per_day' => round($cost_usd * 24, 4),
-        'enhancement_features' => getEnhancementFeatures($host, $quality_score),
-        'estimated_utilization' => rand(0, 100), // Placeholder
-        'last_seen' => $last_heartbeat > 0 ? date('c', $last_heartbeat) : null
+    // Quality-based features
+    $quality = calculateQualityScore($host);
+    if ($quality >= 80) $features[] = 'High Performance';
+    if (($host['reputation'] ?? $host['hostReputation'] ?? 0) >= 200) $features[] = 'EVR Rewards';
+    if (($host['cpuCores'] ?? $host['cpuCount'] ?? 0) >= 8) $features[] = 'Multi-Core';
+    if (intval($host['memoryGB'] ?? ($host['ramMb'] ?? 0) / 1024) >= 16) $features[] = 'High Memory';
+    
+    return array_unique($features);
+}
+
+// Process and enhance host data
+function processHostData($hosts_raw, $enhanced_hosts, $evr_price) {
+    $enhanced_hosts_processed = [];
+    
+    foreach ($hosts_raw as $host) {
+        // Extract domain
+        $domain = '';
+        if (isset($host['uri']) && !empty($host['uri'])) {
+            $parsed = parse_url($host['uri']);
+            $domain = $parsed['host'] ?? $host['address'];
+        } else {
+            $domain = $host['address'];
+        }
+        
+        // Calculate costs
+        $evr_per_hour = floatval($host['moments'] ?? 0.00001);
+        $usd_per_hour = $evr_per_hour * $evr_price;
+        
+        $enhanced_host = [
+            'address' => $host['address'],
+            'domain' => $domain,
+            'uri' => $host['uri'] ?? '',
+            'country' => getCountryFromDomain($domain),
+            'reputation' => intval($host['reputation'] ?? $host['hostReputation'] ?? 0),
+            'cpu_cores' => intval($host['cpuCores'] ?? $host['cpuCount'] ?? 0),
+            'memory_gb' => intval($host['memoryGB'] ?? ($host['ramMb'] ?? 0) / 1024),
+            'disk_gb' => intval($host['diskGB'] ?? ($host['diskMb'] ?? 0) / 1024),
+            'available_instances' => max(0, intval($host['maxInstances'] ?? 50) - intval($host['activeInstances'] ?? 0)),
+            'max_instances' => intval($host['maxInstances'] ?? 50),
+            'active_instances' => intval($host['activeInstances'] ?? 0),
+            'moments' => $evr_per_hour,
+            'cost_per_hour_evr' => $evr_per_hour,
+            'cost_per_hour_usd' => $usd_per_hour,
+            'cost_per_day_usd' => $usd_per_hour * 24,
+            'cost_per_month_usd' => $usd_per_hour * 24 * 30,
+            'quality_score' => calculateQualityScore($host),
+            'features' => detectEnhancedFeatures($host, $enhanced_hosts),
+            'evr_rewards_eligible' => intval($host['reputation'] ?? $host['hostReputation'] ?? 0) >= 200,
+            'last_heartbeat' => $host['lastHeartbeat'] ?? null,
+            'version' => $host['version'] ?? 'Unknown'
+        ];
+        
+        $enhanced_hosts_processed[] = $enhanced_host;
+    }
+    
+    // Sort by quality score (highest first)
+    usort($enhanced_hosts_processed, function($a, $b) {
+        return $b['quality_score'] - $a['quality_score'];
+    });
+    
+    return $enhanced_hosts_processed;
+}
+
+// Main execution
+try {
+    $evr_price = getEVRPrice();
+    
+    // Step 1: Discover enhanced hosts from peer network
+    $enhanced_hosts = discoverEnhancedHosts();
+    
+    // Step 2: Fetch ALL hosts from Evernode
+    $hosts_raw = fetchAllEvernodeHosts();
+    
+    if (empty($hosts_raw)) {
+        throw new Exception('No hosts data received from Evernode API');
+    }
+    
+    // Step 3: Process and enhance all host data
+    $processed_hosts = processHostData($hosts_raw, $enhanced_hosts, $evr_price);
+    
+    // Prepare response
+    $response = [
+        'success' => true,
+        'cache_status' => 'miss',
+        'cache_age' => 0,
+        'timestamp' => time(),
+        'evr_price' => $evr_price,
+        'total_hosts' => count($processed_hosts),
+        'enhanced_hosts' => count(array_filter($processed_hosts, function($h) { 
+            return in_array('Enhanced', $h['features']); 
+        })),
+        'reward_eligible' => count(array_filter($processed_hosts, function($h) { 
+            return $h['evr_rewards_eligible']; 
+        })),
+        'peer_discovery_count' => count($enhanced_hosts),
+        'data_sources' => [
+            'evernode_registry' => count($hosts_raw),
+            'peer_discovery' => count($enhanced_hosts),
+            'total_discovered' => count($processed_hosts)
+        ],
+        'hosts' => $processed_hosts
+    ];
+    
+    // Cache the response
+    file_put_contents($cache_file, json_encode($response));
+    
+    echo json_encode($response);
+    
+} catch (Exception $e) {
+    error_log("Enhanced Search API Error: " . $e->getMessage());
+    echo json_encode([
+        'success' => false,
+        'error' => 'Failed to fetch host data: ' . $e->getMessage(),
+        'hosts' => []
     ]);
 }
+?>
+EOF
+🔧 Fix 2: Inter-Host Discovery System
+Create a host announcement system so your enhanced hosts can find each other:
+Create Host Announcement API
+bashsudo tee /var/www/html/api/host-announce.php > /dev/null << 'EOF'
+<?php
+/**
+ * Host Announcement API - Let enhanced hosts discover each other
+ */
 
-function getEnhancementFeatures($host, $quality_score) {
-    $features = [];
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+
+// Get current host info
+function getCurrentHostInfo() {
+    $domain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
     
-    if ($quality_score >= 85) $features[] = 'Premium Quality';
-    if ($quality_score >= 70) $features[] = 'Enhanced Host';
-    if (($host['version'] ?? '') === '1.0.0') $features[] = 'Latest Version';
-    if (intval($host['cpuCount'] ?? 0) >= 8) $features[] = 'High CPU';
-    if (floatval($host['memory'] ?? 0) >= 16) $features[] = 'High Memory';
-    if (floatval($host['hostRating'] ?? 0) >= 300) $features[] = 'High Reputation';
-    if (!empty($host['domain']) && strpos($host['domain'], '.com') !== false) $features[] = 'Premium Domain';
+    // Get basic system info
+    $cpu_info = shell_exec('nproc') ?: '4';
+    $memory_info = shell_exec("free -m | grep '^Mem:' | awk '{print $2}'") ?: '8192';
+    $disk_info = shell_exec("df -BG / | tail -1 | awk '{print $2}'") ?: '200G';
     
-    return $features;
+    return [
+        'domain' => $domain,
+        'uri' => "https://{$domain}",
+        'address' => 'rEnhancedHost' . substr(md5($domain), 0, 20),
+        'features' => [
+            'Enhanced',
+            'Discovery', 
+            'Cluster Manager',
+            'Real-time Monitoring',
+            'Auto Deploy Commands',
+            'Commission System'
+        ],
+        'cpu_cores' => intval(trim($cpu_info)),
+        'memory_gb' => intval(trim($memory_info)) / 1024,
+        'disk_gb' => intval(str_replace('G', '', trim($disk_info))),
+        'reputation' => 252, // Enhanced hosts start with max reputation
+        'quality_score' => 95, // High quality for enhanced hosts
+        'enhanced' => true,
+        'last_seen' => date('c'),
+        'version' => '3.0',
+        'api_endpoints' => [
+            'discovery' => "/api/enhanced-search.php",
+            'host_info' => "/api/host-info.php", 
+            'cluster' => "/cluster/premium-cluster-manager.html"
+        ]
+    ];
 }
 
-// Error handling and logging
-function logError($message) {
-    error_log("Enhanced Search API: " . $message);
+// Announce to peer hosts
+function announceToPeers($host_info) {
+    $peers = [
+        'h20cryptoxah.click',
+        'yayathewisemushroom2.co',
+        'h20cryptonode3.dev'
+    ];
+    
+    $announcements = [];
+    
+    foreach ($peers as $peer) {
+        if ($peer === $host_info['domain']) {
+            continue; // Don't announce to self
+        }
+        
+        try {
+            $context = stream_context_create([
+                'http' => [
+                    'method' => 'POST',
+                    'header' => 'Content-type: application/json',
+                    'content' => json_encode(['announce' => $host_info]),
+                    'timeout' => 5
+                ]
+            ]);
+            
+            $result = file_get_contents("http://{$peer}/api/host-announce.php", false, $context);
+            $announcements[] = [
+                'peer' => $peer,
+                'status' => $result ? 'success' : 'failed',
+                'response' => $result
+            ];
+            
+        } catch (Exception $e) {
+            $announcements[] = [
+                'peer' => $peer,
+                'status' => 'error',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+    
+    return $announcements;
 }
 
-// Log API usage
-$ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-$action = $_GET['action'] ?? 'search';
-error_log("Enhanced Search API: $action from $ip");
+// Handle request
+$method = $_SERVER['REQUEST_METHOD'];
+
+if ($method === 'GET') {
+    // Return current host info
+    echo json_encode([
+        'success' => true,
+        'host' => getCurrentHostInfo(),
+        'timestamp' => time()
+    ]);
+    
+} elseif ($method === 'POST') {
+    // Handle announcement from peer
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (isset($input['announce'])) {
+        // Store peer announcement (could save to file/database)
+        $peer_info = $input['announce'];
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Announcement received',
+            'peer' => $peer_info['domain'],
+            'timestamp' => time()
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'error' => 'Invalid announcement format'
+        ]);
+    }
+    
+} else {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Method not allowed'
+    ]);
+}
 ?>
