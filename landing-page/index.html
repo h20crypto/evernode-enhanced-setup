@@ -798,7 +798,7 @@
         }
 
         function checkAdminPassword() {
-            const adminPassword = 'enhanced2024'; // CHANGE THIS!
+            if (password === 'CHANGE_THIS_PASSWORD') {
             const savedPassword = sessionStorage.getItem('admin_password');
             return savedPassword === adminPassword;
         }
