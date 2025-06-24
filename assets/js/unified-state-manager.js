@@ -40,7 +40,11 @@ class EnhancedEvernodeState {
 
     promptAdminAccess() {
         const password = prompt('Host Owner Password:');
-        if (password === 'BIEU6HJ7M5go') {
+        // CHANGE THIS:
+if (password === 'enhanced2024') {
+
+// TO THIS:
+            if (password === 'CHANGE_THIS_PASSWORD') {
             this.setRole('host_owner');
             alert('👑 Host Owner access granted!\n\nYou now have access to:\n• dApp Manager\n• Leaderboard\n• Commission Dashboard\n• Host Discovery');
         } else if (password !== null) {
