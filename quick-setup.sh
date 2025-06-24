@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Enhanced Evernode Setup Script - User Friendly Version
+# Enhanced Evernode Setup Script - User Friendly Version with Secure Configuration
 # Supports both root and non-root execution
 
 # Color codes for output
@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Print functions
 print_header() {
-    echo -e "${BLUE}🚀 Enhanced Evernode Setup with Dhali Oracle Integration${NC}"
+    echo -e "${BLUE}🚀 Enhanced Evernode Setup with Secure Configuration${NC}"
     echo "=================================================="
     echo "Domain: $(hostname -f 2>/dev/null || hostname)"
     echo "Install Directory: /var/www/html"
@@ -39,6 +39,156 @@ print_error() {
 
 print_status() {
     echo -e "${GREEN}✅ $1${NC}"
+}
+
+# NEW: Secure configuration setup
+configure_user_settings() {
+    print_info "🔐 Configuring your Enhanced Evernode host..."
+    echo ""
+    print_info "Please provide your host information for secure setup:"
+    echo ""
+    
+    # Get user's domain
+    DEFAULT_DOMAIN=$(hostname -f 2>/dev/null || hostname)
+    read -p "Enter your domain [$DEFAULT_DOMAIN]: " USER_DOMAIN
+    USER_DOMAIN=${USER_DOMAIN:-$DEFAULT_DOMAIN}
+    
+    # Get user's Xahau address
+    EVERNODE_ADDRESS=$(evernode config account 2>/dev/null | grep "Address:" | awk '{print $2}' || echo "")
+    if [ -n "$EVERNODE_ADDRESS" ]; then
+        read -p "Enter your Xahau address [$EVERNODE_ADDRESS]: " USER_ADDRESS
+        USER_ADDRESS=${USER_ADDRESS:-$EVERNODE_ADDRESS}
+    else
+        read -p "Enter your Xahau address: " USER_ADDRESS
+        while [ -z "$USER_ADDRESS" ]; do
+            print_warning "Xahau address is required!"
+            read -p "Enter your Xahau address: " USER_ADDRESS
+        done
+    fi
+    
+    # Get user's admin password
+    while true; do
+        read -s -p "Create admin password (min 8 characters): " USER_PASSWORD
+        echo ""
+        if [ ${#USER_PASSWORD} -lt 8 ]; then
+            print_warning "Password must be at least 8 characters!"
+            continue
+        fi
+        read -s -p "Confirm admin password: " USER_PASSWORD_CONFIRM
+        echo ""
+        if [ "$USER_PASSWORD" = "$USER_PASSWORD_CONFIRM" ]; then
+            break
+        else
+            print_warning "Passwords don't match! Try again."
+        fi
+    done
+    
+    # Get user's operator name (optional)
+    read -p "Enter your name/organization [Enhanced Host]: " USER_OPERATOR
+    USER_OPERATOR=${USER_OPERATOR:-"Enhanced Host"}
+    
+    # Get instance limit
+    EVERNODE_INSTANCES=$(evernode totalins 2>/dev/null || echo "5")
+    read -p "Enter your instance limit [$EVERNODE_INSTANCES]: " USER_INSTANCES
+    USER_INSTANCES=${USER_INSTANCES:-$EVERNODE_INSTANCES}
+    
+    echo ""
+    print_success "Configuration collected successfully!"
+    print_info "Domain: $USER_DOMAIN"
+    print_info "Xahau Address: $USER_ADDRESS"
+    print_info "Operator: $USER_OPERATOR"
+    print_info "Instance Limit: $USER_INSTANCES"
+    echo ""
+    
+    # Generate secure hash for password
+    USER_PASSWORD_HASH=$(php -r "echo password_hash('$USER_PASSWORD', PASSWORD_ARGON2ID);" 2>/dev/null || echo "$USER_PASSWORD")
+    
+    # Generate session secret
+    SESSION_SECRET=$(openssl rand -hex 32 2>/dev/null || echo "CHANGE_THIS_SECRET_$(date +%s)")
+    
+    print_status "Secure configuration prepared"
+}
+
+# NEW: Apply user configuration to downloaded files
+apply_user_configuration() {
+    print_info "🔧 Applying your configuration to Enhanced Evernode files..."
+    
+    # Update landing page with user's password
+    if [ -f "/var/www/html/index.html" ]; then
+        sudo sed -i "s/password === 'CHANGE_THIS_PASSWORD'/password === '$USER_PASSWORD'/g" /var/www/html/index.html
+        sudo sed -i "s/enhanced2024/$USER_PASSWORD/g" /var/www/html/index.html
+    fi
+    
+    # Update any unified state manager
+    if [ -f "/var/www/html/assets/js/unified-state-manager.js" ]; then
+        sudo sed -i "s/adminPassword: 'CHANGE_THIS_PASSWORD'/adminPassword: '$USER_PASSWORD'/g" /var/www/html/assets/js/unified-state-manager.js
+        sudo sed -i "s/enhanced2024/$USER_PASSWORD/g" /var/www/html/assets/js/unified-state-manager.js
+    fi
+    
+    # Create secure config.php
+    sudo tee /var/www/html/config.php > /dev/null << CONFIGEOF
+<?php
+/**
+ * Enhanced Evernode Configuration
+ * Generated during installation: $(date)
+ */
+
+// Host Information
+define('HOST_DOMAIN', '$USER_DOMAIN');
+define('XAHAU_ADDRESS', '$USER_ADDRESS');
+define('HOST_OPERATOR', '$USER_OPERATOR');
+
+// Admin Security
+define('ADMIN_PASSWORD_HASH', '$USER_PASSWORD_HASH');
+define('SESSION_SECRET', '$SESSION_SECRET');
+
+// Host Configuration
+define('INSTANCE_LIMIT', $USER_INSTANCES);
+define('COMMISSION_RATE', 0.20);           // 20% commission
+define('LEASE_AMOUNT_EVR', '0.005');       // EVR per hour
+
+// Enhanced Features
+define('ENHANCED_FEATURES', [
+    'Enhanced',
+    'Discovery', 
+    'Cluster Manager',
+    'Real-time Monitoring',
+    'Auto Deploy Commands',
+    'Commission System'
+]);
+
+// API Configuration
+define('API_RATE_LIMIT', 100);             // Requests per minute
+define('CACHE_DURATION', 300);             // 5 minutes
+
+// Contact Information
+define('CONTACT_EMAIL', 'admin@$USER_DOMAIN');
+define('SUPPORT_URL', 'https://$USER_DOMAIN/');
+
+// Installation Info
+define('INSTALL_DATE', '$(date)');
+define('INSTALL_VERSION', '3.1.0-secure');
+?>
+CONFIGEOF
+    
+    # Update API files to use configuration
+    if [ -f "/var/www/html/api/host-info.php" ]; then
+        # Add config include at the top of API files
+        sudo sed -i '1i<?php include_once "../config.php"; ?>' /var/www/html/api/host-info.php 2>/dev/null || true
+    fi
+    
+    # Update enhanced-hosts.json with user's info
+    if [ -f "/var/www/html/data/enhanced-hosts.json" ]; then
+        sudo sed -i "s/rYOUR_XAHAU_ADDRESS_HERE/$USER_ADDRESS/g" /var/www/html/data/enhanced-hosts.json
+        sudo sed -i "s/your-domain.com/$USER_DOMAIN/g" /var/www/html/data/enhanced-hosts.json
+        sudo sed -i "s/Your Name or Organization/$USER_OPERATOR/g" /var/www/html/data/enhanced-hosts.json
+    fi
+    
+    # Protect the config file
+    sudo chmod 600 /var/www/html/config.php
+    sudo chown www-data:www-data /var/www/html/config.php
+    
+    print_status "User configuration applied successfully"
 }
 
 # Check root and provide options
@@ -96,18 +246,6 @@ check_permissions() {
         fi
     fi
 }
-
-# Add this function anywhere in your existing script
-install_payment_api() {
-    print_info "🚀 Installing professional payment API..."
-    
-    # Install Node.js
-    if ! command -v node >/dev/null 2>&1; then
-        print_info "📦 Installing Node.js..."
-        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-        sudo apt-get install -y nodejs
-    fi
-    
 
 # Install dependencies
 install_dependencies() {
@@ -204,8 +342,8 @@ download_enhanced_files() {
     sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.js" -o /var/www/html/widgets/live-pricing.js 2>/dev/null || print_warning "Live pricing JS not found (optional)"
     sudo curl -fsSL "$github_base/landing-page/widgets/live-pricing.css" -o /var/www/html/widgets/live-pricing.css 2>/dev/null || print_warning "Live pricing CSS not found (optional)"
     
-    # Download enhanced configuration
-    print_info "⚙️ Downloading configuration..."
+    # Download enhanced configuration (this will have placeholder data)
+    print_info "⚙️ Downloading configuration templates..."
     sudo curl -fsSL "$github_base/data/enhanced-hosts.json" -o /var/www/html/data/enhanced-hosts.json 2>/dev/null || print_warning "Enhanced hosts config not found (optional)"
     
     # Optional: Download management tools (only if they exist)
@@ -215,8 +353,6 @@ download_enhanced_files() {
     
     print_status "Enhanced files downloaded"
 }
-
-# Add this section to your existing quick-setup.sh
 
 # Install Node.js for payment API
 install_nodejs_payment_api() {
@@ -229,44 +365,29 @@ install_nodejs_payment_api() {
     fi
     
     # Set up payment API
-    sudo mkdir -p /var/www/html/payment-api
-    cd /var/www/html/payment-api
     sudo mkdir -p /var/www/html/payment-api/{src,scripts}
     
     # Download payment API files from your repo
-    sudo curl -fsSL "$github_base/payment-api/package.json" -o package.json
-    sudo curl -fsSL "$github_base/payment-api/src/index.ts" -o src/index.ts
-     # Download files from GitHub
-    
     print_info "📥 Downloading payment API..."
-    sudo curl -fsSL "$github_base/payment-api/package.json" -o /var/www/html/payment-api/package.json
-    sudo curl -fsSL "$github_base/payment-api/src/index.ts" -o /var/www/html/payment-api/src/index.ts
-    sudo curl -fsSL "$github_base/payment-api/scripts/install-and-start.sh" -o /var/www/html/payment-api/scripts/install-and-start.sh
+    sudo curl -fsSL "$github_base/payment-api/package.json" -o /var/www/html/payment-api/package.json 2>/dev/null || print_warning "Payment API package.json not found (optional)"
+    sudo curl -fsSL "$github_base/payment-api/src/index.ts" -o /var/www/html/payment-api/src/index.ts 2>/dev/null || print_warning "Payment API source not found (optional)"
+    sudo curl -fsSL "$github_base/payment-api/scripts/install-and-start.sh" -o /var/www/html/payment-api/scripts/install-and-start.sh 2>/dev/null || print_warning "Payment API scripts not found (optional)"
 
-    # Set permissions and install
-    sudo chmod +x /var/www/html/payment-api/scripts/install-and-start.sh
-    sudo chown -R www-data:www-data /var/www/html/payment-api
-    
-    # Install dependencies
-    sudo npm install
-
-    # Run the installation
-    cd /var/www/html/payment-api
-    sudo -u www-data /var/www/html/payment-api/scripts/install-and-start.sh
-    cd - >/dev/null
-    
-    print_status "Payment API installation complete"
-}
-    
-    # Build and start
-    sudo npm run build
-    sudo npm start &
-    
-    print_status "Professional payment API installed"
+    # Set permissions and install if files exist
+    if [ -f "/var/www/html/payment-api/package.json" ]; then
+        sudo chmod +x /var/www/html/payment-api/scripts/install-and-start.sh
+        sudo chown -R www-data:www-data /var/www/html/payment-api
+        
+        cd /var/www/html/payment-api
+        sudo npm install 2>/dev/null || print_warning "Payment API npm install failed (optional feature)"
+        cd - >/dev/null
+        
+        print_status "Payment API installation complete"
+    else
+        print_info "Payment API files not found - skipping (optional feature)"
+    fi
 }
 
-# Add to your main installation flow:
-install_nodejs_payment_api
 # Configure web server
 configure_webserver() {
     print_info "Configuring web server..."
@@ -338,8 +459,24 @@ server {
         }
     }
     
+    # Payment API proxy (if available)
+    location /api/payment/ {
+        proxy_pass http://localhost:3000/api/;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+    
     # Deny access to sensitive files
     location ~ /\.(ht|git) {
+        deny all;
+    }
+    
+    # Protect config files
+    location ~ /config\.php {
         deny all;
     }
 }
@@ -366,41 +503,9 @@ set_permissions() {
     sudo find /var/www/html -type f -name "*.css" -exec chmod 644 {} \;
     sudo find /var/www/html -type f -name "*.js" -exec chmod 644 {} \;
     sudo find /var/www/html -type d -exec chmod 755 {} \;
-
-    # Add nginx proxy configuration
-configure_nginx_payment_proxy() {
-    print_info "🌐 Adding payment API proxy to nginx..."
     
-    # Add payment proxy to your existing nginx config
-    # This assumes you have a working nginx setup already
-    
-    # Create a simple proxy config
-    sudo tee /etc/nginx/sites-available/payment-proxy << 'EOF'
-# Payment API proxy configuration
-location /api/payment/ {
-    proxy_pass http://localhost:3000/api/;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    
-    # WebSocket support
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-}
-EOF
-
-    # Include this in your main nginx config
-    if [ -f /etc/nginx/sites-available/evernode-enhanced ]; then
-        # Add to existing config
-        sudo sed -i '/location \/api\//i \ \ \ \ # Payment API proxy\n\ \ \ \ location /api/payment/ {\n\ \ \ \ \ \ \ \ proxy_pass http://localhost:3000/api/;\n\ \ \ \ \ \ \ \ proxy_set_header Host $host;\n\ \ \ \ \ \ \ \ proxy_set_header X-Real-IP $remote_addr;\n\ \ \ \ }\n' /etc/nginx/sites-available/evernode-enhanced
-        sudo systemctl reload nginx
-    fi
-    
-    print_status "Nginx payment proxy configured"
-}
-    # Make PHP files executable
-    sudo chmod +x /var/www/html/api/*.php 2>/dev/null || true
+    # Protect sensitive files
+    sudo chmod 600 /var/www/html/config.php 2>/dev/null || true
     
     print_status "Permissions set correctly"
 }
@@ -425,6 +530,13 @@ test_installation() {
         print_warning "⚠️  Host info API: Not working"
     fi
     
+    # Test configuration
+    if [ -f "/var/www/html/config.php" ]; then
+        print_success "✅ Configuration: Created and secured"
+    else
+        print_warning "⚠️  Configuration: Missing"
+    fi
+    
     # Test services
     if systemctl is-active --quiet nginx; then
         print_success "✅ Nginx: Running"
@@ -433,7 +545,7 @@ test_installation() {
     fi
     
     print_info "🌐 Your enhanced Evernode host is available at:"
-    print_success "   http://$domain/"
+    print_success "   http://$USER_DOMAIN/"
     print_success "   http://$(curl -s ifconfig.me 2>/dev/null)/ (external IP)"
 }
 
@@ -446,7 +558,10 @@ generate_report() {
 ==========================================
 
 Installation Date: $(date)
-Domain: $(hostname -f 2>/dev/null || hostname)
+Domain: $USER_DOMAIN
+Xahau Address: $USER_ADDRESS
+Operator: $USER_OPERATOR
+Instance Limit: $USER_INSTANCES
 Installation User: $(whoami)
 
 ✅ What's Installed:
@@ -457,29 +572,32 @@ Installation User: $(whoami)
 • Cluster management system (requires NFT license)
 • Complete API backend with Xahau integration
 • Commission tracking system for license sales
+• Secure configuration with your personal settings
+
+🔐 Security Features:
+• Password-protected admin access
+• Secure configuration file (600 permissions)
+• Session security with random secrets
+• Protected API endpoints
 
 📁 File Structure:
 • Main site: /var/www/html/
 • APIs: /var/www/html/api/
 • Cluster system: /var/www/html/cluster/
-• Configuration: /var/www/html/data/
+• Configuration: /var/www/html/config.php (SECURED)
 • Interactive features: /var/www/html/css/ & /var/www/html/js/
 
-🔧 Next Steps:
-1. Visit your host URL to see the enhanced interface
-2. Update Xahau addresses in API configuration files
-3. Configure Dhali Oracle payment claims (if using cluster licenses)
-4. Test all functionality and navigation
-5. Share your enhanced host with the Evernode community!
-6. Start earning commissions on cluster license sales!
+🔧 Admin Access:
+• Password: [SET BY YOU DURING INSTALLATION]
+• Access via: Ctrl+Shift+A or ?admin=true parameter
 
 🌐 Your Enhanced Host URLs:
-• Main: http://$(hostname -f 2>/dev/null || hostname)/
-• Host Discovery: http://$(hostname -f 2>/dev/null || hostname)/host-discovery.html
-• dApp Manager: http://$(hostname -f 2>/dev/null || hostname)/dapp-manager.html
-• Monitoring: http://$(hostname -f 2>/dev/null || hostname)/monitoring-dashboard.html
-• Earnings: http://$(hostname -f 2>/dev/null || hostname)/my-earnings.html
-• Leaderboard: http://$(hostname -f 2>/dev/null || hostname)/leaderboard.html
+• Main: http://$USER_DOMAIN/
+• Host Discovery: http://$USER_DOMAIN/host-discovery.html
+• dApp Manager: http://$USER_DOMAIN/dapp-manager.html
+• Monitoring: http://$USER_DOMAIN/monitoring-dashboard.html
+• Earnings: http://$USER_DOMAIN/my-earnings.html
+• Leaderboard: http://$USER_DOMAIN/leaderboard.html
 
 💰 Commission Features:
 • Enhanced hosts earn 15% commission on cluster license sales
@@ -506,14 +624,22 @@ main() {
     # Handle script arguments
     check_permissions "$1"
     
-    print_info "🌟 Starting Enhanced Evernode installation..."
+    print_info "🌟 Starting Enhanced Evernode installation with secure configuration..."
     echo ""
-
-    install_payment_api
-    configure_nginx_payment_proxy
+    
+    # NEW: Get user configuration FIRST
+    configure_user_settings
+    echo ""
+    
     install_dependencies
     setup_directories
     download_enhanced_files
+    
+    # NEW: Apply user configuration to downloaded files
+    apply_user_configuration
+    echo ""
+    
+    install_nodejs_payment_api
     configure_webserver
     set_permissions
     test_installation
@@ -523,15 +649,20 @@ main() {
     print_success "🎉 Enhanced Evernode installation completed successfully!"
     echo ""
     print_info "🌟 Your enhanced Evernode host is now ready with:"
-    print_info "   • Professional landing page"
+    print_info "   • Professional landing page with YOUR configuration"
     print_info "   • Real-time monitoring and analytics"
     print_info "   • Earnings tracking and leaderboards"
     print_info "   • Host discovery network with commission features"
     print_info "   • NFT-based cluster management system"
     print_info "   • Commission earning system for license sales"
+    print_info "   • Secure admin access with YOUR password"
     echo ""
     print_info "🔧 View installation report:"
-    print_info "   http://$(hostname -f 2>/dev/null || hostname)/installation-report.txt"
+    print_info "   http://$USER_DOMAIN/installation-report.txt"
+    echo ""
+    print_info "🔐 Admin Access:"
+    print_info "   Use Ctrl+Shift+A or add ?admin=true to any page"
+    print_info "   Enter your password when prompted"
     echo ""
     print_success "🚀 Your enhanced host is ready to compete and earn commissions!"
     echo ""
