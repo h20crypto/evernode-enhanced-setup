@@ -3,12 +3,12 @@
   "last_updated": "2025-06-14T00:00:00Z",
   "hosts": [
     {
-      "address": "rwdiiNxkA93niGQKsJHP5nG7dDMvLEsXrB",
-      "domain": "h20cryptoxah.click",
-      "operator": "h20crypto",
+      "address": "rYOUR_XAHAU_ADDRESS_HERE",
+      "domain": "example-host.com", 
+      "operator": "example-operator",  // ← Missing comma here
       "verified": true,
       "features": ["cluster-management", "real-time-monitoring", "ssl-support"],
-      "location": "AT-Europe",
+      "location": "YOUR-REGION",
       "added": "2025-06-14"
     }
   ],
