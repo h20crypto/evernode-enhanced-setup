@@ -24,7 +24,7 @@ try {
                 'status' => 'healthy',
                 'timestamp' => time(),
                 'version' => '3.0.2',
-                'server' => $_SERVER['SERVER_NAME'] ?? 'h20cryptoxah.click',
+                'server' => $_SERVER['SERVER_NAME'] ?? 'localhost',
                 'php_version' => PHP_VERSION,
                 'uptime' => sys_getloadavg()[0] ?? 0
             ]);
