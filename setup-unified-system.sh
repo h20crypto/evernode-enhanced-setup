@@ -189,7 +189,7 @@ echo ""
 print_success "👑 Admin Access Methods:"
 print_success "   • URL Parameter: ?admin=true"
 print_success "   • Keyboard Shortcut: Ctrl+Shift+A"
-print_success "   • Password: enhanced2024 (⚠️ CHANGE THIS!)"
+print_success "   • print_success "   • Password: CHANGE_THIS_PASSWORD (⚠️ CHANGE THIS!)
 echo ""
 print_warning "🔐 IMPORTANT: Change admin password in:"
 print_warning "   • /var/www/html/assets/js/unified-state-manager.js"
