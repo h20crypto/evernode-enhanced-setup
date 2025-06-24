@@ -51,12 +51,8 @@ $enhanced_features = [
 
 // Known enhanced hosts (add h20cryptonode5)
 $known_enhanced_hosts = [
-    'h20cryptoxah.click',
-    'yayathewisemushroom2.co',
-    'h20cryptonode3.dev',
-    'h20cryptonode5.dev'  // Add this new host
+    $_SERVER['HTTP_HOST'] ?? 'localhost'
 ];
-
 $is_enhanced = in_array($domain, $known_enhanced_hosts) || 
                file_exists('/var/www/html/api/enhanced-search.php');
 
