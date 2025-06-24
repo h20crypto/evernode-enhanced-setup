@@ -167,6 +167,52 @@
             color: #000000;
         }
 
+        /* Commission Widget Styles */
+        .commission-widget {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .commission-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .commission-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .commission-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+
+        .referral-link-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .premium-cta {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
         /* Sections */
         .section-title {
             font-size: 2.5rem;
@@ -363,6 +409,10 @@
             .container {
                 padding: 0 15px;
             }
+
+            .commission-stats {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Loading States */
@@ -397,6 +447,23 @@
         button:hover {
             opacity: 0.8;
             transform: scale(1.05);
+        }
+
+        /* Commission Calculator Styles */
+        .commission-calculator {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .commission-calculator input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            padding: 8px 12px;
+            color: white;
+            width: 80px;
         }
     </style>
 </head>
@@ -444,11 +511,11 @@
                 
                 <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid rgba(16, 185, 129, 0.3); border-radius: 15px; padding: 30px; text-align: center;" class="admin-only">
                     <h3 style="color: #10b981; margin-bottom: 15px; font-size: 1.3rem;">💰 Earn More Revenue</h3>
-                    <p style="margin-bottom: 20px; opacity: 0.9;">3x more bookings + commission income</p>
-                    <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 10px;">+300%</div>
-                    <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;">Average booking increase</div>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">3x more bookings + $10 per premium referral</p>
+                    <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 10px;">$10.00</div>
+                    <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;">Per successful referral + future subscriptions</div>
                     <a href="#host-benefits" class="btn btn-primary" onclick="scrollToHostSection()">
-                        📈 See ROI Calculator
+                        📈 See Commission Dashboard
                     </a>
                 </div>
             </div>
@@ -463,9 +530,41 @@
                 <a href="/cluster/roi-calculator.html" class="btn btn-secondary tenant-only">
                     💰 ROI Calculator
                 </a>
-                <a href="/cluster/paywall.html" class="btn btn-outline">
+                <a href="#" class="btn btn-outline premium-cluster-link" data-commission-source="hero">
                     💎 Upgrade to Premium
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commission Section (Host Admin Only) -->
+    <section id="host-benefits" class="commission-section admin-only" style="display: none; padding: 60px 20px; background: rgba(0,255,136,0.05);">
+        <div class="container">
+            <h2 class="section-title" style="color: #00ff88;">💰 Host Commission Program</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Earn $10.00 on every $49.99 premium cluster manager sale you refer. Plus future recurring commissions on subscription features once the dApp is live!
+            </p>
+            
+            <div class="commission-widget" id="commission-widget">
+                <!-- Content populated by JavaScript -->
+                <div style="text-align: center;">
+                    <div style="font-size: 1.2rem; margin-bottom: 20px;">🔄 Loading commission data...</div>
+                </div>
+            </div>
+
+            <!-- Commission Calculator -->
+            <div class="commission-calculator">
+                <h4 style="color: #00ff88; margin-bottom: 15px;">💰 Commission Calculator</h4>
+                <div style="margin: 15px 0;">
+                    <label>Monthly referrals:</label>
+                    <input type="number" id="referral-count" value="5" min="0" style="margin: 0 10px;">
+                    <span>× $10.00 per sale = </span>
+                    <strong id="monthly-potential" style="color: #00ff88;">$50.00/month</strong>
+                </div>
+                <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                    💡 One-time fee: $49.99 × 20% = <strong>$10.00 per referral</strong><br>
+                    🚀 Future subscription commissions coming soon!
+                </div>
             </div>
         </div>
     </section>
@@ -596,6 +695,33 @@
         </div>
     </section>
 
+    <!-- Premium Cluster Manager CTA -->
+    <section style="padding: 60px 20px; background: rgba(102, 102, 246, 0.1);">
+        <div class="container">
+            <div class="premium-cta">
+                <h3 style="color: #ffffff; margin-bottom: 15px;">🚀 Upgrade to Premium Cluster Manager</h3>
+                <p style="margin-bottom: 20px; opacity: 0.9;">Advanced dApp deployment, scaling, and management for professional developers</p>
+                <div style="margin: 20px 0;">
+                    <span style="font-size: 1.3rem; font-weight: 700; color: #00ff88;">$49.99 One-Time Fee</span>
+                    <span style="margin: 0 10px;">•</span>
+                    <span style="opacity: 0.8;">Lifetime access to premium features</span>
+                </div>
+                <a href="#" class="btn btn-primary premium-cluster-link" data-commission-source="main-cta" style="margin-right: 10px;">
+                    🎯 Get Premium Access
+                </a>
+                <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-secondary">
+                    🎮 Try Demo First
+                </a>
+                <div style="font-size: 0.9rem; margin-top: 15px; opacity: 0.8;" class="admin-only">
+                    ✨ Enhanced hosts earn <strong style="color: #00ff88;">$10.00</strong> per successful referral
+                </div>
+                <div style="font-size: 0.85rem; margin-top: 8px; opacity: 0.7;" class="admin-only">
+                    🚀 Plus future recurring commissions on subscription features!
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Features Section -->
     <section class="features-section">
         <div class="container">
@@ -625,6 +751,15 @@
                     <p class="feature-description">
                         Live performance metrics, resource usage tracking, and comprehensive 
                         reporting with automated insights and alerts.
+                    </p>
+                </div>
+                
+                <div class="feature-card admin-only">
+                    <span class="feature-icon">💸</span>
+                    <h3 class="feature-title">$10 Per Referral + Future Subscriptions</h3>
+                    <p class="feature-description">
+                        Earn $10.00 on every $49.99 premium sale, plus recurring commissions 
+                        on future subscription features once the dApp is live.
                     </p>
                 </div>
                 
@@ -732,7 +867,7 @@
                 </a>
                 
                 <!-- Always visible - Upgrade path -->
-                <a href="/cluster/paywall.html" class="access-card" style="border: 1px solid #3b82f6;">
+                <a href="#" class="access-card premium-cluster-link" data-commission-source="quick-access" style="border: 1px solid #3b82f6;">
                     <span class="access-icon">💎</span>
                     <div class="access-title">Premium Upgrade</div>
                     <div class="access-description">Unlock advanced cluster features</div>
@@ -765,7 +900,7 @@
             
             <div class="admin-only">
                 <p style="font-size: 1.2rem; margin-bottom: 40px; opacity: 0.9;">
-                    Transform your host into a premium service with 300% more bookings
+                    Transform your host into a premium service with 300% more bookings + $10 per referral income
                 </p>
                 <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
                     <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
@@ -783,12 +918,164 @@
     </section>
 
     <script>
+        // Commission Management Class
+        class CommissionManager {
+            constructor() {
+                this.hostId = this.getHostId();
+                this.referralCode = this.generateReferralCode();
+                this.commissionRate = 0.20; // 20% commission rate
+                this.init();
+            }
+
+            init() {
+                this.loadCommissionStats();
+                this.setupReferralLinks();
+                this.trackReferrals();
+            }
+
+            generateReferralCode() {
+                const hostDomain = window.location.hostname;
+                return btoa(hostDomain).substr(0, 8).toUpperCase();
+            }
+
+            setupReferralLinks() {
+                const baseClusterUrl = "https://premium-cluster-manager.evernode.com";
+                const referralParam = `?ref=${this.referralCode}&host=${this.hostId}`;
+                
+                // Update all premium cluster manager links
+                document.querySelectorAll('.premium-cluster-link').forEach(link => {
+                    link.href = baseClusterUrl + referralParam;
+                });
+
+                // Display referral link for sharing
+                this.displayReferralWidget();
+            }
+
+            displayReferralWidget() {
+                const widget = document.getElementById('commission-widget');
+                if (widget) {
+                    const referralUrl = `https://premium-cluster-manager.evernode.com?ref=${this.referralCode}&host=${this.hostId}`;
+                    
+                    widget.innerHTML = `
+                        <h3 style="color: #00ff88; margin-bottom: 20px;">💰 Earn $10 Per Referral + Future Subscriptions</h3>
+                        <p style="margin-bottom: 20px; opacity: 0.9;">Share your referral link and earn 20% commission on the $49.99 one-time fee, plus recurring commissions on future subscriptions!</p>
+                        
+                        <div class="referral-link-box">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Your Referral Link:</label>
+                            <input type="text" value="${referralUrl}" readonly onclick="this.select()" 
+                                   style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: white; font-family: monospace;">
+                            <button onclick="this.copyReferralLink('${referralUrl}')" class="btn btn-primary" style="margin-top: 10px;">
+                                📋 Copy Referral Link
+                            </button>
+                        </div>
+                        
+                        <div class="commission-stats" id="commission-stats">
+                            <div class="commission-stat">
+                                <div class="commission-amount" id="total-commissions">$0.00</div>
+                                <div style="opacity: 0.8;">Total Earned</div>
+                            </div>
+                            <div class="commission-stat">
+                                <div class="commission-amount" id="referral-count">0</div>
+                                <div style="opacity: 0.8;">One-Time Sales</div>
+                            </div>
+                            <div class="commission-stat">
+                                <div class="commission-amount" id="conversion-rate">0%</div>
+                                <div style="opacity: 0.8;">Conversion Rate</div>
+                            </div>
+                            <div class="commission-stat">
+                                <div class="commission-amount" id="monthly-earnings">$0.00</div>
+                                <div style="opacity: 0.8;">This Month</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(0,255,136,0.1); border-radius: 8px; font-size: 0.9rem;">
+                            💡 <strong>Commission Structure:</strong><br>
+                            • <strong>$10.00</strong> per one-time sale ($49.99 × 20%)<br>
+                            • <strong>Future subscriptions:</strong> 20% recurring commissions once dApp is live<br>
+                            • <strong>No limits</strong> on referrals<br>
+                            • Automatic tracking & payments
+                        </div>
+                        
+                        <div style="margin-top: 15px; padding: 12px; background: rgba(59,130,246,0.1); border-radius: 8px; font-size: 0.85rem; border-left: 3px solid #3b82f6;">
+                            🚀 <strong>Coming Soon:</strong> Monthly subscription features will unlock additional recurring commission opportunities!
+                        </div>
+                    `;
+                }
+            }
+
+            copyReferralLink(url) {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('✅ Referral link copied! Share it to earn 20% commission on premium cluster sales.');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+            }
+
+            async loadCommissionStats() {
+                try {
+                    const response = await fetch(`/api/commission-stats.php?host=${this.hostId}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.updateCommissionDisplay(data.stats);
+                    }
+                } catch (error) {
+                    console.log('Commission stats not available:', error);
+                    // Show demo data for now
+                    this.updateCommissionDisplay({
+                        total_earned: 0,
+                        referral_count: 0,
+                        conversion_rate: 0,
+                        monthly_earnings: 0
+                    });
+                }
+            }
+
+            updateCommissionDisplay(stats) {
+                const elements = {
+                    'total-commissions': `$${stats.total_earned?.toFixed(2) || '0.00'}`,
+                    'referral-count': stats.referral_count || 0,
+                    'conversion-rate': `${stats.conversion_rate || 0}%`,
+                    'monthly-earnings': `$${stats.monthly_earnings?.toFixed(2) || '0.00'}`
+                };
+
+                Object.entries(elements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                });
+            }
+
+            trackReferrals() {
+                document.querySelectorAll('.premium-cluster-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        const source = link.getAttribute('data-commission-source') || 'unknown';
+                        
+                        // Track referral click
+                        fetch('/api/track-referral.php', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                host_id: this.hostId,
+                                referral_code: this.referralCode,
+                                action: 'click',
+                                source: source,
+                                commission_rate: this.commissionRate
+                            })
+                        }).catch(err => console.log('Tracking failed:', err));
+                    });
+                });
+            }
+
+            getHostId() {
+                return window.location.hostname || 'localhost';
+            }
+        }
+
         // Role-based access control
         function detectUserRole() {
             const urlParams = new URLSearchParams(window.location.search);
             const isAdmin = urlParams.get('admin') === 'true' || 
-                           localStorage.getItem('admin_mode') === 'true' ||
-                           checkAdminPassword();
+                           localStorage.getItem('admin_mode') === 'true';
             
             if (isAdmin) {
                 setAdminMode();
@@ -797,11 +1084,13 @@
             }
         }
 
-        function checkAdminPassword() {
-            if (password === 'CHANGE_THIS_PASSWORD') {
-            const savedPassword = sessionStorage.getItem('admin_password');
-            return savedPassword === adminPassword;
-        }
+        // Keyboard shortcut for admin access (Ctrl+Shift+A)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                setAdminMode();
+            }
+        });
 
         function setAdminMode() {
             document.body.classList.add('admin-mode');
@@ -817,11 +1106,16 @@
             
             const roleBanner = document.getElementById('role-banner');
             if (roleBanner) {
-                roleBanner.textContent = '👑 Host Admin Mode - Full Access to Management Features';
+                roleBanner.textContent = '👑 Host Admin Mode - Full Access to Management Features + 20% Commission Program';
                 roleBanner.style.display = 'block';
             }
             
             localStorage.setItem('admin_mode', 'true');
+            
+            // Initialize commission features for hosts
+            if (typeof CommissionManager !== 'undefined') {
+                window.commissionManager = new CommissionManager();
+            }
         }
 
         function setTenantMode() {
@@ -843,6 +1137,22 @@
             
             localStorage.removeItem('admin_mode');
         }
+
+        // Commission calculator
+        document.addEventListener('DOMContentLoaded', function() {
+            const referralCountInput = document.getElementById('referral-count');
+            if (referralCountInput) {
+                referralCountInput.addEventListener('input', function() {
+                    const count = this.value || 0;
+                    const commission = 10.00; // $49.99 × 20% = $10.00 per sale
+                    const monthly = (count * commission).toFixed(2);
+                    const potentialElement = document.getElementById('monthly-potential');
+                    if (potentialElement) {
+                        potentialElement.textContent = `${monthly}/month`;
+                    }
+                });
+            }
+        });
 
         // Real-time stats updates using correct API
         async function updateRealTimeStats() {
