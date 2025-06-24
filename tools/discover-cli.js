@@ -10,12 +10,8 @@ const fs = require('fs');
 class HostDiscovery {
     constructor() {
         this.knownHosts = [
-            {
-                domain: 'h20cryptoxah.click',
-                location: 'AT-Europe',
-                operator: 'h20crypto'
-            }
-        ];
+    // Users will add their own hosts here
+];
     }
 
     async discoverHosts(options = {}) {
