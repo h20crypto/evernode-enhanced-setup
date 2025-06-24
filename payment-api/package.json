@@ -1,39 +1,387 @@
-{
-  "name": "evernode-enhanced-payment-api",
-  "version": "2.0.0",
-  "description": "Enhanced Xumm SDK integration with Commission Payouts and NFT Licensing",
-  "main": "dist/index.js",
-  "scripts": {
-    "dev": "ts-node src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "test": "echo \"No tests yet\" && exit 0"
-  },
-  "dependencies": {
-    "xumm-sdk": "^1.10.0",
-    "xrpl": "^2.15.0",
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1"
-  },
-  "devDependencies": {
-    "typescript": "^5.2.2",
-    "@types/express": "^4.17.17",
-    "@types/cors": "^2.8.13",
-    "@types/node": "^20.10.0",
-    "ts-node": "^10.9.1"
-  },
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "keywords": [
-    "evernode",
-    "xumm", 
-    "xrpl",
-    "xahau",
-    "payment",
-    "nft",
-    "commission",
-    "crypto"
-  ]
+// Enhanced Payment Integration for Landing Page
+class EnhancedPaymentManager {
+    constructor() {
+        this.selectedCurrency = null;
+        this.pricing = {};
+        this.paymentUuid = null;
+        this.websocket = null;
+        this.referralCode = this.getReferralCode();
+        this.hostDomain = this.getHostDomain();
+    }
+
+    // Get referral code from URL or commission system
+    getReferralCode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('ref') || urlParams.get('referral');
+    }
+
+    // Get host domain from URL or current location
+    getHostDomain() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('host') || window.location.hostname;
+    }
+
+    // Load live pricing from enhanced payment API
+    async loadLivePricing() {
+        try {
+            const response = await fetch('/api/payment/crypto-rates');
+            const data = await response.json();
+            
+            if (data.success) {
+                this.pricing = data.rates;
+                this.updatePricingDisplay();
+                return data.rates;
+            } else {
+                throw new Error('Failed to load rates');
+            }
+        } catch (error) {
+            console.error('Failed to load pricing:', error);
+            // Use fallback rates
+            this.pricing = {
+                XRP: 0.5,
+                XAH: 0.172,
+                EVR: 0.172
+            };
+            this.updatePricingDisplay();
+        }
+    }
+
+    // Update pricing display in UI
+    updatePricingDisplay() {
+        const targetUSD = 49.99;
+        const commissionRate = 0.20;
+
+        ['EVR', 'XRP', 'XAH'].forEach(currency => {
+            const rate = this.pricing[currency];
+            if (!rate) return;
+
+            const amount = (targetUSD / rate).toFixed(currency === 'EVR' ? 2 : 1);
+            const commission = (amount * commissionRate).toFixed(currency === 'EVR' ? 2 : 1);
+
+            const priceElement = document.getElementById(`${currency.toLowerCase()}-price`);
+            if (priceElement) {
+                priceElement.innerHTML = `
+                    <strong>${amount} ${currency}</strong>
+                    <small>Host earns: ${commission} ${currency}</small>
+                `;
+            }
+
+            // Update commission calculator if in admin mode
+            if (document.getElementById(`${currency.toLowerCase()}-commission`)) {
+                document.getElementById(`${currency.toLowerCase()}-commission`).textContent = `~${commission} ${currency}`;
+            }
+        });
+
+        // Update referral display if applicable
+        this.updateReferralDisplay();
+    }
+
+    // Update referral display
+    updateReferralDisplay() {
+        if (this.referralCode && this.hostDomain) {
+            const referralInfo = document.getElementById('referral-info');
+            if (referralInfo) {
+                referralInfo.style.display = 'block';
+                document.getElementById('referral-host').textContent = this.hostDomain;
+            }
+        }
+    }
+
+    // Select payment currency
+    selectCurrency(currency) {
+        this.selectedCurrency = currency;
+        
+        // Update UI
+        document.querySelectorAll('.currency-option').forEach(el => {
+            el.classList.remove('selected');
+        });
+        document.querySelector(`[data-currency="${currency}"]`).classList.add('selected');
+        
+        // Show payment interface
+        const rate = this.pricing[currency];
+        const amount = (49.99 / rate).toFixed(currency === 'EVR' ? 2 : 1);
+        
+        document.getElementById('selected-currency').textContent = currency;
+        document.getElementById('final-amount').textContent = `${amount} ${currency}`;
+        document.getElementById('payment-interface').style.display = 'block';
+    }
+
+    // Create payment request
+    async createPayment() {
+        if (!this.selectedCurrency) {
+            alert('Please select a payment currency first');
+            return;
+        }
+
+        try {
+            // Show loading state
+            this.setPaymentStatus('Creating payment request...', 'loading');
+
+            const response = await fetch('/api/payment/create-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    currency: this.selectedCurrency,
+                    priceUsd: 49.99,
+                    referralCode: this.referralCode,
+                    hostDomain: this.hostDomain
+                })
+            });
+
+            const paymentData = await response.json();
+
+            if (paymentData.success) {
+                this.paymentUuid = paymentData.uuid;
+                this.showPaymentInterface(paymentData);
+                this.monitorPayment(paymentData.websocket);
+            } else {
+                throw new Error(paymentData.error || 'Failed to create payment');
+            }
+
+        } catch (error) {
+            console.error('Payment creation error:', error);
+            this.setPaymentStatus(`Error: ${error.message}`, 'error');
+        }
+    }
+
+    // Show payment interface with QR code
+    showPaymentInterface(paymentData) {
+        const paymentInterface = document.getElementById('payment-interface');
+        
+        paymentInterface.innerHTML = `
+            <div class="payment-details">
+                <h4>Pay ${paymentData.amount} ${paymentData.currency}</h4>
+                <div class="usd-equivalent">≈ $${paymentData.priceUsd} USD</div>
+                ${paymentData.referralInfo ? `
+                    <div class="referral-bonus">
+                        ✨ Host (${paymentData.referralInfo.code}) will earn: ${paymentData.referralInfo.commission}
+                    </div>
+                ` : ''}
+            </div>
+            
+            <div class="payment-qr">
+                <img src="${paymentData.qr}" alt="Payment QR Code" style="width: 250px; height: 250px;">
+            </div>
+            
+            <div class="payment-actions">
+                <a href="https://xumm.app/detect/request:${paymentData.uuid}" 
+                   class="btn btn-primary btn-large" target="_blank">
+                    📱 Open Xaman Wallet
+                </a>
+                <button onclick="window.enhancedPayment.checkPaymentStatus()" 
+                        class="btn btn-secondary">
+                    🔄 Check Payment Status
+                </button>
+            </div>
+            
+            <div class="payment-status" id="payment-status">
+                ⏳ Waiting for payment...
+            </div>
+        `;
+    }
+
+    // Monitor payment via websocket
+    monitorPayment(websocketUrl) {
+        if (this.websocket) {
+            this.websocket.close();
+        }
+
+        this.websocket = new WebSocket(websocketUrl);
+        
+        this.websocket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            
+            if (data.signed === true) {
+                this.handlePaymentSuccess(data);
+            } else if (data.expired === true) {
+                this.handlePaymentExpired();
+            }
+        };
+
+        this.websocket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            this.setPaymentStatus('Connection error. Please check payment status manually.', 'warning');
+        };
+    }
+
+    // Handle successful payment
+    async handlePaymentSuccess(data) {
+        this.setPaymentStatus('✅ Payment received! Processing...', 'success');
+        
+        try {
+            // Check payment status for additional details
+            const statusResponse = await fetch(`/api/payment/check-payment/${this.paymentUuid}`);
+            const statusData = await statusResponse.json();
+            
+            if (statusData.success && statusData.paid) {
+                this.setPaymentStatus(`
+                    🎉 Payment Complete!<br>
+                    📄 Transaction: ${statusData.txid}<br>
+                    🎫 NFT License: ${statusData.nftTokenId}<br>
+                    ${statusData.commissionPaid ? '💰 Commission paid to host!' : ''}
+                    <br><br>
+                    <strong>Redirecting to premium features...</strong>
+                `, 'success');
+                
+                // Close websocket
+                if (this.websocket) {
+                    this.websocket.close();
+                }
+                
+                // Redirect to premium access page
+                setTimeout(() => {
+                    window.location.href = '/cluster/premium-access.html?nft=' + statusData.nftTokenId;
+                }, 3000);
+            }
+        } catch (error) {
+            console.error('Error processing payment confirmation:', error);
+            this.setPaymentStatus('Payment received but processing failed. Please contact support.', 'warning');
+        }
+    }
+
+    // Handle payment expiration
+    handlePaymentExpired() {
+        this.setPaymentStatus('⏰ Payment expired. Please create a new payment request.', 'error');
+        
+        // Show create new payment button
+        const statusElement = document.getElementById('payment-status');
+        statusElement.innerHTML += `
+            <br><br>
+            <button onclick="window.enhancedPayment.createPayment()" class="btn btn-primary">
+                🔄 Create New Payment
+            </button>
+        `;
+    }
+
+    // Manually check payment status
+    async checkPaymentStatus() {
+        if (!this.paymentUuid) {
+            alert('No active payment to check');
+            return;
+        }
+
+        try {
+            this.setPaymentStatus('🔄 Checking payment status...', 'loading');
+            
+            const response = await fetch(`/api/payment/check-payment/${this.paymentUuid}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                if (data.paid) {
+                    this.handlePaymentSuccess(data);
+                } else {
+                    this.setPaymentStatus('⏳ Payment not received yet. Please complete payment in Xaman.', 'info');
+                }
+            } else {
+                this.setPaymentStatus('❌ Error checking payment status', 'error');
+            }
+        } catch (error) {
+            console.error('Status check error:', error);
+            this.setPaymentStatus('❌ Failed to check payment status', 'error');
+        }
+    }
+
+    // Set payment status message
+    setPaymentStatus(message, type) {
+        const statusElement = document.getElementById('payment-status');
+        if (statusElement) {
+            statusElement.innerHTML = message;
+            statusElement.className = `payment-status ${type}`;
+        }
+    }
+
+    // Register this host for referrals
+    async registerReferral(hostWallet) {
+        try {
+            const response = await fetch('/api/payment/register-referral', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    hostDomain: window.location.hostname,
+                    hostWallet: hostWallet
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log('Referral registered:', data.referralCode);
+                return data.referralCode;
+            } else {
+                console.error('Referral registration failed:', data.error);
+            }
+        } catch (error) {
+            console.error('Referral registration error:', error);
+        }
+    }
+
+    // Load commission history for host
+    async loadCommissionHistory(hostWallet) {
+        try {
+            const response = await fetch(`/api/payment/commission-history/${hostWallet}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                this.updateCommissionDisplay(data);
+                return data;
+            }
+        } catch (error) {
+            console.error('Failed to load commission history:', error);
+        }
+    }
+
+    // Update commission display in dashboard
+    updateCommissionDisplay(commissionData) {
+        // Update total earnings
+        const totalElement = document.getElementById('total-commissions');
+        if (totalElement) {
+            totalElement.textContent = `${commissionData.totalEarned.toFixed(4)} Total`;
+        }
+
+        // Update commission count
+        const countElement = document.getElementById('referral-count');
+        if (countElement) {
+            countElement.textContent = commissionData.count;
+        }
+
+        // Update recent commissions list
+        const historyElement = document.getElementById('commission-history');
+        if (historyElement && commissionData.commissions.length > 0) {
+            historyElement.innerHTML = commissionData.commissions.slice(0, 5).map(commission => `
+                <div class="commission-item">
+                    <div class="commission-amount">${commission.commissionAmount} ${commission.currency}</div>
+                    <div class="commission-date">${new Date(commission.processed).toLocaleDateString()}</div>
+                </div>
+            `).join('');
+        }
+    }
+}
+
+// Initialize payment manager
+window.enhancedPayment = new EnhancedPaymentManager();
+
+// Auto-load pricing when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    window.enhancedPayment.loadLivePricing();
+    
+    // Auto-load commission history if in admin mode and wallet is available
+    if (document.body.classList.contains('admin-mode')) {
+        const hostWallet = localStorage.getItem('host_wallet');
+        if (hostWallet) {
+            window.enhancedPayment.loadCommissionHistory(hostWallet);
+        }
+    }
+});
+
+// Global functions for HTML onclick handlers
+function selectCurrency(currency) {
+    window.enhancedPayment.selectCurrency(currency);
+}
+
+function initiateXamanPayment() {
+    window.enhancedPayment.createPayment();
 }
