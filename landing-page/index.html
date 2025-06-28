@@ -1011,9 +1011,9 @@
             }
 
             async loadCommissionStats() {
-                try {
-                    const response = await fetch(`/api/commission-stats.php?host=${this.hostId}`);
-                    const data = await response.json();
+    try {
+        const response = await fetch(`https://api.evrdirect.info/api/commission-stats/${this.hostId}`);
+        const data = await response.json();
                     
                     if (data.success) {
                         this.updateCommissionDisplay(data.stats);
