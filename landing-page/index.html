@@ -938,15 +938,14 @@
                 return btoa(hostDomain).substr(0, 8).toUpperCase();
             }
 
-            setupReferralLinks() {
-                const baseClusterUrl = "https://premium-cluster-manager.evernode.com";
-                const referralParam = `?ref=${this.referralCode}&host=${this.hostId}`;
-                
-                // Update all premium cluster manager links
-                document.querySelectorAll('.premium-cluster-link').forEach(link => {
-                    link.href = baseClusterUrl + referralParam;
-                });
-
+           setupReferralLinks() {
+    const baseClusterUrl = "https://payments.evrdirect.info";
+    const referralParam = `?ref=${this.referralCode}&host=${this.hostId}&wallet=HOST_WALLET_PLACEHOLDER`;
+    
+    // Update all premium cluster manager links
+    document.querySelectorAll('.premium-cluster-link').forEach(link => {
+        link.href = baseClusterUrl + referralParam;
+    });
                 // Display referral link for sharing
                 this.displayReferralWidget();
             }
