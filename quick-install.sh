@@ -34,6 +34,7 @@ OPERATOR_NAME=""
 OPERATOR_EMAIL=""
 OPERATOR_COUNTRY=""
 SERVER_SPECS=""
+ADMIN_PASSWORD=""
 
 # =============================================================================
 # 🎨 Display Functions
@@ -171,6 +172,31 @@ collect_host_info() {
     echo -e "${YELLOW}Example: 4 CPU, 8GB RAM, 100GB SSD${NC}"
     read -p "Specs: " SERVER_SPECS
     
+    # Admin password for host management
+    echo ""
+    echo -e "${WHITE}🔐 Set Admin Password for Host Management${NC}"
+    echo -e "${YELLOW}This password will allow you to access admin features on your host${NC}"
+    while [[ -z "$ADMIN_PASSWORD" ]]; do
+        echo -e "${CYAN}Enter admin password (minimum 8 characters):${NC}"
+        read -s -p "Password: " ADMIN_PASSWORD
+        echo
+        
+        if [[ ${#ADMIN_PASSWORD} -lt 8 ]]; then
+            print_warning "Password must be at least 8 characters long"
+            ADMIN_PASSWORD=""
+            continue
+        fi
+        
+        echo -e "${CYAN}Confirm admin password:${NC}"
+        read -s -p "Confirm: " ADMIN_PASSWORD_CONFIRM
+        echo
+        
+        if [[ "$ADMIN_PASSWORD" != "$ADMIN_PASSWORD_CONFIRM" ]]; then
+            print_warning "Passwords do not match"
+            ADMIN_PASSWORD=""
+        fi
+    done
+    
     # Confirmation
     echo ""
     echo -e "${WHITE}Please confirm your information:${NC}"
@@ -180,7 +206,21 @@ collect_host_info() {
     echo -e "${GREEN}Email:${NC} $OPERATOR_EMAIL"
     echo -e "${GREEN}Country:${NC} $OPERATOR_COUNTRY"
     echo -e "${GREEN}Specs:${NC} $SERVER_SPECS"
+    echo -e "${GREEN}Admin Password:${NC} ••••••••"
     echo ""
+    
+    # Important password reminder
+    echo -e "${YELLOW}⚠️  IMPORTANT: Write down your admin password!${NC}"
+    echo -e "${WHITE}Admin Password: ${CYAN}$ADMIN_PASSWORD${NC}"
+    echo -e "${YELLOW}You'll need this to access admin features at: https://$HOST_DOMAIN/?admin=true${NC}"
+    echo ""
+    
+    read -p "Have you written down your admin password? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        print_info "Please write down your admin password and restart"
+        exit 0
+    fi
     
     read -p "Is this information correct? (y/N): " -n 1 -r
     echo
@@ -301,6 +341,7 @@ return [
     'operator_email' => '$OPERATOR_EMAIL',
     'operator_country' => '$OPERATOR_COUNTRY',
     'server_specs' => '$SERVER_SPECS',
+    'admin_password' => '$ADMIN_PASSWORD',
     'referral_code' => '$REFERRAL_CODE',
     'payment_url' => '$PAYMENT_URL',
     'api_url' => '$CENTRAL_API',
@@ -313,6 +354,9 @@ EOF
     
     # Update files with host-specific information
     update_host_files
+    
+    # Configure admin password in JavaScript
+    configure_admin_access
     
     print_success "Commission system configured"
 }
@@ -334,6 +378,46 @@ update_host_files() {
     done
     
     print_success "Host files personalized"
+}
+
+configure_admin_access() {
+    print_step "Configuring admin access with custom password..."
+    
+    # Update JavaScript state manager with custom password
+    if [[ -f "$INSTALL_DIR/assets/js/unified-state-manager.js" ]]; then
+        # Replace default admin password with custom one
+        sed -i "s/adminPassword: 'enhanced2024'/adminPassword: '$ADMIN_PASSWORD'/g" "$INSTALL_DIR/assets/js/unified-state-manager.js"
+        print_success "JavaScript admin password updated"
+    fi
+    
+    # Create admin access documentation
+    cat > "$CONFIG_DIR/admin-access.txt" << EOF
+===========================================
+🔐 Enhanced Evernode Host - Admin Access
+===========================================
+
+Domain: $HOST_DOMAIN
+Admin Password: $ADMIN_PASSWORD
+
+Access Methods:
+1. URL Parameter: https://$HOST_DOMAIN/?admin=true
+2. Keyboard Shortcut: Ctrl+Shift+A on any page
+3. Hidden Admin Link: Bottom right of landing page
+
+Admin Features:
+✅ System monitoring and control
+✅ Real earnings dashboard
+✅ Container management
+✅ Host configuration
+✅ Performance analytics
+
+IMPORTANT: Keep this password secure!
+Generated: $(date)
+===========================================
+EOF
+
+    chmod 600 "$CONFIG_DIR/admin-access.txt"
+    print_success "Admin access configured"
 }
 
 # =============================================================================
@@ -545,6 +629,12 @@ Host Information:
 - Country: $OPERATOR_COUNTRY
 - Referral Code: $REFERRAL_CODE
 
+Admin Access:
+🔐 Admin Password: $ADMIN_PASSWORD
+🌐 Admin URL: https://$HOST_DOMAIN/?admin=true
+⌨️  Keyboard Shortcut: Ctrl+Shift+A
+📝 Admin Guide: $CONFIG_DIR/admin-access.txt
+
 Commission Tracking:
 ✅ Commission Rate: 20% per sale
 ✅ Payment URL: $PAYMENT_URL?ref=$REFERRAL_CODE&host=$HOST_DOMAIN&wallet=$HOST_WALLET
@@ -629,8 +719,14 @@ main() {
     echo -e "${CYAN}Visit: https://$HOST_DOMAIN${NC}"
     echo -e "${YELLOW}Earnings: https://$HOST_DOMAIN/my-earnings.html${NC}"
     echo ""
+    echo -e "${WHITE}🔐 ADMIN ACCESS:${NC}"
+    echo -e "${CYAN}URL: https://$HOST_DOMAIN/?admin=true${NC}"
+    echo -e "${CYAN}Password: ${WHITE}$ADMIN_PASSWORD${NC}"
+    echo -e "${YELLOW}⌨️  Quick Access: Press Ctrl+Shift+A on any page${NC}"
+    echo ""
     echo -e "${GREEN}💰 You earn $10 for every $49.99 premium sale!${NC}"
     echo -e "${BLUE}📋 Setup report saved to: /root/enhanced-evernode-setup-report.txt${NC}"
+    echo -e "${BLUE}🔐 Admin details saved to: $CONFIG_DIR/admin-access.txt${NC}"
     echo ""
     echo -e "${WHITE}Share your referral link:${NC}"
     echo -e "${CYAN}$PAYMENT_URL?ref=$REFERRAL_CODE&host=$HOST_DOMAIN&wallet=$HOST_WALLET${NC}"
