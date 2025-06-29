@@ -186,6 +186,12 @@ Your Enhanced host includes a **real-time earnings dashboard** showing:
 
 ### Sample Earnings Report:
 
+💰 Total Earned: $847.50
+📅 This Month: $127.50
+⏳ Pending: $40.00 (holds until Jan 15)
+🏆 Network Rank: #23 of 156 hosts
+📈 Conversion Rate: 8.3%
+
 ## 🛠️ Customization
 
 ### ✅ Admin Password (Set During Installation)
