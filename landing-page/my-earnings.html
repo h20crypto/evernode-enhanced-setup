@@ -415,57 +415,58 @@
                 throw new Error('API error');
             }
 
-            updateEarnings(data) {
-                const earnings = data.earnings || data;
-                
-                // Update main metrics
-                document.getElementById('total-revenue').textContent = earnings.total_revenue || '245.67 EVR';
-                document.getElementById('monthly-revenue').textContent = earnings.monthly_revenue || '68.5 EVR';
-                document.getElementById('daily-revenue').textContent = earnings.daily_revenue || '2.8 EVR';
-                document.getElementById('active-tenants').textContent = earnings.active_tenants || '3';
-                document.getElementById('avg-deployment').textContent = earnings.avg_deployment || '22.8 EVR';
-                document.getElementById('commission-earned').textContent = earnings.commission_earned || '15.2 EVR';
+            updateEarnings(earnings) {
+    // Only use real data from API - no fake numbers
+    document.getElementById('total-revenue').textContent = `$${(earnings.total_revenue || 0).toFixed(2)}`;
+    document.getElementById('monthly-revenue').textContent = `$${(earnings.monthly_revenue || 0).toFixed(2)}`;
+    document.getElementById('daily-revenue').textContent = `$${(earnings.daily_revenue || 0).toFixed(2)}`;
+    document.getElementById('active-tenants').textContent = earnings.active_tenants || '0';
+    document.getElementById('avg-deployment').textContent = `$${(earnings.avg_deployment || 0).toFixed(2)}`;
+    document.getElementById('commission-earned').textContent = `$${(earnings.commission_earned || 0).toFixed(2)}`;
 
-                // Update breakdown
-                document.getElementById('hosting-fees').textContent = earnings.hosting_fees || '180.5 EVR';
-                document.getElementById('deployment-fees').textContent = earnings.deployment_fees || '45.2 EVR';
-                document.getElementById('premium-fees').textContent = earnings.premium_fees || '12.0 EVR';
-                document.getElementById('referral-commissions').textContent = earnings.referral_commissions || '15.2 EVR';
-                document.getElementById('performance-bonuses').textContent = earnings.performance_bonuses || '8.0 EVR';
-                document.getElementById('support-fees').textContent = earnings.support_fees || '5.1 EVR';
+    // Revenue breakdown - real data only
+    document.getElementById('hosting-fees').textContent = `$${(earnings.hosting_fees || 0).toFixed(2)}`;
+    document.getElementById('deployment-fees').textContent = `$${(earnings.deployment_fees || 0).toFixed(2)}`;
+    document.getElementById('premium-fees').textContent = `$${(earnings.premium_fees || 0).toFixed(2)}`;
+    document.getElementById('referral-commissions').textContent = `$${(earnings.referral_commissions || 0).toFixed(2)}`;
+    document.getElementById('performance-bonuses').textContent = `$${(earnings.performance_bonuses || 0).toFixed(2)}`;
+    document.getElementById('support-fees').textContent = `$${(earnings.support_fees || 0).toFixed(2)}`;
 
-                // Update tenant amounts
-                document.getElementById('tenant-1-amount').textContent = '35.0 EVR';
-                document.getElementById('tenant-2-amount').textContent = '22.5 EVR';
-                document.getElementById('tenant-3-amount').textContent = '18.0 EVR';
+    // Update tenant amounts with real data
+    if (earnings.tenants && earnings.tenants.length > 0) {
+        earnings.tenants.forEach((tenant, index) => {
+            const amountElement = document.getElementById(`tenant-${index + 1}-amount`);
+            if (amountElement) {
+                amountElement.textContent = `$${(tenant.monthly_revenue || 0).toFixed(2)}`;
             }
+        });
+    }
+}
 
-            loadEarningsFallback() {
-                // Healthy earnings fallback data
-                document.getElementById('total-revenue').textContent = '245.67 EVR';
-                document.getElementById('monthly-revenue').textContent = '68.5 EVR';
-                document.getElementById('daily-revenue').textContent = '2.8 EVR';
-                document.getElementById('active-tenants').textContent = '3';
-                document.getElementById('avg-deployment').textContent = '22.8 EVR';
-                document.getElementById('commission-earned').textContent = '15.2 EVR';
+// ADD new function to show when no earnings available:
+showNoEarningsState() {
+    document.getElementById('earnings-status').textContent = '📡 Connecting to earnings server...';
+    document.getElementById('earnings-status').style.background = 'rgba(255, 193, 7, 0.2)';
+    document.getElementById('earnings-status').style.color = '#ffd700';
+    
+    // Show $0 for all metrics when no real data
+    ['total-revenue', 'monthly-revenue', 'daily-revenue', 'avg-deployment', 'commission-earned',
+     'hosting-fees', 'deployment-fees', 'premium-fees', 'referral-commissions', 
+     'performance-bonuses', 'support-fees'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = '$0.00';
+    });
+    
+    document.getElementById('active-tenants').textContent = '0';
+    
+    // Clear tenant amounts
+    ['tenant-1-amount', 'tenant-2-amount', 'tenant-3-amount'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = '$0.00';
+    });
+}
 
-                document.getElementById('hosting-fees').textContent = '180.5 EVR';
-                document.getElementById('deployment-fees').textContent = '45.2 EVR';
-                document.getElementById('premium-fees').textContent = '12.0 EVR';
-                document.getElementById('referral-commissions').textContent = '15.2 EVR';
-                document.getElementById('performance-bonuses').textContent = '8.0 EVR';
-                document.getElementById('support-fees').textContent = '5.1 EVR';
-
-                document.getElementById('tenant-1-amount').textContent = '35.0 EVR';
-                document.getElementById('tenant-2-amount').textContent = '22.5 EVR';
-                document.getElementById('tenant-3-amount').textContent = '18.0 EVR';
-            }
-
-            updateLastUpdated() {
-                const now = new Date().toLocaleString();
-                document.getElementById('last-updated').textContent = `Last updated: ${now}`;
-            }
-        }
+           
 
         // Global refresh function
         window.refreshEarningsData = function() {
