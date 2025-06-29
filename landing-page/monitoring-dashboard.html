@@ -290,21 +290,22 @@
                 }, 120000);
             }
 
-            async loadAllMetrics() {
-                try {
-                    const [systemData, instanceData] = await Promise.all([
-                        this.fetchWithTimeout('/api/router.php?endpoint=system'),
-                        this.fetchWithTimeout('/api/router.php?endpoint=instances')
-                    ]);
+            aasync loadAllMetrics() {
+    try {
+        // Use real system APIs
+        const [systemData, instanceData] = await Promise.all([
+            this.fetchWithTimeout('/api/health-check.php'),
+            this.fetchWithTimeout('/api/instance-count.php')
+        ]);
 
-                    this.updateMetrics(systemData, instanceData);
-                    this.updateLastUpdated();
-                    
-                } catch (error) {
-                    console.log('Using healthy fallback data');
-                    this.loadHealthyFallback();
-                }
-            }
+        this.updateMetrics(systemData, instanceData);
+        this.updateLastUpdated();
+        
+    } catch (error) {
+        console.log('📡 System APIs unavailable - showing offline state');
+        this.showOfflineState();
+    }
+}
 
             async fetchWithTimeout(url, timeout = 5000) {
                 const response = await Promise.race([
