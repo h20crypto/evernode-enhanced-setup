@@ -940,8 +940,8 @@
             }
 
            setupReferralLinks() {
-    const baseClusterUrl = "https://payments.evrdirect.info";
     const referralParam = `?ref=${this.referralCode}&host=${this.hostId}&wallet=HOST_WALLET_PLACEHOLDER`;
+    const fullReferralUrl = this.paymentServer + referralParam;
     
     // Update all premium cluster manager links
     document.querySelectorAll('.premium-cluster-link').forEach(link => {
