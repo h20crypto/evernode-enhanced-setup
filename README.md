@@ -208,9 +208,9 @@ The installer automatically prompts for a custom admin password. No manual confi
 sudo nano /var/www/html/assets/js/unified-state-manager.js
 # Change: adminPassword: 'YourCurrentPassword'
 
-# Edit configuration  
+# Update host information
 sudo nano /var/www/html/config/unified-config.php
-# Update admin_password value
+# Set your host name, EVR address, contact info
 
 ## 🧪 Testing Your Installation
 
@@ -235,9 +235,6 @@ curl -s http://localhost/ | grep -q "payments.evrdirect.info" && echo "✅ Paywa
 # Test admin configuration
 php -r "include('/etc/enhanced-evernode/host-config.php'); echo 'Admin password configured: ' . (strlen(\$config['admin_password']) > 0 ? 'YES' : 'NO') . \"\n\";"
 
-## 📞 **Updated Support & Documentation:**
-
-```markdown
 ## 📞 Support & Documentation
 
 **Essential Resources:**
@@ -263,12 +260,7 @@ tail -f /var/log/enhanced-setup.log
 
 # Test commission API connection
 curl -s https://api.evrdirect.info/api/host-earnings/your-domain.com
-🏆 Success Stories
 
-"Enhanced Evernode v3.0 increased my tenant bookings by 300%. The professional interface builds trust instantly!" - Host Owner
-
-
-"Finally, an Evernode host that actually looks professional. Easy to navigate and deploy applications." - Tenant Developer
 
 🚀 Upgrade from Previous Versions
 bash# Backup current installation
@@ -364,24 +356,6 @@ Commission System:
 - API URL: api.evrdirect.info
 - Commission Rate: 20% ($10 per sale)
 - Payout: Weekly XRP after 14-day hold
-
-### 💰 Verify Commission System
-
-**Test your commission integration:**
-
-```bash
-# 1. Check if premium buttons redirect correctly
-curl -s http://localhost/ | grep -o 'payments\.evrdirect\.info[^"]*' | head -1
-
-# 2. Verify your referral code is configured
-grep -o 'ref=[^&]*' /var/www/html/index.html | head -1
-
-# 3. Test earnings API endpoint (will show $0 until first sale)
-curl -s "https://api.evrdirect.info/api/host-earnings/$(hostname)"
-
-# 4. Check admin access works
-echo "Visit: https://$(hostname)/?admin=true"
-echo "Password in: /etc/enhanced-evernode/admin-access.txt"
 
 Installation: curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/install/enhanced-host-setup.sh | sudo bash"
 
