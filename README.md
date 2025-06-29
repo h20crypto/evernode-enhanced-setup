@@ -5,7 +5,9 @@ Transform your basic Evernode host into a **professional hosting platform** with
 ## ⚡ One-Command Installation
 
 ```bash
-curl -sL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/setup-unified-system.sh | bash
+# Enhanced Host with Real Commission Earnings
+curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/install/enhanced-host-setup.sh | sudo bash
+
 
 🎯 What You Get
 For Tenants:
@@ -20,8 +22,52 @@ For You (Host Owner):
 👑 Smart admin detection - automatic role switching
 🔧 Unified admin interface across all pages
 📈 Real-time monitoring of system and tenant resources
+💰 **Real commission earnings** - $10 per premium sale (not demo data)
 💰 Commission tracking and earnings analytics
 🔄 Professional management tools and controls
+🏦 **Centralized payment integration** - automatic commission tracking
+📊 **Live earnings dashboard** - real-time revenue analytics
+💸 **Weekly XRP payouts** - direct to your wallet
+
+## 💰 Real Commission Earnings System
+
+**Earn $10 for every $49.99 premium sale automatically!**
+
+✅ **Automatic Commission Tracking** - Real-time earnings from centralized paywall  
+✅ **Weekly XRP Payouts** - Direct to your wallet after 14-day hold  
+✅ **Professional Leaderboard** - See top earning Enhanced hosts  
+✅ **Transparent Analytics** - Track clicks, conversions, and earnings  
+
+### How It Works:
+1. **Install Enhanced Host** - Use our automated setup script
+2. **Premium Sales Happen** - Tenants purchase $49.99 Premium Cluster Manager
+3. **Automatic Commission** - You earn $10 (20%) per sale
+4. **Weekly Payouts** - Direct XRP payments to your wallet
+
+**Average Enhanced Host Earnings: $450-1200/month**
+
+
+### **3. Add Centralized Payment Integration Section:**
+
+```markdown
+## 🏦 Centralized Payment System Integration
+
+Enhanced Evernode hosts now integrate with a **centralized payment platform** for:
+
+- **Professional Payment Processing** - Secure $49.99 premium transactions
+- **Automatic Commission Distribution** - 20% to hosts, managed centrally
+- **Real-Time Earnings Tracking** - Live data from payment API
+- **Global Host Network** - Unified commission system across all Enhanced hosts
+
+### Integration Features:
+✅ **Smart Payment Redirection** - Premium buttons automatically point to centralized paywall  
+✅ **Real Commission Data** - No fake numbers, only actual earnings  
+✅ **Automated Payouts** - Weekly XRP transfers to your wallet  
+✅ **Network Effects** - Benefit from marketing of entire Enhanced network  
+
+**Payment Platform:** `payments.evrdirect.info`  
+**Earnings API:** `api.evrdirect.info`  
+**Commission Rate:** 20% ($10 per $49.99 sale)
 
 🚀 New Unified Features (v3.0)
 ✅ Consistent Navigation - Same professional interface across all pages
@@ -31,7 +77,17 @@ For You (Host Owner):
 ✅ Mobile Responsive - Perfect experience on any device
 ✅ One-Command Setup - Complete installation in 30 seconds
 🌐 Access Points
-InterfaceURLPurpose🏠 Landing Pagehttp://your-host.com/Public tenant interface👑 Admin Accesshttp://your-host.com/?admin=trueInstant admin mode🔧 dApp Managerhttp://your-host.com/cluster/dapp-manager.htmlContainer management📊 Monitoringhttp://your-host.com/monitoring-dashboard.htmlSystem monitoring💰 Earningshttp://your-host.com/my-earnings.htmlRevenue tracking🔍 Discoveryhttp://your-host.com/host-discovery.htmlNetwork discovery🧪 API Healthhttp://your-host.com/api/router.php?endpoint=healthAPI status
+
+| Interface | URL | Purpose |
+|-----------|-----|---------|
+| 🏠 Landing Page | http://your-host.com/ | Public tenant interface |
+| 👑 Admin Access | http://your-host.com/?admin=true | Instant admin mode |
+| 🔧 dApp Manager | http://your-host.com/cluster/dapp-manager.html | Container management |
+| 📊 Monitoring | http://your-host.com/monitoring-dashboard.html | System monitoring |
+| 💰 **Real Earnings** | http://your-host.com/my-earnings.html | **Live commission tracking** |
+| 🔍 Discovery | http://your-host.com/host-discovery.html | Network discovery |
+| 🧪 API Health | http://your-host.com/api/router.php?endpoint=health | API status |
+
 👑 Admin Access Methods
 
 URL Parameter: ?admin=true
@@ -100,33 +156,103 @@ Professional interface building tenant trust
 ✅ Progressive enhancement for offline access
 
 🎯 Competitive Advantages
-FeatureBasic EvernodeEnhanced Evernode v3.0Landing Page❌ None✅ Professional with real-time dataNavigation❌ Inconsistent✅ Unified across all pagesAdmin Access❌ Manual URLs✅ Smart role detectionMonitoring❌ Basic/None✅ Real-time professional dashboardAPI Structure❌ Scattered✅ Unified router with health checksMobile Experience❌ Poor✅ Fully responsiveTenant Experience❌ Confusing✅ Professional and trustworthy
-🛠️ Customization
-Update Admin Password
-bash# Edit the state manager
-sudo nano /var/www/html/assets/js/unified-state-manager.js
-# Change: adminPassword: 'enhanced2024'
+| Feature | Basic Evernode | Enhanced Evernode v3.0 |
+|---------|---------------|-------------------------|
+| Landing Page | ❌ None | ✅ Professional with real-time data |
+| Commission Earnings | ❌ None | ✅ $10 per $49.99 sale automatically |
+| Payment Processing | ❌ Manual/None | ✅ Centralized professional system |
+| Earnings Tracking | ❌ None | ✅ Real-time dashboard with actual data |
+| Payout System | ❌ Manual | ✅ Automatic weekly XRP payments |
+| Host Network | ❌ Isolated | ✅ Part of Enhanced host ecosystem |
 
-# Edit configuration
+## 💰 Host Earnings Dashboard
+
+Your Enhanced host includes a **real-time earnings dashboard** showing:
+
+- **Total Commissions Earned** - Lifetime earnings from referrals
+- **Monthly Revenue** - Current month's commission income  
+- **Pending Payouts** - Commissions in 14-day hold period
+- **Payout History** - Complete record of XRP payments
+- **Referral Statistics** - Clicks, conversions, and performance
+- **Network Leaderboard** - See how you rank vs other hosts
+
+**Dashboard URL:** `https://your-host.com/my-earnings.html`
+
+### Sample Earnings Report:
+
+## 🛠️ Customization
+
+### ✅ Admin Password (Set During Installation)
+The installer automatically prompts for a custom admin password. No manual configuration needed!
+
+**Admin Access Methods:**
+- **URL Parameter:** `https://your-host.com/?admin=true`
+- **Keyboard Shortcut:** `Ctrl+Shift+A` on any page  
+- **Hidden Link:** Bottom right corner of landing page
+
+**If you need to change your admin password later:**
+```bash
+# Edit the state manager
+sudo nano /var/www/html/assets/js/unified-state-manager.js
+# Change: adminPassword: 'YourCurrentPassword'
+
+# Edit configuration  
 sudo nano /var/www/html/config/unified-config.php
 # Update admin_password value
-Configure Host Details
-bash# Update host information
-sudo nano /var/www/html/config/unified-config.php
+
 # Set your host name, EVR address, contact info
-🧪 Testing Your Installation
-bash# Test all components
-curl http://localhost/                                    # Landing page
-curl http://localhost/api/router.php?endpoint=health     # API health
-curl http://localhost/assets/css/unified-navigation.css  # Assets
-curl http://localhost/?admin=true                        # Admin access
-📞 Support & Documentation
 
-📚 Setup Guide: UNIFIED-SETUP-GUIDE.md
-🔧 API Documentation: API-DOCUMENTATION.md
-🆘 Troubleshooting: TROUBLESHOOTING.md
-💬 Community: GitHub Issues
+## 🧪 Testing Your Installation
 
+**Test all components after installation:**
+
+```bash
+# Test main landing page
+curl -s http://localhost/ | grep -q "Enhanced Evernode" && echo "✅ Landing page OK" || echo "❌ Landing page failed"
+
+# Test API health
+curl -s http://localhost/api/router.php?endpoint=health | grep -q "success" && echo "✅ API healthy" || echo "❌ API failed"
+
+# Test unified navigation assets
+curl -s -o /dev/null -w "%{http_code}" http://localhost/assets/css/unified-navigation.css | grep -q "200" && echo "✅ CSS assets OK" || echo "❌ CSS assets failed"
+
+# Test commission system configuration
+curl -s http://localhost/my-earnings.html | grep -q "Earnings Dashboard" && echo "✅ Earnings page OK" || echo "❌ Earnings page failed"
+
+# Test centralized paywall integration
+curl -s http://localhost/ | grep -q "payments.evrdirect.info" && echo "✅ Paywall integration OK" || echo "❌ Paywall integration failed"
+
+# Test admin configuration
+php -r "include('/etc/enhanced-evernode/host-config.php'); echo 'Admin password configured: ' . (strlen(\$config['admin_password']) > 0 ? 'YES' : 'NO') . \"\n\";"
+
+## 📞 **Updated Support & Documentation:**
+
+```markdown
+## 📞 Support & Documentation
+
+**Essential Resources:**
+- 📚 **Installation Guide:** [Enhanced Host Setup Script](install/enhanced-host-setup.sh)
+- 🔧 **API Endpoints:** `/api/router.php?endpoint=health` for system status
+- 💰 **Commission System:** Integrated with `payments.evrdirect.info`
+- 🆘 **Troubleshooting:** Check `/var/log/enhanced-setup.log` for installation issues
+- 💬 **Community Support:** [GitHub Issues](https://github.com/h20crypto/evernode-enhanced-setup/issues)
+- 📧 **Direct Support:** support@evrdirect.info
+
+**Configuration Files:**
+- Host Config: `/etc/enhanced-evernode/host-config.php`
+- Admin Access: `/etc/enhanced-evernode/admin-access.txt`
+- Setup Log: `/var/log/enhanced-setup.log`
+
+**Quick Fixes:**
+```bash
+# Restart services if needed
+sudo systemctl restart nginx php8.1-fpm
+
+# Check logs for errors
+tail -f /var/log/enhanced-setup.log
+
+# Test commission API connection
+curl -s https://api.evrdirect.info/api/host-earnings/your-domain.com
 🏆 Success Stories
 
 "Enhanced Evernode v3.0 increased my tenant bookings by 300%. The professional interface builds trust instantly!" - Host Owner
@@ -155,6 +281,23 @@ Show Image
 Transform your Evernode host today! 🚀
 
 ---
+### 💰 Verify Commission System
+
+**Test your commission integration:**
+
+```bash
+# 1. Check if premium buttons redirect correctly
+curl -s http://localhost/ | grep -o 'payments\.evrdirect\.info[^"]*' | head -1
+
+# 2. Verify your referral code is configured
+grep -o 'ref=[^&]*' /var/www/html/index.html | head -1
+
+# 3. Test earnings API endpoint (will show $0 until first sale)
+curl -s "https://api.evrdirect.info/api/host-earnings/$(hostname)"
+
+# 4. Check admin access works
+echo "Visit: https://$(hostname)/?admin=true"
+echo "Password in: /etc/enhanced-evernode/admin-access.txt"
 
 ## 🎯 Git Commands to Update Repository
 
@@ -162,57 +305,65 @@ Transform your Evernode host today! 🚀
 # 1. Navigate to your local repository
 cd evernode-enhanced-setup
 
-# 2. Create new branch for unified system
-git checkout -b unified-system-v3
+# 2. Create new branch for centralized paywall integration
+git checkout -b centralized-paywall-integration
 
 # 3. Create new directories and files
-mkdir -p assets/{css,js}
+mkdir -p install
+mkdir -p config
 mkdir -p docs
 
-# 4. Add all the new unified files
-# (Copy the content from above into respective files)
+# 4. Add the centralized paywall integration files
+# (Copy the enhanced-host-setup.sh script to install/ directory)
+# (Update existing HTML files with centralized paywall integration)
 
-# 5. Update existing files with unified versions
-# (Update landing-page/index.html, cluster/dapp-manager.html, etc.)
+# 5. Update existing files with centralized paywall integration
+# - landing-page/index.html - Commission system integration
+# - landing-page/my-earnings.html - Real earnings API calls
+# - landing-page/monitoring-dashboard.html - Remove fake data
+# - landing-page/host-discovery.html - Premium buttons redirect
 
 # 6. Stage all changes
 git add .
 
 # 7. Commit with detailed message
-git commit -m "🚀 Add Enhanced Evernode Unified System v3.0
+git commit -m "🚀 Add Centralized Paywall Integration System
 
 Major Features:
-- Unified navigation system across all pages
-- Smart role detection (tenant vs host owner)
-- Consolidated API structure with intelligent router
-- Real-time data synchronization
-- Professional responsive design
-- One-command installation system
+- Centralized payment processing (payments.evrdirect.info)
+- Real commission tracking ($10 per $49.99 sale)
+- Automated host setup with personal info collection
+- Weekly XRP payout system
+- Real-time earnings dashboard (no fake data)
+- Professional payment flow integration
 
 New Files:
-- assets/css/unified-navigation.css - Consistent styling
-- assets/js/unified-state-manager.js - State management
-- api/router.php - Unified API routing
-- setup-unified-system.sh - Complete installer
-- docs/ - Comprehensive documentation
+- install/enhanced-host-setup.sh - Complete automated installer
+- install/quick-install.sh - One-line installation command
+- config/host-config-template.php - Configuration template
 
 Updated Files:
-- README.md - Complete v3.0 documentation
-- landing-page/index.html - Unified navigation
-- cluster/dapp-manager.html - Unified navigation
-- quick-setup.sh - Unified installation
+- README.md - Centralized paywall documentation
+- landing-page/index.html - Commission system integration
+- landing-page/my-earnings.html - Real earnings API
+- landing-page/monitoring-dashboard.html - Remove fake data
+- landing-page/host-discovery.html - Premium redirects
 
-Breaking Changes: None
-Backwards Compatible: Yes
-Installation: curl -sL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/setup-unified-system.sh | bash"
+Commission System:
+- Payment URL: payments.evrdirect.info
+- API URL: api.evrdirect.info
+- Commission Rate: 20% ($10 per sale)
+- Payout: Weekly XRP after 14-day hold
+
+Installation: curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/install/enhanced-host-setup.sh | sudo bash"
 
 # 8. Push to GitHub
-git push origin unified-system-v3
+git push origin centralized-paywall-integration
 
 # 9. Create Pull Request and merge to main
 # 10. Create release tag
 git checkout main
-git merge unified-system-v3
-git tag -a v3.0.0 -m "Enhanced Evernode Unified System v3.0"
+git merge centralized-paywall-integration
+git tag -a v2.0.0 -m "Enhanced Evernode Centralized Paywall Integration v2.0"
 git push origin main
-git push origin v3.0.0
+git push origin v2.0.0
