@@ -920,12 +920,13 @@
     <script>
         // Commission Management Class
         class CommissionManager {
-            constructor() {
-                this.hostId = this.getHostId();
-                this.referralCode = this.generateReferralCode();
-                this.commissionRate = 0.20; // 20% commission rate
-                this.init();
-            }
+    constructor() {
+        this.hostId = window.location.hostname;
+        this.referralCode = this.generateReferralCode();
+        this.paymentServer = 'https://payments.evrdirect.info';
+        this.apiServer = 'https://api.evrdirect.info';
+        this.init();
+    }
 
             init() {
                 this.loadCommissionStats();
