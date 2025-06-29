@@ -381,19 +381,25 @@
                 }, 300000);
             }
 
-            async loadEarningsData() {
-                try {
-                    // Try to load real earnings data from API
-                    const response = await this.fetchWithTimeout('/api/router.php?endpoint=earnings');
-                    this.updateEarnings(response);
-                    
-                } catch (error) {
-                    console.log('Using healthy earnings fallback data');
-                    this.loadEarningsFallback();
-                }
-                
-                this.updateLastUpdated();
-            }
+           async loadEarningsData() {
+    try {
+        // Load REAL earnings from centralized server
+        const response = await this.fetchWithTimeout(`https://api.evrdirect.info/api/host-earnings/${window.location.hostname}`);
+        
+        if (response.success) {
+            this.updateEarnings(response.earnings);
+            document.getElementById('earnings-status').textContent = '✅ Real Earnings Data Loaded';
+        } else {
+            throw new Error('No earnings data');
+        }
+        
+    } catch (error) {
+        console.log('📡 Centralized earnings API unavailable');
+        this.showNoEarningsState();
+    }
+    
+    this.updateLastUpdated();
+}
 
             async fetchWithTimeout(url, timeout = 5000) {
                 const response = await Promise.race([
