@@ -55,7 +55,7 @@ For You (Host Owner):
 
 ### **3. Add Centralized Payment Integration Section:**
 
-```markdown
+
 ## 🏦 Centralized Payment System Integration
 
 Enhanced Evernode hosts now integrate with a **centralized payment platform** for:
