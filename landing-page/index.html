@@ -944,9 +944,13 @@
     const fullReferralUrl = this.paymentServer + referralParam;
     
     // Update all premium cluster manager links
-    document.querySelectorAll('.premium-cluster-link').forEach(link => {
-        link.href = baseClusterUrl + referralParam;
+    document.querySelectorAll('.premium-cluster-link, .btn-primary[href*="premium"], .btn[href*="paywall"], a[href*="cluster"]').forEach(link => {
+        if (link.textContent.includes('Premium') || link.textContent.includes('Upgrade') || link.href.includes('cluster')) {
+            link.href = fullReferralUrl;
+            link.target = '_blank';
+        }
     });
+}
                 // Display referral link for sharing
                 this.displayReferralWidget();
             }
