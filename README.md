@@ -99,9 +99,9 @@ bash# 1. Clone repository
 git clone https://github.com/h20crypto/evernode-enhanced-setup.git
 cd evernode-enhanced-setup
 
-# 2. Run unified installation
-chmod +x setup-unified-system.sh
-sudo ./setup-unified-system.sh
+# 2. Run Enhanced Host installation  
+chmod +x install/enhanced-host-setup.sh
+sudo ./install/enhanced-host-setup.sh
 
 # 3. Test your enhanced host
 curl http://localhost/api/router.php?endpoint=health
