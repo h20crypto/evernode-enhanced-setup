@@ -1017,24 +1017,33 @@
 
             async loadCommissionStats() {
     try {
-        const response = await fetch(`https://api.evrdirect.info/api/commission-stats/${this.hostId}`);
+        const response = await fetch(`${this.apiServer}/api/host-earnings/${this.hostId}`);
         const data = await response.json();
-                    
-                    if (data.success) {
-                        this.updateCommissionDisplay(data.stats);
-                    }
-                } catch (error) {
-                    console.log('Commission stats not available:', error);
-                    // Show demo data for now
-                    this.updateCommissionDisplay({
-                        total_earned: 0,
-                        referral_count: 0,
-                        conversion_rate: 0,
-                        monthly_earnings: 0
-                    });
-                }
-            }
+        
+        if (data.success) {
+            this.updateCommissionDisplay(data.earnings);
+        } else {
+            throw new Error('No earnings data');
+        }
+    } catch (error) {
+        console.log('📡 Centralized earnings API unavailable - showing placeholder');
+        this.showPlaceholderEarnings();
+    }
+}
 
+    showPlaceholderEarnings() {
+    // Only show $0 when API unavailable - no fake earnings
+    const elements = {
+        'total-commissions': '$0.00',
+        'referral-count': '0',
+        'monthly-earnings': '$0.00'
+    };
+    
+    Object.entries(elements).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    });
+}    
             updateCommissionDisplay(stats) {
                 const elements = {
                     'total-commissions': `$${stats.total_earned?.toFixed(2) || '0.00'}`,
