@@ -322,50 +322,46 @@
             }
 
             updateMetrics(systemData, instanceData) {
-                // Extract real system data
-                const system = systemData.data || systemData;
-                const instances = instanceData;
+    // Use real system data or show "offline" if unavailable
+    if (systemData && systemData.cpu_usage !== undefined) {
+        document.getElementById('cpu-usage').textContent = `${Math.round(systemData.cpu_usage)}%`;
+        document.getElementById('memory-usage').textContent = `${Math.round(systemData.memory_usage || 0)}%`;
+        document.getElementById('disk-usage').textContent = `${Math.round(systemData.disk_usage || 0)}%`;
+    } else {
+        document.getElementById('cpu-usage').textContent = 'Offline';
+        document.getElementById('memory-usage').textContent = 'Offline';
+        document.getElementById('disk-usage').textContent = 'Offline';
+    }
 
-                // Update CPU (keep it healthy)
-                const cpuUsage = Math.min(system.cpu_usage || 15, 30);
-                document.getElementById('cpu-usage').textContent = `${cpuUsage}%`;
+    // Use real instance count
+    document.getElementById('active-containers').textContent = instanceData.used || '0';
+    document.getElementById('response-time').textContent = systemData.response_time || 'N/A';
+    document.getElementById('uptime').textContent = systemData.uptime || 'N/A';
+    
+    // Update health status based on real data
+    if (systemData && systemData.status === 'healthy') {
+        document.getElementById('overall-health').textContent = '✅ System Healthy';
+    } else {
+        document.getElementById('overall-health').textContent = '⚠️ System Offline';
+        document.getElementById('overall-health').style.background = 'rgba(239, 68, 68, 0.2)';
+        document.getElementById('overall-health').style.color = '#ef4444';
+    }
+}
 
-                // Update Memory (keep it healthy)
-                const memUsage = system.memory?.used_gb || 0.8;
-                const memTotal = system.memory?.total_gb || 7.8;
-                const memPercent = Math.round((memUsage / memTotal) * 100);
-                document.getElementById('memory-usage').textContent = `${Math.min(memPercent, 25)}%`;
-
-                // Update Disk (keep it healthy)
-                document.getElementById('disk-usage').textContent = '8%';
-
-                // Update Containers
-                document.getElementById('active-containers').textContent = instances.instance_count || 2;
-
-                // Update Response Time
-                document.getElementById('response-time').textContent = '45ms';
-
-                // Update Uptime
-                document.getElementById('uptime').textContent = '99.8%';
-
-                // Update overall health
-                document.getElementById('overall-health').textContent = '✅ System Healthy';
-                document.getElementById('overall-health').style.background = 'rgba(16, 185, 129, 0.2)';
-                document.getElementById('overall-health').style.color = '#10b981';
-            }
-
-            loadHealthyFallback() {
-                // Show healthy fallback data
-                document.getElementById('cpu-usage').textContent = '15%';
-                document.getElementById('memory-usage').textContent = '22%';
-                document.getElementById('disk-usage').textContent = '8%';
-                document.getElementById('active-containers').textContent = '2';
-                document.getElementById('response-time').textContent = '45ms';
-                document.getElementById('uptime').textContent = '99.8%';
-                
-                document.getElementById('overall-health').textContent = '✅ System Healthy';
-            }
-
+// ADD function for offline state:
+showOfflineState() {
+    document.getElementById('cpu-usage').textContent = 'Offline';
+    document.getElementById('memory-usage').textContent = 'Offline';
+    document.getElementById('disk-usage').textContent = 'Offline';
+    document.getElementById('active-containers').textContent = 'Offline';
+    document.getElementById('response-time').textContent = 'N/A';
+    document.getElementById('uptime').textContent = 'N/A';
+    
+    document.getElementById('overall-health').textContent = '📡 Connecting...';
+    document.getElementById('overall-health').style.background = 'rgba(255, 193, 7, 0.2)';
+    document.getElementById('overall-health').style.color = '#ffd700';
+}
+           
             updateLastUpdated() {
                 const now = new Date().toLocaleString();
                 document.getElementById('last-updated').textContent = `Last updated: ${now}`;
