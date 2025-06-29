@@ -8,6 +8,12 @@ Transform your basic Evernode host into a **professional hosting platform** with
 # Enhanced Host with Real Commission Earnings
 curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/install/enhanced-host-setup.sh | sudo bash
 
+**Alternative - Download and Run:**
+```bash
+wget https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/install/enhanced-host-setup.sh
+chmod +x enhanced-host-setup.sh
+sudo ./enhanced-host-setup.sh
+
 
 🎯 What You Get
 For Tenants:
