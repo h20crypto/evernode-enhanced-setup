@@ -361,6 +361,24 @@ Commission System:
 - Commission Rate: 20% ($10 per sale)
 - Payout: Weekly XRP after 14-day hold
 
+### 💰 Verify Commission System
+
+**Test your commission integration:**
+
+```bash
+# 1. Check if premium buttons redirect correctly
+curl -s http://localhost/ | grep -o 'payments\.evrdirect\.info[^"]*' | head -1
+
+# 2. Verify your referral code is configured
+grep -o 'ref=[^&]*' /var/www/html/index.html | head -1
+
+# 3. Test earnings API endpoint (will show $0 until first sale)
+curl -s "https://api.evrdirect.info/api/host-earnings/$(hostname)"
+
+# 4. Check admin access works
+echo "Visit: https://$(hostname)/?admin=true"
+echo "Password in: /etc/enhanced-evernode/admin-access.txt"
+
 Installation: curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/install/enhanced-host-setup.sh | sudo bash"
 
 # 8. Push to GitHub
