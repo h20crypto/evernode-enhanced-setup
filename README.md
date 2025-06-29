@@ -212,8 +212,6 @@ sudo nano /var/www/html/assets/js/unified-state-manager.js
 sudo nano /var/www/html/config/unified-config.php
 # Update admin_password value
 
-# Set your host name, EVR address, contact info
-
 ## 🧪 Testing Your Installation
 
 **Test all components after installation:**
