@@ -270,8 +270,8 @@ curl -s https://api.evrdirect.info/api/host-earnings/your-domain.com
 bash# Backup current installation
 sudo cp -r /var/www/html /var/www/html-backup-$(date +%Y%m%d)
 
-# Run unified upgrade
-curl -sL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/setup-unified-system.sh | bash
+# Run Enhanced Host upgrade
+curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/install/enhanced-host-setup.sh | sudo bash
 📈 Roadmap
 
 🔄 Auto-scaling based on demand
