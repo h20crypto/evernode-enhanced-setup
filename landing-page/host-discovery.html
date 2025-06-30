@@ -1161,12 +1161,12 @@
         }
 
         function toggleAdminMode() {
-            const adminElements = document.querySelectorAll('.admin-only');
-            adminElements.forEach(el => {
-                el.style.display = el.style.display === 'none' ? 'block' : 'none';
-            });
-            hostDiscovery.showNotification('👑 Admin mode toggled');
-        }
+    if (window.enhancedState) {
+        window.enhancedState.toggleAdminMode();
+    } else {
+        console.error('Enhanced state manager not loaded');
+    }
+}
 
         // Initialize the discovery system
         let hostDiscovery;
