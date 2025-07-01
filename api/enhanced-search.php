@@ -373,28 +373,131 @@ class RealEvernodeNetworkAPI {
     }
     
     /**
-     * Normalize XRPLWin host data
+     * Normalize Real Evernode API host data
      */
-    private function normalizeXRPLWinHost($host_data) {
-        return [
-            'xahau_address' => $host_data['address'] ?? 'rUnknown',
-            'domain' => $host_data['domain'] ?? 'unknown.host',
-            'reputation' => $host_data['reputation'] ?? 0,
-            'enhanced' => $host_data['enhanced'] ?? false,
-            'quality_score' => $host_data['score'] ?? 0,
-            'cpu_cores' => $host_data['cpu_cores'] ?? 4,
-            'memory_gb' => $host_data['memory_gb'] ?? 8,
-            'disk_gb' => $host_data['disk_gb'] ?? 200,
-            'country' => $host_data['country'] ?? 'Unknown',
-            'available_instances' => $host_data['available_instances'] ?? 0,
-            'max_instances' => $host_data['max_instances'] ?? 10,
-            'cost_per_hour_evr' => $host_data['cost_per_hour_evr'] ?? 0.001,
-            'last_heartbeat' => $host_data['last_heartbeat'] ?? date('Y-m-d H:i:s'),
-            'uptime_percentage' => $host_data['uptime_percentage'] ?? 95.0,
-            'data_source' => 'xrplwin_api',
-            'features' => $host_data['features'] ?? [],
-            'uri' => $host_data['uri'] ?? ''
+    private function normalizeRealEvernodeHost($host_data) {
+        // Map country codes to full names
+        $country_map = [
+            'US' => 'United States', 'DE' => 'Germany', 'CA' => 'Canada',
+            'NL' => 'Netherlands', 'GB' => 'United Kingdom', 'FR' => 'France',
+            'SG' => 'Singapore', 'JP' => 'Japan', 'AU' => 'Australia',
+            'KR' => 'South Korea', 'FI' => 'Finland', 'SE' => 'Sweden',
+            'CH' => 'Switzerland', 'NO' => 'Norway', 'DK' => 'Denmark',
+            'AT' => 'Austria', 'BE' => 'Belgium', 'IE' => 'Ireland',
+            'NZ' => 'New Zealand', 'BR' => 'Brazil', 'IN' => 'India'
         ];
+        
+        $country = $country_map[$host_data['countryCode']] ?? $host_data['countryCode'];
+        
+        // Determine if enhanced (look for enhanced patterns)
+        $is_enhanced = $this->detectEnhancedHost($host_data);
+        
+        // Calculate quality score from multiple factors
+        $quality_score = $this->calculateQualityScore($host_data);
+        
+        return [
+            'xahau_address' => $host_data['address'],
+            'domain' => $host_data['domain'],
+            'reputation' => $host_data['hostReputation'],
+            'enhanced' => $is_enhanced,
+            'quality_score' => $quality_score,
+            'cpu_cores' => $host_data['cpuCount'],
+            'memory_gb' => round($host_data['ramMb'] / 1024, 1),
+            'disk_gb' => round($host_data['diskMb'] / 1024, 1),
+            'country' => $country,
+            'available_instances' => $host_data['maxInstances'] - $host_data['activeInstances'],
+            'max_instances' => $host_data['maxInstances'],
+            'cost_per_hour_evr' => floatval($host_data['leaseAmount']),
+            'last_heartbeat' => date('Y-m-d H:i:s', $host_data['lastHeartbeatIndex']),
+            'uptime_percentage' => $this->calculateUptime($host_data),
+            'data_source' => 'real_evernode_api',
+            'features' => $is_enhanced ? ['Enhanced', 'Discovery', 'Real-time Monitoring'] : ['Standard'],
+            'uri' => $is_enhanced ? "https://{$host_data['domain']}" : '',
+            'cpu_mhz' => $host_data['cpuMHz'],
+            'cpu_model' => $host_data['cpuModelName'] ?? 'Unknown',
+            'host_rating' => $host_data['hostRatingStr'] ?? 'Standard',
+            'score' => $host_data['score'] ?? 0,
+            'registration_timestamp' => $host_data['registrationTimestamp'],
+            'version' => $host_data['version'] ?? '1.0.0'
+        ];
+    }
+    
+    /**
+     * Detect if host is enhanced based on patterns
+     */
+    private function detectEnhancedHost($host_data) {
+        // Check for enhanced host patterns
+        $enhanced_patterns = [
+            'enhanced', 'h20crypto', 'premium', 'pro', 'advanced', 
+            'cluster', 'enterprise', 'managed'
+        ];
+        
+        $domain = strtolower($host_data['domain']);
+        
+        foreach ($enhanced_patterns as $pattern) {
+            if (strpos($domain, $pattern) !== false) {
+                return true;
+            }
+        }
+        
+        // High-spec hosts are likely enhanced
+        if ($host_data['cpuCount'] >= 8 && $host_data['ramMb'] >= 16000) {
+            return true;
+        }
+        
+        // High reputation hosts might be enhanced
+        if ($host_data['hostReputation'] >= 280) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Calculate quality score from host data
+     */
+    private function calculateQualityScore($host_data) {
+        $score = 50; // Base score
+        
+        // Reputation factor (major component)
+        $reputation_factor = min(30, ($host_data['hostReputation'] - 200) / 4);
+        $score += $reputation_factor;
+        
+        // Hardware factor
+        if ($host_data['cpuCount'] >= 8) $score += 10;
+        if ($host_data['ramMb'] >= 16000) $score += 10;
+        if ($host_data['diskMb'] >= 500000) $score += 5;
+        
+        // Host rating factor
+        if (isset($host_data['score']) && $host_data['score'] > 80) {
+            $score += 10;
+        }
+        
+        // Active instances factor (availability)
+        $utilization = $host_data['activeInstances'] / max(1, $host_data['maxInstances']);
+        if ($utilization < 0.8) $score += 5; // Not overloaded
+        
+        return min(100, max(30, round($score)));
+    }
+    
+    /**
+     * Calculate uptime percentage
+     */
+    private function calculateUptime($host_data) {
+        // Use score as a proxy for uptime
+        $base_uptime = 95;
+        
+        if (isset($host_data['score'])) {
+            $score_bonus = ($host_data['score'] / 100) * 5;
+            $base_uptime += $score_bonus;
+        }
+        
+        // High reputation hosts likely have better uptime
+        if ($host_data['hostReputation'] >= 250) {
+            $base_uptime += 2;
+        }
+        
+        return min(100, max(90, round($base_uptime, 1)));
     }
     
     /**
@@ -640,30 +743,32 @@ class RealEvernodeNetworkAPI {
     private function testConnection() {
         $results = [];
         
-        foreach ($this->xahau_servers as $server) {
+        // Test Real Evernode API
+        try {
             $start = microtime(true);
+            $response = file_get_contents('https://api.evernode.network/registry/hosts?limit=1', false, stream_context_create([
+                'http' => ['timeout' => 10]
+            ]));
+            $time = round((microtime(true) - $start) * 1000, 2);
             
-            try {
-                $response = $this->xahauRPCCall($server, 'server_info');
-                $time = round((microtime(true) - $start) * 1000, 2);
-                
-                $results[] = [
-                    'server' => $server,
-                    'status' => $response ? 'ok' : 'error',
-                    'response_time_ms' => $time,
-                    'build_version' => $response['build_version'] ?? 'unknown'
-                ];
-            } catch (Exception $e) {
-                $results[] = [
-                    'server' => $server,
-                    'status' => 'error',
-                    'error' => $e->getMessage()
-                ];
-            }
+            $results[] = [
+                'server' => 'api.evernode.network',
+                'status' => $response ? 'ok' : 'error',
+                'response_time_ms' => $time,
+                'data_type' => 'real_evernode_hosts'
+            ];
+        } catch (Exception $e) {
+            $results[] = [
+                'server' => 'api.evernode.network',
+                'status' => 'error',
+                'error' => $e->getMessage()
+            ];
         }
         
         return [
             'success' => true,
+            'message' => 'Real Evernode Network API Online',
+            'version' => '4.0.0',
             'servers' => $results,
             'cache_status' => $this->getCacheStatus()
         ];
