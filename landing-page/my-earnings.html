@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Enhanced Evernode Earnings - Revenue Analytics</title>
+    <title>💰 Enhanced Evernode Earnings - Commission Analytics</title>
     <link rel="stylesheet" href="/assets/css/unified-navigation.css">
     <script src="/assets/js/unified-state-manager.js"></script>
     <style>
@@ -96,7 +96,7 @@
             color: #10b981;
         }
         
-        .revenue-breakdown {
+        .commission-breakdown {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 16px;
             padding: 24px;
@@ -110,13 +110,14 @@
             color: #00ff88;
         }
         
-        .breakdown-grid {
+        .commission-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 16px;
+            margin-bottom: 20px;
         }
         
-        .breakdown-item {
+        .commission-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -126,67 +127,73 @@
             border-left: 4px solid #ffd700;
         }
         
-        .breakdown-source {
+        .commission-source {
             font-weight: 600;
         }
         
-        .breakdown-amount {
+        .commission-amount {
             color: #ffd700;
             font-weight: 700;
         }
         
-        .tenant-list {
+        .referral-info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .referral-code {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 0 8px;
+        }
+        
+        .payment-history {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 30px;
         }
         
-        .tenant-title {
-            font-size: 1.4rem;
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .history-table th,
+        .history-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .history-table th {
+            background: rgba(255, 255, 255, 0.05);
             font-weight: 600;
-            margin-bottom: 20px;
             color: #00ff88;
         }
         
-        .tenant-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border-left: 4px solid #10b981;
-        }
-        
-        .tenant-info {
-            flex: 1;
-        }
-        
-        .tenant-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .tenant-details {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-        
-        .tenant-revenue {
-            text-align: right;
-        }
-        
-        .tenant-amount {
-            color: #ffd700;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        
-        .tenant-period {
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
             font-size: 0.8rem;
-            opacity: 0.7;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .status-paid {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
         }
         
         .refresh-btn {
@@ -212,6 +219,42 @@
             font-size: 0.9rem;
             margin-top: 20px;
         }
+        
+        .share-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .share-title {
+            font-size: 1.2rem;
+            color: #10b981;
+            margin-bottom: 16px;
+        }
+        
+        .share-url {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .copy-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -235,129 +278,116 @@
     <div class="earnings-container">
         <!-- Header -->
         <div class="earnings-header">
-            <h1 class="earnings-title">💰 Earnings Dashboard</h1>
-            <p>Complete revenue analytics and tenant management</p>
+            <h1 class="earnings-title">💰 Commission Earnings</h1>
+            <p>Real commission tracking from Enhanced Evernode referrals</p>
             <div class="earnings-indicator" id="earnings-status">
-                ✅ Revenue Tracking Active
+                📡 Connecting to Chicago server...
             </div>
         </div>
 
-        <!-- Key Earnings Metrics -->
+        <!-- Key Commission Metrics -->
         <div class="earnings-grid">
             <div class="earning-card">
                 <div class="earning-icon">💰</div>
-                <div class="earning-value" id="total-revenue">--</div>
-                <div class="earning-label">Total Revenue</div>
+                <div class="earning-value" id="total-earned">$0.00</div>
+                <div class="earning-label">Total Earned</div>
                 <div class="earning-trend">All Time</div>
             </div>
 
             <div class="earning-card">
-                <div class="earning-icon">📅</div>
-                <div class="earning-value" id="monthly-revenue">--</div>
-                <div class="earning-label">This Month</div>
-                <div class="earning-trend">+12% vs last month</div>
+                <div class="earning-icon">📊</div>
+                <div class="earning-value" id="total-paid">$0.00</div>
+                <div class="earning-label">Total Paid Out</div>
+                <div class="earning-trend">XRP payments</div>
             </div>
 
             <div class="earning-card">
-                <div class="earning-icon">📈</div>
-                <div class="earning-value" id="daily-revenue">--</div>
-                <div class="earning-label">Today</div>
-                <div class="earning-trend">+5% vs yesterday</div>
+                <div class="earning-icon">⏳</div>
+                <div class="earning-value" id="pending-amount">$0.00</div>
+                <div class="earning-label">Pending Payout</div>
+                <div class="earning-trend">14-day hold</div>
             </div>
 
             <div class="earning-card">
                 <div class="earning-icon">👥</div>
-                <div class="earning-value" id="active-tenants">--</div>
-                <div class="earning-label">Active Tenants</div>
-                <div class="earning-trend">Paying customers</div>
+                <div class="earning-value" id="total-referrals">0</div>
+                <div class="earning-label">Total Referrals</div>
+                <div class="earning-trend">Successful sales</div>
             </div>
 
             <div class="earning-card">
-                <div class="earning-icon">⚡</div>
-                <div class="earning-value" id="avg-deployment">--</div>
-                <div class="earning-label">Avg per Deployment</div>
-                <div class="earning-trend">Monthly average</div>
+                <div class="earning-icon">📅</div>
+                <div class="earning-value" id="monthly-referrals">0</div>
+                <div class="earning-label">This Month</div>
+                <div class="earning-trend">New referrals</div>
             </div>
 
             <div class="earning-card">
-                <div class="earning-icon">🎯</div>
-                <div class="earning-value" id="commission-earned">--</div>
-                <div class="earning-label">Commissions</div>
-                <div class="earning-trend">From referrals</div>
+                <div class="earning-icon">💵</div>
+                <div class="earning-value" id="next-payout">$0.00</div>
+                <div class="earning-label">Next Payout</div>
+                <div class="earning-trend">Sunday payout</div>
             </div>
         </div>
 
-        <!-- Revenue Breakdown -->
-        <div class="revenue-breakdown">
-            <h2 class="breakdown-title">💼 Revenue Breakdown</h2>
-            <div class="breakdown-grid">
-                <div class="breakdown-item">
-                    <span class="breakdown-source">🏠 Hosting Fees</span>
-                    <span class="breakdown-amount" id="hosting-fees">--</span>
+        <!-- Commission Info -->
+        <div class="commission-breakdown">
+            <h2 class="breakdown-title">💼 Commission Details</h2>
+            <div class="commission-info">
+                <div class="commission-item">
+                    <span class="commission-source">💰 Commission Rate</span>
+                    <span class="commission-amount">20%</span>
                 </div>
-                <div class="breakdown-item">
-                    <span class="breakdown-source">🚀 Deployment Fees</span>
-                    <span class="breakdown-amount" id="deployment-fees">--</span>
+                <div class="commission-item">
+                    <span class="commission-source">💵 Per Sale Commission</span>
+                    <span class="commission-amount">$10.00</span>
                 </div>
-                <div class="breakdown-item">
-                    <span class="breakdown-source">📊 Premium Features</span>
-                    <span class="breakdown-amount" id="premium-fees">--</span>
+                <div class="commission-item">
+                    <span class="commission-source">🕐 Hold Period</span>
+                    <span class="commission-amount">14 days</span>
                 </div>
-                <div class="breakdown-item">
-                    <span class="breakdown-source">🎁 Referral Commissions</span>
-                    <span class="breakdown-amount" id="referral-commissions">--</span>
+                <div class="commission-item">
+                    <span class="commission-source">📅 Payout Schedule</span>
+                    <span class="commission-amount">Weekly (Sundays)</span>
                 </div>
-                <div class="breakdown-item">
-                    <span class="breakdown-source">⚡ Performance Bonuses</span>
-                    <span class="breakdown-amount" id="performance-bonuses">--</span>
-                </div>
-                <div class="breakdown-item">
-                    <span class="breakdown-source">🔧 Support Services</span>
-                    <span class="breakdown-amount" id="support-fees">--</span>
-                </div>
+            </div>
+            
+            <div class="referral-info">
+                <strong>🎯 Your Referral Code:</strong>
+                <span class="referral-code" id="referral-code">Loading...</span>
+                <br><br>
+                <strong>💡 How it works:</strong> When someone clicks your upgrade link and purchases Enhanced Evernode Premium for $49.99, you earn a $10 commission after a 14-day hold period.
             </div>
         </div>
 
-        <!-- Active Tenants -->
-        <div class="tenant-list">
-            <h2 class="tenant-title">👥 Active Tenants</h2>
-            <div id="tenant-container">
-                <div class="tenant-item">
-                    <div class="tenant-info">
-                        <div class="tenant-name">🚀 DeFi Protocol #1</div>
-                        <div class="tenant-details">2 containers • Running 14 days • Premium tier</div>
-                    </div>
-                    <div class="tenant-revenue">
-                        <div class="tenant-amount" id="tenant-1-amount">--</div>
-                        <div class="tenant-period">per month</div>
-                    </div>
-                </div>
-
-                <div class="tenant-item">
-                    <div class="tenant-info">
-                        <div class="tenant-name">🎨 NFT Marketplace</div>
-                        <div class="tenant-details">1 container • Running 8 days • Standard tier</div>
-                    </div>
-                    <div class="tenant-revenue">
-                        <div class="tenant-amount" id="tenant-2-amount">--</div>
-                        <div class="tenant-period">per month</div>
-                    </div>
-                </div>
-
-                <div class="tenant-item">
-                    <div class="tenant-info">
-                        <div class="tenant-name">📱 Web3 App</div>
-                        <div class="tenant-details">1 container • Running 3 days • Standard tier</div>
-                    </div>
-                    <div class="tenant-revenue">
-                        <div class="tenant-amount" id="tenant-3-amount">--</div>
-                        <div class="tenant-period">per month</div>
-                    </div>
-                </div>
-            </div>
+        <!-- Share Your Referral Link -->
+        <div class="share-section">
+            <h3 class="share-title">🚀 Share Your Referral Link to Earn $10 Per Sale</h3>
+            <input type="text" class="share-url" id="referral-url" value="Loading referral URL..." readonly>
+            <button class="copy-btn" onclick="copyReferralURL()">📋 Copy Link</button>
         </div>
 
-        <button class="refresh-btn" onclick="refreshEarningsData()">🔄 Refresh Earnings Data</button>
+        <!-- Payment History -->
+        <div class="payment-history">
+            <h2 class="breakdown-title">📈 Recent Commission Payments</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Eligible Date</th>
+                    </tr>
+                </thead>
+                <tbody id="payment-history-body">
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #888;">Loading payment history...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <button class="refresh-btn" onclick="refreshEarningsData()">🔄 Refresh Commission Data</button>
         
         <div class="last-updated" id="last-updated">
             Last updated: Loading...
@@ -365,120 +395,160 @@
     </div>
 
     <script>
-        // Earnings tracking system
-        class EarningsTracker {
+        // Chicago Commission Earnings Tracker
+        class ChicagoCommissionTracker {
             constructor() {
+                this.chicagoAPI = 'https://api.evrdirect.info';
+                this.domain = window.location.hostname;
                 this.init();
             }
 
             async init() {
-                console.log('💰 Earnings Tracker initializing...');
-                await this.loadEarningsData();
+                console.log('💰 Chicago Commission Tracker initializing...');
+                await this.loadCommissionData();
                 
-                // Auto-refresh every 5 minutes for earnings
+                // Auto-refresh every 5 minutes
                 setInterval(() => {
-                    this.loadEarningsData();
+                    this.loadCommissionData();
                 }, 300000);
             }
 
-           async loadEarningsData() {
-    try {
-        // Load REAL earnings from centralized server
-        const response = await this.fetchWithTimeout(`https://api.evrdirect.info/api/host-earnings/${window.location.hostname}`);
-        
-        if (response.success) {
-            this.updateEarnings(response.earnings);
-            document.getElementById('earnings-status').textContent = '✅ Real Earnings Data Loaded';
-        } else {
-            throw new Error('No earnings data');
-        }
-        
-    } catch (error) {
-        console.log('📡 Centralized earnings API unavailable');
-        this.showNoEarningsState();
-    }
-    
-    this.updateLastUpdated();
-}
+            async loadCommissionData() {
+                try {
+                    console.log(`📡 Fetching commission data for: ${this.domain}`);
+                    
+                    const response = await fetch(`${this.chicagoAPI}/api/commission-stats/${this.domain}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
 
-            async fetchWithTimeout(url, timeout = 5000) {
-                const response = await Promise.race([
-                    fetch(url),
-                    new Promise((_, reject) => 
-                        setTimeout(() => reject(new Error('timeout')), timeout)
-                    )
-                ]);
-                
-                if (response.ok) {
-                    return await response.json();
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.updateCommissionUI(data);
+                        this.showConnectedStatus();
+                        console.log('✅ Commission data loaded successfully');
+                    } else {
+                        throw new Error(data.error || 'Invalid response');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Commission API error:', error);
+                    this.showDisconnectedStatus();
                 }
-                throw new Error('API error');
+                
+                this.updateLastUpdated();
             }
 
-            updateEarnings(earnings) {
-    // Only use real data from API - no fake numbers
-    document.getElementById('total-revenue').textContent = `$${(earnings.total_revenue || 0).toFixed(2)}`;
-    document.getElementById('monthly-revenue').textContent = `$${(earnings.monthly_revenue || 0).toFixed(2)}`;
-    document.getElementById('daily-revenue').textContent = `$${(earnings.daily_revenue || 0).toFixed(2)}`;
-    document.getElementById('active-tenants').textContent = earnings.active_tenants || '0';
-    document.getElementById('avg-deployment').textContent = `$${(earnings.avg_deployment || 0).toFixed(2)}`;
-    document.getElementById('commission-earned').textContent = `$${(earnings.commission_earned || 0).toFixed(2)}`;
+            updateCommissionUI(data) {
+                const stats = data.commission_stats;
+                const hostInfo = data.host_info;
 
-    // Revenue breakdown - real data only
-    document.getElementById('hosting-fees').textContent = `$${(earnings.hosting_fees || 0).toFixed(2)}`;
-    document.getElementById('deployment-fees').textContent = `$${(earnings.deployment_fees || 0).toFixed(2)}`;
-    document.getElementById('premium-fees').textContent = `$${(earnings.premium_fees || 0).toFixed(2)}`;
-    document.getElementById('referral-commissions').textContent = `$${(earnings.referral_commissions || 0).toFixed(2)}`;
-    document.getElementById('performance-bonuses').textContent = `$${(earnings.performance_bonuses || 0).toFixed(2)}`;
-    document.getElementById('support-fees').textContent = `$${(earnings.support_fees || 0).toFixed(2)}`;
+                // Update commission metrics
+                document.getElementById('total-earned').textContent = `$${stats.total_earned_usd.toFixed(2)}`;
+                document.getElementById('total-paid').textContent = `$${stats.total_paid_usd.toFixed(2)}`;
+                document.getElementById('pending-amount').textContent = `$${stats.pending_amount_usd.toFixed(2)}`;
+                document.getElementById('total-referrals').textContent = stats.total_referrals;
+                document.getElementById('monthly-referrals').textContent = stats.monthly_referrals;
+                document.getElementById('next-payout').textContent = `$${stats.next_payout_amount.toFixed(2)}`;
 
-    // Update tenant amounts with real data
-    if (earnings.tenants && earnings.tenants.length > 0) {
-        earnings.tenants.forEach((tenant, index) => {
-            const amountElement = document.getElementById(`tenant-${index + 1}-amount`);
-            if (amountElement) {
-                amountElement.textContent = `$${(tenant.monthly_revenue || 0).toFixed(2)}`;
+                // Update referral info
+                document.getElementById('referral-code').textContent = hostInfo.referral_code;
+                document.getElementById('referral-url').value = data.payment_url;
+
+                // Update payment history
+                this.updatePaymentHistory(data.recent_payments);
             }
-        });
-    }
-}
 
-// ADD new function to show when no earnings available:
-showNoEarningsState() {
-    document.getElementById('earnings-status').textContent = '📡 Connecting to earnings server...';
-    document.getElementById('earnings-status').style.background = 'rgba(255, 193, 7, 0.2)';
-    document.getElementById('earnings-status').style.color = '#ffd700';
-    
-    // Show $0 for all metrics when no real data
-    ['total-revenue', 'monthly-revenue', 'daily-revenue', 'avg-deployment', 'commission-earned',
-     'hosting-fees', 'deployment-fees', 'premium-fees', 'referral-commissions', 
-     'performance-bonuses', 'support-fees'].forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = '$0.00';
-    });
-    
-    document.getElementById('active-tenants').textContent = '0';
-    
-    // Clear tenant amounts
-    ['tenant-1-amount', 'tenant-2-amount', 'tenant-3-amount'].forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = '$0.00';
-    });
-}
+            updatePaymentHistory(payments) {
+                const tbody = document.getElementById('payment-history-body');
+                
+                if (!payments || payments.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #888;">
+                                No commission payments yet. Share your referral link to start earning!
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
 
-           
+                tbody.innerHTML = payments.map(payment => `
+                    <tr>
+                        <td>$${payment.amount.toFixed(2)}</td>
+                        <td>${new Date(payment.date).toLocaleDateString()}</td>
+                        <td>
+                            <span class="status-badge ${payment.status === 'paid' ? 'status-paid' : 'status-pending'}">
+                                ${payment.status === 'paid' ? '✅ Paid' : '⏳ Pending'}
+                            </span>
+                        </td>
+                        <td>${payment.eligible_date ? new Date(payment.eligible_date).toLocaleDateString() : 'N/A'}</td>
+                    </tr>
+                `).join('');
+            }
 
-        // Global refresh function
+            showConnectedStatus() {
+                const status = document.getElementById('earnings-status');
+                status.textContent = '✅ Connected to Chicago Server';
+                status.style.background = 'rgba(16, 185, 129, 0.2)';
+                status.style.color = '#10b981';
+            }
+
+            showDisconnectedStatus() {
+                const status = document.getElementById('earnings-status');
+                status.textContent = '📡 Chicago server unavailable - retrying...';
+                status.style.background = 'rgba(255, 193, 7, 0.2)';
+                status.style.color = '#ffd700';
+            }
+
+            updateLastUpdated() {
+                document.getElementById('last-updated').textContent = 
+                    `Last updated: ${new Date().toLocaleString()}`;
+            }
+        }
+
+        // Global functions
         window.refreshEarningsData = function() {
-            if (window.earningsTracker) {
-                window.earningsTracker.loadEarningsData();
+            if (window.commissionTracker) {
+                window.commissionTracker.loadCommissionData();
             }
         };
 
-        // Initialize earnings tracker when page loads
+        window.copyReferralURL = function() {
+            const urlInput = document.getElementById('referral-url');
+            urlInput.select();
+            urlInput.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                
+                // Show success feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#10b981';
+                }, 2000);
+                
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        };
+
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            window.earningsTracker = new EarningsTracker();
+            window.commissionTracker = new ChicagoCommissionTracker();
         });
-    <script src="/assets/js/unified-state-manager.js"></script>
+    </script>
 </body>
 </html>
