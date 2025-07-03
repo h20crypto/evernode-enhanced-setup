@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # =============================================================================
-# 🚀 Enhanced Evernode Host - Complete Setup Script
+# 🚀 Enhanced Evernode Host - Complete Setup Script with Organic Discovery
 # =============================================================================
-# Automated installation with commission tracking integration
+# Automated installation with commission tracking integration and organic enhanced network discovery
 # Author: Enhanced Evernode Team
-# Version: 2.0 Production
+# Version: 2.1 Production + Organic Discovery
 
 set -e  # Exit on any error
 
@@ -48,6 +48,7 @@ print_banner() {
     echo "=============================================================="
     echo -e "${WHITE}Complete automated installation with commission tracking${NC}"
     echo -e "${GREEN}✅ Real earnings • ✅ $10 per sale • ✅ Professional setup${NC}"
+    echo -e "${BLUE}✅ Organic enhanced network discovery • ✅ Auto-announcement${NC}"
     echo ""
 }
 
@@ -278,11 +279,11 @@ install_dependencies() {
 }
 
 # =============================================================================
-# 🔧 Enhanced Host Files Setup
+# 🔧 Enhanced Host Files Setup (UPDATED WITH ORGANIC DISCOVERY)
 # =============================================================================
 
 download_host_files() {
-    print_step "Downloading Enhanced Evernode host files..."
+    print_step "Downloading Enhanced Evernode host files with organic discovery..."
     
     # Create directories
     mkdir -p "$INSTALL_DIR"
@@ -299,17 +300,25 @@ download_host_files() {
     curl -fsSL "$GITHUB_REPO/landing-page/index.html" -o index.html
     
     # Download other pages
-    mkdir -p cluster api assets/css assets/js landing-page/css landing-page/js
+    mkdir -p cluster api assets/css assets/js landing-page/css landing-page/js scripts
     
     curl -fsSL "$GITHUB_REPO/landing-page/host-discovery.html" -o host-discovery.html
     curl -fsSL "$GITHUB_REPO/landing-page/my-earnings.html" -o my-earnings.html
     curl -fsSL "$GITHUB_REPO/landing-page/monitoring-dashboard.html" -o monitoring-dashboard.html
     
-    # Download API files
+    # Download API files (INCLUDING ORGANIC DISCOVERY)
+    print_info "📡 Downloading organic discovery system..."
+    curl -fsSL "$GITHUB_REPO/api/enhanced-search.php" -o api/enhanced-search.php
+    curl -fsSL "$GITHUB_REPO/api/.enhanced-host-beacon.php" -o api/.enhanced-host-beacon.php
     curl -fsSL "$GITHUB_REPO/api/host-info.php" -o api/host-info.php
     curl -fsSL "$GITHUB_REPO/api/instance-count.php" -o api/instance-count.php
     curl -fsSL "$GITHUB_REPO/api/health-check.php" -o api/health-check.php
     curl -fsSL "$GITHUB_REPO/api/router.php" -o api/router.php
+    
+    # Download organic discovery auto-announcement script
+    print_info "🌐 Downloading auto-announcement system..."
+    curl -fsSL "$GITHUB_REPO/scripts/enhanced-auto-announce.sh" -o scripts/enhanced-auto-announce.sh
+    chmod +x scripts/enhanced-auto-announce.sh
     
     # Download cluster manager
     curl -fsSL "$GITHUB_REPO/cluster/index.html" -o cluster/index.html
@@ -319,7 +328,7 @@ download_host_files() {
     curl -fsSL "$GITHUB_REPO/assets/css/unified-navigation.css" -o assets/css/unified-navigation.css
     curl -fsSL "$GITHUB_REPO/assets/js/unified-state-manager.js" -o assets/js/unified-state-manager.js
     
-    print_success "Host files downloaded"
+    print_success "Host files downloaded (including organic discovery system)"
 }
 
 configure_commission_system() {
@@ -347,7 +356,8 @@ return [
     'api_url' => '$CENTRAL_API',
     'commission_rate' => 0.20, // 20% commission
     'setup_date' => '$(date -u +"%Y-%m-%d %H:%M:%S")',
-    'version' => '2.0'
+    'version' => '2.1',
+    'organic_discovery' => true
 ];
 ?>
 EOF
@@ -410,6 +420,7 @@ Admin Features:
 ✅ Container management
 ✅ Host configuration
 ✅ Performance analytics
+✅ Enhanced network discovery
 
 IMPORTANT: Keep this password secure!
 Generated: $(date)
@@ -444,7 +455,7 @@ add_header X-Frame-Options DENY;
 add_header X-Content-Type-Options nosniff;
 add_header X-XSS-Protection "1; mode=block";
 add_header Referrer-Policy strict-origin-when-cross-origin;
-add_header Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://api.evrdirect.info https://payments.evrdirect.info; img-src 'self' data: https:; font-src 'self' https:;";
+add_header Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://api.evrdirect.info https://payments.evrdirect.info https://api.evernode.network; img-src 'self' data: https:; font-src 'self' https:;";
 
 # Hide Nginx version
 server_tokens off;
@@ -541,8 +552,9 @@ register_with_central_system() {
     "country": "$OPERATOR_COUNTRY",
     "server_specs": "$SERVER_SPECS",
     "referral_code": "$REFERRAL_CODE",
-    "setup_version": "2.0",
-    "setup_date": "$(date -u +"%Y-%m-%d %H:%M:%S")"
+    "setup_version": "2.1",
+    "setup_date": "$(date -u +"%Y-%m-%d %H:%M:%S")",
+    "organic_discovery": true
 }
 EOF
 )
@@ -566,7 +578,62 @@ EOF
 }
 
 # =============================================================================
-# 🧪 Testing & Verification
+# 🌐 Enhanced Network Integration (NEW SECTION)
+# =============================================================================
+
+announce_to_enhanced_network() {
+    print_step "Joining Enhanced Evernode Network with organic discovery..."
+    
+    # Create GitHub installation marker for organic discovery
+    echo "$(date -u +"%Y-%m-%d %H:%M:%S")" > /tmp/enhanced-github-install.marker
+    echo "GitHub Enhanced Installation - $HOST_DOMAIN" > /var/log/enhanced-github-install.log
+    
+    # Source the auto-announcement script
+    if [[ -f "$INSTALL_DIR/scripts/enhanced-auto-announce.sh" ]]; then
+        # Set required environment variables for the announcement script
+        export LOCAL_DOMAIN="$HOST_DOMAIN"
+        export LOG_FILE="$LOG_FILE"
+        
+        # Copy announcement script to accessible location
+        cp "$INSTALL_DIR/scripts/enhanced-auto-announce.sh" /tmp/enhanced-auto-announce.sh
+        chmod +x /tmp/enhanced-auto-announce.sh
+        
+        # Source the announcement functions
+        source /tmp/enhanced-auto-announce.sh
+        
+        # Run the main announcement
+        if main_announcement; then
+            print_success "Successfully joined Enhanced Evernode Network"
+            print_success "Host is now discoverable by other enhanced hosts"
+            
+            # Test organic discovery
+            sleep 3
+            local discovery_test=$(curl -s "http://localhost/api/enhanced-search.php?action=test" 2>/dev/null)
+            if echo "$discovery_test" | grep -q '"success":true'; then
+                print_success "Organic discovery system is operational"
+                
+                # Get quick stats
+                local stats=$(curl -s "http://localhost/api/enhanced-search.php?action=stats" 2>/dev/null)
+                if echo "$stats" | grep -q '"organically_discovered_enhanced"'; then
+                    local enhanced_count=$(echo "$stats" | grep -o '"organically_discovered_enhanced":[0-9]*' | cut -d':' -f2 || echo "1")
+                    print_success "Enhanced network: $enhanced_count enhanced hosts discovered"
+                fi
+            else
+                print_warning "Organic discovery may need additional configuration"
+            fi
+            
+        else
+            print_warning "Enhanced network announcement failed"
+            print_info "Host will function normally and announce automatically later"
+        fi
+    else
+        print_warning "Auto-announcement script not found"
+        print_info "Organic discovery will be configured manually"
+    fi
+}
+
+# =============================================================================
+# 🧪 Testing & Verification (UPDATED WITH ORGANIC DISCOVERY)
 # =============================================================================
 
 run_tests() {
@@ -585,6 +652,26 @@ run_tests() {
         print_success "PHP and API working"
     else
         print_warning "API may need additional configuration"
+    fi
+    
+    # Test organic discovery system
+    if curl -s "http://localhost/api/enhanced-search.php?action=test" > /dev/null; then
+        print_success "Organic discovery system working"
+        
+        # Test if host shows as enhanced
+        local enhanced_test=$(curl -s "http://localhost/api/enhanced-search.php?action=search&enhanced_only=true&limit=1" 2>/dev/null)
+        if echo "$enhanced_test" | grep -q "$HOST_DOMAIN"; then
+            print_success "Host correctly identified as enhanced"
+        fi
+    else
+        print_warning "Organic discovery system may need configuration"
+    fi
+    
+    # Test discovery beacon
+    if curl -s "http://localhost/.enhanced-host-beacon.php" > /dev/null; then
+        print_success "Discovery beacon active"
+    else
+        print_warning "Discovery beacon may need configuration"
     fi
     
     # Test commission system
@@ -608,13 +695,25 @@ run_tests() {
 }
 
 # =============================================================================
-# 📊 Final Report
+# 📊 Final Report (UPDATED WITH ORGANIC DISCOVERY)
 # =============================================================================
 
 generate_report() {
     print_step "Generating setup report..."
     
     REPORT_FILE="/root/enhanced-evernode-setup-report.txt"
+    
+    # Test enhanced network status
+    ENHANCED_STATUS="Not Connected"
+    ENHANCED_HOSTS="0"
+    
+    if curl -s "http://localhost/api/enhanced-search.php?action=stats" > /dev/null; then
+        local stats=$(curl -s "http://localhost/api/enhanced-search.php?action=stats" 2>/dev/null)
+        if echo "$stats" | grep -q '"success":true'; then
+            ENHANCED_STATUS="Connected"
+            ENHANCED_HOSTS=$(echo "$stats" | grep -o '"organically_discovered_enhanced":[0-9]*' | cut -d':' -f2 || echo "1")
+        fi
+    fi
     
     cat > "$REPORT_FILE" << EOF
 ==============================================================
@@ -628,6 +727,12 @@ Host Information:
 - Email: $OPERATOR_EMAIL
 - Country: $OPERATOR_COUNTRY
 - Referral Code: $REFERRAL_CODE
+
+Enhanced Network Status:
+🌐 Network Status: $ENHANCED_STATUS
+🔍 Enhanced Hosts Found: $ENHANCED_HOSTS
+📡 Discovery Method: Organic GitHub-based
+🎯 Enhanced Features: Auto-discovered and verified
 
 Admin Access:
 🔐 Admin Password: $ADMIN_PASSWORD
@@ -647,20 +752,34 @@ URLs:
 - Earnings Dashboard: https://$HOST_DOMAIN/my-earnings.html
 - System Monitor: https://$HOST_DOMAIN/monitoring-dashboard.html
 - Cluster Manager: https://$HOST_DOMAIN/cluster/
+- Enhanced Network: https://$HOST_DOMAIN/api/enhanced-search.php
+
+Organic Discovery:
+✅ Host automatically announced to enhanced network
+✅ Discovery beacon: https://$HOST_DOMAIN/.enhanced-host-beacon.php
+✅ Network discovery: https://$HOST_DOMAIN/api/enhanced-search.php?action=search
+✅ Enhanced-only search: https://$HOST_DOMAIN/api/enhanced-search.php?action=search&enhanced_only=true
 
 Configuration Files:
 - Host Config: $CONFIG_DIR/host-config.php
+- Enhanced Registry: /tmp/organic_enhanced_hosts.json
 - Nginx Config: /etc/nginx/sites-available/$HOST_DOMAIN
 - SSL Certificate: Auto-renewed via certbot
 
 Next Steps:
 1. Visit your site to verify everything works
-2. Share your referral link to earn $10 per sale
-3. Monitor earnings at https://$HOST_DOMAIN/my-earnings.html
-4. Join our Discord for support and updates
+2. Check enhanced network: https://$HOST_DOMAIN/api/enhanced-search.php?action=stats
+3. Share your referral link to earn $10 per sale
+4. Monitor earnings at https://$HOST_DOMAIN/my-earnings.html
+5. Discover other enhanced hosts automatically
 
 Referral Link to Share:
 $PAYMENT_URL?ref=$REFERRAL_CODE&host=$HOST_DOMAIN&wallet=$HOST_WALLET
+
+Test Commands:
+- curl "https://$HOST_DOMAIN/api/enhanced-search.php?action=stats"
+- curl "https://$HOST_DOMAIN/api/enhanced-search.php?action=search&enhanced_only=true"
+- curl "https://$HOST_DOMAIN/.enhanced-host-beacon.php"
 
 Support:
 - GitHub: https://github.com/h20crypto/evernode-enhanced-setup
@@ -675,7 +794,7 @@ EOF
 }
 
 # =============================================================================
-# 🎯 Main Installation Flow
+# 🎯 Main Installation Flow (UPDATED)
 # =============================================================================
 
 main() {
@@ -690,6 +809,8 @@ main() {
     echo -e "${GREEN}✅ Real-time earnings dashboard${NC}"
     echo -e "${GREEN}✅ SSL security${NC}"
     echo -e "${GREEN}✅ Automatic registration${NC}"
+    echo -e "${GREEN}✅ Organic enhanced network discovery${NC}"
+    echo -e "${BLUE}✅ Auto-announcement to enhanced network${NC}"
     echo ""
     
     read -p "Continue with installation? (y/N): " -n 1 -r
@@ -709,6 +830,7 @@ main() {
     setup_ssl
     register_with_central_system
     run_tests
+    announce_to_enhanced_network  # ← NEW: Added organic discovery announcement
     generate_report
     
     # Success message
@@ -718,6 +840,7 @@ main() {
     echo -e "${WHITE}Your host is now ready to earn commissions!${NC}"
     echo -e "${CYAN}Visit: https://$HOST_DOMAIN${NC}"
     echo -e "${YELLOW}Earnings: https://$HOST_DOMAIN/my-earnings.html${NC}"
+    echo -e "${BLUE}Enhanced Network: https://$HOST_DOMAIN/api/enhanced-search.php?action=stats${NC}"
     echo ""
     echo -e "${WHITE}🔐 ADMIN ACCESS:${NC}"
     echo -e "${CYAN}URL: https://$HOST_DOMAIN/?admin=true${NC}"
@@ -725,6 +848,12 @@ main() {
     echo -e "${YELLOW}⌨️  Quick Access: Press Ctrl+Shift+A on any page${NC}"
     echo ""
     echo -e "${GREEN}💰 You earn $10 for every $49.99 premium sale!${NC}"
+    echo -e "${GREEN}🌐 Your host is now part of the Enhanced Evernode Network!${NC}"
+    echo -e "${BLUE}🔍 Discover other enhanced hosts: https://$HOST_DOMAIN/host-discovery.html${NC}"
+    echo ""
+    echo -e "${WHITE}Test your enhanced network connection:${NC}"
+    echo -e "${CYAN}curl \"https://$HOST_DOMAIN/api/enhanced-search.php?action=search&enhanced_only=true\"${NC}"
+    echo ""
     echo -e "${BLUE}📋 Setup report saved to: /root/enhanced-evernode-setup-report.txt${NC}"
     echo -e "${BLUE}🔐 Admin details saved to: $CONFIG_DIR/admin-access.txt${NC}"
     echo ""
