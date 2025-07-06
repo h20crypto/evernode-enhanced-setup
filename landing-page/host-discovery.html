@@ -28,19 +28,36 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .discovery-title {
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 10px;
-            color: #667eea;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .discovery-subtitle {
             font-size: 1.1rem;
             opacity: 0.9;
             margin-bottom: 20px;
+        }
+
+        .connection-status {
+            margin-top: 15px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,255,136,0.3);
         }
 
         .fallback-notice {
@@ -51,16 +68,13 @@
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+            display: none;
         }
 
         .fallback-notice a {
             color: #00ff88;
             text-decoration: none;
             font-weight: 600;
-        }
-
-        .fallback-notice a:hover {
-            text-decoration: underline;
         }
 
         .stats-bar {
@@ -78,6 +92,15 @@
         .stat-item {
             text-align: center;
             color: white;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
         }
 
         .stat-value {
@@ -85,11 +108,13 @@
             font-weight: bold;
             display: block;
             color: #667eea;
+            transition: all 0.3s ease;
         }
 
         .stat-label {
             font-size: 0.9rem;
             opacity: 0.8;
+            margin-top: 5px;
         }
 
         .controls {
@@ -99,6 +124,75 @@
             padding: 25px;
             margin-bottom: 30px;
             border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .search-section {
+            margin-bottom: 25px;
+        }
+
+        .universal-search {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 60px 18px 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 1.4rem;
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff6b6b;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-clear:hover {
+            color: #ff5252;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .search-examples {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .search-examples strong {
+            color: #667eea;
         }
 
         .controls-grid {
@@ -117,6 +211,9 @@
             font-weight: 600;
             margin-bottom: 8px;
             color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .control-group input,
@@ -125,7 +222,7 @@
             border: 2px solid rgba(255,255,255,0.2);
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
             background: rgba(255,255,255,0.1);
             color: #ffffff;
         }
@@ -137,8 +234,9 @@
             background: rgba(255,255,255,0.15);
         }
 
-        .control-group input::placeholder {
-            color: rgba(255,255,255,0.5);
+        .control-group select option {
+            background: #1a1a2e;
+            color: #ffffff;
         }
 
         .checkbox-group {
@@ -152,41 +250,30 @@
         .checkbox-group input[type="checkbox"] {
             width: 20px;
             height: 20px;
+            cursor: pointer;
         }
 
         .checkbox-group label {
             margin-bottom: 0;
             font-weight: 500;
-        }
-
-        .filter-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .filter-tag {
-            background: #667eea;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .filter-tag .remove {
             cursor: pointer;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
+        }
+
+        .btn-refresh {
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #000000;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
+
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
         }
 
         .results-header {
@@ -198,6 +285,8 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-bottom: none;
         }
 
         .results-info {
@@ -218,11 +307,16 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
+            font-weight: 500;
         }
 
         .view-btn.active {
             background: #667eea;
             color: white;
+        }
+
+        .view-btn:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.2);
         }
 
         .hosts-container {
@@ -231,17 +325,18 @@
             border-radius: 0 0 15px 15px;
             min-height: 400px;
             border: 1px solid rgba(255,255,255,0.2);
+            border-top: none;
         }
 
         .hosts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
             gap: 20px;
             padding: 25px;
         }
 
         .hosts-list {
-            padding: 0;
+            padding: 25px;
         }
 
         .host-card {
@@ -249,15 +344,16 @@
             border-radius: 12px;
             padding: 20px;
             border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            transition: all 0.3s;
             position: relative;
             overflow: hidden;
         }
 
         .host-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             border-color: #667eea;
             background: rgba(255,255,255,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .host-card.enhanced {
@@ -265,22 +361,9 @@
             background: rgba(0,255,136,0.1);
         }
 
-        .host-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
-            gap: 20px;
-            padding: 15px 25px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            align-items: center;
-            color: #ffffff;
-        }
-
-        .host-row:last-child {
-            border-bottom: none;
-        }
-
-        .host-row:hover {
-            background: rgba(255,255,255,0.05);
+        .host-card.featured {
+            border: 2px solid #ffd700;
+            background: rgba(255,215,0,0.1);
         }
 
         .host-header {
@@ -295,6 +378,9 @@
             font-size: 1.1rem;
             color: #ffffff;
             text-decoration: none;
+            word-break: break-word;
+            max-width: 250px;
+            transition: color 0.3s ease;
         }
 
         .host-domain:hover {
@@ -308,12 +394,23 @@
             border-radius: 6px;
             font-size: 0.75rem;
             font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .featured-badge {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000000;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 10px;
         }
 
         .host-stats {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            grid-template-columns: 1fr;
+            gap: 8px;
             margin-bottom: 15px;
         }
 
@@ -321,15 +418,81 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.9rem;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            align-items: center;
+        }
+
+        .stat:last-child {
+            border-bottom: none;
         }
 
         .stat-label {
             color: rgba(255,255,255,0.7);
+            font-weight: 500;
+            min-width: 120px;
         }
 
         .stat-value {
             font-weight: 600;
             color: #ffffff;
+            text-align: right;
+            word-break: break-all;
+            max-width: 250px;
+        }
+
+        .xrpl-address {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            background: rgba(0, 255, 136, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .xrpl-address:hover {
+            background: rgba(0, 255, 136, 0.3);
+            transform: scale(1.02);
+        }
+
+        .email-address {
+            font-size: 0.85rem;
+            color: #00ccff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(0, 204, 255, 0.1);
+            border: 1px solid rgba(0, 204, 255, 0.2);
+        }
+
+        .email-address:hover {
+            color: #ffffff;
+            background: rgba(0, 204, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        .cpu-model {
+            font-size: 0.8rem;
+            color: #ffd700;
+            font-style: italic;
+        }
+
+        .reputation-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .reputation-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #45b7d1);
+            transition: width 0.3s;
         }
 
         .host-features {
@@ -350,19 +513,22 @@
 
         .host-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
         }
 
         .btn {
-            padding: 8px 16px;
+            padding: 8px 12px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
             text-align: center;
+            font-weight: 500;
         }
 
         .btn-primary {
@@ -372,6 +538,7 @@
 
         .btn-primary:hover {
             background: #5a6fd8;
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -382,22 +549,18 @@
 
         .btn-secondary:hover {
             background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
         }
 
-        .btn-refresh {
-            background: linear-gradient(45deg, #00ff88, #00cc6a);
-            color: #000000;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            margin-left: auto;
+        .btn-copy {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
         }
 
-        .btn-refresh:hover {
-            transform: translateY(-2px);
+        .btn-copy:hover {
+            background: rgba(0, 255, 136, 0.3);
+            transform: translateY(-1px);
         }
 
         .pagination {
@@ -422,6 +585,7 @@
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
+            font-weight: 500;
         }
 
         .page-btn:hover,
@@ -458,6 +622,25 @@
             100% { transform: rotate(360deg); }
         }
 
+        .success-message {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(0, 255, 136, 0.9);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         .error {
             background: rgba(239, 68, 68, 0.2);
             color: #fca5a5;
@@ -467,28 +650,59 @@
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
-        .success {
-            background: rgba(16, 185, 129, 0.2);
-            color: #6ee7b7;
-            padding: 20px;
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .no-results h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .search-suggestions {
+            background: rgba(255,255,255,0.1);
             border-radius: 8px;
-            margin: 20px 0;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .reputation-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 5px;
+        .search-suggestions h4 {
+            color: #ffd700;
+            margin-bottom: 10px;
         }
 
-        .reputation-fill {
-            height: 100%;
-            background: linear-gradient(to right, #fbbf24, #10b981, #3b82f6);
-            transition: width 0.3s;
+        .search-suggestions ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .search-suggestions li {
+            padding: 5px 0;
+            color: rgba(255,255,255,0.8);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .search-suggestions li:hover {
+            color: #667eea;
+        }
+
+        .host-list-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .host-list-item:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: #667eea;
         }
 
         @media (max-width: 768px) {
@@ -500,29 +714,31 @@
                 font-size: 2rem;
             }
 
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
-
             .hosts-grid {
                 grid-template-columns: 1fr;
                 padding: 15px;
             }
 
-            .host-row {
+            .controls-grid {
                 grid-template-columns: 1fr;
-                gap: 10px;
-                text-align: center;
             }
 
             .stats-bar {
                 grid-template-columns: repeat(2, 1fr);
             }
 
+            .host-stats {
+                grid-template-columns: 1fr;
+            }
+
             .checkbox-group {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -537,7 +753,7 @@
                 <a href="/monitoring-dashboard.html" class="nav-link admin-only">Monitoring</a>
                 <a href="/my-earnings.html" class="nav-link admin-only">Earnings</a>
                 <a href="/host-discovery.html" class="nav-link active">Discovery</a>
-                <a href="/cluster/roi-calculator.html" class="btn btn-secondary tenant-only"></a>
+                <a href="/cluster/roi-calculator.html" class="btn btn-secondary tenant-only">ROI Calc</a>
                 <a href="/cluster/dapp-manager.html" class="nav-link admin-only">Cluster Manager</a>
                 <a href="/cluster/paywall.html" style="color: #3b82f6; font-weight: 600;">Premium</a>
             </div>
@@ -552,14 +768,14 @@
         <!-- Header -->
         <div class="discovery-header">
             <h1 class="discovery-title">🔍 Enhanced Host Discovery</h1>
-            <p class="discovery-subtitle">Real-time data from Evernode network • Live tracking of 2000+ active hosts • Enhanced host detection</p>
-            <div id="connection-status" style="margin-top: 15px; padding: 8px 16px; border-radius: 20px; display: inline-block; background: rgba(0,255,136,0.2); color: #00ff88; font-weight: 600;">
+            <p class="discovery-subtitle">Real-time data from Evernode network • Live tracking of 7000+ active hosts • Advanced search capabilities</p>
+            <div id="connection-status" class="connection-status">
                 📡 Connecting to Evernode network...
             </div>
         </div>
 
         <!-- API Fallback Notice -->
-        <div id="fallback-notice" class="fallback-notice" style="display: none;">
+        <div id="fallback-notice" class="fallback-notice">
             ⚠️ Enhanced discovery API temporarily unavailable. 
             <a href="https://xahau.xrplwin.com/evernode" target="_blank">Click here to browse all Evernode hosts</a> 
             or wait for the system to reconnect.
@@ -576,62 +792,72 @@
                 <span class="stat-label">Enhanced</span>
             </div>
             <div class="stat-item">
-                <span class="stat-value" id="avgReputation">-</span>
-                <span class="stat-label">Avg Reputation</span>
+                <span class="stat-value" id="availableHosts">-</span>
+                <span class="stat-label">Available</span>
             </div>
             <div class="stat-item">
-                <span class="stat-value" id="totalCapacity">-</span>
-                <span class="stat-label">Total Capacity</span>
+                <span class="stat-value" id="avgReputation">-</span>
+                <span class="stat-label">Avg Reputation</span>
             </div>
             <div class="stat-item">
                 <span class="stat-value" id="countries">-</span>
                 <span class="stat-label">Countries</span>
             </div>
+            <div class="stat-item">
+                <span class="stat-value" id="lastUpdated">-</span>
+                <span class="stat-label">Last Updated</span>
+            </div>
         </div>
 
         <!-- Search and Filter Controls -->
         <div class="controls">
+            <!-- Universal Search -->
+            <div class="search-section">
+                <div class="universal-search">
+                    <input type="text" id="universalSearch" class="search-input" 
+                           placeholder="Search by email, XRPL address, domain, location, hardware...">
+                    <span class="search-clear" id="searchClear" onclick="clearSearch()">✕</span>
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="search-examples">
+                    <strong>Examples:</strong> evernodeevr@gmail.com • r9Appp6b29X5... • Germany • AMD EPYC • datacenter-nodes.com • "reward eligible" • "enhanced"
+                </div>
+            </div>
+
+            <!-- Advanced Filters -->
             <div class="controls-grid">
                 <div class="control-group">
-                    <label for="search">Search Hosts</label>
-                    <input type="text" id="search" placeholder="Domain, country, address...">
-                </div>
-                <div class="control-group">
-                    <label for="country">Country Filter</label>
+                    <label for="country">🌍 Country Filter</label>
                     <select id="country">
                         <option value="">All Countries</option>
-                        <option value="United States">United States</option>
-                        <option value="Germany">Germany</option>
-                        <option value="Canada">Canada</option>
-                        <option value="Netherlands">Netherlands</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="France">France</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="Japan">Japan</option>
-                        <option value="Australia">Australia</option>
-                        <option value="South Korea">South Korea</option>
                     </select>
                 </div>
                 <div class="control-group">
-                    <label for="minReputation">Min Reputation: <span id="reputationValue">200</span></label>
-                    <input type="range" id="minReputation" min="0" max="300" value="200" 
+                    <label for="minReputation">⭐ Min Reputation: <span id="reputationValue">0</span></label>
+                    <input type="range" id="minReputation" min="0" max="255" value="0" 
                            oninput="document.getElementById('reputationValue').textContent = this.value">
                 </div>
                 <div class="control-group">
-                    <label for="sort">Sort By</label>
+                    <label for="sort">📊 Sort By</label>
                     <select id="sort">
                         <option value="reputation_desc">Reputation (High to Low)</option>
                         <option value="reputation_asc">Reputation (Low to High)</option>
                         <option value="domain">Domain Name</option>
                         <option value="enhanced_first">Enhanced First</option>
+                        <option value="availability_desc">Most Available</option>
+                        <option value="cost_asc">Lowest Cost</option>
+                        <option value="rewards_desc">Most Rewards Earned</option>
+                        <option value="recent_first">Recently Registered</option>
                     </select>
                 </div>
                 <div class="control-group">
-                    <label for="limit">Results Per Page</label>
+                    <label for="limit">📄 Results Per Page</label>
                     <select id="limit">
                         <option value="20" selected>20 hosts</option>
                         <option value="50">50 hosts</option>
                         <option value="100">100 hosts</option>
+                        <option value="200">200 hosts</option>
+                        <option value="500">500 hosts</option>
                     </select>
                 </div>
             </div>
@@ -639,18 +865,24 @@
             <div class="checkbox-group">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <input type="checkbox" id="enhancedOnly">
-                    <label for="enhancedOnly">Enhanced hosts only</label>
+                    <label for="enhancedOnly">✨ Enhanced hosts only</label>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <input type="checkbox" id="activeOnly">
-                    <label for="activeOnly">Active hosts only</label>
+                    <label for="activeOnly">🟢 Available hosts only</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="rewardEligible">
+                    <label for="rewardEligible">💰 Reward eligible only</label>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="hasEmail">
+                    <label for="hasEmail">📧 Has email contact</label>
                 </div>
                 <button class="btn-refresh" onclick="refreshData()">
-                    🔄 Refresh Data
+                    🔄 Refresh All Data
                 </button>
             </div>
-
-            <div class="filter-tags" id="filterTags"></div>
         </div>
 
         <!-- Results Header -->
@@ -659,15 +891,15 @@
                 Loading hosts from Evernode network...
             </div>
             <div class="view-toggle">
-                <button class="view-btn active" onclick="setView('grid')" id="gridBtn">Grid</button>
-                <button class="view-btn" onclick="setView('list')" id="listBtn">List</button>
+                <button class="view-btn active" onclick="setView('grid')" id="gridBtn">📊 Grid</button>
+                <button class="view-btn" onclick="setView('list')" id="listBtn">📋 List</button>
             </div>
         </div>
 
         <!-- Host Results -->
         <div class="hosts-container">
             <div id="hostsContainer" class="loading">
-                Connecting to Evernode network via official API...
+                Downloading all ~7,000 hosts from Evernode network...
             </div>
         </div>
 
@@ -682,207 +914,165 @@
             constructor() {
                 this.currentPage = 1;
                 this.currentView = 'grid';
-                this.evernodeAPI = 'https://api.evernode.network/registry/hosts?limit=1500';
+                this.localAPI = '/api/enhanced-search.php'; // Use local API - no CORS issues
                 this.hosts = [];
-                this.enhancedHosts = new Set();
+                this.allHosts = []; // Store all hosts for local searching
                 this.totalPages = 1;
-                this.beaconTimeout = 5000; // 5 second timeout for beacon checks
+                this.lastSearchTime = 0;
+                this.countries = new Set();
                 
                 this.initializeEventListeners();
-                this.loadHosts();
+                this.loadAllHosts();
             }
 
             initializeEventListeners() {
-                // Search and filter inputs
-                document.getElementById('search').addEventListener('input', 
-                    this.debounce(() => this.filterAndDisplay(), 500));
-                document.getElementById('country').addEventListener('change', 
-                    () => this.filterAndDisplay());
-                document.getElementById('minReputation').addEventListener('input', 
-                    () => this.filterAndDisplay());
-                document.getElementById('sort').addEventListener('change', 
-                    () => this.filterAndDisplay());
-                document.getElementById('limit').addEventListener('change', 
-                    () => this.filterAndDisplay());
-                document.getElementById('enhancedOnly').addEventListener('change', 
-                    () => this.filterAndDisplay());
-                document.getElementById('activeOnly').addEventListener('change', 
-                    () => this.filterAndDisplay());
+                // Universal search with debounce
+                const searchInput = document.getElementById('universalSearch');
+                searchInput.addEventListener('input', (e) => {
+                    const clearBtn = document.getElementById('searchClear');
+                    if (e.target.value.length > 0) {
+                        clearBtn.style.display = 'block';
+                    } else {
+                        clearBtn.style.display = 'none';
+                    }
+                    this.debounce(() => this.performSearch(), 300)();
+                });
+                
+                // Filter controls
+                document.getElementById('country').addEventListener('change', () => this.performSearch());
+                document.getElementById('minReputation').addEventListener('input', () => this.performSearch());
+                document.getElementById('sort').addEventListener('change', () => this.performSearch());
+                document.getElementById('limit').addEventListener('change', () => this.performSearch());
+                document.getElementById('enhancedOnly').addEventListener('change', () => this.performSearch());
+                document.getElementById('activeOnly').addEventListener('change', () => this.performSearch());
+                document.getElementById('rewardEligible').addEventListener('change', () => this.performSearch());
+                document.getElementById('hasEmail').addEventListener('change', () => this.performSearch());
             }
 
-            async loadHosts() {
+            async loadAllHosts() {
                 this.showLoading();
-                this.updateConnectionStatus('📡 Fetching hosts from Evernode API...');
+                this.updateConnectionStatus('📡 Downloading all hosts from Evernode network...');
 
                 try {
-                    console.log('🔍 Fetching hosts from Evernode API...');
-                    const response = await fetch(this.evernodeAPI, {
-                        headers: {
-                            'accept': '*/*'
+                    console.log('🔍 Fetching all hosts from local API...');
+                    
+                    // First get stats
+                    const statsResponse = await fetch(`${this.localAPI}?action=stats`);
+                    if (statsResponse.ok) {
+                        const statsData = await statsResponse.json();
+                        if (statsData.success) {
+                            this.updateNetworkStats(statsData);
                         }
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`API responded with status: ${response.status}`);
                     }
 
-                    const data = await response.json();
-                    console.log('✅ Received', data.length, 'hosts from Evernode API');
+                    // Then get all hosts (increased limit to get all hosts)
+                    const hostsResponse = await fetch(`${this.localAPI}?action=search&limit=10000`);
+                    
+                    if (!hostsResponse.ok) {
+                        throw new Error(`API responded with status: ${hostsResponse.status}`);
+                    }
 
-                    this.hosts = this.processEvernodeData(data);
-                    this.updateNetworkStats();
-                    this.updateConnectionStatus('✅ Connected to Evernode network');
+                    const data = await hostsResponse.json();
+                    
+                    if (!data.success) {
+                        throw new Error(data.error || 'API returned error');
+                    }
+
+                    console.log('✅ Loaded', data.hosts?.length || 0, 'hosts from local API');
+
+                    this.allHosts = data.hosts || [];
+                    this.populateCountryFilter();
+                    this.updateConnectionStatus(`✅ Connected - ${this.allHosts.length} hosts cached locally`);
                     this.hideFallbackNotice();
                     
-                    // Start enhanced host detection
-                    this.detectEnhancedHosts();
+                    // Update last updated time
+                    document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
                     
-                    // Initial display
-                    this.filterAndDisplay();
+                    // Initial search/display
+                    this.performSearch();
 
                 } catch (error) {
-                    console.error('❌ Evernode API error:', error);
-                    this.showError('Failed to connect to Evernode network: ' + error.message);
-                    this.updateConnectionStatus('📡 API unavailable - showing fallback');
+                    console.error('❌ Local API error:', error);
+                    this.showError('Failed to connect to enhanced-search API: ' + error.message);
+                    this.updateConnectionStatus('❌ Local API unavailable');
                     this.showFallbackNotice();
                 }
             }
 
-            processEvernodeData(rawData) {
-                return rawData.map(host => ({
-                    domain: this.extractDomain(host.domain || host.address || 'unknown'),
-                    xahau_address: host.address,
-                    reputation: host.reputation || 0,
-                    quality_score: host.reputation || 0, // Use reputation as quality score
-                    country: host.country || 'Unknown',
-                    cpu_cores: host.cpu_cores || 1,
-                    memory_gb: host.memory_gb || 1,
-                    available_instances: host.available_instances || 0,
-                    max_instances: host.max_instances || 1,
-                    cost_per_hour_usd: this.calculateCostUSD(host.lease_amount),
-                    uri: this.buildHostURI(host.domain || host.address),
-                    enhanced: false, // Will be updated during detection
-                    features: [],
-                    raw_data: host
-                }));
-            }
-
-            extractDomain(domainString) {
-                if (!domainString) return 'unknown';
-                
-                // Remove protocol if present
-                domainString = domainString.replace(/^https?:\/\//, '');
-                
-                // Remove port if present
-                domainString = domainString.split(':')[0];
-                
-                // Remove path if present
-                domainString = domainString.split('/')[0];
-                
-                return domainString;
-            }
-
-            buildHostURI(domain) {
-                if (!domain) return null;
-                const cleanDomain = this.extractDomain(domain);
-                return `https://${cleanDomain}`;
-            }
-
-            calculateCostUSD(leaseAmount) {
-                // Estimate based on typical EVR pricing
-                // This would ideally come from a real EVR price API
-                const evrPriceUSD = 0.172; // Approximate EVR price
-                const hourlyRate = parseFloat(leaseAmount) || 0.005;
-                return hourlyRate * evrPriceUSD;
-            }
-
-            async detectEnhancedHosts() {
-                this.updateConnectionStatus('🔍 Scanning for enhanced hosts...');
-                
-                const scanPromises = this.hosts.map(async (host, index) => {
-                    try {
-                        const beaconURL = `${host.uri}/.enhanced-host-beacon.php`;
-                        console.log(`Checking beacon for ${host.domain}: ${beaconURL}`);
-                        
-                        const response = await Promise.race([
-                            fetch(beaconURL, { 
-                                method: 'GET',
-                                mode: 'cors',
-                                cache: 'no-cache'
-                            }),
-                            new Promise((_, reject) => 
-                                setTimeout(() => reject(new Error('timeout')), this.beaconTimeout)
-                            )
-                        ]);
-
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.enhanced === true) {
-                                console.log(`✅ Enhanced host found: ${host.domain}`);
-                                this.enhancedHosts.add(host.domain);
-                                host.enhanced = true;
-                                host.features = data.features || ['unified_discovery', 'enhanced_interface'];
-                                
-                                // Update display in real-time
-                                this.filterAndDisplay();
-                            }
-                        }
-                    } catch (error) {
-                        // Silently fail for beacon checks - most hosts won't have beacons
-                        console.log(`No beacon found for ${host.domain}`);
+            populateCountryFilter() {
+                // Extract unique countries from all hosts
+                this.countries.clear();
+                this.allHosts.forEach(host => {
+                    if (host.country && host.country !== 'Unknown') {
+                        this.countries.add(host.country);
                     }
                 });
 
-                // Run all beacon checks concurrently
-                await Promise.allSettled(scanPromises);
+                // Sort countries alphabetically
+                const sortedCountries = Array.from(this.countries).sort();
                 
-                const enhancedCount = this.enhancedHosts.size;
-                console.log(`🎯 Enhanced host scan complete: ${enhancedCount} enhanced hosts found`);
+                // Populate dropdown
+                const countrySelect = document.getElementById('country');
+                const currentValue = countrySelect.value;
                 
-                this.updateConnectionStatus(`✅ Network scan complete (${enhancedCount} enhanced hosts found)`);
-                this.updateNetworkStats();
-                this.filterAndDisplay();
+                // Clear existing options except "All Countries"
+                countrySelect.innerHTML = '<option value="">All Countries</option>';
+                
+                // Add sorted countries
+                sortedCountries.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = country;
+                    countrySelect.appendChild(option);
+                });
+
+                // Restore selection if it exists
+                if (currentValue && sortedCountries.includes(currentValue)) {
+                    countrySelect.value = currentValue;
+                }
             }
 
-            updateNetworkStats() {
-                const enhancedCount = this.hosts.filter(h => h.enhanced).length;
-                const totalCapacity = this.hosts.reduce((sum, h) => sum + h.max_instances, 0);
-                const avgReputation = Math.round(
-                    this.hosts.reduce((sum, h) => sum + h.reputation, 0) / this.hosts.length
-                );
-                const countries = new Set(this.hosts.map(h => h.country)).size;
-
-                document.getElementById('totalHosts').textContent = this.hosts.length.toLocaleString();
-                document.getElementById('enhancedHosts').textContent = enhancedCount.toLocaleString();
-                document.getElementById('avgReputation').textContent = avgReputation;
-                document.getElementById('totalCapacity').textContent = totalCapacity.toLocaleString();
-                document.getElementById('countries').textContent = countries;
-            }
-
-            filterAndDisplay() {
-                let filteredHosts = [...this.hosts];
-
-                // Apply filters
-                const searchTerm = document.getElementById('search').value.toLowerCase();
+            performSearch() {
+                this.currentPage = 1; // Reset to first page on new search
+                
+                const searchTerm = document.getElementById('universalSearch').value.toLowerCase().trim();
                 const country = document.getElementById('country').value;
                 const minReputation = parseInt(document.getElementById('minReputation').value);
                 const enhancedOnly = document.getElementById('enhancedOnly').checked;
                 const activeOnly = document.getElementById('activeOnly').checked;
+                const rewardEligible = document.getElementById('rewardEligible').checked;
+                const hasEmail = document.getElementById('hasEmail').checked;
+                const sortBy = document.getElementById('sort').value;
 
+                let filteredHosts = [...this.allHosts];
+
+                // Universal search across all fields
                 if (searchTerm) {
-                    filteredHosts = filteredHosts.filter(host => 
-                        host.domain.toLowerCase().includes(searchTerm) ||
-                        host.country.toLowerCase().includes(searchTerm) ||
-                        host.xahau_address.toLowerCase().includes(searchTerm)
-                    );
+                    filteredHosts = filteredHosts.filter(host => {
+                        const searchableText = [
+                            host.domain || '',
+                            host.email || host.operator_email || '',
+                            host.address || host.xahau_address || '',
+                            host.country || '',
+                            host.cpu_model || '',
+                            host.domain_tld || '',
+                            host.description || '',
+                            host.enhanced ? 'enhanced' : '',
+                            host.evr_rewards_eligible ? 'reward eligible' : '',
+                            (host.available_instances || 0) > 0 ? 'available' : 'busy'
+                        ].join(' ').toLowerCase();
+                        
+                        return searchableText.includes(searchTerm);
+                    });
                 }
 
+                // Apply other filters
                 if (country) {
                     filteredHosts = filteredHosts.filter(host => host.country === country);
                 }
 
                 if (minReputation > 0) {
-                    filteredHosts = filteredHosts.filter(host => host.reputation >= minReputation);
+                    filteredHosts = filteredHosts.filter(host => (host.reputation || 0) >= minReputation);
                 }
 
                 if (enhancedOnly) {
@@ -890,118 +1080,105 @@
                 }
 
                 if (activeOnly) {
-                    filteredHosts = filteredHosts.filter(host => host.available_instances > 0);
+                    filteredHosts = filteredHosts.filter(host => (host.available_instances || 0) > 0);
                 }
 
-                // Apply sorting
-                const sortBy = document.getElementById('sort').value;
+                if (rewardEligible) {
+                    filteredHosts = filteredHosts.filter(host => host.evr_rewards_eligible);
+                }
+
+                if (hasEmail) {
+                    filteredHosts = filteredHosts.filter(host => host.email || host.operator_email);
+                }
+
+                // Sort results
                 this.sortHosts(filteredHosts, sortBy);
 
-                // Apply pagination
-                const limit = parseInt(document.getElementById('limit').value);
-                const startIndex = (this.currentPage - 1) * limit;
-                const endIndex = startIndex + limit;
-                const paginatedHosts = filteredHosts.slice(startIndex, endIndex);
+                // Store filtered results
+                this.hosts = filteredHosts;
 
-                this.totalPages = Math.ceil(filteredHosts.length / limit);
-
-                // Update displays
-                this.updateResultsInfo(filteredHosts.length, startIndex + 1, Math.min(endIndex, filteredHosts.length));
-                this.updateFilterTags();
-                this.renderHosts(paginatedHosts);
-                this.renderPagination();
+                // Apply pagination and display
+                this.displayPaginatedResults();
             }
 
             sortHosts(hosts, sortBy) {
                 switch (sortBy) {
                     case 'reputation_desc':
-                        hosts.sort((a, b) => b.reputation - a.reputation);
+                        hosts.sort((a, b) => (b.reputation || 0) - (a.reputation || 0));
                         break;
                     case 'reputation_asc':
-                        hosts.sort((a, b) => a.reputation - b.reputation);
+                        hosts.sort((a, b) => (a.reputation || 0) - (b.reputation || 0));
                         break;
                     case 'domain':
-                        hosts.sort((a, b) => a.domain.localeCompare(b.domain));
+                        hosts.sort((a, b) => (a.domain || '').localeCompare(b.domain || ''));
                         break;
                     case 'enhanced_first':
                         hosts.sort((a, b) => {
                             if (a.enhanced && !b.enhanced) return -1;
                             if (!a.enhanced && b.enhanced) return 1;
-                            return b.reputation - a.reputation;
+                            return (b.reputation || 0) - (a.reputation || 0);
+                        });
+                        break;
+                    case 'availability_desc':
+                        hosts.sort((a, b) => (b.available_instances || 0) - (a.available_instances || 0));
+                        break;
+                    case 'cost_asc':
+                        hosts.sort((a, b) => (a.cost_per_hour_usd || 999) - (b.cost_per_hour_usd || 999));
+                        break;
+                    case 'rewards_desc':
+                        hosts.sort((a, b) => (parseFloat(b.accumulated_rewards || 0)) - (parseFloat(a.accumulated_rewards || 0)));
+                        break;
+                    case 'recent_first':
+                        hosts.sort((a, b) => {
+                            const dateA = new Date(a.registration_timestamp || 0);
+                            const dateB = new Date(b.registration_timestamp || 0);
+                            return dateB - dateA;
                         });
                         break;
                 }
             }
 
-            updateResultsInfo(total, start, end) {
-                const info = `Showing ${start}-${end} of ${total.toLocaleString()} hosts`;
-                document.getElementById('resultsInfo').textContent = info;
+            displayPaginatedResults() {
+                const limit = parseInt(document.getElementById('limit').value);
+                const startIndex = (this.currentPage - 1) * limit;
+                const endIndex = startIndex + limit;
+                const paginatedHosts = this.hosts.slice(startIndex, endIndex);
+
+                this.totalPages = Math.ceil(this.hosts.length / limit);
+
+                // Update displays
+                this.updateResultsInfo(this.hosts.length, startIndex + 1, Math.min(endIndex, this.hosts.length));
+                this.renderHosts(paginatedHosts);
+                this.renderPagination();
             }
 
-            updateFilterTags() {
-                const container = document.getElementById('filterTags');
-                container.innerHTML = '';
-
-                const filters = this.getActiveFilters();
-                Object.entries(filters).forEach(([key, value]) => {
-                    if (value) {
-                        this.addFilterTag(container, key, value);
-                    }
-                });
-            }
-
-            getActiveFilters() {
-                return {
-                    'Search': document.getElementById('search').value,
-                    'Country': document.getElementById('country').value,
-                    'Min Reputation': document.getElementById('minReputation').value > 200 ? document.getElementById('minReputation').value : null,
-                    'Enhanced Only': document.getElementById('enhancedOnly').checked ? 'Yes' : null,
-                    'Active Only': document.getElementById('activeOnly').checked ? 'Yes' : null
-                };
-            }
-
-            addFilterTag(container, label, value) {
-                const tag = document.createElement('div');
-                tag.className = 'filter-tag';
-                tag.innerHTML = `
-                    ${label}: ${value}
-                    <span class="remove" onclick="discovery.clearFilter('${label.toLowerCase().replace(' ', '')}')">×</span>
-                `;
-                container.appendChild(tag);
-            }
-
-            clearFilter(fieldKey) {
-                const fieldMap = {
-                    'search': 'search',
-                    'country': 'country',
-                    'minreputation': 'minReputation',
-                    'enhancedonly': 'enhancedOnly',
-                    'activeonly': 'activeOnly'
-                };
-
-                const fieldId = fieldMap[fieldKey];
-                if (!fieldId) return;
-
-                const field = document.getElementById(fieldId);
-                if (field.type === 'checkbox') {
-                    field.checked = false;
-                } else if (field.tagName === 'SELECT') {
-                    field.selectedIndex = 0;
-                } else if (fieldId === 'minReputation') {
-                    field.value = 200;
-                    document.getElementById('reputationValue').textContent = '200';
-                } else {
-                    field.value = '';
-                }
+            updateNetworkStats(statsData) {
+                document.getElementById('totalHosts').textContent = (statsData.total_hosts || 0).toLocaleString();
+                document.getElementById('enhancedHosts').textContent = (statsData.enhanced_hosts || 0).toLocaleString();
+                document.getElementById('availableHosts').textContent = (statsData.available_hosts || 0).toLocaleString();
                 
-                this.filterAndDisplay();
+                // Calculate additional stats from all hosts
+                if (this.allHosts.length > 0) {
+                    const avgReputation = Math.round(
+                        this.allHosts.reduce((sum, h) => sum + (h.reputation || 0), 0) / this.allHosts.length
+                    );
+                    const countries = new Set(this.allHosts.map(h => h.country || 'Unknown')).size;
+                    
+                    document.getElementById('avgReputation').textContent = avgReputation;
+                    document.getElementById('countries').textContent = countries;
+                }
+            }
+
+            updateResultsInfo(total, start, end) {
+                const info = total === 0 ? 'No hosts found' : `Showing ${start}-${end} of ${total.toLocaleString()} hosts`;
+                document.getElementById('resultsInfo').textContent = info;
             }
 
             renderHosts(hosts) {
                 const container = document.getElementById('hostsContainer');
                 
                 if (hosts.length === 0) {
-                    container.innerHTML = '<div class="loading">No hosts found matching your criteria</div>';
+                    this.renderNoResults(container);
                     return;
                 }
 
@@ -1012,97 +1189,189 @@
                 }
             }
 
-            renderHostsGrid(container, hosts) {
-                container.className = 'hosts-grid';
-                container.innerHTML = hosts.map(host => `
-                    <div class="host-card ${host.enhanced ? 'enhanced' : ''}">
-                        <div class="host-header">
-                            <a href="${host.uri || '#'}" class="host-domain" target="_blank">
-                                ${host.domain}
-                            </a>
-                            ${host.enhanced ? '<span class="enhanced-badge">Enhanced</span>' : ''}
-                        </div>
+            renderNoResults(container) {
+                const searchTerm = document.getElementById('universalSearch').value;
+                const hasFilters = document.getElementById('country').value || 
+                                 document.getElementById('minReputation').value > 0 ||
+                                 document.getElementById('enhancedOnly').checked ||
+                                 document.getElementById('activeOnly').checked ||
+                                 document.getElementById('rewardEligible').checked ||
+                                 document.getElementById('hasEmail').checked;
+
+                container.innerHTML = `
+                    <div class="no-results">
+                        <h3>No hosts found</h3>
+                        ${searchTerm ? `<p>No results for: <strong>"${searchTerm}"</strong></p>` : ''}
+                        ${hasFilters ? '<p>Try adjusting your search criteria or filters</p>' : ''}
                         
-                        <div class="host-stats">
-                            <div class="stat">
-                                <span class="stat-label">Reputation:</span>
-                                <span class="stat-value">${host.reputation}</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Country:</span>
-                                <span class="stat-value">${host.country}</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">CPU/RAM:</span>
-                                <span class="stat-value">${host.cpu_cores}c/${host.memory_gb}GB</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Available:</span>
-                                <span class="stat-value">${host.available_instances}/${host.max_instances}</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Cost/hour:</span>
-                                <span class="stat-value">~$${host.cost_per_hour_usd?.toFixed(6) || '0.000001'}</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-label">Status:</span>
-                                <span class="stat-value" style="color: ${host.available_instances > 0 ? '#00ff88' : '#fbbf24'}">
-                                    ${host.available_instances > 0 ? 'Available' : 'Busy'}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="reputation-bar">
-                            <div class="reputation-fill" style="width: ${(host.reputation / 300) * 100}%"></div>
-                        </div>
-
-                        ${host.features?.length ? `
-                        <div class="host-features">
-                            ${host.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
-                        </div>
-                        ` : ''}
-
-                        <div class="host-actions">
-                            ${host.uri ? `<a href="${host.uri}" class="btn btn-primary" target="_blank">Visit Host</a>` : ''}
-                            <button class="btn btn-secondary" onclick="discovery.copyAddress('${host.xahau_address}')">
-                                Copy Address
-                            </button>
+                        <div class="search-suggestions">
+                            <h4>💡 Search Tips:</h4>
+                            <ul>
+                                <li onclick="setSampleSearch('evernodeevr@gmail.com')">• Try searching for email: evernodeevr@gmail.com</li>
+                                <li onclick="setSampleSearch('r9Appp6b29X5')">• Search by XRPL address: r9Appp6b29X5...</li>
+                                <li onclick="setSampleSearch('Germany')">• Search by country: Germany</li>
+                                <li onclick="setSampleSearch('AMD EPYC')">• Search by hardware: AMD EPYC</li>
+                                <li onclick="setSampleSearch('enhanced')">• Search for enhanced hosts</li>
+                            </ul>
                         </div>
                     </div>
-                `).join('');
+                `;
+            }
+
+            renderHostsGrid(container, hosts) {
+                container.className = 'hosts-grid';
+                container.innerHTML = hosts.map(host => {
+                    const domain = host.domain || host.address || 'Unknown';
+                    const reputation = host.reputation || 0;
+                    const country = host.country || 'Unknown';
+                    const uri = host.uri || (domain.includes('.') ? `https://${domain}` : null);
+                    const enhanced = host.enhanced || false;
+                    const email = host.email || host.operator_email || null;
+                    const xrplAddress = host.address || host.xahau_address || '';
+                    const cpuModel = host.cpu_model || 'Not specified';
+                    const accumulatedRewards = host.accumulated_rewards || '0';
+                    
+                    return `
+                        <div class="host-card ${enhanced ? 'enhanced' : ''} ${reputation >= 240 ? 'featured' : ''}">
+                            <div class="host-header">
+                                <a href="${uri || '#'}" class="host-domain" target="_blank">
+                                    ${domain}
+                                </a>
+                                <div>
+                                    ${enhanced ? '<span class="enhanced-badge">Enhanced</span>' : ''}
+                                    ${reputation >= 240 ? '<span class="featured-badge">Top Host</span>' : ''}
+                                </div>
+                            </div>
+                            
+                            <div class="host-stats">
+                                <div class="stat">
+                                    <span class="stat-label">🔗 XRPL Address:</span>
+                                    <span class="stat-value">
+                                        <span class="xrpl-address" onclick="discovery.copyToClipboard('${xrplAddress}', 'XRPL address')">
+                                            ${xrplAddress.substring(0, 20)}...
+                                        </span>
+                                    </span>
+                                </div>
+                                
+                                ${email ? `
+                                <div class="stat">
+                                    <span class="stat-label">📧 Operator Email:</span>
+                                    <span class="stat-value">
+                                        <span class="email-address" onclick="discovery.copyToClipboard('${email}', 'Email address')">
+                                            ${email}
+                                        </span>
+                                    </span>
+                                </div>
+                                ` : ''}
+                                
+                                <div class="stat">
+                                    <span class="stat-label">🌍 Country:</span>
+                                    <span class="stat-value">${country}</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">⭐ Reputation:</span>
+                                    <span class="stat-value" style="color: ${reputation >= 240 ? '#ffd700' : reputation >= 200 ? '#00ff88' : reputation >= 100 ? '#ffd93d' : '#fca5a5'}">${reputation}</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">🖥️ CPU Model:</span>
+                                    <span class="stat-value cpu-model">${cpuModel}</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">⚡ Resources:</span>
+                                    <span class="stat-value">${host.cpu_cores || 4}c/${host.memory_gb || 8}GB/${host.disk_gb || 50}GB</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">📊 Instances:</span>
+                                    <span class="stat-value">${host.available_instances || 0}/${host.max_instances || 3} available</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">💲 Cost/hour:</span>
+                                    <span class="stat-value">$${(host.cost_per_hour_usd || 0).toFixed(6)} USD</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">💰 Rewards Earned:</span>
+                                    <span class="stat-value" style="color: #ffd700">${parseFloat(accumulatedRewards).toFixed(3)} EVR</span>
+                                </div>
+                                
+                                <div class="stat">
+                                    <span class="stat-label">🔄 Status:</span>
+                                    <span class="stat-value" style="color: ${(host.available_instances || 0) > 0 ? '#00ff88' : '#fbbf24'}">
+                                        ${(host.available_instances || 0) > 0 ? '🟢 Available' : '🟡 Busy'}
+                                    </span>
+                                </div>
+                                
+                                ${host.evr_rewards_eligible ? `
+                                <div class="stat">
+                                    <span class="stat-label">🎯 EVR Rewards:</span>
+                                    <span class="stat-value" style="color: #00ff88">✅ Eligible</span>
+                                </div>
+                                ` : ''}
+                            </div>
+
+                            <div class="reputation-bar">
+                                <div class="reputation-fill" style="width: ${(reputation / 255) * 100}%"></div>
+                            </div>
+
+                            ${host.features && host.features.length ? `
+                            <div class="host-features">
+                                ${host.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
+                            </div>
+                            ` : ''}
+
+                            <div class="host-actions">
+                                ${uri ? `<a href="${uri}" class="btn btn-primary" target="_blank">🌐 Visit Host</a>` : ''}
+                                <button class="btn btn-copy" onclick="discovery.copyToClipboard('${xrplAddress}', 'XRPL address')">
+                                    📋 Copy XRPL
+                                </button>
+                                ${email ? `<button class="btn btn-copy" onclick="discovery.copyToClipboard('${email}', 'Email address')">
+                                    📧 Copy Email
+                                </button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
 
             renderHostsList(container, hosts) {
                 container.className = 'hosts-list';
-                container.innerHTML = `
-                    <div class="host-row" style="font-weight: bold; background: rgba(255,255,255,0.1); border-bottom: 2px solid rgba(255,255,255,0.2);">
-                        <div>Host</div>
-                        <div>Reputation</div>
-                        <div>Country</div>
-                        <div>Resources</div>
-                        <div>Status</div>
-                        <div>Actions</div>
-                    </div>
-                    ${hosts.map(host => `
-                        <div class="host-row">
-                            <div>
-                                <a href="${host.uri || '#'}" class="host-domain" target="_blank">
-                                    ${host.domain}
-                                </a>
-                                ${host.enhanced ? '<br><span class="enhanced-badge">Enhanced</span>' : ''}
+                container.innerHTML = hosts.map(host => {
+                    const domain = host.domain || host.address || 'Unknown';
+                    const reputation = host.reputation || 0;
+                    const country = host.country || 'Unknown';
+                    const enhanced = host.enhanced || false;
+                    const email = host.email || host.operator_email || null;
+                    const xrplAddress = host.address || host.xahau_address || '';
+                    
+                    return `
+                        <div class="host-list-item">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <div>
+                                    <strong style="color: #667eea; font-size: 1.1rem;">${domain}</strong>
+                                    ${enhanced ? '<span class="enhanced-badge" style="margin-left: 10px;">Enhanced</span>' : ''}
+                                </div>
+                                <div style="color: #ffd700;">⭐ ${reputation}</div>
                             </div>
-                            <div>${host.reputation}</div>
-                            <div>${host.country}</div>
-                            <div>${host.cpu_cores}c/${host.memory_gb}GB</div>
-                            <div style="color: ${host.available_instances > 0 ? '#00ff88' : '#fbbf24'}">
-                                ${host.available_instances > 0 ? 'Available' : 'Busy'}
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; font-size: 0.9rem;">
+                                <div><strong>🌍 Country:</strong> ${country}</div>
+                                <div><strong>📊 Instances:</strong> ${host.available_instances || 0}/${host.max_instances || 3}</div>
+                                <div><strong>💲 Cost:</strong> $${(host.cost_per_hour_usd || 0).toFixed(6)}/hour</div>
+                                ${email ? `<div><strong>📧 Email:</strong> <span class="email-address" onclick="discovery.copyToClipboard('${email}', 'Email')">${email}</span></div>` : ''}
                             </div>
-                            <div>
-                                ${host.uri ? `<a href="${host.uri}" class="btn btn-primary" target="_blank">Visit</a>` : ''}
+                            <div style="margin-top: 10px;">
+                                <span style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">XRPL:</span>
+                                <span class="xrpl-address" onclick="discovery.copyToClipboard('${xrplAddress}', 'XRPL address')" style="margin-left: 5px;">
+                                    ${xrplAddress}
+                                </span>
                             </div>
                         </div>
-                    `).join('')}
-                `;
+                    `;
+                }).join('');
             }
 
             renderPagination() {
@@ -1150,25 +1419,37 @@
             goToPage(page) {
                 if (page < 1 || page > this.totalPages) return;
                 this.currentPage = page;
-                this.filterAndDisplay();
+                this.displayPaginatedResults();
+                
+                // Scroll to top of results
+                document.getElementById('hostsContainer').scrollIntoView({ behavior: 'smooth' });
             }
 
             setView(view) {
                 this.currentView = view;
                 document.getElementById('gridBtn').classList.toggle('active', view === 'grid');
                 document.getElementById('listBtn').classList.toggle('active', view === 'list');
-                this.filterAndDisplay();
+                this.displayPaginatedResults();
             }
 
             async refreshData() {
                 this.currentPage = 1;
-                this.enhancedHosts.clear();
-                await this.loadHosts();
+                document.getElementById('lastUpdated').textContent = 'Refreshing...';
+                await this.loadAllHosts();
             }
 
-            copyAddress(address) {
-                navigator.clipboard.writeText(address).then(() => {
-                    this.showSuccess('Xahau address copied to clipboard!');
+            copyToClipboard(text, type) {
+                navigator.clipboard.writeText(text).then(() => {
+                    this.showSuccess(`${type} copied to clipboard!`);
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    this.showSuccess(`${type} copied to clipboard!`);
                 });
             }
 
@@ -1177,7 +1458,7 @@
                 if (status) {
                     status.textContent = message;
                     
-                    if (message.includes('Connected') || message.includes('complete')) {
+                    if (message.includes('Connected') || message.includes('cached')) {
                         status.style.background = 'rgba(0,255,136,0.2)';
                         status.style.color = '#00ff88';
                     } else if (message.includes('unavailable') || message.includes('failed')) {
@@ -1200,20 +1481,19 @@
 
             showLoading() {
                 document.getElementById('hostsContainer').innerHTML = 
-                    '<div class="loading">Connecting to Evernode network via official API...</div>';
+                    '<div class="loading">Downloading all ~7,000 hosts from Evernode network...</div>';
             }
 
             showError(message) {
                 document.getElementById('hostsContainer').innerHTML = 
-                    `<div class="error">Error: ${message}</div>`;
+                    `<div class="error">❌ Error: ${message}<br><br>Please check that your enhanced-search.php API is working correctly.</div>`;
             }
 
             showSuccess(message) {
-                const container = document.querySelector('.discovery-container');
                 const alert = document.createElement('div');
-                alert.className = 'success';
+                alert.className = 'success-message';
                 alert.textContent = message;
-                container.insertBefore(alert, container.firstChild);
+                document.body.appendChild(alert);
                 
                 setTimeout(() => alert.remove(), 3000);
             }
@@ -1234,6 +1514,16 @@
         // Global functions for onclick handlers
         window.setView = (view) => discovery.setView(view);
         window.refreshData = () => discovery.refreshData();
+        window.clearSearch = () => {
+            document.getElementById('universalSearch').value = '';
+            document.getElementById('searchClear').style.display = 'none';
+            discovery.performSearch();
+        };
+        window.setSampleSearch = (term) => {
+            document.getElementById('universalSearch').value = term;
+            document.getElementById('searchClear').style.display = 'block';
+            discovery.performSearch();
+        };
 
         // Initialize the discovery system
         document.addEventListener('DOMContentLoaded', function() {
