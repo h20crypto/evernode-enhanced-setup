@@ -167,6 +167,18 @@
             color: #000000;
         }
 
+        .btn-disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: #666666;
+            cursor: not-allowed;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
         /* Commission Widget Styles */
         .commission-widget {
             background: rgba(0, 255, 136, 0.1);
@@ -465,6 +477,24 @@
             color: white;
             width: 80px;
         }
+
+        /* Coming Soon Indicator */
+        .coming-soon {
+            position: relative;
+        }
+
+        .coming-soon::after {
+            content: 'Coming Soon';
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #fbbf24;
+            color: #000;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -521,15 +551,14 @@
             </div>
             
             <div class="cta-buttons">
-                <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                <a href="#" class="btn btn-primary coming-soon" style="font-size: 1.1rem; padding: 18px 35px;" onclick="showComingSoon()">
                     🎮 Launch Demo
                 </a>
                 <a href="/cluster/dapp-manager.html" class="btn btn-secondary admin-only">
                     🏗️ Cluster Manager
                 </a>
-                <!-- From your landing pages -->
                 <a href="/cluster/roi-calculator.html" class="btn btn-secondary tenant-only">
-                💰 ROI Calculator
+                    💰 ROI Calculator
                 </a>
                 <a href="#" class="btn btn-outline premium-cluster-link" data-commission-source="hero">
                     💎 Upgrade to Premium
@@ -574,6 +603,14 @@
     <section class="stats-section">
         <div class="container">
             <h2 class="section-title">📊 Live Host Statistics</h2>
+            
+            <!-- Data Source Indicator -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; padding: 10px; display: inline-block;">
+                    <span style="font-size: 0.9rem; color: #3b82f6;" id="data-source-indicator">🔄 Connecting to live APIs...</span>
+                </div>
+            </div>
+            
             <div class="stats-grid">
                 <div class="stat-item">
                     <span class="stat-number" id="instance-count">Loading...</span>
@@ -593,13 +630,22 @@
                 </div>
             </div>
             
-            <!-- Host Status Indicator -->
-            <div style="text-align: center; margin-top: 30px;">
-                <div style="background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 10px; padding: 15px; display: inline-block; min-width: 300px; position: relative;">
+            <!-- Host Information Panel -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <!-- Host Status -->
+                <div style="background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); border-radius: 10px; padding: 15px; position: relative;">
                     <div style="font-size: 1rem; font-weight: 600; color: #00ff88; margin-bottom: 5px;">Host Status</div>
                     <div style="font-size: 1.1rem; font-weight: 600;" id="host-status">Checking availability...</div>
                     <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;">Last updated: <span id="stats-timestamp">Loading...</span></div>
                     <button onclick="forceRefreshStats()" style="position: absolute; top: 8px; right: 8px; background: rgba(0,255,136,0.2); border: 1px solid rgba(0,255,136,0.5); color: #00ff88; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;" title="Refresh Host Stats">🔄</button>
+                </div>
+                
+                <!-- Host Wallet Address -->
+                <div style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); border-radius: 10px; padding: 15px; position: relative;">
+                    <div style="font-size: 1rem; font-weight: 600; color: #3b82f6; margin-bottom: 5px;">Host Wallet (r-address)</div>
+                    <div style="font-size: 0.9rem; font-family: 'Courier New', monospace; color: #ffffff; word-break: break-all;" id="host-wallet">Loading...</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;">Xahau address for EVR payments</div>
+                    <button onclick="copyHostWallet()" style="position: absolute; top: 8px; right: 8px; background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.5); color: #3b82f6; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;" title="Copy Wallet Address">📋</button>
                 </div>
             </div>
         </div>
@@ -710,7 +756,7 @@
                 <a href="#" class="btn btn-primary premium-cluster-link" data-commission-source="main-cta" style="margin-right: 10px;">
                     🎯 Get Premium Access
                 </a>
-                <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-secondary">
+                <a href="#" class="btn btn-secondary coming-soon" onclick="showComingSoon()">
                     🎮 Try Demo First
                 </a>
                 <div style="font-size: 0.9rem; margin-top: 15px; opacity: 0.8;" class="admin-only">
@@ -787,8 +833,8 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
                     <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
                         <div style="font-size: 2rem; margin-bottom: 10px;">1️⃣</div>
-                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Try Demo</h4>
-                        <p style="font-size: 0.9rem; opacity: 0.9;">Experience the <a href="/cluster/premium-cluster-manager-demo.html" style="color: #00ff88;">full interface</a> with sample data</p>
+                        <h4 style="color: #3b82f6; margin-bottom: 10px;">Demo Coming Soon</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Full interface demo being prepared</p>
                     </div>
                     <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
                         <div style="font-size: 2rem; margin-bottom: 10px;">2️⃣</div>
@@ -810,7 +856,7 @@
                     <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
                         <div style="font-size: 2rem; margin-bottom: 10px;">1️⃣</div>
                         <h4 style="color: #10b981; margin-bottom: 10px;">Demo</h4>
-                        <p style="font-size: 0.9rem; opacity: 0.9;">Try <a href="/cluster/premium-cluster-manager-demo.html" style="color: #00ff88;">cluster management</a> interface</p>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Cluster management demo coming soon</p>
                     </div>
                     <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
                         <div style="font-size: 2rem; margin-bottom: 10px;">2️⃣</div>
@@ -832,11 +878,11 @@
         <div class="container">
             <h2 class="section-title">⚡ Quick Access</h2>
             <div class="access-grid">
-                <!-- Demo - Always visible and prominent -->
-                <a href="/cluster/premium-cluster-manager-demo.html" class="access-card" style="border: 2px solid #00ff88; background: rgba(0,255,136,0.1);">
+                <!-- Demo - Coming Soon -->
+                <a href="#" class="access-card coming-soon" onclick="showComingSoon()" style="border: 2px solid #fbbf24; background: rgba(251,191,36,0.1);">
                     <span class="access-icon">🎮</span>
-                    <div class="access-title" style="color: #00ff88;">Launch Demo</div>
-                    <div class="access-description">Try the full cluster management interface</div>
+                    <div class="access-title" style="color: #fbbf24;">Launch Demo</div>
+                    <div class="access-description">Full cluster management interface</div>
                 </a>
                 
                 <!-- Host Discovery - Always visible -->
@@ -887,7 +933,7 @@
                     Deploy your first dApp in minutes with transparent EVR pricing
                 </p>
                 <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                    <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                    <a href="#" class="btn btn-primary coming-soon" onclick="showComingSoon()" style="font-size: 1.1rem; padding: 18px 35px;">
                         🎮 Try Demo First
                     </a>
                     <a href="#tenant-deploy" onclick="scrollToTenantSection()" class="btn btn-secondary">
@@ -904,7 +950,7 @@
                     Transform your host into a premium service with 300% more bookings + $10 per referral income
                 </p>
                 <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-                    <a href="/cluster/premium-cluster-manager-demo.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 35px;">
+                    <a href="#" class="btn btn-primary coming-soon" onclick="showComingSoon()" style="font-size: 1.1rem; padding: 18px 35px;">
                         🎮 Try Full Demo
                     </a>
                     <a href="/cluster/dapp-manager.html" class="btn btn-secondary">
@@ -919,15 +965,80 @@
     </section>
 
     <script>
+        // User Role Detection
+        function detectUserRole() {
+            // Default to tenant mode for now
+            let currentRole = 'tenant';
+            
+            // Check for admin access via URL parameter or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true' || localStorage.getItem('admin_mode') === 'true') {
+                currentRole = 'admin';
+            }
+            
+            updateUIForRole(currentRole);
+        }
+
+        function updateUIForRole(role) {
+            const roleIndicator = document.getElementById('role-indicator');
+            const roleBanner = document.getElementById('role-banner');
+            
+            // Hide all role-specific content first
+            document.querySelectorAll('.tenant-only, .admin-only, .demo-only').forEach(element => {
+                element.style.display = 'none';
+            });
+            
+            if (role === 'admin') {
+                roleIndicator.textContent = 'Host Admin';
+                roleIndicator.style.background = 'rgba(16, 185, 129, 0.2)';
+                roleIndicator.style.color = '#10b981';
+                
+                // Show admin content
+                document.querySelectorAll('.admin-only').forEach(element => {
+                    element.style.display = element.dataset.originalDisplay || 'block';
+                });
+                
+                // Show role banner
+                roleBanner.style.display = 'block';
+                roleBanner.innerHTML = '🎯 Host Admin Mode - Earn $10 per referral + manage your enhanced host';
+                
+                // Initialize commission manager for admins
+                setTimeout(() => new CommissionManager(), 1000);
+                
+            } else {
+                roleIndicator.textContent = 'Tenant Mode';
+                roleIndicator.style.background = 'rgba(59, 130, 246, 0.2)';
+                roleIndicator.style.color = '#3b82f6';
+                
+                // Show tenant content
+                document.querySelectorAll('.tenant-only').forEach(element => {
+                    element.style.display = element.dataset.originalDisplay || 'block';
+                });
+            }
+        }
+
+        function toggleAdminMode() {
+            const isAdmin = localStorage.getItem('admin_mode') === 'true';
+            if (isAdmin) {
+                localStorage.removeItem('admin_mode');
+                updateUIForRole('tenant');
+                console.log('Switched to tenant mode');
+            } else {
+                localStorage.setItem('admin_mode', 'true');
+                updateUIForRole('admin');
+                console.log('Switched to admin mode');
+            }
+        }
+
         // Commission Management Class
         class CommissionManager {
-    constructor() {
-        this.hostId = window.location.hostname;
-        this.referralCode = this.generateReferralCode();
-        this.paymentServer = 'https://payments.evrdirect.info';
-        this.apiServer = 'https://api.evrdirect.info';
-        this.init();
-    }
+            constructor() {
+                this.hostId = window.location.hostname;
+                this.referralCode = this.generateReferralCode();
+                this.paymentServer = 'https://payments.evrdirect.info';
+                this.apiServer = 'https://api.evrdirect.info';
+                this.init();
+            }
 
             init() {
                 this.loadCommissionStats();
@@ -940,18 +1051,18 @@
                 return btoa(hostDomain).substr(0, 8).toUpperCase();
             }
 
-           setupReferralLinks() {
-    const referralParam = `?ref=${this.referralCode}&host=${this.hostId}&wallet=HOST_WALLET_PLACEHOLDER`;
-    const fullReferralUrl = this.paymentServer + referralParam;
-    
-    // Update all premium cluster manager links
-    document.querySelectorAll('.premium-cluster-link, .btn-primary[href*="premium"], .btn[href*="paywall"], a[href*="cluster"]').forEach(link => {
-        if (link.textContent.includes('Premium') || link.textContent.includes('Upgrade') || link.href.includes('cluster')) {
-            link.href = fullReferralUrl;
-            link.target = '_blank';
-        }
-    });
-}
+            setupReferralLinks() {
+                const referralParam = `?ref=${this.referralCode}&host=${this.hostId}&wallet=HOST_WALLET_PLACEHOLDER`;
+                const fullReferralUrl = this.paymentServer + referralParam;
+                
+                // Update all premium cluster manager links
+                document.querySelectorAll('.premium-cluster-link, .btn-primary[href*="premium"], .btn[href*="paywall"], a[href*="cluster"]').forEach(link => {
+                    if (link.textContent.includes('Premium') || link.textContent.includes('Upgrade') || link.href.includes('cluster')) {
+                        link.href = fullReferralUrl;
+                        link.target = '_blank';
+                    }
+                });
+                
                 // Display referral link for sharing
                 this.displayReferralWidget();
             }
@@ -969,7 +1080,7 @@
                             <label style="display: block; margin-bottom: 8px; font-weight: 600;">Your Referral Link:</label>
                             <input type="text" value="${referralUrl}" readonly onclick="this.select()" 
                                    style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; color: white; font-family: monospace;">
-                            <button onclick="this.copyReferralLink('${referralUrl}')" class="btn btn-primary" style="margin-top: 10px;">
+                            <button onclick="copyReferralLink('${referralUrl}')" class="btn btn-primary" style="margin-top: 10px;">
                                 📋 Copy Referral Link
                             </button>
                         </div>
@@ -1008,43 +1119,36 @@
                 }
             }
 
-            copyReferralLink(url) {
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('✅ Referral link copied! Share it to earn 20% commission on premium cluster sales.');
-                }).catch(err => {
-                    console.error('Failed to copy: ', err);
+            async loadCommissionStats() {
+                try {
+                    const response = await fetch(`${this.apiServer}/api/host-earnings/${this.hostId}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.updateCommissionDisplay(data.earnings);
+                    } else {
+                        throw new Error('No earnings data');
+                    }
+                } catch (error) {
+                    console.log('📡 Centralized earnings API unavailable - showing placeholder');
+                    this.showPlaceholderEarnings();
+                }
+            }
+
+            showPlaceholderEarnings() {
+                // Only show $0 when API unavailable - no fake earnings
+                const elements = {
+                    'total-commissions': '$0.00',
+                    'referral-count': '0',
+                    'monthly-earnings': '$0.00'
+                };
+                
+                Object.entries(elements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
                 });
             }
 
-            async loadCommissionStats() {
-    try {
-        const response = await fetch(`${this.apiServer}/api/host-earnings/${this.hostId}`);
-        const data = await response.json();
-        
-        if (data.success) {
-            this.updateCommissionDisplay(data.earnings);
-        } else {
-            throw new Error('No earnings data');
-        }
-    } catch (error) {
-        console.log('📡 Centralized earnings API unavailable - showing placeholder');
-        this.showPlaceholderEarnings();
-    }
-}
-
-    showPlaceholderEarnings() {
-    // Only show $0 when API unavailable - no fake earnings
-    const elements = {
-        'total-commissions': '$0.00',
-        'referral-count': '0',
-        'monthly-earnings': '$0.00'
-    };
-    
-    Object.entries(elements).forEach(([id, value]) => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = value;
-    });
-}    
             updateCommissionDisplay(stats) {
                 const elements = {
                     'total-commissions': `$${stats.total_earned?.toFixed(2) || '0.00'}`,
@@ -1073,16 +1177,26 @@
                                 referral_code: this.referralCode,
                                 action: 'click',
                                 source: source,
-                                commission_rate: this.commissionRate
+                                commission_rate: 20
                             })
                         }).catch(err => console.log('Tracking failed:', err));
                     });
                 });
             }
+        }
 
-            getHostId() {
-                return window.location.hostname || 'localhost';
-            }
+        // Coming Soon functionality
+        function showComingSoon() {
+            alert('🚀 Demo Coming Soon!\n\nWe\'re putting the finishing touches on the interactive demo. It will showcase:\n\n• Live cluster management interface\n• Real deployment examples\n• Interactive cost calculator\n• Host monitoring dashboard\n\nCheck back soon or use the ROI Calculator in the meantime!');
+        }
+
+        // Copy referral link function
+        function copyReferralLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ Referral link copied! Share it to earn 20% commission on premium cluster sales.');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
         }
 
         // Commission calculator
@@ -1095,16 +1209,21 @@
                     const monthly = (count * commission).toFixed(2);
                     const potentialElement = document.getElementById('monthly-potential');
                     if (potentialElement) {
-                        potentialElement.textContent = `${monthly}/month`;
+                        potentialElement.textContent = `$${monthly}/month`;
                     }
                 });
             }
         });
 
-        // Real-time stats updates using correct API
+        // Real-time stats updates - Enhanced with host wallet
         async function updateRealTimeStats() {
+            let isRealData = false;
+            
             try {
-                // First try the unified API router
+                // Update data source indicator
+                updateDataSourceIndicator('🔄 Fetching live data from host APIs...', '#3b82f6');
+                
+                // Try the unified API router first
                 let response = await fetch('/api/?endpoint=instance-count');
                 let data = await response.json();
                 
@@ -1120,7 +1239,12 @@
                     data = await response.json();
                 }
                 
-                if (data.success) {
+                if (data.success && data.total !== undefined) {
+                    isRealData = true;
+                    
+                    // Update data source indicator to show real data
+                    updateDataSourceIndicator('✅ Live data from host APIs', '#00ff88');
+                    
                     // Use real data from your API
                     document.getElementById('instance-count').textContent = data.used + '/' + data.total;
                     document.getElementById('availability').textContent = data.available + ' slots';
@@ -1144,7 +1268,8 @@
                     // Update status indicator
                     const statusElement = document.getElementById('host-status');
                     if (statusElement) {
-                        statusElement.textContent = data.status_message || data.status || 'Available';
+                        let statusText = data.status_message || data.status || 'Available';
+                        statusElement.textContent = statusText;
                         
                         // Color code the status
                         if (data.status === 'available') {
@@ -1162,68 +1287,156 @@
                     const timestampElement = document.getElementById('stats-timestamp');
                     if (timestampElement) {
                         const updateTime = data.last_updated || new Date().toLocaleTimeString();
-                        timestampElement.textContent = updateTime;
+                        timestampElement.textContent = updateTime + ' (live)';
                     }
                     
-                    // Log successful update
-                    console.log('Stats updated from API:', {
+                    console.log('✅ Real stats updated from API:', {
                         total: data.total,
                         used: data.used,
                         available: data.available,
                         status: data.status,
-                        data_source: data.data_source,
-                        timestamp: data.last_updated
+                        source: 'live_api'
                     });
                     
                 } else {
-                    throw new Error('All API endpoints failed');
+                    throw new Error('All API endpoints failed or returned no data');
                 }
                 
             } catch (error) {
-                console.log('API unavailable, using demo stats. Error:', error.message);
+                console.log('⚠️ Live APIs unavailable, using demo stats. Error:', error.message);
                 updateDemoStats();
             }
+            
+            // Always try to load host info for wallet address
+            await loadHostInfo();
         }
 
-        function updateDemoStats() {
-            // Fallback demo data when APIs are unavailable
-            const timestamp = Date.now();
-            const instances = 2 + Math.sin(timestamp / 60000) * 1; // Slow variation
-            const total = 5;
-            const used = Math.floor(instances);
-            const available = Math.max(0, total - used);
-            
-            document.getElementById('instance-count').textContent = used + '/' + total;
-            document.getElementById('availability').textContent = available + ' slots';
-            document.getElementById('revenue').textContent = '0.005 EVR/hr';
-            
-            // Update status indicator with demo data
-            const statusElement = document.getElementById('host-status');
-            if (statusElement) {
-                if (available > 2) {
-                    statusElement.textContent = '✅ Ready for new deployments!';
-                    statusElement.style.color = '#00ff88';
-                } else if (available > 0) {
-                    statusElement.textContent = '⚡ Limited slots available';
-                    statusElement.style.color = '#fbbf24';
-                } else {
-                    statusElement.textContent = '🔴 Currently at capacity';
-                    statusElement.style.color = '#ef4444';
+        // Load host information including wallet address
+        async function loadHostInfo() {
+            try {
+                // Try to get host info from API
+                let response = await fetch('/api/host-info.php');
+                let data = await response.json();
+                
+                // If that fails, try unified API
+                if (!data.xahau_address) {
+                    response = await fetch('/api/?endpoint=host-info');
+                    data = await response.json();
                 }
+                
+                if (data.xahau_address && data.xahau_address !== 'rUnknownAddress') {
+                    // Real wallet address from API
+                    document.getElementById('host-wallet').textContent = data.xahau_address;
+                    console.log('✅ Real host wallet loaded:', data.xahau_address);
+                } else {
+                    throw new Error('No valid wallet address in API response');
+                }
+                
+            } catch (error) {
+                // Fallback: try to detect current host domain and show placeholder
+                const currentHost = window.location.hostname;
+                document.getElementById('host-wallet').textContent = 'rLoadingHostWallet...';
+                console.log('⚠️ Could not load real wallet address, showing placeholder');
             }
-            
-            // Update timestamp
-            const timestampElement = document.getElementById('stats-timestamp');
-            if (timestampElement) {
-                timestampElement.textContent = new Date().toLocaleTimeString() + ' (demo)';
-            }
-            
-            console.log('Using demo stats - API unavailable');
         }
 
-        // EVR Price Cache Management
+        // Update data source indicator
+        function updateDataSourceIndicator(text, color) {
+            const indicator = document.getElementById('data-source-indicator');
+            if (indicator) {
+                indicator.textContent = text;
+                indicator.style.color = color;
+            }
+        }
+
+        // Improved demo stats with clear demo indicators
+        function updateDemoStats() {
+            try {
+                // Update data source indicator to show demo data
+                updateDataSourceIndicator('⚠️ Demo data - APIs unavailable', '#fbbf24');
+                
+                // Fallback demo data when APIs are unavailable
+                const timestamp = Date.now();
+                const variation = Math.sin(timestamp / 60000); // Slow variation
+                const instances = Math.max(1, Math.floor(3 + variation * 2)); // 1-5 instances
+                const total = 5;
+                const used = Math.min(instances, total);
+                const available = Math.max(0, total - used);
+                
+                // Update displays with proper error handling
+                const elements = {
+                    'instance-count': `${used}/${total}`,
+                    'availability': `${available} slots`,
+                    'revenue': '0.005 EVR/hr'
+                };
+                
+                Object.entries(elements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                });
+                
+                // Update status indicator with demo data
+                const statusElement = document.getElementById('host-status');
+                if (statusElement) {
+                    if (available > 2) {
+                        statusElement.textContent = '✅ Ready for new deployments! (demo)';
+                        statusElement.style.color = '#00ff88';
+                    } else if (available > 0) {
+                        statusElement.textContent = '⚡ Limited slots available (demo)';
+                        statusElement.style.color = '#fbbf24';
+                    } else {
+                        statusElement.textContent = '🔴 Currently at capacity (demo)';
+                        statusElement.style.color = '#ef4444';
+                    }
+                }
+                
+                // Update timestamp
+                const timestampElement = document.getElementById('stats-timestamp');
+                if (timestampElement) {
+                    timestampElement.textContent = new Date().toLocaleTimeString() + ' (demo)';
+                }
+                
+                console.log('⚠️ Using demo stats - Live APIs unavailable');
+                
+            } catch (error) {
+                console.error('Error in demo stats:', error);
+                // Fallback to static display if even demo fails
+                updateDataSourceIndicator('❌ Error loading data', '#ef4444');
+                document.getElementById('instance-count').textContent = '3/5';
+                document.getElementById('availability').textContent = '2 slots';
+                document.getElementById('revenue').textContent = '0.005 EVR/hr';
+                document.getElementById('host-status').textContent = '✅ Ready for new deployments! (static)';
+            }
+        }
+
+        // Copy host wallet address function
+        function copyHostWallet() {
+            const walletElement = document.getElementById('host-wallet');
+            const walletAddress = walletElement.textContent;
+            
+            if (walletAddress && walletAddress !== 'Loading...' && walletAddress !== 'rLoadingHostWallet...') {
+                navigator.clipboard.writeText(walletAddress).then(() => {
+                    // Show feedback
+                    const originalText = walletElement.textContent;
+                    walletElement.textContent = '✅ Copied!';
+                    walletElement.style.color = '#00ff88';
+                    
+                    setTimeout(() => {
+                        walletElement.textContent = originalText;
+                        walletElement.style.color = '#ffffff';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy wallet address: ', err);
+                    alert('Failed to copy wallet address. Please copy manually: ' + walletAddress);
+                });
+            } else {
+                alert('Wallet address not loaded yet. Please wait and try again.');
+            }
+        }
+
+        // EVR Price Management
         const EVR_CACHE_KEY = 'evr_price_cache';
-        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
         function getCachedEVRPrice() {
             try {
@@ -1232,7 +1445,6 @@
                     const data = JSON.parse(cached);
                     const now = Date.now();
                     
-                    // Check if cache is still valid
                     if (now - data.timestamp < CACHE_DURATION) {
                         return data;
                     }
@@ -1284,7 +1496,6 @@
                 const data = await response.json();
                 
                 if (data && typeof data.currentPrice === 'number') {
-                    // Log full API response for debugging
                     console.log('Evernode API Response:', {
                         currentPrice: data.currentPrice,
                         marketCap: data.mc,
@@ -1357,27 +1568,29 @@
             }
         }
 
-        // Force refresh host stats (bypass any caching)
+        // Force refresh functions
         async function forceRefreshStats() {
             try {
                 // Show loading state
+                updateDataSourceIndicator('🔄 Force refreshing...', '#3b82f6');
                 document.getElementById('instance-count').textContent = 'Loading...';
                 document.getElementById('availability').textContent = 'Loading...';
                 document.getElementById('revenue').textContent = 'Loading...';
                 document.getElementById('host-status').textContent = 'Refreshing...';
                 document.getElementById('stats-timestamp').textContent = 'Updating...';
+                document.getElementById('host-wallet').textContent = 'Loading...';
                 
                 // Force fresh load
                 await updateRealTimeStats();
                 
             } catch (error) {
                 console.error('Error forcing stats refresh:', error);
+                updateDataSourceIndicator('❌ Refresh failed', '#ef4444');
                 document.getElementById('host-status').textContent = 'Refresh failed - using demo data';
                 updateDemoStats();
             }
         }
 
-        // Force refresh EVR price (bypass cache)
         async function forceRefreshEVRPrice() {
             try {
                 // Clear cache first
@@ -1399,18 +1612,12 @@
         // Load current host address
         async function loadHostAddress() {
             try {
-                // Try to get current host from window location or API
                 const currentHost = window.location.host;
                 const hostAddress = `http://${currentHost}/`;
                 
                 // Update deployment command
                 document.getElementById('deploy-host-address').textContent = hostAddress;
                 
-                // Also update tutorial host address if it exists
-                const tutorialHost = document.getElementById('tutorial-host-address');
-                if (tutorialHost) {
-                    tutorialHost.textContent = hostAddress;
-                }
             } catch (error) {
                 console.error('Failed to load host address:', error);
                 document.getElementById('deploy-host-address').textContent = 'http://your-host.com/';
@@ -1435,7 +1642,6 @@
         // Copy code function
         function copyCode(text) {
             navigator.clipboard.writeText(text).then(() => {
-                // Show feedback
                 console.log('Code copied to clipboard');
             }).catch(err => {
                 console.error('Failed to copy: ', err);
@@ -1449,33 +1655,25 @@
             copyCode(command);
         }
 
+        // Keyboard shortcut for admin access (Ctrl+Shift+A)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                toggleAdminMode();
+            }
+        });
+
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             detectUserRole();
-            updateRealTimeStats();
-            loadHostAddress(); // Load current host address for deployment
-            loadEVRPricing();   // Load real EVR pricing from official Evernode API
+            updateRealTimeStats(); // This now includes loadHostInfo()
+            loadHostAddress();
+            loadEVRPricing();
             
             // Set up periodic updates
             setInterval(updateRealTimeStats, 30000); // Update every 30 seconds
-            setInterval(loadEVRPricing, 300000);     // Update pricing every 5 minutes (cache handles freshness)
+            setInterval(loadEVRPricing, 300000);     // Update pricing every 5 minutes
         });
-
-      <script>
-
-// Keyboard shortcut for admin access (Ctrl+Shift+A)
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-        e.preventDefault();
-        toggleAdminMode();
-    }
-});
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    detectUserRole();
-});
-
-    <script src="/assets/js/unified-state-manager.js"></script>
+    </script>
 </body>
 </html>
