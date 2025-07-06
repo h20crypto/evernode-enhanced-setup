@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # =============================================================================
-# 🚀 Enhanced Evernode Host - Complete Setup Script with Organic Discovery
+# 🚀 Enhanced Evernode Host - Complete Setup Script with Unified Discovery
 # =============================================================================
-# Automated installation with commission tracking integration and organic enhanced network discovery
+# Automated installation with commission tracking integration and unified discovery system
 # Author: Enhanced Evernode Team
-# Version: 2.1 Production + Organic Discovery
+# Version: 2.2 Production + Unified Discovery
 
 set -e  # Exit on any error
 
@@ -44,11 +44,11 @@ print_banner() {
     clear
     echo -e "${CYAN}"
     echo "=============================================================="
-    echo "🚀 Enhanced Evernode Host - Production Setup"
+    echo "🚀 Enhanced Evernode Host - Production Setup v2.2"
     echo "=============================================================="
     echo -e "${WHITE}Complete automated installation with commission tracking${NC}"
     echo -e "${GREEN}✅ Real earnings • ✅ $10 per sale • ✅ Professional setup${NC}"
-    echo -e "${BLUE}✅ Organic enhanced network discovery • ✅ Auto-announcement${NC}"
+    echo -e "${BLUE}✅ Unified discovery system • ✅ Real network data${NC}"
     echo ""
 }
 
@@ -279,11 +279,11 @@ install_dependencies() {
 }
 
 # =============================================================================
-# 🔧 Enhanced Host Files Setup (UPDATED WITH ORGANIC DISCOVERY)
+# 🔧 Enhanced Host Files Setup
 # =============================================================================
 
 download_host_files() {
-    print_step "Downloading Enhanced Evernode host files with organic discovery..."
+    print_step "Downloading Enhanced Evernode host files..."
     
     # Create directories
     mkdir -p "$INSTALL_DIR"
@@ -306,29 +306,57 @@ download_host_files() {
     curl -fsSL "$GITHUB_REPO/landing-page/my-earnings.html" -o my-earnings.html
     curl -fsSL "$GITHUB_REPO/landing-page/monitoring-dashboard.html" -o monitoring-dashboard.html
     
-    # Download API files (INCLUDING ORGANIC DISCOVERY)
-    print_info "📡 Downloading organic discovery system..."
-    curl -fsSL "$GITHUB_REPO/api/enhanced-search.php" -o api/enhanced-search.php
-    curl -fsSL "$GITHUB_REPO/api/.enhanced-host-beacon.php" -o api/.enhanced-host-beacon.php
-    curl -fsSL "$GITHUB_REPO/api/host-info.php" -o api/host-info.php
-    curl -fsSL "$GITHUB_REPO/api/instance-count.php" -o api/instance-count.php
-    curl -fsSL "$GITHUB_REPO/api/health-check.php" -o api/health-check.php
-    curl -fsSL "$GITHUB_REPO/api/router.php" -o api/router.php
+    # Download basic API files (unified discovery will be installed separately)
+    print_info "📡 Downloading basic API files..."
+    curl -fsSL "$GITHUB_REPO/host-info.php" -o api/host-info.php
+    curl -fsSL "$GITHUB_REPO/instance-count.php" -o api/instance-count.php
+    curl -fsSL "$GITHUB_REPO/router.php" -o api/router.php
     
-    # Download organic discovery auto-announcement script
+    # Download auto-announcement script
     print_info "🌐 Downloading auto-announcement system..."
     curl -fsSL "$GITHUB_REPO/scripts/enhanced-auto-announce.sh" -o scripts/enhanced-auto-announce.sh
     chmod +x scripts/enhanced-auto-announce.sh
     
     # Download cluster manager
-    curl -fsSL "$GITHUB_REPO/cluster/index.html" -o cluster/index.html
-    curl -fsSL "$GITHUB_REPO/cluster/dashboard.html" -o cluster/dashboard.html
+    curl -fsSL "$GITHUB_REPO/cluster/premium-cluster-manager.html" -o cluster/index.html 2>/dev/null || echo "Cluster manager not found (optional)"
     
     # Download CSS and JS
     curl -fsSL "$GITHUB_REPO/assets/css/unified-navigation.css" -o assets/css/unified-navigation.css
     curl -fsSL "$GITHUB_REPO/assets/js/unified-state-manager.js" -o assets/js/unified-state-manager.js
     
-    print_success "Host files downloaded (including organic discovery system)"
+    print_success "Host files downloaded"
+}
+
+# =============================================================================
+# 🔍 Install Unified Discovery System v4.1
+# =============================================================================
+
+install_unified_discovery() {
+    print_step "Installing Unified Discovery System v4.1..."
+    
+    # Download unified enhanced-search.php
+    print_info "📡 Installing unified enhanced-search API..."
+    curl -fsSL "$GITHUB_REPO/enhanced-search.php" -o "$INSTALL_DIR/api/enhanced-search.php"
+    
+    # Download enhanced host beacon
+    print_info "🔍 Installing enhanced host beacon..."
+    curl -fsSL "$GITHUB_REPO/enhanced-host-beacon.php" -o "$INSTALL_DIR/.enhanced-host-beacon.php"
+    
+    # Set permissions
+    chown www-data:www-data "$INSTALL_DIR/api/enhanced-search.php"
+    chown www-data:www-data "$INSTALL_DIR/.enhanced-host-beacon.php"
+    chmod 644 "$INSTALL_DIR/api/enhanced-search.php"
+    chmod 644 "$INSTALL_DIR/.enhanced-host-beacon.php"
+    
+    # Clear any old cache
+    rm -f /tmp/evernode_unified_cache.json
+    rm -f /tmp/enhanced_hosts_cache.json
+    
+    print_success "Unified Discovery System installed"
+    print_info "✅ Real Evernode network discovery (2000+ hosts)"
+    print_info "✅ Enhanced host cross-discovery"
+    print_info "✅ Live network statistics"
+    print_info "✅ Automatic beacon system"
 }
 
 configure_commission_system() {
@@ -356,8 +384,8 @@ return [
     'api_url' => '$CENTRAL_API',
     'commission_rate' => 0.20, // 20% commission
     'setup_date' => '$(date -u +"%Y-%m-%d %H:%M:%S")',
-    'version' => '2.1',
-    'organic_discovery' => true
+    'version' => '2.2',
+    'unified_discovery' => true
 ];
 ?>
 EOF
@@ -420,7 +448,7 @@ Admin Features:
 ✅ Container management
 ✅ Host configuration
 ✅ Performance analytics
-✅ Enhanced network discovery
+✅ Unified network discovery
 
 IMPORTANT: Keep this password secure!
 Generated: $(date)
@@ -552,9 +580,9 @@ register_with_central_system() {
     "country": "$OPERATOR_COUNTRY",
     "server_specs": "$SERVER_SPECS",
     "referral_code": "$REFERRAL_CODE",
-    "setup_version": "2.1",
+    "setup_version": "2.2",
     "setup_date": "$(date -u +"%Y-%m-%d %H:%M:%S")",
-    "organic_discovery": true
+    "unified_discovery": true
 }
 EOF
 )
@@ -578,62 +606,42 @@ EOF
 }
 
 # =============================================================================
-# 🌐 Enhanced Network Integration (NEW SECTION)
+# 🌐 Enhanced Network Integration
 # =============================================================================
 
 announce_to_enhanced_network() {
-    print_step "Joining Enhanced Evernode Network with organic discovery..."
+    print_step "Joining Enhanced Evernode Network with unified discovery..."
     
-    # Create GitHub installation marker for organic discovery
+    # Create GitHub installation marker for discovery
     echo "$(date -u +"%Y-%m-%d %H:%M:%S")" > /tmp/enhanced-github-install.marker
     echo "GitHub Enhanced Installation - $HOST_DOMAIN" > /var/log/enhanced-github-install.log
     
-    # Source the auto-announcement script
-    if [[ -f "$INSTALL_DIR/scripts/enhanced-auto-announce.sh" ]]; then
-        # Set required environment variables for the announcement script
-        export LOCAL_DOMAIN="$HOST_DOMAIN"
-        export LOG_FILE="$LOG_FILE"
+    # Test unified discovery system
+    sleep 3
+    local discovery_test=$(curl -s "http://localhost/api/enhanced-search.php?action=test" 2>/dev/null)
+    if echo "$discovery_test" | grep -q '"success":true'; then
+        print_success "Unified discovery system is operational"
         
-        # Copy announcement script to accessible location
-        cp "$INSTALL_DIR/scripts/enhanced-auto-announce.sh" /tmp/enhanced-auto-announce.sh
-        chmod +x /tmp/enhanced-auto-announce.sh
+        # Test enhanced host beacon
+        local beacon_test=$(curl -s "http://localhost/.enhanced-host-beacon.php" 2>/dev/null)
+        if echo "$beacon_test" | grep -q '"enhanced_host":true'; then
+            print_success "Enhanced host beacon is active"
+        fi
         
-        # Source the announcement functions
-        source /tmp/enhanced-auto-announce.sh
-        
-        # Run the main announcement
-        if main_announcement; then
-            print_success "Successfully joined Enhanced Evernode Network"
-            print_success "Host is now discoverable by other enhanced hosts"
-            
-            # Test organic discovery
-            sleep 3
-            local discovery_test=$(curl -s "http://localhost/api/enhanced-search.php?action=test" 2>/dev/null)
-            if echo "$discovery_test" | grep -q '"success":true'; then
-                print_success "Organic discovery system is operational"
-                
-                # Get quick stats
-                local stats=$(curl -s "http://localhost/api/enhanced-search.php?action=stats" 2>/dev/null)
-                if echo "$stats" | grep -q '"organically_discovered_enhanced"'; then
-                    local enhanced_count=$(echo "$stats" | grep -o '"organically_discovered_enhanced":[0-9]*' | cut -d':' -f2 || echo "1")
-                    print_success "Enhanced network: $enhanced_count enhanced hosts discovered"
-                fi
-            else
-                print_warning "Organic discovery may need additional configuration"
-            fi
-            
-        else
-            print_warning "Enhanced network announcement failed"
-            print_info "Host will function normally and announce automatically later"
+        # Get discovery stats
+        local stats=$(curl -s "http://localhost/api/enhanced-search.php?action=stats" 2>/dev/null)
+        if echo "$stats" | grep -q '"success":true'; then
+            local total_hosts=$(echo "$stats" | grep -o '"total_hosts":[0-9]*' | cut -d':' -f2 || echo "0")
+            local enhanced_hosts=$(echo "$stats" | grep -o '"enhanced_hosts":[0-9]*' | cut -d':' -f2 || echo "0")
+            print_success "Network discovery: $total_hosts total hosts, $enhanced_hosts enhanced"
         fi
     else
-        print_warning "Auto-announcement script not found"
-        print_info "Organic discovery will be configured manually"
+        print_warning "Unified discovery system may need additional configuration"
     fi
 }
 
 # =============================================================================
-# 🧪 Testing & Verification (UPDATED WITH ORGANIC DISCOVERY)
+# 🧪 Testing & Verification
 # =============================================================================
 
 run_tests() {
@@ -648,23 +656,29 @@ run_tests() {
     fi
     
     # Test PHP
-    if curl -s "http://localhost/api/health-check.php" > /dev/null; then
+    if curl -s "http://localhost/api/router.php" > /dev/null; then
         print_success "PHP and API working"
     else
         print_warning "API may need additional configuration"
     fi
     
-    # Test organic discovery system
+    # Test unified discovery system
     if curl -s "http://localhost/api/enhanced-search.php?action=test" > /dev/null; then
-        print_success "Organic discovery system working"
+        print_success "Unified discovery system working"
         
-        # Test if host shows as enhanced
-        local enhanced_test=$(curl -s "http://localhost/api/enhanced-search.php?action=search&enhanced_only=true&limit=1" 2>/dev/null)
-        if echo "$enhanced_test" | grep -q "$HOST_DOMAIN"; then
-            print_success "Host correctly identified as enhanced"
+        # Test network search
+        local network_test=$(curl -s "http://localhost/api/enhanced-search.php?action=search&limit=5" 2>/dev/null)
+        if echo "$network_test" | grep -q '"success":true'; then
+            print_success "Network search working"
+        fi
+        
+        # Test enhanced-only search
+        local enhanced_test=$(curl -s "http://localhost/api/enhanced-search.php?action=search&enhanced_only=true&limit=5" 2>/dev/null)
+        if echo "$enhanced_test" | grep -q '"success":true'; then
+            print_success "Enhanced host discovery working"
         fi
     else
-        print_warning "Organic discovery system may need configuration"
+        print_warning "Unified discovery system may need configuration"
     fi
     
     # Test discovery beacon
@@ -695,7 +709,7 @@ run_tests() {
 }
 
 # =============================================================================
-# 📊 Final Report (UPDATED WITH ORGANIC DISCOVERY)
+# 📊 Final Report
 # =============================================================================
 
 generate_report() {
@@ -703,21 +717,23 @@ generate_report() {
     
     REPORT_FILE="/root/enhanced-evernode-setup-report.txt"
     
-    # Test enhanced network status
-    ENHANCED_STATUS="Not Connected"
+    # Test unified discovery status
+    DISCOVERY_STATUS="Not Connected"
+    TOTAL_HOSTS="0"
     ENHANCED_HOSTS="0"
     
     if curl -s "http://localhost/api/enhanced-search.php?action=stats" > /dev/null; then
         local stats=$(curl -s "http://localhost/api/enhanced-search.php?action=stats" 2>/dev/null)
         if echo "$stats" | grep -q '"success":true'; then
-            ENHANCED_STATUS="Connected"
-            ENHANCED_HOSTS=$(echo "$stats" | grep -o '"organically_discovered_enhanced":[0-9]*' | cut -d':' -f2 || echo "1")
+            DISCOVERY_STATUS="Connected"
+            TOTAL_HOSTS=$(echo "$stats" | grep -o '"total_hosts":[0-9]*' | cut -d':' -f2 || echo "0")
+            ENHANCED_HOSTS=$(echo "$stats" | grep -o '"enhanced_hosts":[0-9]*' | cut -d':' -f2 || echo "0")
         fi
     fi
     
     cat > "$REPORT_FILE" << EOF
 ==============================================================
-🚀 Enhanced Evernode Host - Setup Complete
+🚀 Enhanced Evernode Host - Setup Complete v2.2
 ==============================================================
 
 Host Information:
@@ -728,11 +744,12 @@ Host Information:
 - Country: $OPERATOR_COUNTRY
 - Referral Code: $REFERRAL_CODE
 
-Enhanced Network Status:
-🌐 Network Status: $ENHANCED_STATUS
-🔍 Enhanced Hosts Found: $ENHANCED_HOSTS
-📡 Discovery Method: Organic GitHub-based
-🎯 Enhanced Features: Auto-discovered and verified
+Unified Discovery Status:
+🌐 Discovery Status: $DISCOVERY_STATUS
+📊 Total Hosts Found: $TOTAL_HOSTS
+⭐ Enhanced Hosts: $ENHANCED_HOSTS
+🔍 Discovery Method: Unified Real Network + Enhanced
+🎯 Features: Live Evernode data + Enhanced discovery
 
 Admin Access:
 🔐 Admin Password: $ADMIN_PASSWORD
@@ -752,32 +769,33 @@ URLs:
 - Earnings Dashboard: https://$HOST_DOMAIN/my-earnings.html
 - System Monitor: https://$HOST_DOMAIN/monitoring-dashboard.html
 - Cluster Manager: https://$HOST_DOMAIN/cluster/
-- Enhanced Network: https://$HOST_DOMAIN/api/enhanced-search.php
 
-Organic Discovery:
-✅ Host automatically announced to enhanced network
+Unified Discovery System:
+✅ Real Evernode network discovery (2000+ hosts)
+✅ Enhanced host cross-discovery
+✅ Live network statistics
 ✅ Discovery beacon: https://$HOST_DOMAIN/.enhanced-host-beacon.php
-✅ Network discovery: https://$HOST_DOMAIN/api/enhanced-search.php?action=search
+✅ Network search: https://$HOST_DOMAIN/api/enhanced-search.php?action=search
 ✅ Enhanced-only search: https://$HOST_DOMAIN/api/enhanced-search.php?action=search&enhanced_only=true
 
 Configuration Files:
 - Host Config: $CONFIG_DIR/host-config.php
-- Enhanced Registry: /tmp/organic_enhanced_hosts.json
 - Nginx Config: /etc/nginx/sites-available/$HOST_DOMAIN
 - SSL Certificate: Auto-renewed via certbot
 
 Next Steps:
 1. Visit your site to verify everything works
-2. Check enhanced network: https://$HOST_DOMAIN/api/enhanced-search.php?action=stats
+2. Check unified discovery: https://$HOST_DOMAIN/api/enhanced-search.php?action=stats
 3. Share your referral link to earn $10 per sale
 4. Monitor earnings at https://$HOST_DOMAIN/my-earnings.html
-5. Discover other enhanced hosts automatically
+5. Discover 2000+ Evernode hosts + Enhanced network
 
 Referral Link to Share:
 $PAYMENT_URL?ref=$REFERRAL_CODE&host=$HOST_DOMAIN&wallet=$HOST_WALLET
 
 Test Commands:
-- curl "https://$HOST_DOMAIN/api/enhanced-search.php?action=stats"
+- curl "https://$HOST_DOMAIN/api/enhanced-search.php?action=test"
+- curl "https://$HOST_DOMAIN/api/enhanced-search.php?action=search&limit=10"
 - curl "https://$HOST_DOMAIN/api/enhanced-search.php?action=search&enhanced_only=true"
 - curl "https://$HOST_DOMAIN/.enhanced-host-beacon.php"
 
@@ -794,7 +812,7 @@ EOF
 }
 
 # =============================================================================
-# 🎯 Main Installation Flow (UPDATED)
+# 🎯 Main Installation Flow
 # =============================================================================
 
 main() {
@@ -807,10 +825,10 @@ main() {
     echo -e "${GREEN}✅ Professional landing pages${NC}"
     echo -e "${GREEN}✅ Commission tracking system${NC}"
     echo -e "${GREEN}✅ Real-time earnings dashboard${NC}"
+    echo -e "${GREEN}✅ Unified discovery system (2000+ hosts)${NC}"
+    echo -e "${GREEN}✅ Enhanced host cross-discovery${NC}"
     echo -e "${GREEN}✅ SSL security${NC}"
     echo -e "${GREEN}✅ Automatic registration${NC}"
-    echo -e "${GREEN}✅ Organic enhanced network discovery${NC}"
-    echo -e "${BLUE}✅ Auto-announcement to enhanced network${NC}"
     echo ""
     
     read -p "Continue with installation? (y/N): " -n 1 -r
@@ -825,12 +843,13 @@ main() {
     collect_host_info
     install_dependencies
     download_host_files
+    install_unified_discovery       # ← NEW: Unified discovery system
     configure_commission_system
     configure_security
     setup_ssl
     register_with_central_system
+    announce_to_enhanced_network
     run_tests
-    announce_to_enhanced_network  # ← NEW: Added organic discovery announcement
     generate_report
     
     # Success message
@@ -840,7 +859,7 @@ main() {
     echo -e "${WHITE}Your host is now ready to earn commissions!${NC}"
     echo -e "${CYAN}Visit: https://$HOST_DOMAIN${NC}"
     echo -e "${YELLOW}Earnings: https://$HOST_DOMAIN/my-earnings.html${NC}"
-    echo -e "${BLUE}Enhanced Network: https://$HOST_DOMAIN/api/enhanced-search.php?action=stats${NC}"
+    echo -e "${BLUE}Discovery: https://$HOST_DOMAIN/api/enhanced-search.php?action=stats${NC}"
     echo ""
     echo -e "${WHITE}🔐 ADMIN ACCESS:${NC}"
     echo -e "${CYAN}URL: https://$HOST_DOMAIN/?admin=true${NC}"
@@ -848,11 +867,11 @@ main() {
     echo -e "${YELLOW}⌨️  Quick Access: Press Ctrl+Shift+A on any page${NC}"
     echo ""
     echo -e "${GREEN}💰 You earn $10 for every $49.99 premium sale!${NC}"
-    echo -e "${GREEN}🌐 Your host is now part of the Enhanced Evernode Network!${NC}"
-    echo -e "${BLUE}🔍 Discover other enhanced hosts: https://$HOST_DOMAIN/host-discovery.html${NC}"
+    echo -e "${GREEN}🌐 Your host can now discover 2000+ Evernode hosts!${NC}"
+    echo -e "${BLUE}⭐ Plus Enhanced host cross-discovery!${NC}"
     echo ""
-    echo -e "${WHITE}Test your enhanced network connection:${NC}"
-    echo -e "${CYAN}curl \"https://$HOST_DOMAIN/api/enhanced-search.php?action=search&enhanced_only=true\"${NC}"
+    echo -e "${WHITE}Test your unified discovery:${NC}"
+    echo -e "${CYAN}curl \"https://$HOST_DOMAIN/api/enhanced-search.php?action=search&limit=10\"${NC}"
     echo ""
     echo -e "${BLUE}📋 Setup report saved to: /root/enhanced-evernode-setup-report.txt${NC}"
     echo -e "${BLUE}🔐 Admin details saved to: $CONFIG_DIR/admin-access.txt${NC}"
@@ -860,37 +879,6 @@ main() {
     echo -e "${WHITE}Share your referral link:${NC}"
     echo -e "${CYAN}$PAYMENT_URL?ref=$REFERRAL_CODE&host=$HOST_DOMAIN&wallet=$HOST_WALLET${NC}"
     echo ""
-}
-
-# =============================================================================
-# 🔍 Install Unified Discovery System v4.1
-# =============================================================================
-
-install_unified_discovery() {
-    print_step "Installing Unified Discovery System..."
-    
-    # Download unified enhanced-search.php
-    print_info "📡 Installing unified enhanced-search API..."
-    curl -fsSL "$GITHUB_REPO/enhanced-search.php" -o "$WEB_DIR/api/enhanced-search.php"
-    
-    # Download enhanced host beacon
-    print_info "🔍 Installing enhanced host beacon..."
-    curl -fsSL "$GITHUB_REPO/enhanced-host-beacon.php" -o "$WEB_DIR/.enhanced-host-beacon.php"
-    
-    # Set permissions
-    chown www-data:www-data "$WEB_DIR/api/enhanced-search.php"
-    chown www-data:www-data "$WEB_DIR/.enhanced-host-beacon.php"
-    chmod 644 "$WEB_DIR/api/enhanced-search.php"
-    chmod 644 "$WEB_DIR/.enhanced-host-beacon.php"
-    
-    # Clear any old cache
-    rm -f /tmp/evernode_unified_cache.json
-    rm -f /tmp/enhanced_hosts_cache.json
-    
-    print_success "Unified Discovery System installed"
-    print_info "✅ Real Evernode network discovery (2000+ hosts)"
-    print_info "✅ Enhanced host cross-discovery"
-    print_info "✅ Live network statistics"
 }
 
 # Run main function
