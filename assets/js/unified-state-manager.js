@@ -575,3 +575,12 @@ document.addEventListener('DOMContentLoaded', function() {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { UnifiedStateManager, CommissionManager };
 }
+
+// Original navigation structure
+{ 
+    label: 'ROI Calculator', 
+    href: '/cluster/roi-calculator.html', 
+    icon: '💰',
+    roles: ['tenant'],
+    active: ['/cluster/roi-calculator.html']
+}
