@@ -862,5 +862,36 @@ main() {
     echo ""
 }
 
+# =============================================================================
+# 🔍 Install Unified Discovery System v4.1
+# =============================================================================
+
+install_unified_discovery() {
+    print_step "Installing Unified Discovery System..."
+    
+    # Download unified enhanced-search.php
+    print_info "📡 Installing unified enhanced-search API..."
+    curl -fsSL "$GITHUB_REPO/enhanced-search.php" -o "$WEB_DIR/api/enhanced-search.php"
+    
+    # Download enhanced host beacon
+    print_info "🔍 Installing enhanced host beacon..."
+    curl -fsSL "$GITHUB_REPO/enhanced-host-beacon.php" -o "$WEB_DIR/.enhanced-host-beacon.php"
+    
+    # Set permissions
+    chown www-data:www-data "$WEB_DIR/api/enhanced-search.php"
+    chown www-data:www-data "$WEB_DIR/.enhanced-host-beacon.php"
+    chmod 644 "$WEB_DIR/api/enhanced-search.php"
+    chmod 644 "$WEB_DIR/.enhanced-host-beacon.php"
+    
+    # Clear any old cache
+    rm -f /tmp/evernode_unified_cache.json
+    rm -f /tmp/enhanced_hosts_cache.json
+    
+    print_success "Unified Discovery System installed"
+    print_info "✅ Real Evernode network discovery (2000+ hosts)"
+    print_info "✅ Enhanced host cross-discovery"
+    print_info "✅ Live network statistics"
+}
+
 # Run main function
 main "$@"
