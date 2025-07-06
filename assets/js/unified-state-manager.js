@@ -185,11 +185,11 @@ class UnifiedStateManager {
                 active: ['/host-discovery.html', '/discovery']
             },
             { 
-                label: 'ROI Calculator', 
-                href: '/cluster/roi-calculator.html', 
+                label: 'Cost Calculator', 
+                href: '/cluster/cost-calculator.html', 
                 icon: '💰',
                 roles: ['tenant'],
-                active: ['/cluster/roi-calculator.html']
+                active: ['/cluster/cost-calculator.html', '/cost-calculator']
             },
             { 
                 label: 'Monitoring', 
@@ -576,11 +576,3 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = { UnifiedStateManager, CommissionManager };
 }
 
-// Original navigation structure
-{ 
-    label: 'ROI Calculator', 
-    href: '/cluster/roi-calculator.html', 
-    icon: '💰',
-    roles: ['tenant'],
-    active: ['/cluster/roi-calculator.html']
-}
