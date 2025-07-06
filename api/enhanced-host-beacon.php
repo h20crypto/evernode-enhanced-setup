@@ -1,8 +1,7 @@
 <?php
 /**
- * Enhanced Host Discovery Beacon - Network-Integrated Version
- * Provides discovery information for real network integration
- * Works with enhanced-search.php network discovery
+ * Enhanced Host Discovery Beacon - Unified Version
+ * Enables cross-discovery between Enhanced hosts
  */
 
 header('Content-Type: application/json');
@@ -14,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-$domain = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$domain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
 
 // Verify this is actually an Enhanced host
 $required_files = [
@@ -42,24 +41,30 @@ if ($enhanced_files_found < 2) {
     exit;
 }
 
-// Get system information for network display
+// Get system information
 function getSystemInfo() {
     $cpu_cores = intval(trim(shell_exec('nproc') ?: '4'));
-    $memory_mb = intval(trim(shell_exec("free -m | grep '^Mem:' | awk '{print \$2}'") ?: '8192'));
+    $memory_info = shell_exec("free -m | grep '^Mem:' | awk '{print \$2}'");
+    $memory_mb = intval(trim($memory_info ?: '8192'));
     $memory_gb = round($memory_mb / 1024, 1);
+    
+    $disk_info = shell_exec("df -BG / | tail -1 | awk '{print \$2}' | sed 's/G//'");
+    $disk_gb = intval(trim($disk_info ?: '100'));
     
     return [
         'cpu_cores' => $cpu_cores,
         'memory_gb' => $memory_gb,
+        'disk_gb' => $disk_gb,
         'enhanced_files' => $enhanced_files_found
     ];
 }
 
-// Get installation info for network verification
+// Get installation info
 function getInstallationInfo() {
     $info = [
         'github_source' => false,
         'installation_time' => null,
+        'version' => '4.1',
         'chicago_integrated' => true
     ];
     
@@ -80,12 +85,12 @@ function getInstallationInfo() {
     return $info;
 }
 
-// Check if host config exists (from quick-install.sh)
+// Check if host config exists
 function hasHostConfig() {
     return file_exists('/etc/enhanced-evernode/host-config.php');
 }
 
-// Get referral info if available
+// Get commission/referral info if available
 function getReferralInfo() {
     if (hasHostConfig()) {
         try {
@@ -93,7 +98,8 @@ function getReferralInfo() {
             return [
                 'referral_code' => $config['referral_code'] ?? null,
                 'host_wallet' => $config['host_wallet'] ?? null,
-                'operator_name' => $config['operator_name'] ?? null
+                'operator_name' => $config['operator_name'] ?? null,
+                'commission_enabled' => true
             ];
         } catch (Exception $e) {
             // Config file exists but couldn't read it
@@ -103,20 +109,69 @@ function getReferralInfo() {
     return [
         'referral_code' => null,
         'host_wallet' => null,
-        'operator_name' => null
+        'operator_name' => null,
+        'commission_enabled' => false
     ];
+}
+
+// Get available enhanced features
+function getEnhancedFeatures() {
+    $features = ['Enhanced']; // All enhanced hosts have this
+    
+    $feature_checks = [
+        'Discovery' => '/var/www/html/host-discovery.html',
+        'Cluster Manager' => '/var/www/html/cluster/',
+        'Real-time Monitoring' => '/var/www/html/monitoring-dashboard.html',
+        'Auto Deploy Commands' => '/var/www/html/api/smart-urls.php',
+        'Commission System' => '/var/www/html/my-earnings.html',
+        'Peer Discovery' => '/var/www/html/api/host-discovery.php',
+        'Live Data APIs' => '/var/www/html/api/enhanced-search.php'
+    ];
+    
+    foreach ($feature_checks as $feature => $file) {
+        if (file_exists($file)) {
+            $features[] = $feature;
+        }
+    }
+    
+    return $features;
+}
+
+// Generate quality score for this host
+function calculateQualityScore() {
+    $system = getSystemInfo();
+    $score = 70; // Base score for enhanced hosts
+    
+    // CPU bonus
+    if ($system['cpu_cores'] >= 8) $score += 15;
+    elseif ($system['cpu_cores'] >= 4) $score += 10;
+    elseif ($system['cpu_cores'] >= 2) $score += 5;
+    
+    // Memory bonus
+    if ($system['memory_gb'] >= 16) $score += 10;
+    elseif ($system['memory_gb'] >= 8) $score += 7;
+    elseif ($system['memory_gb'] >= 4) $score += 5;
+    
+    // Disk bonus
+    if ($system['disk_gb'] >= 500) $score += 5;
+    elseif ($system['disk_gb'] >= 200) $score += 3;
+    elseif ($system['disk_gb'] >= 100) $score += 2;
+    
+    return min(100, $score);
 }
 
 $system_info = getSystemInfo();
 $installation_info = getInstallationInfo();
 $referral_info = getReferralInfo();
+$features = getEnhancedFeatures();
+$quality_score = calculateQualityScore();
 
-// Enhanced host beacon response - optimized for network discovery
+// Enhanced host beacon response
 $beacon_data = [
     'enhanced_host' => true,
     'domain' => $domain,
-    'beacon_version' => '2.0.0',
-    'discovery_protocol' => 'enhanced-evernode-network',
+    'beacon_version' => '2.1.0',
+    'discovery_protocol' => 'enhanced-evernode-unified',
     'timestamp' => time(),
     'last_updated' => date('c'),
     
@@ -125,7 +180,8 @@ $beacon_data = [
         'chicago_integrated' => true,
         'payment_portal' => 'https://payments.evrdirect.info',
         'api_base' => 'https://api.evrdirect.info',
-        'real_evernode_network' => true
+        'real_evernode_network' => true,
+        'unified_discovery' => true
     ],
     
     // Installation verification
@@ -136,26 +192,25 @@ $beacon_data = [
     ]),
     
     // Enhanced features for network display
-    'features' => [
-        'Professional Landing Page',
-        'Real Network Discovery',
-        'Chicago Payment Integration', 
-        'Commission Tracking System',
-        'Enhanced Host Directory'
-    ],
+    'features' => $features,
+    'feature_count' => count($features),
     
     // System specs for network comparison
     'system' => $system_info,
+    'quality_score' => $quality_score,
     
-    // Referral information (if configured)
+    // Commission/referral information
     'referral' => $referral_info,
     
     // API endpoints for network discovery
     'endpoints' => [
         'enhanced_search' => '/api/enhanced-search.php',
+        'host_discovery' => '/api/host-discovery.php',
         'beacon' => '/.enhanced-host-beacon.php',
         'main_site' => '/',
-        'host_discovery' => '/host-discovery.html'
+        'host_discovery_page' => '/host-discovery.html',
+        'earnings' => '/my-earnings.html',
+        'monitoring' => '/monitoring-dashboard.html'
     ],
     
     // Quality indicators for network ranking
@@ -164,14 +219,24 @@ $beacon_data = [
         'response_time' => 'fast',
         'enhanced_verified' => true,
         'chicago_connected' => true,
-        'network_discoverable' => true
+        'network_discoverable' => true,
+        'unified_api' => true
     ],
     
     // Network participation
     'network_participation' => [
         'announces_to_network' => true,
         'accepts_discovery' => true,
-        'peer_discovery_enabled' => true
+        'peer_discovery_enabled' => true,
+        'cross_host_discovery' => true
+    ],
+    
+    // Discovery hints for other hosts
+    'discovery_hints' => [
+        'evernode_compatible' => true,
+        'enhanced_network_member' => true,
+        'supports_real_data' => true,
+        'commission_network' => true
     ]
 ];
 
