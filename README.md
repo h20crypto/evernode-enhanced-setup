@@ -161,6 +161,18 @@ Professional interface building tenant trust
 ✅ Optimized performance on mobile devices
 ✅ Progressive enhancement for offline access
 
+## 🔍 Unified Discovery System v4.1
+
+### Features
+✅ **Real Evernode Network** - Discovers 2000+ live hosts  
+✅ **Enhanced Host Discovery** - Cross-discovery between Enhanced hosts  
+✅ **Live Network Data** - Real reputation, availability, pricing  
+✅ **Beacon System** - Automatic host registration and discovery  
+
+### Installation
+```bash
+curl -fsSL https://raw.githubusercontent.com/h20crypto/evernode-enhanced-setup/main/scripts/deploy-unified-discovery.sh | sudo bash
+
 🎯 Competitive Advantages
 | Feature | Basic Evernode | Enhanced Evernode v3.0 |
 |---------|---------------|-------------------------|
