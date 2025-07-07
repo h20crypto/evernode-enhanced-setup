@@ -438,10 +438,20 @@ EOF
 update_host_files() {
     print_step "Personalizing host files with your information..."
     
-    # Update main landing page
-    sed -i "s/HOST_WALLET_PLACEHOLDER/$HOST_WALLET/g" "$INSTALL_DIR/index.html"
-    sed -i "s/your-host-ip/$HOST_DOMAIN/g" "$INSTALL_DIR/index.html"
-    sed -i "s/enhanced-host.com/$HOST_DOMAIN/g" "$INSTALL_DIR/index.html"
+    # Update ALL HTML files with host information
+    for html_file in "$INSTALL_DIR"/*.html "$INSTALL_DIR"/cluster/*.html; do
+        if [[ -f "$html_file" ]]; then
+            sed -i "s/HOST_WALLET_PLACEHOLDER/$HOST_WALLET/g" "$html_file"
+            sed -i "s/your-host-ip/$HOST_DOMAIN/g" "$html_file"
+            sed -i "s/enhanced-host.com/$HOST_DOMAIN/g" "$html_file"
+            sed -i "s/{{HOST_DOMAIN}}/$HOST_DOMAIN/g" "$html_file"
+            sed -i "s/{{HOST_WALLET}}/$HOST_WALLET/g" "$html_file"
+            sed -i "s/{{OPERATOR_NAME}}/$OPERATOR_NAME/g" "$html_file"
+            sed -i "s/{{OPERATOR_EMAIL}}/$OPERATOR_EMAIL/g" "$html_file"
+            sed -i "s/{{REFERRAL_CODE}}/$REFERRAL_CODE/g" "$html_file"
+            sed -i "s/h20cryptoxah.click/$HOST_DOMAIN/g" "$html_file"
+        fi
+    done
     
     # Update API files with real configuration
     for php_file in "$INSTALL_DIR/api"/*.php; do
