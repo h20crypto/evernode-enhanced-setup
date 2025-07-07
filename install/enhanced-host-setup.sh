@@ -243,16 +243,36 @@ install_dependencies() {
     # Update package list
     apt-get update -y
     
-    # Install required packages
+    # Detect available PHP version
+    if apt-cache show php8.3-fpm &>/dev/null; then
+        PHP_VERSION="8.3"
+        print_success "Using PHP 8.3 (Ubuntu 24.04+)"
+    elif apt-cache show php8.2-fpm &>/dev/null; then
+        PHP_VERSION="8.2"
+        print_success "Using PHP 8.2"
+    elif apt-cache show php8.1-fpm &>/dev/null; then
+        PHP_VERSION="8.1"
+        print_success "Using PHP 8.1"
+    else
+        # Add PHP repository for older systems
+        print_step "Adding PHP repository..."
+        apt-get install -y software-properties-common
+        add-apt-repository ppa:ondrej/php -y
+        apt-get update -y
+        PHP_VERSION="8.1"
+        print_success "Added PHP repository, using PHP 8.1"
+    fi
+    
+    # Install packages with detected PHP version
     apt-get install -y \
         nginx \
-        php8.1-fpm \
-        php8.1-cli \
-        php8.1-curl \
-        php8.1-json \
-        php8.1-mbstring \
-        php8.1-xml \
-        php8.1-zip \
+        php${PHP_VERSION}-fpm \
+        php${PHP_VERSION}-cli \
+        php${PHP_VERSION}-curl \
+        php${PHP_VERSION}-json \
+        php${PHP_VERSION}-mbstring \
+        php${PHP_VERSION}-xml \
+        php${PHP_VERSION}-zip \
         docker.io \
         docker-compose \
         curl \
@@ -264,18 +284,18 @@ install_dependencies() {
         ufw \
         fail2ban
     
-    # Start and enable services
+    # Start and enable services with detected PHP version
     systemctl start nginx
     systemctl enable nginx
-    systemctl start php8.1-fpm
-    systemctl enable php8.1-fpm
+    systemctl start php${PHP_VERSION}-fpm
+    systemctl enable php${PHP_VERSION}-fpm
     systemctl start docker
     systemctl enable docker
     
     # Add current user to docker group
     usermod -aG docker www-data
     
-    print_success "Dependencies installed"
+    print_success "Dependencies installed with PHP ${PHP_VERSION}"
 }
 
 # =============================================================================
@@ -521,8 +541,8 @@ server {
     include /etc/nginx/conf.d/security.conf;
     
     # PHP handling
-    location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+     location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
         include fastcgi_params;
