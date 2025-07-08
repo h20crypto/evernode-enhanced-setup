@@ -531,7 +531,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 40px 0; max-width: 1000px; margin-left: auto; margin-right: auto;">
                 <div style="background: rgba(59, 130, 246, 0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 15px; padding: 30px; text-align: center;" class="tenant-only">
                     <h3 style="color: #3b82f6; margin-bottom: 15px; font-size: 1.3rem;">🚀 Deploy Your dApp</h3>
-                    <p style="margin-bottom: 20px; opacity: 0.9;">3-step deployment with transparent EVR pricing</p>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">4-step deployment with transparent EVR pricing</p>
                     <div style="font-size: 2rem; font-weight: 700; color: #3b82f6; margin-bottom: 10px;" id="hero-evr-cost">0.005 EVR/hour</div>
                     <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 20px;" id="hero-usd-cost">Starting cost for standard dApps</div>
                     <a href="#tenant-deploy" class="btn btn-primary" onclick="scrollToTenantSection()">
@@ -651,13 +651,22 @@
         </div>
     </section>
 
-    <!-- 3-Step Deployment Process for Tenants -->
+    <!-- 4-Step Deployment Process for Tenants -->
     <section id="tenant-deploy" class="deployment-section tenant-only">
         <div class="container">
-            <h2 class="section-title" style="color: #3b82f6;">🚀 Deploy Your dApp in 3 Steps</h2>
+            <h2 class="section-title" style="color: #3b82f6;">🚀 Deploy Your dApp in 4 Steps</h2>
             <p style="text-align: center; margin-bottom: 40px; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto;">
                 Deploy any Docker container to this Enhanced Evernode host in under 5 minutes. Pay only what you use with EVR tokens.
             </p>
+            
+            <div style="background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); border-radius: 10px; padding: 15px; margin-bottom: 30px; text-align: center;">
+                <div style="font-size: 1rem; font-weight: 600; color: #fbbf24; margin-bottom: 8px;">🖥️ Command Line Required</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">
+                    <strong>Windows:</strong> Press Win+R, type "cmd", press Enter<br>
+                    <strong>Mac:</strong> Press Cmd+Space, type "Terminal", press Enter<br>
+                    <strong>Linux:</strong> Press Ctrl+Alt+T
+                </div>
+            </div>
             
             <div style="max-width: 800px; margin: 0 auto;">
                 <!-- Step 1: Install DevKit -->
@@ -667,36 +676,65 @@
                         <h3 style="margin: 0; color: #3b82f6;">Install Evernode DevKit</h3>
                     </div>
                     <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88;">
-                        <code>npm install -g @evernode/devkit</code>
-                        <button onclick="copyCode('npm install -g @evernode/devkit')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                        <code>npm install -g @evernode/evdevkit</code>
+                        <button onclick="copyCode('npm install -g @evernode/evdevkit')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
                     </div>
-                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Official Evernode development toolkit for dApp deployment</p>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Official Evernode development toolkit for dApp deployment<br><em>(Linux users: add "sudo" before npm)</em></p>
                 </div>
 
-                <!-- Step 2: Configure Wallet -->
+                <!-- Step 2: Generate Keys -->
                 <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
                     <div style="display: flex; align-items: center; margin-bottom: 15px;">
                         <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">2</div>
-                        <h3 style="margin: 0; color: #3b82f6;">Configure Your Xahau Wallet</h3>
+                        <h3 style="margin: 0; color: #3b82f6;">Generate User Keypair</h3>
                     </div>
                     <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88;">
-                        <code>evdevkit wallet import</code>
-                        <button onclick="copyCode('evdevkit wallet import')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                        <code>evdevkit keygen</code>
+                        <button onclick="copyCode('evdevkit keygen')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
                     </div>
-                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Import your Xahau wallet with EVR tokens for deployment payment</p>
+                    <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 10px; margin-top: 10px;">
+                        <div style="font-size: 0.9rem; color: #ef4444; font-weight: 600;">💾 IMPORTANT: Save your keys!</div>
+                        <div style="font-size: 0.8rem; opacity: 0.9;">This outputs a public and private key. Save the private key securely - you'll need it for deployment.</div>
+                    </div>
                 </div>
 
-                <!-- Step 3: Deploy -->
+                <!-- Step 3: Set Environment Variables -->
                 <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
                     <div style="display: flex; align-items: center; margin-bottom: 15px;">
                         <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">3</div>
+                        <h3 style="margin: 0; color: #3b82f6;">Set Environment Variables</h3>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #ffffff;">Windows (Command Prompt):</strong>
+                        <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin: 8px 0; position: relative; font-family: 'Courier New', monospace; color: #00ff88; font-size: 0.9rem;">
+                            <code>set EV_TENANT_SECRET=your_xahau_wallet_secret<br>set EV_USER_PRIVATE_KEY=your_private_key_from_step2</code>
+                            <button onclick="copyCode('set EV_TENANT_SECRET=your_xahau_wallet_secret\nset EV_USER_PRIVATE_KEY=your_private_key_from_step2')" style="position: absolute; right: 10px; top: 10px; background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #ffffff;">Mac/Linux (Terminal):</strong>
+                        <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin: 8px 0; position: relative; font-family: 'Courier New', monospace; color: #00ff88; font-size: 0.9rem;">
+                            <code>export EV_TENANT_SECRET="your_xahau_wallet_secret"<br>export EV_USER_PRIVATE_KEY="your_private_key_from_step2"</code>
+                            <button onclick="copyCode('export EV_TENANT_SECRET=\"your_xahau_wallet_secret\"\nexport EV_USER_PRIVATE_KEY=\"your_private_key_from_step2\"')" style="position: absolute; right: 10px; top: 10px; background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
+                        </div>
+                    </div>
+                    
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Replace with your actual Xahau wallet secret (with EVR tokens) and private key from step 2</p>
+                </div>
+
+                <!-- Step 4: Deploy -->
+                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="background: #3b82f6; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">4</div>
                         <h3 style="margin: 0; color: #3b82f6;">Deploy to This Host</h3>
                     </div>
                     <div style="background: #1a1a1a; border-radius: 8px; padding: 15px; margin-bottom: 10px; position: relative; font-family: 'Courier New', monospace; color: #00ff88; word-break: break-all;">
-                        <code>evdevkit acquire -i your-app:latest --gptcp1--80 <span id="deploy-host-address">loading...</span> -m 24</code>
+                        <code>evdevkit acquire <span id="deploy-host-address">loading...</span> -i your-app:latest -m 24</code>
                         <button onclick="copyDeployCommand()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,255,136,0.2); border: 1px solid #00ff88; color: #00ff88; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📋 Copy</button>
                     </div>
-                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Deploy your Docker image directly to this Enhanced Evernode host</p>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">Deploy your Docker image directly to this Enhanced Evernode host using XRPL address<br><em>(-m 24 = 24 moments ≈ 24 hours runtime)</em></p>
                 </div>
             </div>
 
@@ -844,7 +882,7 @@
                     <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
                         <div style="font-size: 2rem; margin-bottom: 10px;">3️⃣</div>
                         <h4 style="color: #3b82f6; margin-bottom: 10px;">Deploy</h4>
-                        <p style="font-size: 0.9rem; opacity: 0.9;">Follow the 3-step deployment process</p>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">Follow the 4-step deployment process</p>
                     </div>
                 </div>
             </div>
@@ -1609,18 +1647,35 @@
             }
         }
 
-        // Load current host address
+        // Load current host XRPL address for deployment
         async function loadHostAddress() {
             try {
-                const currentHost = window.location.host;
-                const hostAddress = `http://${currentHost}/`;
+                // Try to get the host's XRPL address from the API
+                let response = await fetch('/api/host-info.php');
+                let data = await response.json();
                 
-                // Update deployment command
-                document.getElementById('deploy-host-address').textContent = hostAddress;
+                // If that fails, try unified API
+                if (!data.xrpl_address && !data.xahau_address) {
+                    response = await fetch('/api/?endpoint=host-info');
+                    data = await response.json();
+                }
+                
+                // Use XRPL address for deployment command
+                let hostAddress = data.xrpl_address || data.xahau_address || data.host_address;
+                
+                if (hostAddress && hostAddress.startsWith('r') && hostAddress.length > 20) {
+                    // Valid XRPL address found
+                    document.getElementById('deploy-host-address').textContent = hostAddress;
+                    console.log('✅ Loaded host XRPL address for deployment:', hostAddress);
+                } else {
+                    throw new Error('No valid XRPL address found in API response');
+                }
                 
             } catch (error) {
-                console.error('Failed to load host address:', error);
-                document.getElementById('deploy-host-address').textContent = 'http://your-host.com/';
+                console.error('Failed to load host XRPL address:', error);
+                // Fallback to placeholder
+                document.getElementById('deploy-host-address').textContent = 'rYourHostXRPLAddress';
+                console.log('⚠️ Using placeholder XRPL address - replace with actual host address');
             }
         }
 
@@ -1648,10 +1703,10 @@
             });
         }
 
-        // Copy deployment command with real host address
+        // Copy deployment command with real host XRPL address
         function copyDeployCommand() {
             const hostAddress = document.getElementById('deploy-host-address').textContent;
-            const command = `evdevkit acquire -i your-app:latest --gptcp1--80 ${hostAddress} -m 24`;
+            const command = `evdevkit acquire ${hostAddress} -i your-app:latest -m 24`;
             copyCode(command);
         }
 
