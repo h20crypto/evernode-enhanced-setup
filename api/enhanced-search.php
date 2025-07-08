@@ -15,12 +15,28 @@ $action = $_GET['action'] ?? 'search';
 
 function isEnhancedHost($host) {
     $domain = $host['domain'] ?? '';
+    if (!$domain || $domain === 'unknown') return false;
+    
+    // Known enhanced hosts (instant detection)
     $known_enhanced = [
-        'h20cryptoxah.click',
-        'h20cryptonode3.dev', 
-        'h20cryptonode5.dev'
+        'yayathewisemushroom2.co',
+        'h20cryptonode3.dev',
+        'h20cryptoxah.click'
     ];
-    return in_array($domain, $known_enhanced);
+    if (in_array($domain, $known_enhanced)) return true;
+    
+    // Auto-detect: Check if they have our GitHub landing page beacon
+    $reputation = $host['reputation'] ?? 0;
+    if ($reputation >= 200) {
+        $response = @file_get_contents("https://{$domain}/.enhanced-host-beacon.php", false, stream_context_create([
+            'http' => ['timeout' => 1, 'ignore_errors' => true]
+        ]));
+        if ($response && strpos($response, 'enhanced_host') !== false) {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 function fetchRealEvernodeData($timeout = 30) {
@@ -93,6 +109,7 @@ switch ($action) {
             'features' => [
                 'real_evernode_data' => true,
                 'enhanced_detection' => true,
+                'automatic_beacon_detection' => true,
                 'cors_free' => true
             ]
         ]);
