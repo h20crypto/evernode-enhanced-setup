@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Enhanced Evernode Earnings - Product Commission Analytics</title>
-    <link rel="stylesheet" href="/assets/css/unified-navigation.css">
-    <script src="/assets/js/unified-state-manager.js"></script>
+    <title>💰 Enhanced Evernode Earnings - Commission Analytics</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -13,7 +11,7 @@
             color: #ffffff;
             margin: 0;
             padding: 0;
-            margin-top: 70px;
+            min-height: 100vh;
         }
         
         .earnings-container {
@@ -311,34 +309,59 @@
             font-size: 0.9rem;
             margin-top: 20px;
         }
+
+        .referral-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .referral-url {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            word-break: break-all;
+            font-family: monospace;
+            color: #00ff88;
+        }
+
+        .copy-btn {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
     </style>
 </head>
 <body>
-    <!-- Unified Navigation -->
-    <nav class="enhanced-nav">
-        <div class="nav-container">
-            <a href="/" class="nav-brand">🚀 Enhanced Evernode</a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Dashboard</a>
-                <a href="/monitoring-dashboard.html" class="nav-link">Monitoring</a>
-                <a href="/my-earnings.html" class="nav-link active">Earnings</a>
-                <a href="/host-discovery.html" class="nav-link">Discovery</a>
-                <a href="/cluster/dapp-manager.html" class="nav-link admin-only">Cluster Manager</a>
-            </div>
-            <div class="nav-actions">
-                <button class="nav-btn" onclick="toggleAdminMode()">👑</button>
-            </div>
-        </div>
-    </nav>
-
     <div class="earnings-container">
         <!-- Header -->
         <div class="earnings-header">
-            <h1 class="earnings-title">💰 Product Commission Earnings</h1>
-            <p>Track commissions by product and payment currency</p>
+            <h1 class="earnings-title">💰 Enhanced Evernode Earnings</h1>
+            <p>Track your commission earnings from Enhanced Evernode referrals</p>
             <div class="earnings-indicator" id="earnings-status">
-                📡 Connecting to Chicago server...
+                📡 Connecting to commission API...
             </div>
+        </div>
+
+        <!-- Referral Information -->
+        <div class="referral-info">
+            <h2 class="breakdown-title">🔗 Your Referral Information</h2>
+            <p>Share this link to start earning $10 commissions on $49.99 sales!</p>
+            <div class="referral-url" id="referral-url">
+                Loading referral URL...
+            </div>
+            <button class="copy-btn" onclick="copyReferralUrl()">📋 Copy Link</button>
         </div>
 
         <!-- Key Commission Metrics -->
@@ -347,42 +370,42 @@
                 <div class="earning-icon">💰</div>
                 <div class="earning-value" id="total-earned">$0.00</div>
                 <div class="earning-label">Total Earned</div>
-                <div class="earning-trend">All Products</div>
+                <div class="earning-trend">All Time</div>
             </div>
 
             <div class="earning-card">
                 <div class="earning-icon">📊</div>
                 <div class="earning-value" id="total-paid">$0.00</div>
                 <div class="earning-label">Total Paid Out</div>
-                <div class="earning-trend">Multi-currency</div>
+                <div class="earning-trend">Completed</div>
             </div>
 
             <div class="earning-card">
                 <div class="earning-icon">⏳</div>
                 <div class="earning-value" id="pending-amount">$0.00</div>
                 <div class="earning-label">Pending Payout</div>
-                <div class="earning-trend">14-day hold</div>
+                <div class="earning-trend">Processing</div>
             </div>
 
             <div class="earning-card">
                 <div class="earning-icon">👥</div>
                 <div class="earning-value" id="total-referrals">0</div>
-                <div class="earning-label">Total Sales</div>
+                <div class="earning-label">Total Referrals</div>
                 <div class="earning-trend">All products</div>
             </div>
 
             <div class="earning-card">
                 <div class="earning-icon">📅</div>
-                <div class="earning-value" id="monthly-referrals">0</div>
+                <div class="earning-value" id="monthly-earnings">$0.00</div>
                 <div class="earning-label">This Month</div>
-                <div class="earning-trend">New sales</div>
+                <div class="earning-trend">New earnings</div>
             </div>
 
             <div class="earning-card">
-                <div class="earning-icon">💵</div>
-                <div class="earning-value" id="next-payout">$0.00</div>
-                <div class="earning-label">Next Payout</div>
-                <div class="earning-trend">Sunday payout</div>
+                <div class="earning-icon">🎯</div>
+                <div class="earning-value" id="commission-rate">20%</div>
+                <div class="earning-label">Commission Rate</div>
+                <div class="earning-trend">Per sale</div>
             </div>
         </div>
 
@@ -420,11 +443,11 @@
                 <div class="product-card">
                     <div class="product-header">
                         <div class="product-icon">🚀</div>
-                        <div class="product-name">dApp Cluster Manager</div>
+                        <div class="product-name">Enhanced Evernode License</div>
                     </div>
                     <div class="product-stats">
-                        <div class="product-sales" id="cluster-sales">0 sales</div>
-                        <div class="product-total" id="cluster-total">$0.00</div>
+                        <div class="product-sales" id="license-sales">0 sales</div>
+                        <div class="product-total" id="license-total">$0.00</div>
                     </div>
                 </div>
                 
@@ -452,9 +475,9 @@
             </div>
         </div>
 
-        <!-- Detailed Payment History -->
+        <!-- Payment History -->
         <div class="payment-history">
-            <h2 class="breakdown-title">📈 Detailed Commission History</h2>
+            <h2 class="breakdown-title">📈 Commission History</h2>
             <table class="history-table">
                 <thead>
                     <tr>
@@ -473,7 +496,7 @@
             </table>
         </div>
 
-        <button class="refresh-btn" onclick="refreshEarningsData()">🔄 Refresh Commission Data</button>
+        <button class="refresh-btn" onclick="refreshEarningsData()">🔄 Refresh Data</button>
         
         <div class="last-updated" id="last-updated">
             Last updated: Loading...
@@ -481,16 +504,18 @@
     </div>
 
     <script>
-        // Product & Currency Commission Tracker
-        class ProductCommissionTracker {
+        // Enhanced Evernode Commission Tracker - Fixed for your API
+        class CommissionTracker {
             constructor() {
-                this.chicagoAPI = 'https://api.evrdirect.info';
+                this.apiBase = 'https://api.evrdirect.info';
                 this.domain = window.location.hostname;
+                this.referralCode = 'SDIwQ1JZ'; // Your H20 Crypto referral code
                 this.init();
             }
 
             async init() {
-                console.log('💰 Product Commission Tracker initializing...');
+                console.log('💰 Commission Tracker initializing...');
+                this.showReferralInfo();
                 await this.loadCommissionData();
                 
                 // Auto-refresh every 5 minutes
@@ -499,11 +524,16 @@
                 }, 300000);
             }
 
+            showReferralInfo() {
+                const referralUrl = `https://payments.evrdirect.info/?ref=${this.referralCode}&host=${this.domain}`;
+                document.getElementById('referral-url').textContent = referralUrl;
+            }
+
             async loadCommissionData() {
                 try {
-                    console.log(`📡 Fetching product commission data for: ${this.domain}`);
+                    console.log(`📡 Fetching commission data for: ${this.domain}`);
                     
-                    const response = await fetch(`${this.chicagoAPI}/api/commission-stats/${this.domain}`, {
+                    const response = await fetch(`${this.apiBase}/api/commission-stats/${this.domain}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
@@ -517,9 +547,9 @@
                     const data = await response.json();
                     
                     if (data.success) {
-                        this.updateCommissionUI(data);
+                        this.updateUI(data);
                         this.showConnectedStatus();
-                        console.log('✅ Product commission data loaded successfully');
+                        console.log('✅ Commission data loaded successfully');
                     } else {
                         throw new Error(data.error || 'Invalid response');
                     }
@@ -532,61 +562,60 @@
                 this.updateLastUpdated();
             }
 
-            updateCommissionUI(data) {
-                const stats = data.commission_stats;
-                const currencyBreakdown = data.currency_breakdown || {};
-                const productBreakdown = data.product_breakdown || {};
-
+            updateUI(data) {
+                // Your API returns data in 'stats' object
+                const stats = data.stats || {};
+                
                 // Update main metrics
-                document.getElementById('total-earned').textContent = `$${stats.total_earned_usd.toFixed(2)}`;
-                document.getElementById('total-paid').textContent = `$${stats.total_paid_usd.toFixed(2)}`;
-                document.getElementById('pending-amount').textContent = `$${stats.pending_amount_usd.toFixed(2)}`;
-                document.getElementById('total-referrals').textContent = stats.total_referrals;
-                document.getElementById('monthly-referrals').textContent = stats.monthly_referrals;
-                document.getElementById('next-payout').textContent = `$${stats.next_payout_amount.toFixed(2)}`;
+                document.getElementById('total-earned').textContent = `$${(stats.total_earned_usd || 0).toFixed(2)}`;
+                document.getElementById('total-paid').textContent = `$${(stats.total_paid_usd || 0).toFixed(2)}`;
+                document.getElementById('pending-amount').textContent = `$${(stats.pending_amount_usd || 0).toFixed(2)}`;
+                document.getElementById('total-referrals').textContent = stats.referral_count || 0;
+                document.getElementById('monthly-earnings').textContent = `$${(stats.monthly_earnings || 0).toFixed(2)}`;
+                document.getElementById('commission-rate').textContent = stats.commission_rate || '20%';
 
-                // Update currency breakdown
-                this.updateCurrencyBreakdown(currencyBreakdown);
+                // Currency breakdown (will show zeros until your API provides this data)
+                this.updateCurrencyBreakdown(data.currency_breakdown || {});
 
-                // Update product breakdown
-                this.updateProductBreakdown(productBreakdown);
+                // Product breakdown (will show zeros until your API provides this data)
+                this.updateProductBreakdown(data.product_breakdown || {});
 
-                // Update payment history
-                this.updatePaymentHistory(data.recent_payments);
+                // Payment history (will show placeholder until your API provides this data)
+                this.updatePaymentHistory(data.recent_payments || []);
             }
 
             updateCurrencyBreakdown(currencyData) {
-                // Update EVR stats
+                // EVR
                 const evrData = currencyData.EVR || { total_amount: 0, sales_count: 0 };
-                document.getElementById('evr-amount').textContent = `${evrData.total_amount.toFixed(6)} EVR`;
-                document.getElementById('evr-count').textContent = `${evrData.sales_count} sales`;
+                document.getElementById('evr-amount').textContent = `${(evrData.total_amount || 0).toFixed(6)} EVR`;
+                document.getElementById('evr-count').textContent = `${evrData.sales_count || 0} sales`;
 
-                // Update XAH stats
+                // XAH
                 const xahData = currencyData.XAH || { total_amount: 0, sales_count: 0 };
-                document.getElementById('xah-amount').textContent = `${xahData.total_amount.toFixed(6)} XAH`;
-                document.getElementById('xah-count').textContent = `${xahData.sales_count} sales`;
+                document.getElementById('xah-amount').textContent = `${(xahData.total_amount || 0).toFixed(6)} XAH`;
+                document.getElementById('xah-count').textContent = `${xahData.sales_count || 0} sales`;
 
-                // Update XRP stats
+                // XRP
                 const xrpData = currencyData.XRP || { total_amount: 0, sales_count: 0 };
-                document.getElementById('xrp-amount').textContent = `${xrpData.total_amount.toFixed(6)} XRP`;
-                document.getElementById('xrp-count').textContent = `${xrpData.sales_count} sales`;
+                document.getElementById('xrp-amount').textContent = `${(xrpData.total_amount || 0).toFixed(6)} XRP`;
+                document.getElementById('xrp-count').textContent = `${xrpData.sales_count || 0} sales`;
             }
 
             updateProductBreakdown(productData) {
-                // Update Cluster Manager stats
-                const clusterData = productData['dApp Cluster Manager'] || { sales_count: 0, total_commission_usd: 0 };
-                document.getElementById('cluster-sales').textContent = `${clusterData.sales_count} sales`;
-                document.getElementById('cluster-total').textContent = `$${clusterData.total_commission_usd.toFixed(2)}`;
+                // Enhanced Evernode License
+                const licenseData = productData['Enhanced Evernode License'] || { sales_count: 0, total_commission_usd: 0 };
+                document.getElementById('license-sales').textContent = `${licenseData.sales_count} sales`;
+                document.getElementById('license-total').textContent = `$${(licenseData.total_commission_usd || 0).toFixed(2)}`;
 
-                // Update Premium Features stats
+                // Premium Features
                 const premiumData = productData['Premium Features'] || { sales_count: 0, total_commission_usd: 0 };
                 document.getElementById('premium-sales').textContent = `${premiumData.sales_count} sales`;
-                document.getElementById('premium-total').textContent = `$${premiumData.total_commission_usd.toFixed(2)}`;
+                document.getElementById('premium-total').textContent = `$${(premiumData.total_commission_usd || 0).toFixed(2)}`;
 
-                // Update Future Products stats
+                // Future Products
                 const futureData = productData['Future Products'] || { sales_count: 0, total_commission_usd: 0 };
                 document.getElementById('future-sales').textContent = `${futureData.sales_count} sales`;
-                document.getElementById('future-total').textContent = `$${futureData.total_commission_usd.toFixed(2)}`;
+                document.getElementById('future-total').textContent = `$${(futureData.total_commission_usd || 0).toFixed(2)}`;
             }
 
             updatePaymentHistory(payments) {
@@ -595,8 +624,15 @@
                 if (!payments || payments.length === 0) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="5" style="text-align: center; color: #888;">
-                                No commission payments yet. Share your referral link to start earning!
+                            <td colspan="5" style="text-align: center; color: #888; padding: 30px;">
+                                <div style="font-size: 1.2em; margin-bottom: 15px;">
+                                    🚀 Ready to start earning commissions!
+                                </div>
+                                <p>Share your referral link to start earning $10 per sale:</p>
+                                <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; margin: 10px 0; font-family: monospace; color: #00ff88;">
+                                    https://payments.evrdirect.info/?ref=${this.referralCode}&host=${this.domain}
+                                </div>
+                                <p style="opacity: 0.7;">Commission history will appear here after your first sale.</p>
                             </td>
                         </tr>
                     `;
@@ -606,15 +642,15 @@
                 tbody.innerHTML = payments.map(payment => `
                     <tr>
                         <td>
-                            <span class="product-badge">${payment.product_name || 'dApp Cluster Manager'}</span>
+                            <span class="product-badge">${payment.product_name || 'Enhanced Evernode'}</span>
                         </td>
-                        <td>${payment.commission_amount.toFixed(6)}</td>
+                        <td>${(payment.commission_amount || 0).toFixed(6)}</td>
                         <td>
-                            <span class="currency-badge ${payment.currency.toLowerCase()}">
-                                ${payment.currency}
+                            <span class="currency-badge ${(payment.currency || 'xrp').toLowerCase()}">
+                                ${payment.currency || 'XRP'}
                             </span>
                         </td>
-                        <td>${new Date(payment.date).toLocaleDateString()}</td>
+                        <td>${payment.date ? new Date(payment.date).toLocaleDateString() : 'N/A'}</td>
                         <td>
                             <span class="status-badge ${payment.status === 'paid' ? 'status-paid' : 'status-pending'}">
                                 ${payment.status === 'paid' ? '✅ Paid' : '⏳ Pending'}
@@ -626,14 +662,14 @@
 
             showConnectedStatus() {
                 const status = document.getElementById('earnings-status');
-                status.textContent = '✅ Connected to Chicago Server';
+                status.textContent = '✅ Connected to Commission API';
                 status.style.background = 'rgba(16, 185, 129, 0.2)';
                 status.style.color = '#10b981';
             }
 
             showDisconnectedStatus() {
                 const status = document.getElementById('earnings-status');
-                status.textContent = '📡 Chicago server unavailable - retrying...';
+                status.textContent = '📡 Commission API unavailable - retrying...';
                 status.style.background = 'rgba(255, 193, 7, 0.2)';
                 status.style.color = '#ffd700';
             }
@@ -646,14 +682,35 @@
 
         // Global functions
         window.refreshEarningsData = function() {
-            if (window.productCommissionTracker) {
-                window.productCommissionTracker.loadCommissionData();
+            if (window.commissionTracker) {
+                window.commissionTracker.loadCommissionData();
             }
+        };
+
+        window.copyReferralUrl = function() {
+            const referralUrl = document.getElementById('referral-url').textContent;
+            navigator.clipboard.writeText(referralUrl).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = referralUrl;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Referral URL copied to clipboard!');
+            });
         };
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            window.productCommissionTracker = new ProductCommissionTracker();
+            window.commissionTracker = new CommissionTracker();
         });
     </script>
 </body>
