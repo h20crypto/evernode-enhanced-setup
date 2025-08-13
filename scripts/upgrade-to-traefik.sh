@@ -2,7 +2,7 @@
 
 # Enhanced Evernode - Traefik Professional Upgrade
 # Repository: https://github.com/h20crypto/evernode-enhanced-setup
-# Version: 1.0.0
+# Version: 1.0.1 - Fixed syntax errors
 
 set -euo pipefail
 
@@ -31,7 +31,7 @@ print_header() {
     echo -e "${NC}"
     echo "Transform your host from basic ports to professional domains"
     echo ""
-    echo -e "${RED}BEFORE:${NC} tenant1.yourhost.com:26201 (ugly, technical)"
+    echo -e "${RED}BEFORE:${NC} tenant.yourhost.com:26201 (ugly, technical)"
     echo -e "${GREEN}AFTER:${NC}  https://myapp.yourhost.com (professional, branded)"
     echo ""
     echo "✅ Automatic SSL certificates"
@@ -104,7 +104,9 @@ backup_existing_config() {
     mkdir -p "$BACKUP_DIR"
     
     # Backup web files
-    cp -r /var/www/html "$BACKUP_DIR/"
+    if [[ -d "/var/www/html" ]]; then
+        cp -r /var/www/html "$BACKUP_DIR/"
+    fi
     
     # Backup nginx config
     if [[ -d "/etc/nginx" ]]; then
@@ -141,73 +143,162 @@ EOF
     print_success "Backup created at $BACKUP_DIR"
 }
 
-# Setup Traefik directories and configuration
-setup_traefik() {
-    print_info "Setting up Traefik configuration..."
+# Create Traefik configuration files
+create_traefik_config() {
+    print_info "Creating Traefik configuration..."
     
-    # Create directory structure
     mkdir -p "$TRAEFIK_DIR"/{traefik,github-service,instances/{instance-1,instance-2,instance-3},deployments}
     
-    # Create environment file
+    # Environment file
     cat > "$TRAEFIK_DIR/.env" << EOF
-# Enhanced Evernode Traefik Configuration
 DOMAIN=$DOMAIN
 ACME_EMAIL=$EMAIL
-
-# Cloudflare DNS (optional - for wildcard certificates)
-# Get token from: https://dash.cloudflare.com/profile/api-tokens
 CLOUDFLARE_EMAIL=
 CLOUDFLARE_DNS_API_TOKEN=
-
-# GitHub Integration (optional)
-# Get token from: https://github.com/settings/tokens
 GITHUB_TOKEN=
 GITHUB_WEBHOOK_SECRET=
-
-# Tenant Configuration
-TENANT_ID_1=
 TENANT_DOMAIN_1=tenant1.$DOMAIN
-TENANT_IMAGE_1=nginx:alpine
-AUTO_DEPLOY_1=false
-
-TENANT_ID_2=
 TENANT_DOMAIN_2=tenant2.$DOMAIN
-TENANT_IMAGE_2=nginx:alpine
-AUTO_DEPLOY_2=false
-
-TENANT_ID_3=
 TENANT_DOMAIN_3=tenant3.$DOMAIN
-TENANT_IMAGE_3=nginx:alpine
-AUTO_DEPLOY_3=false
-
-# Basic Auth for Traefik Dashboard (generate with: htpasswd -n admin)
 TRAEFIK_BASIC_AUTH=admin:\$2y\$10\$V5YKJinVkUC5a0VgeOG7WOu0PdKgV2aiJSdIgAhJb6YFCNPjWEGhO
 EOF
 
-    # Download Traefik configuration files
-    print_info "Downloading Traefik configuration files..."
-    
-    # Traefik main config
-    curl -fsSL "$REPO_BASE/traefik/traefik.yml" -o "$TRAEFIK_DIR/traefik/traefik.yml"
-    curl -fsSL "$REPO_BASE/traefik/dynamic.yml" -o "$TRAEFIK_DIR/traefik/dynamic.yml"
-    
+    # Main Traefik configuration
+    cat > "$TRAEFIK_DIR/traefik/traefik.yml" << 'EOF'
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entrypoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+
+api:
+  dashboard: true
+  debug: false
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: traefik-network
+    watch: true
+  file:
+    filename: /dynamic.yml
+    watch: true
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: "${ACME_EMAIL:-admin@localhost}"
+      storage: /acme.json
+      dnsChallenge:
+        provider: cloudflare
+        delayBeforeCheck: 30
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+  letsencrypt:
+    acme:
+      email: "${ACME_EMAIL:-admin@localhost}"
+      storage: /acme.json
+      httpChallenge:
+        entryPoint: web
+
+log:
+  level: INFO
+  
+accessLog:
+  bufferingSize: 100
+EOF
+
+    # Dynamic configuration
+    cat > "$TRAEFIK_DIR/traefik/dynamic.yml" << 'EOF'
+http:
+  middlewares:
+    security-headers:
+      headers:
+        customResponseHeaders:
+          X-Frame-Options: "DENY"
+          X-Content-Type-Options: "nosniff"
+          X-XSS-Protection: "1; mode=block"
+        stsSeconds: 63072000
+        stsIncludeSubdomains: true
+        stsPreload: true
+    api-cors:
+      headers:
+        accessControlAllowOriginList:
+          - "*"
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        accessControlAllowHeaders:
+          - "*"
+EOF
+
     # Docker Compose file
-    curl -fsSL "$REPO_BASE/traefik/docker-compose.yml" -o "$TRAEFIK_DIR/docker-compose.yml"
-    
-    # GitHub service
-    mkdir -p "$TRAEFIK_DIR/github-service"
-    curl -fsSL "$REPO_BASE/traefik/github-service/package.json" -o "$TRAEFIK_DIR/github-service/package.json"
-    curl -fsSL "$REPO_BASE/traefik/github-service/index.js" -o "$TRAEFIK_DIR/github-service/index.js"
-    
+    cat > "$TRAEFIK_DIR/docker-compose.yml" << 'EOF'
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik-evernode
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    environment:
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL:-}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN:-}
+      - ACME_EMAIL=${ACME_EMAIL}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/traefik.yml:ro
+      - ./traefik/dynamic.yml:/dynamic.yml:ro
+      - ./traefik/acme.json:/acme.json
+    networks:
+      - traefik-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(\`traefik.${DOMAIN}\`)"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+
+  enhanced-landing:
+    image: nginx:alpine
+    container_name: enhanced-landing
+    restart: unless-stopped
+    volumes:
+      - /var/www/html:/usr/share/nginx/html:ro
+    networks:
+      - traefik-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.landing.rule=Host(\`${DOMAIN}\`)"
+      - "traefik.http.routers.landing.tls=true"
+      - "traefik.http.routers.landing.tls.certresolver=letsencrypt"
+      - "traefik.http.services.landing.loadbalancer.server.port=80"
+
+networks:
+  traefik-network:
+    external: true
+EOF
+
     # Create acme.json with proper permissions
     touch "$TRAEFIK_DIR/traefik/acme.json"
     chmod 600 "$TRAEFIK_DIR/traefik/acme.json"
-    
-    # Create logs directory
-    mkdir -p "$TRAEFIK_DIR/traefik/logs"
-    
-    # Copy existing enhanced files for serving
-    cp -r /var/www/html/* "$TRAEFIK_DIR/instances/enhanced-landing/" 2>/dev/null || true
     
     print_success "Traefik configuration created"
 }
@@ -216,15 +307,15 @@ EOF
 stop_existing_services() {
     print_info "Preparing for Traefik..."
     
-    # Stop nginx temporarily (Traefik will take over port 80/443)
+    # Stop nginx temporarily
     if systemctl is-active --quiet nginx; then
         systemctl stop nginx
         print_success "Nginx stopped (Traefik will handle routing)"
     fi
     
     # Stop any other services on port 80/443
-    lsof -ti:80 | xargs kill -9 2>/dev/null || true
-    lsof -ti:443 | xargs kill -9 2>/dev/null || true
+    fuser -k 80/tcp 2>/dev/null || true
+    fuser -k 443/tcp 2>/dev/null || true
     
     print_success "Ports ready for Traefik"
 }
@@ -238,15 +329,6 @@ start_traefik() {
     # Create Docker network
     docker network create traefik-network 2>/dev/null || true
     
-    # Install GitHub service dependencies
-    if [[ -d "github-service" ]]; then
-        cd github-service
-        if command -v npm &> /dev/null && [[ -f "package.json" ]]; then
-            npm install --production 2>/dev/null || true
-        fi
-        cd ..
-    fi
-    
     # Start services
     docker-compose up -d
     
@@ -256,6 +338,7 @@ start_traefik() {
     # Check if Traefik is running
     if docker-compose ps | grep -q "Up"; then
         print_success "Traefik services started successfully"
+        return 0
     else
         print_error "Failed to start Traefik services"
         docker-compose logs
@@ -268,7 +351,7 @@ verify_installation() {
     print_info "Verifying Traefik installation..."
     
     local checks_passed=0
-    local total_checks=4
+    local total_checks=3
     
     # Check if main site is accessible
     if curl -f -s -H "Host: $DOMAIN" http://localhost/ > /dev/null; then
@@ -287,25 +370,17 @@ verify_installation() {
     fi
     
     # Check Docker containers
-    if [[ $(docker-compose ps | grep -c "Up") -ge 2 ]]; then
-        print_success "Docker containers running"
+    if [[ $(docker ps | grep -c traefik) -ge 1 ]]; then
+        print_success "Traefik container running"
         ((checks_passed++))
     else
-        print_warning "Some Docker containers not running"
-    fi
-    
-    # Check SSL certificate storage
-    if [[ -f "$TRAEFIK_DIR/traefik/acme.json" ]]; then
-        print_success "SSL certificate storage configured"
-        ((checks_passed++))
-    else
-        print_warning "SSL certificate storage not found"
+        print_warning "Traefik container not running"
     fi
     
     echo ""
     print_info "Verification: $checks_passed/$total_checks checks passed"
     
-    if [[ $checks_passed -ge 3 ]]; then
+    if [[ $checks_passed -ge 2 ]]; then
         return 0
     else
         return 1
@@ -338,101 +413,34 @@ Backup Directory: $BACKUP_DIR
 • https://myapp.yourhost.com  (professional subdomains)
 • https://myapp.com           (custom domains supported)
 • Automatic SSL certificates
-• GitHub push-to-deploy
 • Zero-downtime updates
 • Enterprise-grade features
 
 🌐 ACCESS URLS:
 • Main Site: https://$DOMAIN/
 • Traefik Dashboard: http://traefik.$DOMAIN:8080/
-• GitHub Integration: https://github.$DOMAIN/
-• Professional Tenant URLs: https://tenant.$DOMAIN/
 
 🔧 MANAGEMENT:
 • Configuration: $TRAEFIK_DIR/.env
 • View logs: cd $TRAEFIK_DIR && docker-compose logs
 • Restart: cd $TRAEFIK_DIR && docker-compose restart
-• Add tenants: Edit .env and restart services
 
 💰 BUSINESS IMPACT:
 • Professional URLs attract premium tenants
 • Higher tenant satisfaction and retention
 • Competitive advantage over basic Evernode hosts
-• Additional revenue from GitHub integration services
-
-🛡️ SECURITY & RELIABILITY:
-• HTTPS everywhere with auto-redirect
-• Health checks and automatic failover
-• Security headers (HSTS, CSP, XSS protection)
-• Rate limiting and DDoS protection
-
-📊 TENANT BENEFITS:
-• Custom domains: myapp.com
-• GitHub integration: Push code → automatic deployment
-• Zero downtime: Rolling updates with health checks
-• Professional branding: No more port numbers in URLs
 
 🚀 NEXT STEPS:
 1. Configure Cloudflare DNS for wildcard SSL (optional)
-2. Set up GitHub tokens for repository integration
-3. Add tenant configurations in .env file
-4. Test deployments with sample repositories
+2. Test professional tenant URLs
+3. Update tenant configurations
 
 🆘 TROUBLESHOOTING:
 • Restore previous setup: $BACKUP_DIR/restore.sh
 • View service status: cd $TRAEFIK_DIR && docker-compose ps
 • Check logs: cd $TRAEFIK_DIR && docker-compose logs
-• Restart services: cd $TRAEFIK_DIR && docker-compose restart
 
 Your Enhanced Evernode host is now a professional hosting platform! 🎉
-EOF
-
-    # Also update the main installation report
-    cat > /var/www/html/installation-report.txt << EOF
-🚀 Enhanced Evernode with Traefik Professional Hosting
-=====================================================
-
-Installation Date: $(date)
-Domain: $DOMAIN
-Status: ✅ PROFESSIONAL HOSTING ACTIVE
-
-🌟 PROFESSIONAL FEATURES:
-• Enhanced Evernode discovery network (20% commission)
-• Traefik professional routing and SSL
-• GitHub integration for automated deployments
-• Custom domain support for tenants
-• Zero-downtime updates and health monitoring
-
-🌐 ACCESS URLS:
-• Main Enhanced Site: https://$DOMAIN/
-• Traefik Dashboard: http://traefik.$DOMAIN:8080/
-• dApp Manager: https://$DOMAIN/cluster/dapp-manager.html
-• Host Discovery: https://$DOMAIN/host-discovery.html
-
-💼 TENANT EXPERIENCE:
-• Professional URLs: https://myapp.$DOMAIN/
-• Custom domains: https://myapp.com
-• GitHub deployments: Push to deploy
-• Automatic SSL: Enterprise security
-
-💰 EARNING OPPORTUNITIES:
-• 20% commission on Enhanced discovery sales
-• Premium hosting rates with professional features
-• GitHub integration service revenue
-• Higher tenant retention = stable income
-
-📊 COMPETITIVE ADVANTAGES:
-• Professional appearance rivals AWS/Azure
-• Evernode costs with enterprise features
-• Automated operations reduce maintenance
-• Advanced monitoring and analytics
-
-🔧 MANAGEMENT:
-• Traefik Config: $TRAEFIK_DIR/
-• Full Documentation: $TRAEFIK_DIR/upgrade-report.txt
-• Backup/Restore: $BACKUP_DIR/restore.sh
-
-Your Enhanced Evernode host is now a professional hosting platform! 🚀
 EOF
 
     print_success "Reports generated"
@@ -466,7 +474,7 @@ main() {
     check_enhanced_host
     check_requirements
     backup_existing_config
-    setup_traefik
+    create_traefik_config
     stop_existing_services
     start_traefik
     
@@ -483,8 +491,8 @@ main() {
         print_info "🌐 Professional site: https://$DOMAIN/"
         print_info "🔧 Traefik dashboard: http://traefik.$DOMAIN:8080/"
         echo ""
-        print_feature "Tenants now get professional URLs instead of ugly port numbers!")
-        print_feature "Start attracting premium tenants with enterprise-grade features!")
+        print_feature "Tenants now get professional URLs instead of ugly port numbers!"
+        print_feature "Start attracting premium tenants with enterprise-grade features!"
     else
         print_warning "Upgrade completed with some issues"
         print_info "Check logs: cd $TRAEFIK_DIR && docker-compose logs"
