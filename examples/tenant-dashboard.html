@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Evernode - Tenant Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00ff88;
+            --secondary-color: #667eea;
+            --accent-color: #ffd700;
+            --background-dark: #0a0a0a;
+            --background-light: #1a1a1a;
+            --card-background: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --success-color: #00ff88;
+            --warning-color: #ffd700;
+            --error-color: #ff6b6b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--background-dark) 0%, #111 50%, var(--background-dark) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 25px;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--background-dark);
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-subtitle {
+            font-size: 0.9em;
+            color: var(--text-muted);
+        }
+
+        .domain-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .domain-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .domain-item:last-child {
+            border-bottom: none;
+        }
+
+        .domain-url {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-family: monospace;
+            font-weight: 500;
+        }
+
+        .domain-url:hover {
+            text-decoration: underline;
+        }
+
+        .domain-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+
+        .status-active {
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            color: var(--warning-color);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #00cc99);
+            color: var(--background-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-color);
+            color: var(--background-dark);
+        }
+
+        .github-integration {
+            background: linear-gradient(135deg, rgba(36, 41, 46, 0.1), rgba(13, 17, 23, 0.1));
+            border: 1px solid #30363d;
+        }
+
+        .github-repo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #30363d;
+        }
+
+        .repo-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .repo-icon {
+            color: #7c3aed;
+        }
+
+        .repo-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .repo-branch {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            background: rgba(124, 58, 237, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .deploy-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+
+        .status-deploying {
+            color: var(--warning-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .before {
+            color: var(--error-color);
+        }
+
+        .after {
+            color: var(--success-color);
+        }
+
+        .feature-highlight {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 107, 107, 0.1));
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid var(--accent-color);
+        }
+
+        .feature-highlight h4 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1><i class="fas fa-rocket"></i> Enhanced Evernode Tenant Dashboard</h1>
+            <p>Professional hosting with Traefik integration and GitHub automation</p>
+            <div class="status-badge">
+                <i class="fas fa-check-circle"></i>
+                <span>Traefik Enabled</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Professional Domains Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Professional Domains</div>
+                        <div class="card-subtitle">Custom domains with automatic SSL</div>
+                    </div>
+                </div>
+
+                <ul class="domain-list">
+                    <li class="domain-item">
+                        <a href="https://myapp.enhanced-host.com" class="domain-url">myapp.enhanced-host.com</a>
+                        <div class="domain-status status-active">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>SSL Active</span>
+                        </div>
+                    </li>
+                    <li class="domain-item">
+                        <a href="https://api.myapp.enhanced-host.com" class="domain-url">api.myapp.enhanced-host.com</a>
+                        <div class="domain-status status-active">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>SSL Active</span>
+                        </div>
+                    </li>
+                    <li class="domain-item">
+                        <a href="https://myapp.com" class="domain-url">myapp.com</a>
+                        <div class="domain-status status-pending">
+                            <i class="fas fa-clock"></i>
+                            <span>DNS Pending</span>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="action-buttons">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Add Domain
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="fas fa-cog"></i>
+                        DNS Setup
+                    </a>
+                </div>
+            </div>
+
+            <!-- GitHub Integration Card -->
+            <div class="card github-integration">
+                <div class="card-header">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #7c3aed, #3b82f6);">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">GitHub Integration</div>
+                        <div class="card-subtitle">Automated deployments from repositories</div>
+                    </div>
+                </div>
+
+                <div class="github-repo">
+                    <div class="repo-info">
+                        <i class="fab fa-github repo-icon"></i>
+                        <div>
+                            <div class="repo-name">mycompany/myapp</div>
+                            <div class="repo-branch">main</div>
+                        </div>
+                    </div>
+                    <div class="deploy-status status-active">
+                        <i class="fas fa-check"></i>
+                        <span>Deployed</span>
+                    </div>
+                </div>
+
+                <div class="github-repo">
+                    <div class="repo-info">
+                        <i class="fab fa-github repo-icon"></i>
+                        <div>
+                            <div class="repo-name">mycompany/api-service</div>
+                            <div class="repo-branch">develop</div>
+                        </div>
+                    </div>
+                    <div class="deploy-status status-deploying">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Deploying</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fab fa-github"></i>
+                        Connect Repo
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="fas fa-history"></i>
+                        Deploy History
+                    </a>
+                </div>
+            </div>
+
+            <!-- Performance Metrics Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Performance Metrics</div>
+                        <div class="card-subtitle">Real-time monitoring and analytics</div>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-value">99.9%</div>
+                        <div class="metric-label">Uptime</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">45ms</div>
+                        <div class="metric-label">Response</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">1.2k</div>
+                        <div class="metric-label">Requests/min</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">Errors</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-chart-bar"></i>
+                        Full Analytics
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </a>
+                </div>
+            </div>
+
+            <!-- Traefik Benefits Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Traefik Advantages</div>
+                        <div class="card-subtitle">Before vs After comparison</div>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <tr>
+                        <th>Feature</th>
+                        <th>Before</th>
+                        <th>After</th>
+                    </tr>
+                    <tr>
+                        <td>Access URL</td>
+                        <td class="before">host.com:26201</td>
+                        <td class="after">myapp.host.com</td>
+                    </tr>
+                    <tr>
+                        <td>SSL Setup</td>
+                        <td class="before">Manual</td>
+                        <td class="after">Automatic</td>
+                    </tr>
+                    <tr>
+                        <td>Custom Domain</td>
+                        <td class="before">Not supported</td>
+                        <td class="after">One-click setup</td>
+                    </tr>
+                    <tr>
+                        <td>GitHub Deploy</td>
+                        <td class="before">Manual FTP</td>
+                        <td class="after">Push to deploy</td>
+                    </tr>
+                    <tr>
+                        <td>Load Balancing</td>
+                        <td class="before">None</td>
+                        <td class="after">Automatic</td>
+                    </tr>
+                </table>
+
+                <div class="feature-highlight">
+                    <h4><i class="fas fa-star"></i> Professional Experience</h4>
+                    <p>Your customers see professional URLs like <strong>myapp.com</strong> instead of technical addresses like <strong>host.com:26201</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Features Section -->
+        <div class="grid">
+            <!-- Zero Downtime Updates -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Zero Downtime Updates</div>
+                        <div class="card-subtitle">Seamless deployments and scaling</div>
+                    </div>
+                </div>
+
+                <p style="margin-bottom: 15px; color: var(--text-secondary);">
+                    Traefik enables rolling updates with zero downtime. Your users never experience service interruptions during deployments.
+                </p>
+
+                <ul style="list-style: none; margin: 15px 0;">
+                    <li style="padding: 8px 0; color: var(--success-color);"><i class="fas fa-check"></i> Health checks prevent routing to failed instances</li>
+                    <li style="padding: 8px 0; color: var(--success-color);"><i class="fas fa-check"></i> Automatic failover to healthy containers</li>
+                    <li style="padding: 8px 0; color: var(--success-color);"><i class="fas fa-check"></i> Rolling updates with configurable strategies</li>
+                    <li style="padding: 8px 0; color: var(--success-color);"><i class="fas fa-check"></i> Instant rollback capabilities</li>
+                </ul>
+
+                <div class="action-buttons">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        Deploy Update
+                    </a>
+                </div>
+            </div>
+
+            <!-- Cost Savings -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Cost Savings</div>
+                        <div class="card-subtitle">Compared to traditional cloud hosting</div>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-value">87%</div>
+                        <div class="metric-label">Cost Reduction</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">$347</div>
+                        <div class="metric-label">Monthly Savings</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">$4,164</div>
+                        <div class="metric-label">Annual Savings</div>
+                    </div>
+                </div>
+
+                <div style="margin: 15px 0; padding: 15px; background: rgba(0, 255, 136, 0.1); border-radius: 8px; border: 1px solid var(--primary-color);">
+                    <strong style="color: var(--primary-color);">Evernode Enhanced:</strong> $24/month<br>
+                    <strong style="color: var(--error-color);">AWS Equivalent:</strong> $371/month
+                </div>
+            </div>
+
+            <!-- Support & Documentation -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-life-ring"></i>
+                    </div>
+                    <div>
+                        <div class="card-title">Support & Resources</div>
+                        <div class="card-subtitle">Get help and learn more</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-book"></i>
+                        Documentation
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="fab fa-github"></i>
+                        GitHub Repo
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="fas fa-comments"></i>
+                        Community
+                    </a>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="fas fa-headset"></i>
+                        Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulated real-time updates
+        function updateMetrics() {
+            const responseTime = document.querySelector('.metric-value');
+            if (responseTime) {
+                const currentValue = parseInt(responseTime.textContent);
+                const newValue = Math.max(30, Math.min(80, currentValue + Math.floor(Math.random() * 10) - 5));
+                responseTime.textContent = newValue + 'ms';
+            }
+        }
+
+        // Update metrics every 5 seconds
+        setInterval(updateMetrics, 5000);
+
+        // Add click handlers for buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Show a simple notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(0, 255, 136, 0.1);
+                    border: 1px solid var(--primary-color);
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    color: var(--primary-color);
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease;
+                `;
+                
+                notification.innerHTML = `
+                    <i class="fas fa-check"></i>
+                    Feature coming soon! This demo shows the enhanced tenant experience.
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            });
+        });
+
+        // Add CSS animation for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

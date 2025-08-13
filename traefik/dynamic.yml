@@ -1,0 +1,206 @@
+# Dynamic Configuration for Enhanced Evernode Traefik Setup
+# Middleware definitions, TLS options, and static routes
+
+# TLS Configuration
+tls:
+  options:
+    modern:
+      minVersion: "VersionTLS12"
+      maxVersion: "VersionTLS13"
+      cipherSuites:
+        - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305"
+        - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+        - "TLS_RSA_WITH_AES_256_GCM_SHA384"
+        - "TLS_RSA_WITH_AES_128_GCM_SHA256"
+      curvePreferences:
+        - CurveP521
+        - CurveP384
+      sniStrict: false
+
+# HTTP Middleware
+http:
+  middlewares:
+    # Security Headers
+    security-headers:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        accessControlAllowHeaders:
+          - "*"
+        accessControlMaxAge: 100
+        addVaryHeader: true
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+        customResponseHeaders:
+          X-Frame-Options: "DENY"
+          X-Content-Type-Options: "nosniff"
+          X-XSS-Protection: "1; mode=block"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          Permissions-Policy: "camera=(), microphone=(), geolocation=()"
+        stsSeconds: 63072000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        forceSTSHeader: true
+
+    # CORS for API routes
+    api-cors:
+      headers:
+        accessControlAllowOriginList:
+          - "*"
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        accessControlAllowHeaders:
+          - "*"
+        accessControlExposeHeaders:
+          - "*"
+        accessControlMaxAge: 3600
+        addVaryHeader: true
+
+    # Rate limiting for API endpoints
+    api-rate-limit:
+      rateLimit:
+        burst: 100
+        average: 50
+        period: 1m
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+
+    # Tenant isolation middleware
+    tenant-headers:
+      headers:
+        customRequestHeaders:
+          X-Tenant-Host: "true"
+          X-Powered-By: "Enhanced-Evernode"
+
+    # GitHub webhook middleware
+    github-security:
+      headers:
+        customRequestHeaders:
+          X-GitHub-Event: ""
+          X-GitHub-Delivery: ""
+        accessControlAllowOriginList:
+          - "https://github.com"
+          - "https://api.github.com"
+
+    # Compression middleware
+    compression:
+      compress: {}
+
+    # Retry middleware for backend failures
+    backend-retry:
+      retry:
+        attempts: 3
+        initialInterval: 100ms
+
+    # Circuit breaker for unhealthy backends
+    circuit-breaker:
+      circuitBreaker:
+        expression: "NetworkErrorRatio() > 0.3 || ResponseCodeRatio(500, 600, 0, 600) > 0.3"
+        checkPeriod: 10s
+        fallbackDuration: 30s
+        recoveryDuration: 60s
+
+    # Authentication for admin areas
+    admin-auth:
+      basicAuth:
+        users:
+          - "admin:$2y$10$..." # Generate with: htpasswd -n admin
+
+    # Tenant dashboard authentication
+    tenant-auth:
+      forwardAuth:
+        address: "http://github-integration:3000/auth/verify"
+        authResponseHeaders:
+          - "X-User-Id"
+          - "X-Tenant-Id"
+          - "X-GitHub-User"
+
+  # Static Services (for GitHub integration and monitoring)
+  services:
+    github-api:
+      loadBalancer:
+        servers:
+          - url: "http://github-integration:3000"
+        healthCheck:
+          path: "/health"
+          interval: 30s
+          timeout: 5s
+
+    enhanced-landing:
+      loadBalancer:
+        servers:
+          - url: "http://enhanced-landing:80"
+        healthCheck:
+          path: "/"
+          interval: 30s
+          timeout: 5s
+
+  # Static Routes
+  routers:
+    # API routes with authentication and rate limiting
+    api-router:
+      rule: "Host(`api.{{ env `DOMAIN` }}`) || PathPrefix(`/api/`)"
+      service: enhanced-landing
+      middlewares:
+        - api-cors
+        - security-headers
+        - api-rate-limit
+        - compression
+      tls:
+        certResolver: cloudflare
+
+    # GitHub webhook endpoint
+    github-webhook:
+      rule: "Host(`github.{{ env `DOMAIN` }}`) && Path(`/webhook`)"
+      service: github-api
+      middlewares:
+        - github-security
+        - backend-retry
+      tls:
+        certResolver: cloudflare
+
+    # GitHub API endpoints
+    github-api-router:
+      rule: "Host(`github.{{ env `DOMAIN` }}`) && PathPrefix(`/api/`)"
+      service: github-api
+      middlewares:
+        - tenant-auth
+        - api-cors
+        - security-headers
+        - compression
+      tls:
+        certResolver: cloudflare
+
+    # Admin panel with authentication
+    admin-panel:
+      rule: "Host(`admin.{{ env `DOMAIN` }}`)"
+      service: enhanced-landing
+      middlewares:
+        - admin-auth
+        - security-headers
+        - compression
+      tls:
+        certResolver: cloudflare
+
+    # Monitoring endpoints
+    monitoring:
+      rule: "Host(`monitor.{{ env `DOMAIN` }}`)"
+      service: enhanced-landing
+      middlewares:
+        - tenant-auth
+        - security-headers
+        - compression
+      tls:
+        certResolver: cloudflare

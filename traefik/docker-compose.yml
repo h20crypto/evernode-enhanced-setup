@@ -1,0 +1,44 @@
+@echo off
+echo Creating Traefik files for Enhanced Evernode...
+
+REM Create directories
+mkdir traefik 2>nul
+mkdir traefik\github-service 2>nul
+mkdir examples 2>nul
+
+echo Directories created successfully!
+echo.
+echo Now you need to create these files manually:
+echo.
+echo 1. traefik\docker-compose.yml
+echo 2. traefik\traefik.yml
+echo 3. traefik\dynamic.yml
+echo 4. traefik\github-service\index.js
+echo 5. traefik\github-service\package.json
+echo 6. scripts\upgrade-to-traefik.sh
+echo 7. examples\tenant-dashboard.html
+echo.
+echo RECOMMENDATION: Use Git Bash or VS Code for easier file creation
+echo.
+echo Git Bash command:
+echo   git clone https://github.com/h20crypto/evernode-enhanced-setup.git
+echo   cd evernode-enhanced-setup
+echo   mkdir -p traefik/github-service examples
+echo.
+echo Then copy the file contents from the artifacts provided.
+echo.
+echo Press any key to continue...
+pause >nul
+
+REM Open the traefik directory in Windows Explorer
+explorer traefik
+
+echo.
+echo Next steps:
+echo 1. Create the files listed above
+echo 2. Copy content from the provided artifacts
+echo 3. Run: git add . 
+echo 4. Run: git commit -m "Add Traefik upgrade"
+echo 5. Run: git push origin main
+echo.
+echo Done! Directory structure created.
